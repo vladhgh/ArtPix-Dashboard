@@ -1,0 +1,367 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D0EC37E1-481D-4C22-AD24-4D5E6C912DB9}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>ArtPix_Dashboard</RootNamespace>
+    <AssemblyName>ArtPix Dashboard</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>C:\Users\vladh\OneDrive\Documents\ArtPix Dashboard\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Unc</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>\\server\myapp\</InstallUrl>
+    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>9EA838B6F5A48FA0A0C9688EC12401896AC854A7</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>ArtPix Dashboard_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="netstandard" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Models\AppStateModel.cs" />
+    <Compile Include="Models\IssueReasonsModel.cs" />
+    <Compile Include="Models\MachineAssignItemModel.cs" />
+    <Compile Include="Models\MachineModel.cs" />
+    <Compile Include="Models\NewStatusModel.cs" />
+    <Compile Include="Models\OrderModel.cs" />
+    <Compile Include="Models\PageModel.cs" />
+    <Compile Include="Models\ProductionIssueModel.cs" />
+    <Compile Include="Models\ResolveErrorRequestModel.cs" />
+    <Compile Include="Models\StatsModel.cs" />
+    <Compile Include="API\ArtPixAPI.cs" />
+    <Compile Include="Utils\PixelsToGridLengthConverter.cs" />
+    <Compile Include="Utils\Utils.cs" />
+    <Compile Include="API\WinAPI.cs" />
+    <Compile Include="ViewModels\Commands.cs" />
+    <Compile Include="Utils\DelegateCommand.cs" />
+    <Compile Include="ViewModels\MachinesDashboardViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\ProductionIssuesViewModel.cs" />
+    <Compile Include="Utils\PropertyChangedListener.cs" />
+    <Compile Include="ViewModels\SearchViewModel.cs" />
+    <Compile Include="ViewModels\ShippingDashboardViewModel.cs" />
+    <Compile Include="ViewModels\ShippingViewModel.cs" />
+    <Compile Include="ViewModels\UtilitiesViewModel.cs" />
+    <Compile Include="Views\Dialogs\UnassignDialog.xaml.cs">
+      <DependentUpon>UnassignDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\ManualCompleteDialog.xaml.cs">
+      <DependentUpon>ManualCompleteDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\CancelIssueDialog.xaml.cs">
+      <DependentUpon>CancelIssueDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\AssignMachineDialog.xaml.cs">
+      <DependentUpon>AssignMachineDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\RedoDialog.xaml.cs">
+      <DependentUpon>RedoDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\ReworkDialog.xaml.cs">
+      <DependentUpon>ReworkDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MachinesDashboardView.xaml.cs">
+      <DependentUpon>MachinesDashboardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProductionIssuesView.xaml.cs">
+      <DependentUpon>ProductionIssuesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SearchView.xaml.cs">
+      <DependentUpon>SearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShippingDashboardView.xaml.cs">
+      <DependentUpon>ShippingDashboardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShippingView.xaml.cs">
+      <DependentUpon>ShippingView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UtilitiesView.xaml.cs">
+      <DependentUpon>UtilitiesView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Styles\Animations.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\DataTemplates\OrderItemTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\UnassignDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dialogs\ManualCompleteDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dialogs\CancelIssueDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\AssignMachineDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dialogs\RedoDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\ReworkDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\ScanDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MainView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Views\Dialogs\ScanDialog.xaml.cs">
+      <DependentUpon>ScanDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MainView.xaml.cs">
+      <DependentUpon>MainView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Views\MachinesDashboardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProductionIssuesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SearchView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ShippingDashboardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ShippingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UtilitiesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="ArtPix Dashboard_TemporaryKey.pfx" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\placeholder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ModernWpfUI">
+      <Version>0.9.4</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="QRCoder">
+      <Version>1.4.1</Version>
+    </PackageReference>
+    <PackageReference Include="RestSharp">
+      <Version>106.11.7</Version>
+    </PackageReference>
+    <PackageReference Include="SciChart.Wpf.UI.Transitionz">
+      <Version>3.1.251</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reactive">
+      <Version>5.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reactive.Core">
+      <Version>5.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reactive.Interfaces">
+      <Version>5.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reactive.Linq">
+      <Version>5.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reactive.Windows.Threading">
+      <Version>5.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="ToastNotifications">
+      <Version>2.5.1</Version>
+    </PackageReference>
+    <PackageReference Include="ToastNotifications.Messages">
+      <Version>2.5.1</Version>
+    </PackageReference>
+    <PackageReference Include="XamlFlair.WPF">
+      <Version>1.2.8</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\test.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\profile.jpeg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\profile.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\profile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\test.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Slices2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\ap3dlogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.8">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.8 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\multiple_item_order_preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\rotating_base_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\light_base_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\cleaning_kit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\rotating_base_large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\light_base_medium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\light_base_large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\light_base_xl.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

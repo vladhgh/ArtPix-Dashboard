@@ -1,0 +1,371 @@
+﻿<ui:Page
+	x:Name="MachinesDashboardPage"
+	x:Class="ArtPix_Dashboard.Views.MachinesDashboardView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
+    xmlns:machine="clr-namespace:ArtPix_Dashboard.Models.Machine"
+    mc:Ignorable="d"
+	Background="{DynamicResource SystemControlPageBackgroundMediumAltMediumBrush}">
+
+    <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="10"/>
+			<RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="10"/>
+			<ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="10"/>
+		</Grid.ColumnDefinitions>
+
+
+        <ui:SimpleStackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center">
+            <TextBlock
+					Text="Filter:"
+                    Margin="0 0 0 10"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					Style="{DynamicResource SubtitleTextBlockStyle}"
+					FontWeight="Black"/>
+            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center" >
+                <TextBox
+                        x:Name="searchTextBox"
+                        MinWidth="200"
+                        Height="Auto"
+                        HorizontalAlignment="Left"
+                        ui:ControlHelper.Header="Search Orders:"
+                        ui:ControlHelper.PlaceholderText="Search by order name..."/>
+                <Button Content="Search" VerticalAlignment="Bottom" Style="{DynamicResource AccentButtonStyle}" Margin="0 0 10 0"/>
+                <ComboBox VerticalAlignment="Center" x:Name="EngravingStatusComboBox" MinWidth="200" ui:ControlHelper.Header="Engraving Status:" ui:ControlHelper.PlaceholderText="Engraving Status"  SelectedIndex="1">
+                    <ComboBoxItem Content="Awaiting Model" Tag="wait_model"/>
+                    <ComboBoxItem Content="Ready To Engrave" Tag="ready_to_engrave"/>
+                    <ComboBoxItem Content="Processing" Tag="processing"/>
+                    <ComboBoxItem Content="Engraved" Tag="engraved"/>
+                    <ComboBoxItem Content="Engraved Today" Tag="engraved_today"/>
+                </ComboBox>
+                <ComboBox x:Name="MachineComboBox" SelectedIndex="0"  VerticalAlignment="Center" ui:ControlHelper.Header="Engraving Machine:" ui:ControlHelper.PlaceholderText="Machine">
+                    <ComboBoxItem Content="All Machines" Tag="All"/>
+                    <ComboBoxItem Content="Machine 1" Tag="1"/>
+                    <ComboBoxItem Content="Machine 2" Tag="2"/>
+                    <ComboBoxItem Content="Machine 3" Tag="3"/>
+                    <ComboBoxItem Content="Machine 4" Tag="4"/>
+                    <ComboBoxItem Content="Machine 5" Tag="5"/>
+                    <ComboBoxItem Content="Machine 6" Tag="6"/>
+                    <ComboBoxItem Content="Machine 7" Tag="7"/>
+                    <ComboBoxItem Content="Machine 8" Tag="8"/>
+                    <ComboBoxItem Content="Machine 9" Tag="9"/>
+                    <ComboBoxItem Content="Machine 10" Tag="10"/>
+                    <ComboBoxItem Content="Machine 11" Tag="11"/>
+                    <ComboBoxItem Content="Machine 12" Tag="12"/>
+                    <ComboBoxItem Content="Machine 13" Tag="13"/>
+                    <ComboBoxItem Content="Machine 14" Tag="14"/>
+                    <ComboBoxItem Content="Machine 15" Tag="15"/>
+                    <ComboBoxItem Content="Machine 16" Tag="16"/>
+                    <ComboBoxItem Content="Machine 17" Tag="17"/>
+                    <ComboBoxItem Content="Machine 18" Tag="18"/>
+                    <ComboBoxItem Content="Machine 19" Tag="19"/>
+                    <ComboBoxItem Content="Machine 20" Tag="20"/>
+                    <ComboBoxItem Content="Machine 21" Tag="21"/>
+                    <ComboBoxItem Content="Machine 22" Tag="22"/>
+                    <ComboBoxItem Content="Machine 23" Tag="23"/>
+                    <ComboBoxItem Content="Machine 24" Tag="24"/>
+                    <ComboBoxItem Content="Machine 25" Tag="25"/>
+                    <ComboBoxItem Content="Machine 26" Tag="26"/>
+                    <ComboBoxItem Content="Machine 27" Tag="27"/>
+                    <ComboBoxItem Content="Machine 28" Tag="28"/>
+                    <ComboBoxItem Content="Machine 29" Tag="29"/>
+                    <ComboBoxItem Content="Machine 30" Tag="30"/>
+                    <ComboBoxItem Content="Machine 31" Tag="31"/>
+                    <ComboBoxItem Content="Machine 32" Tag="32"/>
+                    <ComboBoxItem Content="Machine 33" Tag="33"/>
+                    <ComboBoxItem Content="Machine 34" Tag="34"/>
+                </ComboBox>
+                <ui:SimpleStackPanel Orientation="Vertical" Margin="10 0 0 0">
+                    <TextBlock Text="Additional Controls:" Margin="0 0 0 5"/>
+                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                        <ToggleButton Content="Express Orders" Cursor="Hand" VerticalAlignment="Bottom"/>
+                        <Button Content="Reload List" Cursor="Hand" VerticalAlignment="Bottom" Command="{Binding Path=ReloadList}"/>
+                    </ui:SimpleStackPanel>
+                </ui:SimpleStackPanel>
+
+            </ui:SimpleStackPanel>
+        </ui:SimpleStackPanel>
+        
+
+        <Grid Name="MachinesGrid" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="30 0 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+
+            <ItemsControl HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding ActiveMachinesList}" >
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <ui:SimpleStackPanel Margin="0 0 30 0" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=600}" HorizontalAlignment="Left" Orientation="Vertical" Spacing="3">
+                            <TextBlock
+                                        HorizontalAlignment="Center"
+                                        FontWeight="Bold"
+                                        Text="{Binding Name, StringFormat=Machine {0:F0}}"
+                                        Style="{DynamicResource SubtitleTextBlockStyle}" />
+                            <Button Background="{Binding JobsCountColor}" Cursor="Hand" Tag="{Binding Name}" Click="ActiveMachineButton_OnClick"  Height="25" Width="40" Style="{StaticResource InactiveButtonStyle}" HorizontalAlignment="Center" Margin="0 0 10 0"  Opacity="0.9">
+                                <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            FontWeight="SemiBold"
+                                            Text="{Binding JobsCount}"
+                                            FontSize="14"
+                                            Style="{DynamicResource SubtitleTextBlockStyle}" />
+                            </Button>
+                        </ui:SimpleStackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+
+            <TextBlock
+										Text="{Binding Stats.EngravedTodayCount, StringFormat=Engraved Today: {0:F0}, Mode=OneWay}"
+										FontFamily="Segoe UI"
+										HorizontalAlignment="Center"
+										Grid.Column="3"
+										FontWeight="Black"
+										Style="{DynamicResource TitleTextBlockStyle}" />
+            <TextBlock
+										Text="{Binding Stats.ReadyToEngraveCount, StringFormat=Ready To Engrave: {0:F0}, Mode=OneWay}"
+										FontFamily="Segoe UI"
+										HorizontalAlignment="Left"
+										Grid.Column="0"
+										FontWeight="Black"
+										Style="{DynamicResource TitleTextBlockStyle}" />
+            <TextBlock
+										Text="{Binding Stats.ProcessingCount, StringFormat=Engraving: {0:F0}, Mode=OneWay}"
+										FontFamily="Segoe UI"
+										HorizontalAlignment="Center"
+										Grid.Column="1"
+										FontWeight="Black"
+										Style="{DynamicResource TitleTextBlockStyle}"/>
+            <TextBlock
+										Text="{Binding Stats.IssueCount, StringFormat=Production Issues: {0:F0}, Mode=OneWay}"
+										FontFamily="Segoe UI"
+										HorizontalAlignment="Right"
+										Grid.Column="4"
+										FontWeight="Black"
+										Style="{DynamicResource TitleTextBlockStyle}"/>
+        </Grid>
+
+        <TextBlock
+                    Grid.Row="4" Grid.Column="1"
+                    Margin="0 10 0 10"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+                    Style="{DynamicResource SubtitleTextBlockStyle}"
+					FontWeight="Black">
+            <Run Text="{Binding ElementName=EngravingStatusComboBox, Path=Text}"/>
+            <Run Text="{Binding ElementName=MachineComboBox, Path=Text, StringFormat=On {0:F0}}"/>
+            <Run Text="{Binding MachineAssignedItems.Meta.Total, StringFormat=({0:F0}):}"/>
+        </TextBlock>
+
+        <ui:ProgressRing Name="ProgressRing" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="2" Margin="10 0 0 0" Height="50" Width="50" IsActive="{Binding IsLoading}"/>
+
+        <ui:ListView x:Name="LaserMachineItemsListView"
+					ItemsSource="{Binding MachineAssignedItems.Data}"
+                    Visibility="{Binding IsLoaded}" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=600}"
+					Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="2"
+					MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
+					MinWidth="550"
+                    MaxWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}"
+					BorderThickness="1"
+					IsSelectionEnabled="False"
+                    VirtualizingPanel.ScrollUnit="Pixel"
+					BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}">
+			<ui:ListView.ItemTemplate>
+				<DataTemplate DataType="machine:Datum">
+                    <ui:SimpleStackPanel Orientation="Horizontal" Margin="20 20 0 20" Spacing="10" HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}">
+                        <Image Width="175" Height="175" Stretch="Uniform" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=600}">
+                            <Image.Source>
+                                <BitmapImage DecodePixelWidth="175" UriSource="{Binding Path=Product.UrlRenderImg, Mode=OneWay, FallbackValue=/Assets/placeholder.png}" />
+                            </Image.Source>
+                        </Image>
+                        <ui:SimpleStackPanel Orientation="Vertical" Spacing="2" Margin="12,0,0,0" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=600}">
+                            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                                <TextBlock
+                                    Text="{Binding Order.NameOrder, Mode=OneTime, StringFormat=Order: {0:N}}"
+                                    FontWeight="Black"
+                                    Style="{DynamicResource SubheaderTextBlockStyle}"
+                                    HorizontalAlignment="Left" />
+                                <Button Background="SteelBlue" Style="{StaticResource CrystalRedoButtonStyle}" MaxHeight="25" Opacity="0.9" Margin="0 5 10 0">
+                                    <TextBlock
+                                        Text="Redo"
+                                        FontSize="10"
+                                        Style="{DynamicResource BaseTextBlockStyle}"/>
+                                </Button>
+                                <Button Background="{Binding UpdatedAtAgeColor}" Style="{StaticResource InactiveButtonStyle}" VerticalAlignment="Center" MaxHeight="25" Opacity="0.9">
+                                    <TextBlock
+                                        Text="{Binding UpdatedAtAge, StringFormat=Added {0:N} ago, Mode=OneWay}"
+                                        Margin="10 0 10 0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        FontSize="11"
+                                        Style="{DynamicResource BaseTextBlockStyle}"/>
+                                </Button>
+                            </ui:SimpleStackPanel>
+                            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10" Margin="0 0 0 5">
+                                <Button Background="{Binding Order.StatusOrderColor}" Style="{StaticResource InactiveButtonStyle}" MaxHeight="25" Opacity="0.9">
+                                    <TextBlock
+				                                Text="{Binding Order.StatusOrder, StringFormat=Shop: {0:N}, Mode=OneWay}"
+				                                Margin="10 0 10 0"
+				                                HorizontalAlignment="Left"
+				                                VerticalAlignment="Center"
+                                                FontSize="11"
+				                                Style="{DynamicResource BaseTextBlockStyle}"/>
+                                </Button>
+                                <Button Background="{Binding Order.StatusEngravingColor}" Style="{StaticResource InactiveButtonStyle}" MaxHeight="25" Opacity="0.9">
+                                    <TextBlock
+				                                Text="{Binding Order.StatusEngraving, StringFormat=Engraving: {0:N}, Mode=OneWay}"
+				                                Margin="10 0 10 0"
+				                                HorizontalAlignment="Left"
+				                                VerticalAlignment="Center"
+                                                FontSize="11"
+				                                Style="{DynamicResource BaseTextBlockStyle}"/>
+                                </Button>
+                                <Button Background="DarkRed" Style="{StaticResource InactiveButtonStyle}" MaxHeight="25" Visibility="{Binding IsActionNeeded}" Opacity="0.9">
+                                    <TextBlock
+                                                Text="Action Needed!"
+                                                Margin="10 0 10 0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                FontSize="11"
+                                                Style="{DynamicResource BaseTextBlockStyle}"/>
+                                </Button>
+                            </ui:SimpleStackPanel>
+                            <ui:SimpleStackPanel Orientation="Horizontal" >
+                                <TextBlock
+                                    Text="Shipping: "
+                                    HorizontalAlignment="Left"
+                                    Style="{DynamicResource BaseTextBlockStyle}"
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="NoWrap" />
+                                <TextBlock
+                                    Text="{Binding Order.ShippingType, Mode=OneTime}"
+                                    Foreground="{Binding Order.ShippingTypeColor}"
+                                    HorizontalAlignment="Left"
+                                    Style="{DynamicResource BaseTextBlockStyle}"
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="NoWrap"
+                                />
+                            </ui:SimpleStackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+											Text="{Binding ProductId, Mode=OneTime, StringFormat=Product ID: {0:F0}}"
+											HorizontalAlignment="Left"
+											Style="{DynamicResource BaseTextBlockStyle}"
+											TextTrimming="CharacterEllipsis"
+											TextWrapping="NoWrap"
+											Margin="0 0 10 0"/>
+                                <TextBlock
+											Text="{Binding Id, Mode=OneTime, StringFormat=Copy ID: {0:F0}}"
+											HorizontalAlignment="Left"
+											Style="{DynamicResource BaseTextBlockStyle}"
+											TextTrimming="CharacterEllipsis"
+											TextWrapping="NoWrap" />
+                            </StackPanel>
+                            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock
+                                    Text="{Binding UpdatedAt, Mode=OneTime, StringFormat=Updated At: {0:N}}"
+                                    Style="{DynamicResource BaseTextBlockStyle}"
+                                    HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock
+                                    Text="{Binding CreatedAt, Mode=OneTime, StringFormat=Created At: {0:N}}"
+                                    Style="{DynamicResource BaseTextBlockStyle}"
+                                    HorizontalAlignment="Left" VerticalAlignment="Center" />
+                            </ui:SimpleStackPanel>
+
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                FontWeight="SemiBold">
+								<Run Text="Machine: "/>
+                                <Run Text="{Binding MachineId, Mode=OneTime}"/>
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding MachineId}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding MachineId}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
+                            <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                                <Button Cursor="Hand" IsEnabled="{Binding isVitroMarkEnabled}" Content="VitroMark" Opacity="0.9" Command="{Binding Path=OnVitroMark}" Margin="0 0 10 0" Style="{StaticResource VitroMarkButtonStyle}" />
+                                <Button Cursor="Hand" Content="Assign Machine" Visibility="{Binding AssignMachineButtonVisibility}" Margin="0 0 10 0" Command="{Binding ElementName=MachinesDashboardPage, Path=DataContext.OnAssignMachine}" CommandParameter="{Binding Id}" Opacity="0.9" Style="{StaticResource RedoButtonStyle}"/>
+                                <Button Cursor="Hand" Content="Unassign" Margin="0 0 10 0" Command="{Binding ElementName=MachinesDashboardPage, Path=DataContext.OnUnassignMachine}" CommandParameter="{Binding Id}" Opacity="0.9" Style="{StaticResource UnassignButtonStyle}"/>
+                                <Button Cursor="Hand" Content="Crystal Issue" Margin="0 0 10 0" Command="{Binding ElementName=MachinesDashboardPage, Path=DataContext.OnCrystalIssue}" CommandParameter="{Binding Id}" Opacity="0.9" Style="{StaticResource AddCrystalIssueButtonStyle}"/>
+                                <Button Cursor="Hand" Content="Manual Complete" Command="{Binding ElementName=MachinesDashboardPage, Path=DataContext.OnManualComplete}" CommandParameter="{Binding Id}" Margin="0 0 10 0" Opacity="0.9" Style="{StaticResource ManualCompleteButtonStyle}"/>
+                                <Button Cursor="Hand" Content="Confirmation Page" Command="{Binding ElementName=MachinesDashboardPage, Path=DataContext.OnCP}" CommandParameter="{Binding Order.NameOrder}" Margin="0 0 10 0" Opacity="0.9"/>
+                                <Button Cursor="Hand" Content="Order Archive" Command="{Binding ElementName=MachinesDashboardPage, Path=DataContext.OnOA}" CommandParameter="{Binding Order.NameOrder}" Margin="0 0 10 0" Opacity="0.9"/>
+                            </StackPanel>
+                        </ui:SimpleStackPanel>
+                    </ui:SimpleStackPanel>
+                </DataTemplate>
+
+			</ui:ListView.ItemTemplate>
+		</ui:ListView>
+
+        <ui:SimpleStackPanel Name="Pagination" Orientation="Horizontal" Grid.Column="1" Grid.Row="7" Margin="0 10 0 0">
+            <ui:TitleBarButton
+                x:Name="BackButton"
+                Cursor="Hand"
+                Content="&#xE72B;"
+                ContentTemplate="{x:Null}" />
+            <ui:ItemsRepeater
+                VerticalAlignment="Top"
+                ItemsSource="{Binding Pages}">
+                <ui:ItemsRepeater.ItemTemplate>
+                    <DataTemplate>
+                        <ui:TitleBarButton
+                            Cursor="Hand"
+                            FontSize="14"
+                            FontFamily="Segoe UI"
+                            IsActive="{Binding IsSelected}"
+                            Command="{Binding NavigateToSelectedPage}"
+                            Click="ButtonBase_OnClick"
+                            CommandParameter="{Binding PageNumber}"
+                            Content="{Binding PageName}" />
+                    </DataTemplate>
+                </ui:ItemsRepeater.ItemTemplate>
+                <ui:ItemsRepeater.Layout>
+                    <ui:StackLayout Orientation="Horizontal" />
+                </ui:ItemsRepeater.Layout>
+            </ui:ItemsRepeater>
+            <ui:TitleBarButton
+                x:Name="ForwardButton"
+                Cursor="Hand"
+                Content="&#xE72A;"
+                ContentTemplate="{x:Null}" />
+        </ui:SimpleStackPanel>
+
+    </Grid>
+</ui:Page>

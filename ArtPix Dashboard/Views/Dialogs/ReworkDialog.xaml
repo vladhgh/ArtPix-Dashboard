@@ -1,0 +1,37 @@
+﻿<ui:ContentDialog
+   x:Class="ArtPix_Dashboard.Views.Dialogs.ReworkDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    PrimaryButtonText="Retoucher"
+    SecondaryButtonText="Looxis"
+    CloseButtonText="Cancel"
+    DefaultButton="Primary">
+
+    <ui:SimpleStackPanel Orientation="Vertical">
+        <TextBlock
+            Text="Are you sure you want to send this crystal to rework?"
+            FontFamily="Segoe UI"
+            FontWeight="Black"
+            Style="{DynamicResource TitleTextBlockStyle}"
+            Margin="0 0 0 10"/>
+        <TextBlock
+										    Text="The product will be sent back to retoucher for rework."
+										    FontFamily="Segoe UI"
+										    HorizontalAlignment="Left"
+										    Style="{DynamicResource SubtitleTextBlockStyle}"
+										    TextTrimming="CharacterEllipsis"
+										    Width="auto"
+										    TextWrapping="NoWrap"
+                                            Margin="0,0,5,10"/>
+        <TextBlock
+            Text="Please Leave A Message:"
+            FontFamily="Segoe UI"
+            FontSize="18"
+            FontWeight="Bold"
+            Style="{DynamicResource BaseTextBlockStyle}"
+            Margin="0 10 0 5"/>
+        <ui:AutoSuggestBox x:Name="MessageBox" PlaceholderText="Your Message" Text="Life Is Good!" />
+    </ui:SimpleStackPanel>
+
+</ui:ContentDialog>

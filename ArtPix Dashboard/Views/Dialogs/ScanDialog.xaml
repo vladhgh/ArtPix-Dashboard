@@ -1,0 +1,12 @@
+﻿<ui:ContentDialog
+    x:Class="ArtPix_Dashboard.Views.Dialogs.ScanDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    Title="Scan your employee QR code">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Stretch">
+        <ui:ProgressRing IsActive="True" />
+    </StackPanel>
+
+</ui:ContentDialog>
