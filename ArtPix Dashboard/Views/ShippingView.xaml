@@ -1,4 +1,4 @@
-﻿<Page x:Class="ArtPix_Dashboard.Views.ShippingView"
+﻿<ui:Page x:Class="ArtPix_Dashboard.Views.ShippingView"
       Name="ShippingPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -338,4 +338,4 @@
         
 
     </Grid>
-</Page>
+</ui:Page>

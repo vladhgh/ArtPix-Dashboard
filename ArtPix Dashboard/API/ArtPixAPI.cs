@@ -62,10 +62,15 @@ namespace ArtPix_Dashboard.Utils
 			return res.Data.Count > 0 ? res.Data[0] : null;
 		}
 		public static async Task<OrderModel> GetOrdersAsync(string statusOrder = "", string statusShipping = "", string page = "1", string perPage = "15",
-			string hasShippingPackage = "", string withShippingTotes = "", string withProductionIssue = "", string sortBy = "", string shipByToday = "", string storeName = "", string statusEngraving = "")
+			string hasShippingPackage = "", string withShippingTotes = "", string withProductionIssue = "", string sortBy = "", string shipByToday = "",
+			string storeName = "", string statusEngraving = "", string nameOrder = "")
 		{
 			var today = DateTime.Now.Date.ToString("yyyy-MM-dd");
 			var request = $"/order?status_order={statusOrder}&status_shipping={statusShipping}&page={page}&per_page={perPage}";
+			if (nameOrder != "")
+			{
+				request += $"&name_order={nameOrder}";
+			}
 			if (shipByToday == "True")
 			{
 				request += ("&estimate_processing_max_date_before=" + today + " 23:59:59");

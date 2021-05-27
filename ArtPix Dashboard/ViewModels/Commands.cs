@@ -26,16 +26,16 @@ namespace ArtPix_Dashboard.ViewModels
 			Clipboard.Clear();
 			Clipboard.SetText("\\\\artpix\\main-storage\\" + fileName.ToString());
 			WinAPI.SetForegroundWindow(process.MainWindowHandle);
-			IntPtr ButtonHandle = WinAPI.FindWindowEx(process.MainWindowHandle, IntPtr.Zero, null, "Open");
-			WinAPI.SendMessage(ButtonHandle, 0x0201, IntPtr.Zero, IntPtr.Zero);
-			WinAPI.SendMessage(ButtonHandle, 0x0202, IntPtr.Zero, IntPtr.Zero);
+			var buttonHandle = WinAPI.FindWindowEx(process.MainWindowHandle, IntPtr.Zero, null, "Open");
+			WinAPI.SendMessage(buttonHandle, 0x0201, IntPtr.Zero, IntPtr.Zero);
+			WinAPI.SendMessage(buttonHandle, 0x0202, IntPtr.Zero, IntPtr.Zero);
 			Thread.Sleep(500);
 			SendKeys.SendWait("^v");
 			SendKeys.SendWait("{ENTER}");
 		}
 		public static void OpenOrderOnCP(object orderName)
 		{
-			string target = "https://confirmation.artpix3d.com/archives?search=" + orderName.ToString() + "&searchOptions=name";
+			string target = "https://confirmation.artpix3d.com/archives?search=" + orderName.ToString() + "&searchOptions=order_number";
 			try
 			{
 				Process.Start(target);

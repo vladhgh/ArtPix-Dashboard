@@ -25,4 +25,20 @@ namespace ArtPix_Dashboard.Models
 
 	    public string machine { get; set; }
     }
+
+    public class OrderCombineFilterModel
+    {
+	    public int pageNumber { get; set; }
+	    public bool withPages { get; set; }
+	    public string perPage { get; set; }
+	    public string hasShippingPackage { get; set; }
+	    public string withShippingTotes { get; set; }
+	    public string withProductionIssue { get; set; }
+	    public string sortBy { get; set; }
+	    public string shipByToday { get; set; }
+	    public string storeName { get; set; }
+	    public string shippingStatus { get; set; }
+	    public string orderStatus { get; set; }
+	    public string statusEngraving { get; set; }
+    }
 }

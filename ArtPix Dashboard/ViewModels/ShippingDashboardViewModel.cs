@@ -142,7 +142,6 @@ namespace ArtPix_Dashboard.ViewModels
 
 		public void OpenImage(object param)
 		{
-			Debug.WriteLine("I work");
 			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Product)param).IdOrders);
 			var product = order?.Products.SingleOrDefault(p => p.IdProducts == ((Product) param).IdProducts);
 			if (product != null)
@@ -208,29 +207,29 @@ namespace ArtPix_Dashboard.ViewModels
 
 		public ShippingDashboardViewModel()
 		{
-			GetOrdersList();
 			InitializeCommands();
 		}
 
 		public async void GetOrdersList(int pageNumber = 1, bool withPages = true, string perPage = "15",
-			string hasShippingPackage = "", string withShippingTotes = "", string withProductionIssue = "", string sortBy = "", string shipByToday = "True", string storeName = "", string shippingStatus = "waiting", string orderStatus = "processing", 
-			string statusEngraving = "")
+			string hasShippingPackage = "", string withShippingTotes = "", string withProductionIssue = "",
+			string sortBy = "", string shipByToday = "True", string storeName = "", string shippingStatus = "waiting",
+			string orderStatus = "processing", string statusEngraving = "", string nameOrder = "")
 		{
 			IsLoading = true;
 			IsLoaded = Visibility.Collapsed;
-			Orders = await ArtPixAPI.GetOrdersAsync(orderStatus, shippingStatus, pageNumber.ToString(), perPage, hasShippingPackage, withShippingTotes, withProductionIssue, sortBy, shipByToday, storeName, statusEngraving);
+			Orders = await ArtPixAPI.GetOrdersAsync(orderStatus, shippingStatus, pageNumber.ToString(), perPage, hasShippingPackage, withShippingTotes, withProductionIssue, sortBy, shipByToday, storeName, statusEngraving, nameOrder);
 			foreach (var page in Pages)
 			{
 				page.IsSelected = page.PageNumber == pageNumber;
 			}
-			Pages = withPages ? GetPages(pageNumber, perPage, hasShippingPackage, withShippingTotes, withProductionIssue, sortBy, shipByToday, storeName, shippingStatus, orderStatus, statusEngraving) : new ObservableCollection<PageModel>(Pages);
+			Pages = withPages ? GetPages(pageNumber, perPage, hasShippingPackage, withShippingTotes, withProductionIssue, sortBy, shipByToday, storeName, shippingStatus, orderStatus, statusEngraving, nameOrder) : new ObservableCollection<PageModel>(Pages);
 			IsLoading = false;
 			IsLoaded = Visibility.Visible;
 			CollectionViewSource.GetDefaultView(Orders.Data).Refresh();
 		}
 		private ObservableCollection<PageModel> GetPages(int currentPageNumber, string perPage = "15",
 			string hasShippingPackage = "", string withShippingTotes = "", string withProductionIssue = "", string sortBy = "", string shipByToday = "True", string storeName = "", string shippingStatus = "waiting",
-			string orderStatus = "processing", string statusEngraving = "")
+			string orderStatus = "processing", string statusEngraving = "", string nameOrder = "")
 		{
 			var pages = new ObservableCollection<PageModel>();
 			for (var i = Orders.Meta.CurrentPage; i <= Orders.Meta.LastPage; i++)
@@ -242,7 +241,7 @@ namespace ArtPix_Dashboard.ViewModels
 						IsSelected = i == Orders.Meta.CurrentPage,
 						NavigateToSelectedPage = new DelegateCommand(param => GetOrdersList((currentPageNumber + 5),
 							true, perPage, hasShippingPackage, withShippingTotes, withProductionIssue, sortBy,
-							shipByToday, storeName, shippingStatus, orderStatus, statusEngraving))
+							shipByToday, storeName, shippingStatus, orderStatus, statusEngraving, nameOrder))
 					};
 					pages.Add(page);
 				}
@@ -252,7 +251,7 @@ namespace ArtPix_Dashboard.ViewModels
 					{
 						IsSelected = i == Orders.Meta.CurrentPage,
 						NavigateToSelectedPage = new DelegateCommand(param => GetOrdersList((int) param, false, perPage,
-							hasShippingPackage, withShippingTotes, withProductionIssue, sortBy, shipByToday, storeName, shippingStatus, orderStatus, statusEngraving))
+							hasShippingPackage, withShippingTotes, withProductionIssue, sortBy, shipByToday, storeName, shippingStatus, orderStatus, statusEngraving, nameOrder))
 					};
 					pages.Add(page);
 				}

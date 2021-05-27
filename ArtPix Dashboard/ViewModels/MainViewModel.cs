@@ -91,7 +91,7 @@ namespace ArtPix_Dashboard.ViewModels
 					AppState.contentFrame.Navigate(typeof(UtilitiesView), AppState, new DrillInNavigationTransitionInfo());
 					return;
 				case "ShippingDashboardView":
-					AppState.contentFrame.Navigate(typeof(ShippingDashboardView), null, new DrillInNavigationTransitionInfo());
+					AppState.contentFrame.Navigate(typeof(ShippingDashboardView), AppState, new DrillInNavigationTransitionInfo());
 					return;
 				case "ShippingView":
 					AppState.contentFrame.Navigate(typeof(ShippingView), null, new DrillInNavigationTransitionInfo());

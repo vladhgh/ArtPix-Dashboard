@@ -3,7 +3,7 @@
                     xmlns:ui="http://schemas.modernwpf.com/2019"
                     xmlns:xamlFlair="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
                     xmlns:order="clr-namespace:ArtPix_Dashboard.Models.Order">
-        <DataTemplate x:Key="OrderItemDataTemplate">
+        <DataTemplate x:Key="OrderItemDataTemplate" DataType="order:Datum">
             <Expander
                             x:Name="expander"
                             Cursor="Hand"
@@ -13,12 +13,9 @@
                             VerticalAlignment="Top">
                 <Expander.Header>
                     <ui:SimpleStackPanel Orientation="Horizontal" Margin="20 20 0 20" Spacing="10" HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}">
-                        <Image
-                                        Width="175"
-                                        Height="175"
-                                        Stretch="Uniform" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=600}" >
+                        <Image Width="175" Height="175" Stretch="Uniform" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=600}" >
                             <Image.Source>
-                                <BitmapImage DecodePixelWidth="175" UriSource="{Binding Path=OrderImage, Mode=OneTime}" />
+                                <BitmapImage DecodePixelWidth="175" UriSource="{Binding Path=OrderImage, FallbackValue=//Assets//multiple_item_order_preview.png}" />
                             </Image.Source>
                         </Image>
                         <ui:SimpleStackPanel
@@ -150,7 +147,7 @@
 
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                 <ui:SimpleStackPanel Grid.Column="0" Orientation="Vertical" Margin="100 0 100 20">
@@ -178,7 +175,7 @@
                                 <ui:SimpleStackPanel Orientation="Vertical">
                                             <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="20" Margin="0 20 0 20">
                                                         <Button Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnImageClick}" CommandParameter="{Binding}" Cursor="Hand" Background="Transparent" Style="{StaticResource InactiveButtonStyle}">
-                                                            <Image VerticalAlignment="Center" Width="{Binding UrlRenderImgSize, Mode=OneWay}" Height="{Binding UrlRenderImgSize, Mode=OneWay}" Stretch="Uniform" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=400}">
+                                                            <Image VerticalAlignment="Center" MinWidth="175" Width="{Binding UrlRenderImgSize, Mode=OneWay}" Height="{Binding UrlRenderImgSize, Mode=OneWay}" Stretch="Uniform" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=400}">
                                                                 <Image.Source>
                                                                     <BitmapImage DecodePixelWidth="350" UriSource="{Binding Path=UrlRenderImg, Mode=OneTime}" />
                                                                 </Image.Source>

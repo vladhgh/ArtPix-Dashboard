@@ -49,6 +49,13 @@ namespace ArtPix_Dashboard.Models
 
 
 		#region PROPS
+		private OrderCombineFilterModel _orderFilterGroup = new OrderCombineFilterModel();
+		public OrderCombineFilterModel OrderFilterGroup
+		{
+			get => _orderFilterGroup;
+			set => SetProperty(ref _orderFilterGroup, value);
+		}
+
 		private string _employeeQR;
 		public string EmployeeQR
 		{

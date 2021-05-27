@@ -247,7 +247,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="ArtPix Dashboard_TemporaryKey.pfx" />
@@ -362,6 +362,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\light_base_xl.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\sunshine_wrapping_paper.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\sunflower_greeting_card.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
