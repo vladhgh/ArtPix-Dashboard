@@ -219,7 +219,7 @@ namespace ArtPix_Dashboard.Models.Order
                     case "3D Sunflower Set Card":
 	                    return "/Assets/sunflower_greeting_card.png"; 
                     default:
-                        return _urlRenderImg ?? "https://img1.pnghut.com/8/21/13/N1cvXFr32G/thumbnail-symbol-smiley-emoticon-black-and-white.jpg";
+                        return _urlRenderImg ?? "/Assets/placeholder.png";
                 }
             }
             set => _urlRenderImg = value;
@@ -819,7 +819,7 @@ namespace ArtPix_Dashboard.Models.Order
         [JsonProperty("total_crystal")]
         public int TotalCrystal { get; set; }
 
-        public string OrderImage => TotalCrystal == 1 ? string.IsNullOrEmpty(this.Products[0].UrlRenderImg) ? "/Assets/multiple_item_order_preview.png" : this.Products[0].UrlRenderImg : "/Assets/multiple_item_order_preview.png";
+        public string OrderImage => TotalCrystal == 1 ? this.Products[0].UrlRenderImg : "/Assets/multiple_item_order_preview.png";
 
         [JsonProperty("total_products")]
         public int TotalProducts { get; set; }
@@ -854,7 +854,7 @@ namespace ArtPix_Dashboard.Models.Order
         [JsonProperty("estimate_processing_max_date")]
         public string EstimateProcessingMaxDate
         {
-	        get => DateTime.Parse(_estimateProcessingMaxDate, CultureInfo.CurrentUICulture).AddHours(-5).ToString(CultureInfo.CurrentUICulture);
+	        get => DateTime.Parse(_estimateProcessingMaxDate, CultureInfo.CurrentUICulture).AddHours(-5).ToString();
             set => _estimateProcessingMaxDate = value;
         }
 

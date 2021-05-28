@@ -35,6 +35,18 @@ namespace ArtPix_Dashboard.Views
 			ToggleShipByToday.IsChecked = _appState.OrderFilterGroup.shipByToday == null || _appState.OrderFilterGroup.shipByToday == "True";
 			ToggleNoPackage.IsChecked = _appState.OrderFilterGroup.hasShippingPackage != null && _appState.OrderFilterGroup.hasShippingPackage == "0";
 			ToggleInTotes.IsChecked = _appState.OrderFilterGroup.withShippingTotes != null && _appState.OrderFilterGroup.withShippingTotes == "True";
+
+			SendCombinedRequest();
+
+			SortByComboBox.SelectionChanged += SortByComboBoxOnSelectionChanged;
+			EngravingStatusComboBox.SelectionChanged += EngravingStatusComboBoxOnSelectionChanged;
+			ShippingStatusComboBox.SelectionChanged += ShippingStatusComboBoxOnSelectionChanged;
+			OrderStatusComboBox.SelectionChanged += OrderStatusComboBoxOnSelectionChanged;
+			StoreComboBox.SelectionChanged += StoreComboBoxOnSelectionChanged;
+			ToggleShipByToday.Click += ToggleShipByToday_Click;
+			ToggleNoPackage.Click += ToggleNoPackageOnClick;
+			ToggleInTotes.Click += ToggleInTotes_Click;
+
 		}
 
 		private void SendCombinedRequest(bool withOrderName = false)
@@ -131,6 +143,7 @@ namespace ArtPix_Dashboard.Views
 
 		private void SortByComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+			Debug.WriteLine("SortByComboBox Selection Changed");
 			_appState.OrderFilterGroup.sortBy = ((ComboBoxItem)SortByComboBox.SelectedItem).Tag.ToString();
 			SendCombinedRequest();
 		}

@@ -6,7 +6,7 @@
 		xmlns:ui="http://schemas.modernwpf.com/2019"
 		xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
 		Icon="../Assets/logo.ico"
-		Title="ArtPix Dashboard v0.5" MinHeight="720" MinWidth="1280"
+		Title="ArtPix Dashboard v1.1" MinHeight="720" MinWidth="1280"
 		Top="{Binding AppState.Top, Mode=TwoWay}"
 		Left="{Binding AppState.Left, Mode=TwoWay}"
 		Height="{Binding AppState.Height, Mode=TwoWay}"

@@ -138,6 +138,7 @@ namespace ArtPix_Dashboard.Utils
 		{
 			var request = new RestRequest("/resolveError").AddJsonBody(requestBody).AddHeader("Accept", "application/json");
 			var res = await client.PostAsync<string>(request);
+			Debug.WriteLine(res);
 		}
 		public static async Task ChangeMachineAssignItemStatusAsync(NewStatusModel requestBody)
 		{
@@ -165,7 +166,7 @@ namespace ArtPix_Dashboard.Utils
 		{
 			var request = orderId == "All"
 				? new RestRequest("/product/production-issue?per_page=" + perPage + "&page=" + page + "&sort_by=" + sortBy, DataFormat.Json)
-				: new RestRequest("/product/production-issue?per_page=" + perPage + "&page=" + page + "&sort_by=" + sortBy + "&order_name=" + orderId, DataFormat.Json);
+				: new RestRequest("/product/production-issue?per_page=" + perPage + "&page=" + page + "&sort_by=" + sortBy + "&order_id=" + orderId, DataFormat.Json);
 			request.AddHeader("Cache-Control", "no-cache");
 			request.AddHeader("Content-Type", "application/json");
 			var res = await client.GetAsync<ProductionIssueModel>(request);

@@ -643,20 +643,6 @@
         </Setter>
     </Style>
     <Style x:Key="MoveToAnotherMachineButtonStyle" TargetType="Button">
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding Status}" Value="{x:Null}">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding Status}" Value="success">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding MachineId}" Value="{x:Null}">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding MachineId}" Value="">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-        </Style.Triggers>
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
         <Setter Property="Background" Value="#CCFFB900" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
@@ -716,14 +702,6 @@
         </Setter>
     </Style>
     <Style x:Key="ManualCompleteButtonStyle" TargetType="Button">
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding Status}" Value="{x:Null}">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding Status}" Value="success">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-        </Style.Triggers>
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
         <Setter Property="Background" Value="ForestGreen" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
@@ -829,14 +807,6 @@
         </Setter>
     </Style>
     <Style x:Key="AddCrystalIssueButtonStyle" TargetType="Button">
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding Status}" Value="processing">
-                <Setter Property="Visibility" Value="Visible" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding Status}" Value="engraved">
-                <Setter Property="Visibility" Value="Visible" />
-            </DataTrigger>
-        </Style.Triggers>
         <Setter Property="Visibility" Value="Collapsed" />
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
         <Setter Property="Background" Value="#CCE81123" />
@@ -897,17 +867,6 @@
         </Setter>
     </Style>
     <Style x:Key="UnassignButtonStyle" TargetType="Button">
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding MachineId}" Value="{x:Null}">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding MachineId}" Value="">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding Status}" Value="success">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-        </Style.Triggers>
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
         <Setter Property="Background" Value="#CCE81123" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
@@ -966,5 +925,5 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+   
 </ResourceDictionary>
