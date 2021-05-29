@@ -1,24 +1,47 @@
 ﻿using System;
-using System.Threading;
+using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Position;
+using ListView = ModernWpf.Controls.ListView;
 
 namespace ArtPix_Dashboard.Utils
 {
 	public static class Utils
 	{
-		public static bool IsBase64Encoded(String str)
+		public static T GetChildOfType<T>(this DependencyObject depObj)
+			where T : DependencyObject
 		{
-			try
+			if (depObj == null) return null;
+
+			for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
 			{
-				byte[] data = Convert.FromBase64String(str);
-				return (str.Replace(" ", "").Length % 4 == 0);
+				var child = VisualTreeHelper.GetChild(depObj, i);
+
+				var result = (child as T) ?? GetChildOfType<T>(child);
+				if (result != null) return result;
 			}
-			catch
+			return null;
+		}
+
+		public static void EnableTouchScrollForListView(ListView listView)
+		{
+			ScrollViewer scrollViewer = GetChildOfType<ScrollViewer>(listView);
+			Debug.WriteLine("LOOKING FOR SCROLLVIEWER");
+			if (scrollViewer != null)
 			{
-				return false;
+				Debug.WriteLine("SCROLLVIEWER FOUND");
+				scrollViewer.CanContentScroll = false;
+				scrollViewer.PanningDeceleration = 2;
+				scrollViewer.PanningRatio = 0.75;
+				scrollViewer.PanningMode = PanningMode.VerticalOnly;
+			}
+			else
+			{
+				Debug.WriteLine("SCROLLVIEWER IS NULL");
 			}
 		}
 		#region NOTIFIER

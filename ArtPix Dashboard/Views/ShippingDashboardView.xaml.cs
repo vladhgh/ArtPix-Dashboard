@@ -4,11 +4,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Media;
 using ArtPix_Dashboard.ViewModels;
 using System.Windows.Navigation;
 using ArtPix_Dashboard.Models;
 using ArtPix_Dashboard.Models.Order;
 using ModernWpf.Controls;
+using ListView = ModernWpf.Controls.ListView;
 
 namespace ArtPix_Dashboard.Views
 {
@@ -23,8 +25,9 @@ namespace ArtPix_Dashboard.Views
 			DataContext = _vm;
 		}
 
-		protected override void OnNavigatedTo(NavigationEventArgs e)
+		protected override async void OnNavigatedTo(NavigationEventArgs e)
 		{
+			await _vm.Initialize();
 			_appState = (AppStateModel)e.ExtraData;
 			if (_appState.OrderFilterGroup == null) return;
 			SortByComboBox.SelectedValue = _appState.OrderFilterGroup.sortBy ?? "estimate_processing_max_date";
@@ -35,6 +38,19 @@ namespace ArtPix_Dashboard.Views
 			ToggleShipByToday.IsChecked = _appState.OrderFilterGroup.shipByToday == null || _appState.OrderFilterGroup.shipByToday == "True";
 			ToggleNoPackage.IsChecked = _appState.OrderFilterGroup.hasShippingPackage != null && _appState.OrderFilterGroup.hasShippingPackage == "0";
 			ToggleInTotes.IsChecked = _appState.OrderFilterGroup.withShippingTotes != null && _appState.OrderFilterGroup.withShippingTotes == "True";
+
+			ScrollViewer scrollViewer = Utils.Utils.GetChildOfType<ScrollViewer>(ShippingItemsListView);
+			Debug.WriteLine("LOOKING FOR SCROLLVIEWER");
+			if (scrollViewer != null)
+			{
+				Debug.WriteLine("SCROLLVIEWER FOUND");
+				scrollViewer.CanContentScroll = false;
+				scrollViewer.PanningMode = PanningMode.Both;
+			}
+			else
+			{
+				Debug.WriteLine("SCROLLVIEWER IS NULL");
+			}
 
 			SendCombinedRequest();
 
@@ -49,25 +65,25 @@ namespace ArtPix_Dashboard.Views
 
 		}
 
-		private void SendCombinedRequest(bool withOrderName = false)
+		private async void SendCombinedRequest(bool withOrderName = false)
 		{
 			if (withOrderName)
 			{
-				_vm.GetOrdersList(1, true, "15",
-					_appState.OrderFilterGroup.hasShippingPackage ?? "",
-					_appState.OrderFilterGroup.withShippingTotes ?? "",
+				await _vm.GetOrdersList(1, true, "15",
+					 "",
 					"",
-					_appState.OrderFilterGroup.sortBy ?? "",
-					_appState.OrderFilterGroup.shipByToday ?? "",
-					_appState.OrderFilterGroup.storeName ?? "",
-					_appState.OrderFilterGroup.shippingStatus ?? "",
-					_appState.OrderFilterGroup.orderStatus ?? "",
-					_appState.OrderFilterGroup.statusEngraving ?? "",
+					"",
+					"",
+					"",
+					"",
+					"",
+					"",
+					"",
 					SearchTextBox.Text ?? "");
 			}
 			else
 			{
-				_vm.GetOrdersList(1, true, "15",
+				await _vm.GetOrdersList(1, true, "15",
 					_appState.OrderFilterGroup.hasShippingPackage ?? "",
 					_appState.OrderFilterGroup.withShippingTotes ?? "",
 					"",
@@ -81,7 +97,23 @@ namespace ArtPix_Dashboard.Views
 			
 			if (_vm.Orders.Data != null)
 				if (_vm.Orders.Data.Count > 0)
+				{
 					ShippingItemsListView.ScrollIntoView(_vm.Orders.Data[0]);
+					ScrollViewer scrollViewer = Utils.Utils.GetChildOfType<ScrollViewer>(ShippingItemsListView);
+					Debug.WriteLine("LOOKING FOR SCROLLVIEWER");
+					if (scrollViewer != null)
+					{
+						Debug.WriteLine("SCROLLVIEWER FOUND");
+						scrollViewer.CanContentScroll = false;
+						scrollViewer.PanningMode = PanningMode.Both;
+					}
+					else
+					{
+						Debug.WriteLine("SCROLLVIEWER IS NULL");
+					}
+					
+				}
+					
 		}
 
 		#region EVENT HANDLERS
@@ -164,6 +196,29 @@ namespace ArtPix_Dashboard.Views
 		private void ButtonSearchOnClick(object sender, RoutedEventArgs e)
 		{
 			SendCombinedRequest(true);
+		}
+
+
+		private void Expander_OnExpanded(object sender, RoutedEventArgs e)
+		{
+			ShippingItemsListView.ScrollIntoView(_vm.Orders.Data.Find(i => i.NameOrder == ((Expander)sender).Tag.ToString()));
+		}
+
+		private void ShippingDashboardView_OnLoaded(object sender, RoutedEventArgs e)
+		{
+			ScrollViewer scrollViewer = Utils.Utils.GetChildOfType<ScrollViewer>(ShippingItemsListView);
+			Debug.WriteLine("LOOKING FOR SCROLLVIEWER");
+			if (scrollViewer != null)
+			{
+				Debug.WriteLine("SCROLLVIEWER FOUND");
+				scrollViewer.CanContentScroll = false;
+				scrollViewer.PanningMode = PanningMode.Both;
+			}
+			else
+			{
+				Debug.WriteLine("SCROLLVIEWER IS NULL");
+			}
+
 		}
 	}
 }

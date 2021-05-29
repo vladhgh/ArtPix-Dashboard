@@ -49,6 +49,12 @@ namespace ArtPix_Dashboard.ViewModels
 			get => _machineAssignedItems;
 			set => SetProperty(ref _machineAssignedItems, value);
 		}
+		private AppStateModel _appState = new AppStateModel();
+		public AppStateModel AppState
+		{
+			get => _appState;
+			set => SetProperty(ref _appState, value);
+		}
 
 		public List<string> EngravingMachines
 		{
@@ -234,7 +240,7 @@ namespace ArtPix_Dashboard.ViewModels
 			}
 		}
 
-		public async void GetMachineAssignItems(string status = "ready_to_engrave", string machineId = "All" , int pageNumber = 1, bool withPages = true)
+		public async Task GetMachineAssignItems(string status = "ready_to_engrave", string machineId = "All" , int pageNumber = 1, bool withPages = true)
 		{
 			IsLoaded = Visibility.Hidden;
 			IsLoading = true;
@@ -260,10 +266,11 @@ namespace ArtPix_Dashboard.ViewModels
 			
 		}
 
-		public void Initialize()
+		public async Task Initialize(AppStateModel appState)
 		{
+			AppState = appState;
 			GetActiveMachines();
-			GetMachineAssignItems();
+			await GetMachineAssignItems();
 			InitializeCommands();
 		}
 		private ObservableCollection<PageModel> GetPages(int currentPageNumber, string currentStatus, string machineId)

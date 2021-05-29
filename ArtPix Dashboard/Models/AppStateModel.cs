@@ -56,12 +56,6 @@ namespace ArtPix_Dashboard.Models
 			set => SetProperty(ref _orderFilterGroup, value);
 		}
 
-		private string _employeeQR;
-		public string EmployeeQR
-		{
-			get => _employeeQR;
-			set => SetProperty(ref _employeeQR, value);
-		}
 
 		private string _employeeName;
 		public string EmployeeName

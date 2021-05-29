@@ -14,7 +14,7 @@
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
         <Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}" />
-        <Setter Property="Padding" Value="8,5,8,6" />
+        <Setter Property="Padding" Value="8 4 8 4" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -44,11 +44,6 @@
         </Setter>
     </Style>
     <Style x:Key="CrystalRedoButtonStyle" TargetType="Button">
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsRedo}" Value="True">
-                <Setter Property="Visibility" Value="Visible"/>
-            </DataTrigger>
-        </Style.Triggers>
         <Setter Property="Visibility" Value="Collapsed"/>
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
@@ -267,11 +262,6 @@
         </Setter>
     </Style>
     <Style x:Key="LateShipmentButtonStyle" TargetType="Button">
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsLateShipment}" Value="True">
-                <Setter Property="Visibility" Value="Visible"/>
-            </DataTrigger>
-        </Style.Triggers>
         <Setter Property="Visibility" Value="Collapsed"/>
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
@@ -372,24 +362,9 @@
         </Setter>
     </Style>
     <Style x:Key="Is3dTextBlock" TargetType="TextBlock">
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding CrystalType.Type}" Value="Light Base">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding CrystalType.Type}" Value="Rotating Base">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-        </Style.Triggers>
+
     </Style>
     <Style x:Key="CancelIssueButtonStyle" TargetType="Button">
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding MachineId}" Value="{x:Null}">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding MachineId}" Value="">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-        </Style.Triggers>
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
         <Setter Property="Background" Value="#CCE81123" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
@@ -449,14 +424,6 @@
         </Setter>
     </Style>
     <Style x:Key="SlotButtonStyle" TargetType="Button">
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding ShippingSlot}" Value="{x:Null}">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding ShippingSlot}" Value="">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-        </Style.Triggers>
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
         <Setter Property="Background" Value="DarkOrange" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
@@ -516,14 +483,6 @@
         </Setter>
     </Style>
     <Style x:Key="MachineButtonStyle" TargetType="Button">
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding machine_id}" Value="{x:Null}">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding machine_id}" Value="">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-        </Style.Triggers>
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
         <Setter Property="Background" Value="RoyalBlue" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
@@ -583,7 +542,6 @@
         </Setter>
     </Style>
     <Style x:Key="ToteButtonStyle" TargetType="Button">
-
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
         <Setter Property="Background" Value="RoyalBlue" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />

@@ -52,7 +52,7 @@ namespace ArtPix_Dashboard.ViewModels
 		}
 		private void InitializeSettings()
 		{
-			AppState.EmployeeName = "Vlad Prokopev";
+			AppState.EmployeeName = "Supervisor";
 			AppState.Top = Settings.Default.Top;
 			AppState.Left = Settings.Default.Left;
 			AppState.Height = Settings.Default.Height;
@@ -97,7 +97,7 @@ namespace ArtPix_Dashboard.ViewModels
 					AppState.contentFrame.Navigate(typeof(ShippingView), null, new DrillInNavigationTransitionInfo());
 					return;
 				case "MachinesDashboardView":
-					AppState.contentFrame.Navigate(typeof(MachinesDashboardView), null, new DrillInNavigationTransitionInfo());
+					AppState.contentFrame.Navigate(typeof(MachinesDashboardView), AppState, new DrillInNavigationTransitionInfo());
 					return;
 			}
 		}

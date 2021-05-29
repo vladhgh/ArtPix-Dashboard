@@ -4,8 +4,6 @@ namespace ArtPix_Dashboard.Models.Types
 {
 	public class StatsModel : PropertyChangedListener
 	{
-
-
 		#region COUNTERS
 		private int _totalCount;
 		public int TotalCount

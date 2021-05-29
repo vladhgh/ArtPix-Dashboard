@@ -346,6 +346,12 @@ namespace ArtPix_Dashboard.Models.Machine
 
     public class Datum
     {
+
+	    #region VISIBILITY
+
+	    public Visibility AssignMachineButtonVisibility => Status == "ready_to_engrave" || Status == "engrave_redo"
+		    ? Visibility.Visible
+		    : Visibility.Collapsed;
 	    public Visibility IsActionNeeded
 	    {
 		    get
@@ -356,6 +362,8 @@ namespace ArtPix_Dashboard.Models.Machine
 
 		    }
 	    }
+        #endregion
+
 
         [JsonProperty("id")]
         public int Id { get; set; }

@@ -66,7 +66,15 @@ namespace ArtPix_Dashboard.Utils
 			string storeName = "", string statusEngraving = "", string nameOrder = "")
 		{
 			var today = DateTime.Now.Date.ToString("yyyy-MM-dd");
-			var request = $"/order?status_order={statusOrder}&status_shipping={statusShipping}&page={page}&per_page={perPage}";
+			var request = $"/order?page={page}&per_page={perPage}";
+			if (statusOrder != "")
+			{
+				request += $"&status_order={statusOrder}";
+			}
+			if (statusShipping != "")
+			{
+				request += $"&status_shipping={statusShipping}";
+			}
 			if (nameOrder != "")
 			{
 				request += $"&name_order={nameOrder}";

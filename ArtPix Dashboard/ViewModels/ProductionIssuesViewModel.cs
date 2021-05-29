@@ -197,7 +197,7 @@ namespace ArtPix_Dashboard.ViewModels
 			IsLoaded = Visibility.Visible;
 		}
 
-		public async void Initialize(AppStateModel appState)
+		public async Task Initialize(AppStateModel appState)
 		{
 			AppState = appState;
 			AllIssueReasons = await ArtPixAPI.GetIssueReasonsAsync();

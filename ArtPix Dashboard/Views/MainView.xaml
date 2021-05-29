@@ -5,8 +5,10 @@
 		xmlns:local="clr-namespace:ArtPix_Dashboard.Utils"
 		xmlns:ui="http://schemas.modernwpf.com/2019"
 		xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
-		Icon="../Assets/logo.ico"
-		Title="ArtPix Dashboard v1.1" MinHeight="720" MinWidth="1280"
+        xmlns:viewmodels="clr-namespace:ArtPix_Dashboard.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        Icon="../Assets/logo.ico"
+		Title="ArtPix Dashboard v1.1" MinHeight="1080" MinWidth="1920"
 		Top="{Binding AppState.Top, Mode=TwoWay}"
 		Left="{Binding AppState.Left, Mode=TwoWay}"
 		Height="{Binding AppState.Height, Mode=TwoWay}"
@@ -101,8 +103,6 @@
 				<ui:NavigationViewItem Content="Machines Dashboard" FontWeight="Bold" Tag="MachinesDashboardView" Cursor="Hand" ToolTip="Machines Dashboard" />
 				<ui:NavigationViewItem Content="Shipping Dashboard" FontWeight="Bold" Tag="ShippingDashboardView" Cursor="Hand" ToolTip="Shipping Dashboard" />
 				<ui:NavigationViewItem Content="Production Issues" FontWeight="Bold" Tag="ProductionIssuesView" Cursor="Hand" ToolTip="Production Issues" />
-                <ui:NavigationViewItem Content="Shipping" FontWeight="Bold" Tag="ShippingView" Cursor="Hand" ToolTip="Shipping Module" />
-                <ui:NavigationViewItem Content="Utilities" FontWeight="Bold" Tag="UtilitiesView" Cursor="Hand" ToolTip="Utilities" />
             </ui:NavigationView.MenuItems>
 			
 			
@@ -157,7 +157,7 @@
 			<ui:NavigationView.PaneFooter>
 				<StackPanel Orientation="Horizontal">
                     <ui:NavigationViewItem Cursor="Hand" Tag="ShippingDashboardView" MaxWidth="60" ToolTip="{Binding AppState.EmployeeName}" >
-                        <ui:PersonPicture ProfilePicture="/Assets/profile.png" MaxHeight="24"/>
+                        <ui:PersonPicture ProfilePicture="/Assets/logo.ico" MaxHeight="24"/>
                     </ui:NavigationViewItem>
                     <ui:AppBarButton Cursor="Hand" IsCompact="True" MaxWidth="60" ToolTip="Last Updated: " Label="Settings">
                         <ui:AppBarButton.Icon>

@@ -205,12 +205,14 @@ namespace ArtPix_Dashboard.ViewModels
 			}
 		}
 
-		public ShippingDashboardViewModel()
+
+		public async Task Initialize()
 		{
 			InitializeCommands();
+			await GetOrdersList();
 		}
 
-		public async void GetOrdersList(int pageNumber = 1, bool withPages = true, string perPage = "15",
+		public async Task GetOrdersList(int pageNumber = 1, bool withPages = true, string perPage = "15",
 			string hasShippingPackage = "", string withShippingTotes = "", string withProductionIssue = "",
 			string sortBy = "", string shipByToday = "True", string storeName = "", string shippingStatus = "waiting",
 			string orderStatus = "processing", string statusEngraving = "", string nameOrder = "")
@@ -225,7 +227,7 @@ namespace ArtPix_Dashboard.ViewModels
 			Pages = withPages ? GetPages(pageNumber, perPage, hasShippingPackage, withShippingTotes, withProductionIssue, sortBy, shipByToday, storeName, shippingStatus, orderStatus, statusEngraving, nameOrder) : new ObservableCollection<PageModel>(Pages);
 			IsLoading = false;
 			IsLoaded = Visibility.Visible;
-			CollectionViewSource.GetDefaultView(Orders.Data).Refresh();
+			//CollectionViewSource.GetDefaultView(Orders.Data).Refresh();
 		}
 		private ObservableCollection<PageModel> GetPages(int currentPageNumber, string perPage = "15",
 			string hasShippingPackage = "", string withShippingTotes = "", string withProductionIssue = "", string sortBy = "", string shipByToday = "True", string storeName = "", string shippingStatus = "waiting",

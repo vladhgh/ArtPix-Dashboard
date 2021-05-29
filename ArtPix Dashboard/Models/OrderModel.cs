@@ -751,7 +751,8 @@ namespace ArtPix_Dashboard.Models.Order
 		        switch (StatusOrder)
 		        {
 			        case "processing": return "SteelBlue";
-			        default: return "Gray";
+			        case "completed": return "Green";
+                    default: return "Gray";
 
 		        }
 	        }
@@ -854,15 +855,22 @@ namespace ArtPix_Dashboard.Models.Order
         [JsonProperty("estimate_processing_max_date")]
         public string EstimateProcessingMaxDate
         {
-	        get => DateTime.Parse(_estimateProcessingMaxDate, CultureInfo.CurrentUICulture).AddHours(-5).ToString();
+	        get => DateTime.Parse(_estimateProcessingMaxDate, CultureInfo.CurrentUICulture).AddHours(-5).ToString(CultureInfo.CurrentUICulture);
             set => _estimateProcessingMaxDate = value;
         }
 
         [JsonProperty("estimate_delivery_min_date")]
         public string EstimateDeliveryMinDate { get; set; }
 
+        private string _estimatedDeliveryMaxDate;
+
         [JsonProperty("estimate_delivery_max_date")]
-        public string EstimateDeliveryMaxDate { get; set; }
+        public string EstimateDeliveryMaxDate
+        {
+	        get => DateTime.Parse(_estimatedDeliveryMaxDate, CultureInfo.CurrentUICulture).AddHours(-5)
+		        .ToString(CultureInfo.CurrentUICulture);
+	        set => _estimatedDeliveryMaxDate = value;
+        }
 
         [JsonProperty("created_at")]
         public string CreatedAt { get; set; }
