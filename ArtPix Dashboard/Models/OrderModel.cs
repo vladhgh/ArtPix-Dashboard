@@ -269,6 +269,7 @@ namespace ArtPix_Dashboard.Models.Order
 			        case "engrave_issue": return "DarkRed";
                     case "engrave_processing": return "SteelBlue";
                     case "engrave_done": return "DarkGreen";
+			        case "shipping_label_printed": return "Green";
                     default: return "Gray";
 		        }
 	        }
