@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace ArtPix_Dashboard.ViewModels
 {
+	[Serializable()]
 	public class PropertyChangedListener : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;

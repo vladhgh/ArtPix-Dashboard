@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -12,6 +15,18 @@ namespace ArtPix_Dashboard.Utils
 {
 	public static class Utils
 	{
+		public static T DeepCopy<T>(T other)
+		{
+			using (MemoryStream ms = new MemoryStream())
+			{
+				BinaryFormatter formatter = new BinaryFormatter();
+				formatter.Context = new StreamingContext(StreamingContextStates.Clone);
+				formatter.Serialize(ms, other);
+				ms.Position = 0;
+				return (T)formatter.Deserialize(ms);
+			}
+		}
+
 		public static T GetChildOfType<T>(this DependencyObject depObj)
 			where T : DependencyObject
 		{
