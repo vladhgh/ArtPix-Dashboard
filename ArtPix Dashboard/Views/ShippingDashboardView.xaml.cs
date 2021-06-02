@@ -11,6 +11,7 @@ using ArtPix_Dashboard.Models;
 using ArtPix_Dashboard.Models.Order;
 using ModernWpf.Controls;
 using ListView = ModernWpf.Controls.ListView;
+using ArtPix_Dashboard.Utils;
 
 namespace ArtPix_Dashboard.Views
 {
@@ -38,6 +39,7 @@ namespace ArtPix_Dashboard.Views
 			ToggleShipByToday.IsChecked = _appState.OrderFilterGroup.shipByToday == null || _appState.OrderFilterGroup.shipByToday == "True";
 			ToggleNoPackage.IsChecked = _appState.OrderFilterGroup.hasShippingPackage != null && _appState.OrderFilterGroup.hasShippingPackage == "0";
 			ToggleInTotes.IsChecked = _appState.OrderFilterGroup.withShippingTotes != null && _appState.OrderFilterGroup.withShippingTotes == "True";
+			ToggleNoCrystal.IsChecked = _appState.OrderFilterGroup.withCrystal != null && _appState.OrderFilterGroup.withCrystal == "0";
 
 			ScrollViewer scrollViewer = Utils.Utils.GetChildOfType<ScrollViewer>(ShippingItemsListView);
 			Debug.WriteLine("LOOKING FOR SCROLLVIEWER");
@@ -62,7 +64,16 @@ namespace ArtPix_Dashboard.Views
 			ToggleShipByToday.Click += ToggleShipByToday_Click;
 			ToggleNoPackage.Click += ToggleNoPackageOnClick;
 			ToggleInTotes.Click += ToggleInTotes_Click;
+			ToggleNoCrystal.Click += ToggleNoCrystal_Click;
 
+		}
+
+		private void ToggleNoCrystal_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender is ToggleButton btn)
+				if (btn.IsChecked != null)
+					_appState.OrderFilterGroup.withCrystal = (bool)btn.IsChecked ? "0" : "3";
+			SendCombinedRequest();
 		}
 
 		private async void SendCombinedRequest(bool withOrderName = false)
@@ -92,7 +103,8 @@ namespace ArtPix_Dashboard.Views
 					_appState.OrderFilterGroup.storeName ?? "",
 					_appState.OrderFilterGroup.shippingStatus ?? "waiting",
 					_appState.OrderFilterGroup.orderStatus ?? "processing",
-					_appState.OrderFilterGroup.statusEngraving ?? "");
+					_appState.OrderFilterGroup.statusEngraving ?? "", "",
+					_appState.OrderFilterGroup.withCrystal ?? "3");
 			}
 			
 			if (_vm.Orders.Data != null)
@@ -220,5 +232,7 @@ namespace ArtPix_Dashboard.Views
 			}
 
 		}
+
+		
 	}
 }

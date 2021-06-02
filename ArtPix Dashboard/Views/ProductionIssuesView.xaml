@@ -9,9 +9,6 @@
         xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
         xmlns:product="clr-namespace:ArtPix_Dashboard.Models.Product"
         xmlns:viewmodels="clr-namespace:ArtPix_Dashboard.ViewModels"
-        d:DataContext="{d:DesignInstance Type=viewmodels:ProductionIssuesViewModel}"
-        mc:Ignorable="d"
-        KeepAlive="True"
         Focusable="True"
         Background="{DynamicResource SystemControlPageBackgroundMediumAltMediumBrush}">
      <Grid>
@@ -40,58 +37,49 @@
 					    VerticalAlignment="Center"
 					    Style="{DynamicResource SubtitleTextBlockStyle}"
 					    FontWeight="Black"/>
-            <ui:SimpleStackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="10" Margin="0 0 0 10" VerticalAlignment="Center">
-                <TextBox
+        <ui:SimpleStackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="10" Margin="0 0 0 10" VerticalAlignment="Center">
+            <ui:AutoSuggestBox
                             x:Name="searchTextBox"
                             MinWidth="200"
                             Height="Auto"
                             HorizontalAlignment="Left"
                             ui:ControlHelper.Header="Search Production Issues:"
                             ui:ControlHelper.PlaceholderText="Search by order name"/>
-                <Button Content="Search" VerticalAlignment="Bottom" Style="{DynamicResource AccentButtonStyle}" Click="ButtonBase_OnClick" Margin="0 0 10 0"/>
+            <Button Content="Search" VerticalAlignment="Bottom" Style="{DynamicResource AccentButtonStyle}" Click="ButtonBase_OnClick" Margin="0 0 10 0"/>
 
-            <!-- Cool Comment
-                <ComboBox VerticalAlignment="Center" Text="Select Team" ui:ControlHelper.Header="Select Issue Stage:" ui:ControlHelper.PlaceholderText="Issue Stage" SelectedIndex="0" ItemsSource="{Binding IssueStages, Mode=OneWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Stage}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <ComboBox VerticalAlignment="Center" ui:ControlHelper.Header="Select Issue Type:" ui:ControlHelper.PlaceholderText="Issue Type" SelectedIndex="0" ItemsSource="{Binding IssueTypes, Mode=OneWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Type}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <ComboBox x:Name="IssueReasonComboBox" VerticalAlignment="Center" ui:ControlHelper.Header="Select Issue Reason:" ui:ControlHelper.PlaceholderText="Issue Reason" ItemsSource="{Binding IssueReasons, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Reason}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                -->
-                
-            
-                <ui:SimpleStackPanel Orientation="Vertical" Margin="10 0 0 0">
-                    <TextBlock Text="Additional Controls:" Margin="0 0 0 5"/>
-                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
-                        <Button Content="Reload List" Cursor="Hand" VerticalAlignment="Bottom" Command="{Binding Path=ReloadList}"/>
-                    </ui:SimpleStackPanel>
+            <ComboBox VerticalAlignment="Center" Width="200" Text="Select Team" ui:ControlHelper.Header="Select Issue Stage:" ui:ControlHelper.PlaceholderText="Issue Stage" SelectedIndex="0" ItemsSource="{Binding IssueStages, Mode=OneWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Stage}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <ComboBox VerticalAlignment="Center" Width="200" ui:ControlHelper.Header="Select Issue Type:" ui:ControlHelper.PlaceholderText="Issue Type" SelectedIndex="0" ItemsSource="{Binding IssueTypes, Mode=OneWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Type}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <ComboBox x:Name="IssueReasonComboBox" Width="200" VerticalAlignment="Center" ui:ControlHelper.Header="Select Issue Reason:" ui:ControlHelper.PlaceholderText="Issue Reason" ItemsSource="{Binding IssueReasons, Mode=TwoWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Reason}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+
+
+            <ui:SimpleStackPanel Orientation="Vertical" Margin="10 0 0 0">
+                <TextBlock Text="Additional Controls:" Margin="0 0 0 5"/>
+                <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                    <Button Content="Reload List" Cursor="Hand" VerticalAlignment="Bottom" Command="{Binding Path=ReloadList}"/>
                 </ui:SimpleStackPanel>
-            
             </ui:SimpleStackPanel>
-            <TextBlock
-                        Grid.Row="4" Grid.Column="1"
-					    Text=""
-                        Margin="0 0 0 10"
-					    HorizontalAlignment="Left"
-					    VerticalAlignment="Center"
-					    Style="{DynamicResource SubtitleTextBlockStyle}"
-					    FontWeight="Black"/>
-            <TextBlock
+
+        </ui:SimpleStackPanel>
+        <TextBlock
                         Grid.Row="4" Grid.Column="1"
                         Margin="0 0 0 10"
 					    HorizontalAlignment="Left"
@@ -106,12 +94,11 @@
 
             <ui:ListView
 					    x:Name="IssuesListView"
-                        ItemsSource="{Binding Issues.Data, Mode=OneWay}"
+                        ItemsSource="{Binding Issues.Data}"
                         Visibility="{Binding IsLoaded}" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=400, Delay=400}"
                         IsTabStop="True"
 					    AllowDrop="True"
                         Grid.Column="1" Grid.Row="6"
-					    MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
 					    MinWidth="550"
                         IsSelectionEnabled="False"
 					    BorderThickness="1"
@@ -124,7 +111,7 @@
                                 <ColumnDefinition Width="Auto" MinWidth="200" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Button Command="{Binding ElementName=ProductionIssuesPage, Path=DataContext.OnImageClick}" CommandParameter="{Binding Id}" Cursor="Hand" Background="Transparent" Style="{StaticResource InactiveButtonStyle}">
+                            <Button Command="{Binding ElementName=ProductionIssuesPage, Path=DataContext.OnImageClick}" Height="{Binding Product.UrlRenderImgSize, FallbackValue=175}" CommandParameter="{Binding Id}" Cursor="Hand" Background="Transparent" Style="{StaticResource InactiveButtonStyle}">
                                 <ui:SimpleStackPanel>
                                 <Image  Width="{Binding Product.UrlRenderImgSize, FallbackValue=175}" Height="{Binding Product.UrlRenderImgSize, FallbackValue=175}" Stretch="Uniform">
                                         <Image.Source>
@@ -208,13 +195,13 @@
                                 </ui:SimpleStackPanel>
                                 <ui:SimpleStackPanel Orientation="Horizontal" Spacing="5">
                                     <TextBlock
-										        Text="{Binding User,StringFormat=Added By: {0:N}, Mode=OneTime}"
+										        Text="{Binding User, StringFormat=Added By: {0:N}}"
 										        Style="{DynamicResource BaseTextBlockStyle}"
 										        HorizontalAlignment="Left"
 										        TextTrimming="CharacterEllipsis"
 										        TextWrapping="NoWrap" />
                                     <TextBlock
-										        Text="{Binding Source, Mode=OneTime}"
+										        Text="{Binding Source}"
 										        Style="{DynamicResource BaseTextBlockStyle}"
 										        HorizontalAlignment="Left"
 										        TextTrimming="CharacterEllipsis"
@@ -222,13 +209,13 @@
                                 
                                 </ui:SimpleStackPanel>
                                 <TextBlock
-										    Text="{Binding MachineId,StringFormat=Machine Engraved: {0:F0}, Mode=OneTime}"
+										    Text="{Binding MachineId, StringFormat=Machine Engraved: {0:F0}}"
 										    HorizontalAlignment="Left"
 										    Style="{DynamicResource BaseTextBlockStyle}"
 										    TextTrimming="CharacterEllipsis"
 										    TextWrapping="NoWrap" />
                                 <TextBlock
-										    Text="{Binding Product.FilenameLatest,StringFormat=File Name: {0:F0}, Mode=OneTime}"
+										    Text="{Binding Product.FilenameLatest, StringFormat=File Name: {0:F0}}"
 										    HorizontalAlignment="Left"
 										    TextTrimming="CharacterEllipsis"
                                             Style="{DynamicResource BaseTextBlockStyle}"
@@ -252,7 +239,7 @@
                                     <Button Cursor="Hand" Content="Re-Engrave" Command="{Binding ElementName=ProductionIssuesPage, Path=DataContext.OnRedo}" CommandParameter="{Binding MachineAssignItemId}" Margin="0 0 10 0" Opacity="0.9" Style="{StaticResource RedoButtonStyle}"/>
                                     <Button Cursor="Hand" Content="Rework" Margin="0 0 10 0" Command="{Binding ElementName=ProductionIssuesPage, Path=DataContext.OnRework}" CommandParameter="{Binding MachineAssignItemId}" Opacity="0.9" Style="{StaticResource ReworkButtonStyle}"/>
                                     <Button Cursor="Hand" Content="Cancel" Margin="0 0 10 0" Command="{Binding ElementName=ProductionIssuesPage, Path=DataContext.OnCancelIssue}" CommandParameter="{Binding MachineAssignItemId}" Opacity="0.9" Style="{StaticResource CancelButtonStyle}"/>
-                                <Button Cursor="Hand" Content="Manual Complete" Visibility="Visible" Command="{Binding ElementName=ProductionIssuesPage, Path=DataContext.OnManualComplete}" CommandParameter="{Binding Id}" Margin="0 0 10 0" Opacity="0.9" Style="{StaticResource ManualCompleteButtonStyle}"/>
+                                    <Button Cursor="Hand" Content="Manual Complete" Visibility="Visible" Command="{Binding ElementName=ProductionIssuesPage, Path=DataContext.OnManualComplete}" CommandParameter="{Binding Id}" Margin="0 0 10 0" Opacity="0.9" Style="{StaticResource ManualCompleteButtonStyle}"/>
                                     <Button Cursor="Hand" Content="Confirmation Page" Command="{Binding ElementName=ProductionIssuesPage, Path=DataContext.OnCP}" CommandParameter="{Binding Order.Name}" Margin="0 0 10 0" Opacity="0.9"/>
                                     <Button Cursor="Hand" Content="Order Archive" Command="{Binding ElementName=ProductionIssuesPage, Path=DataContext.OnOA}" CommandParameter="{Binding Order.Name}" Margin="0 0 10 0" Opacity="0.9"/>
                                 </StackPanel>

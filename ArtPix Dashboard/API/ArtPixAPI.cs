@@ -12,6 +12,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ArtPix_Dashboard.Models;
+using ArtPix_Dashboard.Models.ProductHistory;
+using ArtPix_Dashboard.Models.Shipping;
+using RestSharp.Extensions;
 
 namespace ArtPix_Dashboard.Utils
 {
@@ -20,6 +23,16 @@ namespace ArtPix_Dashboard.Utils
 		public static string bearerToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyIiwianRpIjoiZGZkMWFjZWIyN2EyOGU2ODliMjE2ZThjOGMyZTU1YTkxODgzODM5MDAwNGM2OWM1ZDE2OWU5NDQzMzRjZWRjZmRlOGJiNTljOGJjN2Y2OWUiLCJpYXQiOjE2MDAzMTg4OTksIm5iZiI6MTYwMDMxODg5OSwiZXhwIjoxNjMxODU0ODk5LCJzdWIiOiIxNiIsInNjb3BlcyI6W119.QWBy29NAIWiYQzU6QI4XLFYaZTZnxVj_Jw0z3uzv7WSapgLJTi1pa3sy57d9DEqnOG_H2bfLjrJv3yP48Ix86Q_CwkW5YME40ZlafbJzT1203Rf4fB46dFUzhtbSmVMrQfc6bYP77naN6Ev06TGjiLIZ2SYrM94scCFLdN1tJEdZdqYI3EEbABWaGIr2g1jok5G_3T9VHnrWOWYOdffaOH7w7kpl6_QTGaX5e3Z3XDYynKJAgub4xTaHptLxbNq1EpCjNvOcw1vjTV22MKj-1p3IWOWjXNtVelIOkNx1VE1w--7hAlaIaOHYoSbslqXYla1aSfCLQ6P4EPMYqvsKTArYBpnVG6LM_XQhQK-iNKmYoJa1ZIVTlSc9fQwE7z9hnmOZCcjqgc-kbN6f6DShboe0sjaAA12o-lxjbmIjPdobruDBKMIFsQ5boCrURWR2kaKIe2uATJFTImuE54C_8H2vfu2mOcH_UUPU9u3B6dLQCCk2cjLuPPj6ZOLy4DKrwafk14cvVFtMxRxu2u6ICVz0pztRzxBHo9zZTMKeW7JsZsZvhYeI4A16-7jtzhDF5lhQAHXQ_oOHsvXjLND_XDfGkTAue3Z4GS1O_7GmkvdV2URbHoD0wfNHFDvxl2ecph3u18A40jntJbgFd3ey4hHtq-IwXJaj0RM6AV_nVZ8";
 
 		public static RestClient client = new RestClient("https://order-archive.artpix3d.com/api/v1");
+		public static RestClient clientCP = new RestClient("https://confirmation.artpix3d.com/api");
+
+		public static async Task<ProductHistoryModel> GetProductHistoryAsync(int productId)
+		{
+			var req = new RestRequest("/order-item-history/" + productId.ToString());
+			req.AddHeader("Accept", "application/json");
+			req.AlwaysMultipartFormData = true;
+			var res = await clientCP.GetAsync<ProductHistoryModel>(req);
+			return res;
+		}
 
 		public static async Task<StatsModel> GetAllStatsAsync()
 		{
@@ -54,7 +67,8 @@ namespace ArtPix_Dashboard.Utils
 		#region ORDER
 		public static async Task<Models.Order.Datum> GetOrder(string orderId = "", string orderName = "")
 		{
-			var req = new RestRequest("/order?name_order=" + orderName);
+			var request = $"/order?per_page=1{(orderId == "" ? $"&name_order={orderName}" : $"&order_id={orderId}")}";
+			var req = new RestRequest(request + orderName);
 			req.AddHeader("Accept", "application/json");
 			req.AddHeader("Authorization", "Bearer " + bearerToken);
 			req.AlwaysMultipartFormData = true;
@@ -63,10 +77,14 @@ namespace ArtPix_Dashboard.Utils
 		}
 		public static async Task<OrderModel> GetOrdersAsync(string statusOrder = "", string statusShipping = "", string page = "1", string perPage = "15",
 			string hasShippingPackage = "", string withShippingTotes = "", string withProductionIssue = "", string sortBy = "", string shipByToday = "",
-			string storeName = "", string statusEngraving = "", string nameOrder = "")
+			string storeName = "", string statusEngraving = "", string nameOrder = "", string withCrystal = "3")
 		{
 			var today = DateTime.Now.Date.ToString("yyyy-MM-dd");
 			var request = $"/order?page={page}&per_page={perPage}";
+			if (withCrystal != "3")
+			{
+				request += $"&with_crystals={withCrystal}";
+			}
 			if (statusOrder != "")
 			{
 				request += $"&status_order={statusOrder}";
@@ -147,7 +165,9 @@ namespace ArtPix_Dashboard.Utils
 			var request = new RestRequest("/resolveError").AddJsonBody(requestBody).AddHeader("Accept", "application/json");
 			var res = await client.PostAsync<string>(request);
 			Debug.WriteLine(res);
+
 		}
+		
 		public static async Task ChangeMachineAssignItemStatusAsync(NewStatusModel requestBody)
 		{
 			var request = new RestRequest("/machine/assign-item/status").AddJsonBody(requestBody).AddHeader("Accept", "application/json");
@@ -195,6 +215,18 @@ namespace ArtPix_Dashboard.Utils
 		}
 		#endregion
 
-
+		#region SHIPPING
+		public static async Task<FindBestServiceModel> FindBestServiceAsync(FindBestServiceRequestModel requestBody)
+		{
+			var request = new RestRequest("/shipping/findBestService", Method.POST);
+			request.AddJsonBody(requestBody);
+			request.AddHeader("Accept", "application/json");
+			request.AddHeader("Content-Type", "application/json");
+			request.AddHeader("Cookie", "XSRF-TOKEN=eyJpdiI6Ik9yRWVJaGdrMHU1QXpKeURcL0QrYndnPT0iLCJ2YWx1ZSI6IkkzRGloZ1M1cUdQK3pEb0VkZXVsWWVtNlJwSGpQVkM5U3dYOEhWbzR5bnFnMm1PTFBMeFlkZWorMlo5S2c0NE10aGxUWkNvbElXeG5YOExUbzFYTnRKOER3ZlZUYnM2U0paNndqMmx6QnF4MXNKK3loeXBIb0NDTG5wTHQ5aXVWIiwibWFjIjoiZGEyZjkzMWYzMGEyNWU2MTcyNGU3ZTNmNWZmOGVlN2QwNDNlOTcxNGVlMDQxZmM5NWQ0NzAyZmMyNzgwYjlkNCJ9; orderarchive_session=eyJpdiI6IjlPQlNrTmRMNFBlWjh6OGE4Qlg4OXc9PSIsInZhbHVlIjoiQTNmODhjaDZ6c2pwaXp1eDZHUGp0SlZGUWdcL1JEdG8wT2VkMFwvQ2VZRGRYSDhmWXJtc1wvMk92TWlvZHNDdm5SYmNKTW5Ocm1YQnp2Nk5CRWFDcHdoVlJhMnhGV3lRWnE1VTBEV2t5c0hFYWdUQ29oWVhHbzhXUmhhUGlTOHJFTGIiLCJtYWMiOiJiYTJjOGRjNjIyZjVmNTBjNTQxYTViYzY3NjkxMmMwMGNhZTEyZjMyMzVmYzAwYjc4MzJiNDlhMzBmNmE2ZTg1In0%3D");
+			IRestResponse response = await client.ExecuteAsync(request);
+			return JsonConvert.DeserializeObject<FindBestServiceModel>(response.Content);
+			//Debug.WriteLine(res.Success);
+		}
+		#endregion
 	}
 }

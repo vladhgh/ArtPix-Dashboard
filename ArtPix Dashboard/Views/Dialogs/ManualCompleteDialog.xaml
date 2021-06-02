@@ -18,7 +18,6 @@
 										    Text="The status will be changed to success_manually"
 										    FontFamily="Segoe UI"
 										    HorizontalAlignment="Left"
-										    Style="{DynamicResource SubTitleTextBlockStyle}"
 										    TextTrimming="CharacterEllipsis"
 										    Width="auto"
 										    TextWrapping="NoWrap"

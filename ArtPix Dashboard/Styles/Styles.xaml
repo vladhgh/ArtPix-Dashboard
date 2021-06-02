@@ -7,6 +7,7 @@
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
         <Setter Property="BorderThickness" Value="{DynamicResource ButtonBorderThemeThickness}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Height" Value="25"/>
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -14,21 +15,21 @@
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
         <Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}" />
-        <Setter Property="Padding" Value="8 4 8 4" />
+        <Setter Property="Padding" Value="8 2 8 4" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border
                         x:Name="Background"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="2"
+                        CornerRadius="5"
                         SnapsToDevicePixels="True">
                         <Border
                             x:Name="Border"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Padding="{TemplateBinding Padding}"
-                            CornerRadius="2">
+                            CornerRadius="5">
                             <ContentPresenter
                                 x:Name="ContentPresenter"
                                 TextElement.Foreground="{TemplateBinding Foreground}"
@@ -305,7 +306,7 @@
     </Style>
     <Style x:Key="VitroMarkButtonStyle" TargetType="Button">
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
-        <Setter Property="Background" Value="#CC4C4A48" />
+        <Setter Property="Background" Value="SlateGray" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
         <Setter Property="BorderThickness" Value="{DynamicResource ButtonBorderThemeThickness}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -360,9 +361,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
-    <Style x:Key="Is3dTextBlock" TargetType="TextBlock">
-
     </Style>
     <Style x:Key="CancelIssueButtonStyle" TargetType="Button">
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
@@ -443,7 +441,7 @@
                     <Border
 						x:Name="Background"
 						Background="{TemplateBinding Background}"
-						CornerRadius="2"
+						CornerRadius="5"
 						SnapsToDevicePixels="True">
                         <Border
 							x:Name="Border"
@@ -495,14 +493,14 @@
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
         <Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}" />
-        <Setter Property="Padding" Value="8,5,8,6" />
+        <Setter Property="Padding" Value="8,2,8,4" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border
 						x:Name="Background"
 						Background="{TemplateBinding Background}"
-						CornerRadius="2"
+						CornerRadius="5"
 						SnapsToDevicePixels="True">
                         <Border
 							x:Name="Border"
@@ -561,14 +559,14 @@
                     <Border
 						x:Name="Background"
 						Background="{TemplateBinding Background}"
-						CornerRadius="2"
+						CornerRadius="5"
 						SnapsToDevicePixels="True">
                         <Border
 							x:Name="Border"
 							BorderBrush="{TemplateBinding BorderBrush}"
 							BorderThickness="{TemplateBinding BorderThickness}"
 							Padding="{TemplateBinding Padding}"
-							CornerRadius="2">
+							CornerRadius="5">
                             <ContentPresenter
 								x:Name="ContentPresenter"
 								TextElement.Foreground="{TemplateBinding Foreground}"
@@ -765,7 +763,6 @@
         </Setter>
     </Style>
     <Style x:Key="AddCrystalIssueButtonStyle" TargetType="Button">
-        <Setter Property="Visibility" Value="Collapsed" />
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
         <Setter Property="Background" Value="#CCE81123" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />

@@ -61,6 +61,7 @@ namespace ArtPix_Dashboard.ViewModels
 		}
 		private void InitializeUI(MainView view)
 		{
+			
 			AppState.contentFrame = view.contentFrame;
 			AppState.contentFrame.ContentTransitions = null;
 			view.Window.Closing += Window_Closing;
@@ -82,6 +83,7 @@ namespace ArtPix_Dashboard.ViewModels
 		private void NavigateToSelectedPage(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
 		{
 			var selected = (NavigationViewItem)args.SelectedItem;
+			
 			switch (selected.Tag)
 			{
 				case "ProductionIssuesView":

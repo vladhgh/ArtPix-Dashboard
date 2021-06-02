@@ -96,12 +96,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\AppStateModel.cs" />
+    <Compile Include="Models\FindBestServiceModel.cs" />
     <Compile Include="Models\IssueReasonsModel.cs" />
     <Compile Include="Models\MachineAssignItemModel.cs" />
     <Compile Include="Models\MachineModel.cs" />
     <Compile Include="Models\NewStatusModel.cs" />
     <Compile Include="Models\OrderModel.cs" />
     <Compile Include="Models\PageModel.cs" />
+    <Compile Include="Models\ProductHistoryModel.cs" />
     <Compile Include="Models\ProductionIssueModel.cs" />
     <Compile Include="Models\ResolveErrorRequestModel.cs" />
     <Compile Include="Models\StatsModel.cs" />
@@ -119,6 +121,9 @@
     <Compile Include="ViewModels\ShippingDashboardViewModel.cs" />
     <Compile Include="ViewModels\ShippingViewModel.cs" />
     <Compile Include="ViewModels\UtilitiesViewModel.cs" />
+    <Compile Include="Views\Dialogs\ProductHistoryDialog.xaml.cs">
+      <DependentUpon>ProductHistoryDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\UnassignDialog.xaml.cs">
       <DependentUpon>UnassignDialog.xaml</DependentUpon>
     </Compile>
@@ -162,6 +167,10 @@
     <Page Include="Styles\Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\ProductHistoryDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\UnassignDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -371,6 +380,17 @@
   <ItemGroup>
     <Resource Include="logo.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Assets\blue_polka_dot_wrapping_paper.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\baloon_wrapping_paper.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\red_star_wrapping_paper.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\golden_star_wrapping_paper.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

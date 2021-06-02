@@ -89,7 +89,7 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("machine_assign_id")]
 		public int MachineAssignId { get; set; }
 
-		public object machine_id { get; set; }
+		public string machine_id { get; set; }
 
 		[JsonProperty("product_id")]
 		public int ProductId { get; set; }
@@ -125,15 +125,14 @@ namespace ArtPix_Dashboard.Models.Order
 	[Serializable()]
 	public class Product : PropertyChangedListener
 	{
-		private int _machineAssignItemId;
-		public int MachineAssignItemId
-		{
-			get => _machineAssignItemId;
-			set => SetProperty(ref _machineAssignItemId, value);
-		}
-		
+		public string MachineId { get; set; }
+		public int MachineAssignItemId { get; set; }
+
+		public Visibility MachineButtonVisibility =>
+			string.IsNullOrEmpty(MachineId) ? Visibility.Collapsed : Visibility.Visible;
 		public Visibility ManualCompleteButtonVisibility => Status == "engrave_done" ? Visibility.Collapsed : Visibility.Visible;
-		public Visibility AssignMachineButtonVisibility => Status == "ready_to_engrave" || Status == "engrave_redo" ? Visibility.Visible : Visibility.Collapsed;
+		public Visibility CrystalIssueButtonVisibility => Status == "engrave_processing" ? Visibility.Visible : Visibility.Collapsed;
+		public Visibility AssignMachineButtonVisibility => Status == "ready_to_engrave" || Status == "engrave_redo" ? Visibility.Visible : Visibility.Collapsed; 
 		public Visibility UnAssignMachineButtonVisibility => Status == "engrave_processing" ? Visibility.Visible : Visibility.Collapsed;
 		[JsonProperty("id_products")]
 		public int IdProducts { get; set; }
@@ -229,6 +228,14 @@ namespace ArtPix_Dashboard.Models.Order
 						return "/Assets/cleaning_kit.png";
 					case "Sunshine Wrapping Paper":
 						return "/Assets/sunshine_wrapping_paper.png";
+					case "Balloon Wrapping Paper":
+						return "/Assets/baloon_wrapping_paper.png";
+					case "Red Star Wrapping Paper":
+						return "/Assets/red_star_wrapping_paper.png";
+					case "Golden Star Wrapping Paper":
+						return "/Assets/golden_star_wrapping_paper.png";
+					case "Blue Polka Dot Wrapping Paper":
+						return "/Assets/blue_polka_dot_wrapping_paper.png";
 					case "3D Sunflower Set Card":
 						return "/Assets/sunflower_greeting_card.png"; 
 					default:
@@ -414,7 +421,7 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("retouch")]
 		public Retouch Retouch { get; set; }
 
-		public Visibility VitroMarkButtonVisibility => string.IsNullOrEmpty(Retouch.Filename) ? Visibility.Collapsed : Visibility.Visible;
+		public Visibility VitroMarkButtonVisibility => Retouch == null ? Visibility.Collapsed : Visibility.Visible;
 	}
 	[Serializable()]
 	public class Retouch
@@ -558,14 +565,6 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("alias")]
 		public string Alias { get; set; }
 
-		[JsonProperty("length")]
-		public double Length { get; set; }
-
-		[JsonProperty("width")]
-		public double Width { get; set; }
-
-		[JsonProperty("height")]
-		public double Height { get; set; }
 
 		[JsonProperty("weight")]
 		public double Weight { get; set; }
@@ -636,8 +635,16 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("status")]
 		public string Status { get; set; }
 
+		public string VersionStatusColor => VersionStatus == "Package Not Approved" ? "DarkRed" : "DarkGreen";
+
+		private string _versionStatus;
+
 		[JsonProperty("version_status")]
-		public string VersionStatus { get; set; }
+		public string VersionStatus
+		{
+			get => _versionStatus == "not_approved" ? "Package Not Approved" : "Package Approved";
+			set => _versionStatus = value;
+		}
 
 		[JsonProperty("created_at")]
 		public string CreatedAt { get; set; }
@@ -755,11 +762,88 @@ namespace ArtPix_Dashboard.Models.Order
 		public string EngravingChicago { get; set; }
 	}
 
-	public class Datum
+	public class Datum : PropertyChangedListener
 	{
 		[JsonProperty("id_orders")]
 		public int IdOrders { get; set; }
 
+		private string _isShippingServiceFound;
+		public string IsShippingServiceFound
+		{
+			get
+			{
+				if (ShippingOrderInfo.Service != null)
+				{
+					_isShippingServiceFound = "Shipping Service Found";
+					return _isShippingServiceFound;
+				} else
+				{
+					_isShippingServiceFound = "Shipping Service Not Found";
+					return _isShippingServiceFound;
+				}
+			}
+			set => SetProperty(ref _isShippingServiceFound, value);
+
+		}
+		private string _isShippingServiceFoundColor;
+		public string IsShippingServiceFoundColor
+		{
+			get
+			{
+				if (ShippingOrderInfo.Service != null)
+				{
+					_isShippingServiceFoundColor = "DarkGreen";
+					return _isShippingServiceFoundColor;
+				}
+				else
+				{
+					_isShippingServiceFoundColor = "DarkRed";
+					return _isShippingServiceFoundColor;
+				}
+			}
+			set => SetProperty(ref _isShippingServiceFoundColor, value);
+
+		}
+
+		private bool _isShippingInformationLoading;
+		public bool IsShippingInformationLoading
+		{
+			get => _isShippingInformationLoading;
+			set => SetProperty(ref _isShippingInformationLoading, value);
+		}
+		public Visibility TrackingNumberTextBlockVisibility => ShippingOrderInfo.TrackingNumber == null ? Visibility.Collapsed : Visibility.Visible;
+		private Visibility _shippingInformationPanelVisibility;
+		public Visibility ShippingInformationPanelVisibility
+		{
+			get
+			{
+				if (ShippingOrderInfo.Service != null)
+				{
+					_shippingInformationPanelVisibility = Visibility.Visible;
+					return _shippingInformationPanelVisibility;
+				}
+				else
+				{
+					_shippingInformationPanelVisibility = Visibility.Collapsed;
+					return _shippingInformationPanelVisibility;
+				}
+			}
+			set => SetProperty(ref _shippingInformationPanelVisibility, value);
+
+		}
+
+		public Visibility FindBestServiceButtonVisibility
+		{
+			get
+			{
+				if (ShippingOrderInfo != null)
+				{
+					return ShippingOrderInfo.Provider == null ? Visibility.Visible : Visibility.Collapsed;
+				}
+				return Visibility.Hidden;
+			}
+
+		}
 		public Visibility ShippingAddressVisibility => customers == null ? Visibility.Collapsed : Visibility.Visible;
 
 		public Visibility CustomerNoteVisibility => string.IsNullOrEmpty(CustomerNote) ? Visibility.Collapsed : Visibility.Visible;
@@ -777,7 +861,7 @@ namespace ArtPix_Dashboard.Models.Order
 			}
 		}
 
-		
+
 
 		[JsonProperty("name_order")]
 		public string NameOrder { get; set; }
@@ -863,7 +947,20 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("total_crystal")]
 		public int TotalCrystal { get; set; }
 
-		public string OrderImage => TotalCrystal == 1 && !string.IsNullOrEmpty(this.Products[0].UrlRenderImg) ? this.Products[0].UrlRenderImg : "/Assets/multiple_item_order_preview.png";
+		public string OrderImage
+		{
+			get
+			{
+				var item = this.Products.Find(x => x.CrystalType.Type == "Crystal" || x.CrystalType.Type == "Keychain");
+			
+				if (item != null)
+				{
+					Debug.WriteLine(item.UrlRenderImg);
+					return TotalCrystal == 1 && !string.IsNullOrEmpty(item.UrlRenderImg) ? item.UrlRenderImg : "/Assets/multiple_item_order_preview.png";
+				}
+				return "/Assets/multiple_item_order_preview.png";
+			}
+		}
 
 		[JsonProperty("total_products")]
 		public int TotalProducts { get; set; }
@@ -1036,6 +1133,8 @@ namespace ArtPix_Dashboard.Models.Order
 					case "amazon": return "Amazon";
 					case "amazon_standard": return "Amazon Standard";
 					case "amazon_expedited": return "Amazon Expedited";
+					case "amazon_second_day": return "Amazon Second Day";
+					case "amazon_next_day": return "Amazon Next Day";
 					default: return "Not Found";
 				}
 			}
@@ -1056,6 +1155,8 @@ namespace ArtPix_Dashboard.Models.Order
 					case "amazon": return "Orange";
 					case "amazon_standard": return "Green";
 					case "amazon_expedited": return "Orange";
+					case "amazon_second_day": return "Red";
+					case "amazon_next_day": return "Red";
 					default: return "White";
 				}
 			}
@@ -1125,19 +1226,21 @@ namespace ArtPix_Dashboard.Models.Order
 							{
 								var newProduct = Utils.Utils.DeepCopy(product);
 								newProduct.MachineAssignItemId = item.Id;
+								newProduct.MachineId = item.machine_id;
 								newProductList.Add(newProduct);
 							}
 							else
 							{
 								product.MachineAssignItemId = item.Id;
-								
+								product.MachineId = item.machine_id;
+
 							}
 							TotalProducts++;
 							i++;
 						}
 					
 					}
-					if(product.CrystalType.Type == "Light Base" || product.CrystalType.Type == "Full Kit" || product.CrystalType.Type == "Greeting Card")
+					if(product.CrystalType.Type == "Light Base" || product.CrystalType.Type == "Rotating Base" || product.CrystalType.Type == "Full Kit" || product.CrystalType.Type == "Greeting Card" || product.CrystalType.Type == "Greeting Cards")
 					{
 						TotalProducts++;
 						for (int i = 0; i < product.Quantity - 1; i++)
@@ -1156,8 +1259,13 @@ namespace ArtPix_Dashboard.Models.Order
 		}
 		public Customers customers { get; set; }
 
+		private ShippingOrderInfo _shippingOrderInfo = new ShippingOrderInfo();
 		[JsonProperty("shipping_order_info")]
-		public ShippingOrderInfo ShippingOrderInfo { get; set; }
+		public ShippingOrderInfo ShippingOrderInfo
+		{
+			get => _shippingOrderInfo;
+			set => SetProperty(ref _shippingOrderInfo, value);
+		}
 
 		[JsonProperty("payment")]
 		public Payment Payment { get; set; }
@@ -1192,6 +1300,7 @@ namespace ArtPix_Dashboard.Models.Order
 
 	public class ShippingTote
 	{
+		public Visibility SlotButtonVisibility => ShippingSlot == null ? Visibility.Collapsed : Visibility.Visible;
 		[JsonProperty("id")]
 		public int Id { get; set; }
 

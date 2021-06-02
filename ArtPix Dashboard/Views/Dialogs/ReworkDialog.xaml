@@ -19,7 +19,7 @@
 										    Text="The product will be sent back to retoucher for rework."
 										    FontFamily="Segoe UI"
 										    HorizontalAlignment="Left"
-										    Style="{DynamicResource SubtitleTextBlockStyle}"
+										    Style="{DynamicResource BaseTextBlockStyle}"
 										    TextTrimming="CharacterEllipsis"
 										    Width="auto"
 										    TextWrapping="NoWrap"

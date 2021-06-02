@@ -17,7 +17,6 @@
         <TextBlock
 										    Text="The product will be sent back to machine for re-engraving."
 										    HorizontalAlignment="Left"
-										    Style="{DynamicResource SubTitleTextBlockStyle}"
 										    TextTrimming="CharacterEllipsis"
 										    Width="auto"
 										    TextWrapping="NoWrap"

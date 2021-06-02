@@ -156,7 +156,7 @@ namespace ArtPix_Dashboard.ViewModels
 
 		private void InitializeCommands()
 		{
-			ReloadList = new DelegateCommand(param => GetMachineAssignItems());
+			ReloadList = new DelegateCommand(async param => await GetMachineAssignItems());
 			OnOA = new DelegateCommand(Commands.OpenOrderOnOA);
 			OnCP = new DelegateCommand(Commands.OpenOrderOnCP);
 			OnUnassignMachine = new DelegateCommand(OpenUnassignDialog);
@@ -195,7 +195,7 @@ namespace ArtPix_Dashboard.ViewModels
 					Notifier.ShowSuccess($"Assigned To Machine {body.machine} Successfully!");
 					ActiveMachinesList = await ArtPixAPI.GetActiveMachines();
 				}
-				GetMachineAssignItems(_status, _machine, MachineAssignedItems.Meta.CurrentPage, false);
+				await GetMachineAssignItems(_status, _machine, MachineAssignedItems.Meta.CurrentPage, false);
 			}
 		}
 
@@ -217,7 +217,7 @@ namespace ArtPix_Dashboard.ViewModels
 					product_id = item.ProductId
 				};
 				await ArtPixAPI.ChangeMachineAssignItemStatusAsync(newStatus);
-				GetMachineAssignItems(_status, _machine , MachineAssignedItems.Meta.CurrentPage, false);
+				await GetMachineAssignItems(_status, _machine , MachineAssignedItems.Meta.CurrentPage, false);
 			}
 		}
 		private async void OpenUnassignDialog(object param)
@@ -236,7 +236,7 @@ namespace ArtPix_Dashboard.ViewModels
 					product_id = item.ProductId
 				};
 				await ArtPixAPI.UnassignMachineAssignItemAsync(body);
-				GetMachineAssignItems(_status, _machine, MachineAssignedItems.Meta.CurrentPage, false);
+				await GetMachineAssignItems(_status, _machine, MachineAssignedItems.Meta.CurrentPage, false);
 			}
 		}
 
@@ -284,8 +284,8 @@ namespace ArtPix_Dashboard.ViewModels
 					var page = new PageModel(i + 5, "...", MachineAssignedItems.Meta.Path + "?page=" + (i + 5))
 					{
 						IsSelected = i == MachineAssignedItems.Meta.CurrentPage,
-						NavigateToSelectedPage = new DelegateCommand(param =>
-							GetMachineAssignItems(currentStatus, machineId , (currentPageNumber + 5), true))
+						NavigateToSelectedPage = new DelegateCommand(async param =>
+							await GetMachineAssignItems(currentStatus, machineId , (currentPageNumber + 5), true))
 					};
 					pages.Add(page);
 				}
@@ -294,8 +294,8 @@ namespace ArtPix_Dashboard.ViewModels
 					var page = new PageModel(i, i.ToString(), MachineAssignedItems.Meta.Path + "?page=" + i.ToString())
 					{
 						IsSelected = i == MachineAssignedItems.Meta.CurrentPage,
-						NavigateToSelectedPage = new DelegateCommand(param =>
-							GetMachineAssignItems(currentStatus, machineId , (int) param, false))
+						NavigateToSelectedPage = new DelegateCommand(async param =>
+							await GetMachineAssignItems(currentStatus, machineId , (int) param, false))
 					};
 					pages.Add(page);
 				}

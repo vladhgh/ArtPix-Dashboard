@@ -20,17 +20,23 @@ namespace ArtPix_Dashboard.Models
 	    public int product_id { get; set; }
 
 	    public int order_id { get; set; }
+        public int copy_id { get; set; }
 
-	    public string order_name { get; set; }
+        public string order_name { get; set; }
 
 	    public string machine { get; set; }
     }
+    public class FindBestServiceRequestModel
+	{
+        public string order_id { get; set; }
+	}
 
     public class OrderCombineFilterModel
     {
 	    public int pageNumber { get; set; }
 	    public bool withPages { get; set; }
-	    public string perPage { get; set; }
+        public string withCrystal { get; set; }
+        public string perPage { get; set; }
 	    public string hasShippingPackage { get; set; }
 	    public string withShippingTotes { get; set; }
 	    public string withProductionIssue { get; set; }
