@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
-using System.Windows.Input;
 
 namespace ArtPix_Dashboard.ViewModels
 {
@@ -18,6 +17,7 @@ namespace ArtPix_Dashboard.ViewModels
     {
 
 		private StatsModel _stats = new StatsModel();
+
 		public StatsModel Stats
 		{
 			get => _stats;
@@ -25,13 +25,14 @@ namespace ArtPix_Dashboard.ViewModels
 		}
 
 		private AppStateModel _appState = new AppStateModel();
+
 		public AppStateModel AppState
 		{
 			get => _appState;
 			set => SetProperty(ref _appState, value);
 		}
 
-		public async void Initiallize(MainView view)
+		public async void Initialize(MainView view)
 		{
 			AppState.IsLoading = true;
 			view.MainNavigationView.Visibility = Visibility.Hidden;
@@ -63,22 +64,11 @@ namespace ArtPix_Dashboard.ViewModels
 		{
 			
 			AppState.contentFrame = view.contentFrame;
-			AppState.contentFrame.ContentTransitions = null;
 			view.Window.Closing += Window_Closing;
-			//view.PreviewKeyDown += KeyPressEventListener;
 			view.MainNavigationView.SelectionChanged += NavigateToSelectedPage;
 			AppState.SelectedItem = view.MainNavigationView.MenuItems.OfType<NavigationViewItem>().FirstOrDefault(x => x.Tag.ToString() == Settings.Default.LastVisitedViewTag);
 		}
-
-		public void KeyPressEventListener(object sender, System.Windows.Input.KeyEventArgs e)
-		{
-			if (e.Key == Key.Tab)
-			{
-				e.Handled = true;
-			}
-		}
-
-
+		
 
 		private void NavigateToSelectedPage(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
 		{
@@ -94,9 +84,6 @@ namespace ArtPix_Dashboard.ViewModels
 					return;
 				case "ShippingDashboardView":
 					AppState.contentFrame.Navigate(typeof(ShippingDashboardView), AppState, new DrillInNavigationTransitionInfo());
-					return;
-				case "ShippingView":
-					AppState.contentFrame.Navigate(typeof(ShippingView), null, new DrillInNavigationTransitionInfo());
 					return;
 				case "MachinesDashboardView":
 					AppState.contentFrame.Navigate(typeof(MachinesDashboardView), AppState, new DrillInNavigationTransitionInfo());

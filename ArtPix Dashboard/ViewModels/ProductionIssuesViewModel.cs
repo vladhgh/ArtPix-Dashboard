@@ -173,7 +173,7 @@ namespace ArtPix_Dashboard.ViewModels
 			OnVitromark = new DelegateCommand(param => Commands.OpenFileInVitroMark(param.ToString()));
 		}
 
-		public void OpenImage(object param)
+		private void OpenImage(object param)
 		{
 			var item = Issues.Data.SingleOrDefault(p => p.Id == (int)param);
 			if (item != null)
@@ -290,10 +290,6 @@ namespace ArtPix_Dashboard.ViewModels
 						order_id = item.Order.Id,
 						order_name = item.Order.Name
 					};
-					/*Debug.WriteLine(body.machine);
-					Debug.WriteLine(body.product_id);
-					Debug.WriteLine(body.order_id);
-					Debug.WriteLine(body.order_name);*/
 					await ArtPixAPI.ProductAssignProcessing(body);
 					Notifier.ShowSuccess("Assigned To Machine Successfully!");
 				}

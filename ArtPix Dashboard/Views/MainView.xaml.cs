@@ -18,7 +18,7 @@ namespace ArtPix_Dashboard.Views
 		{
 			DataContext = _vm;
 			InitializeComponent();
-			_vm.Initiallize(this);
+			_vm.Initialize(this);
 		}
 
 		private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)

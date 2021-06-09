@@ -107,10 +107,6 @@
 			
 			
 			
-			<ui:NavigationView.AutoSuggestBox>
-				<ui:AutoSuggestBox Cursor="Hand" QueryIcon="Find" AutomationProperties.Name="Search" Width="200" QuerySubmitted="AutoSuggestBox_QuerySubmitted" PlaceholderText="Search"/>
-			</ui:NavigationView.AutoSuggestBox>
-			
 			
 			<ui:NavigationView.Header>
                 <Grid Margin="0 10 25 0" >
