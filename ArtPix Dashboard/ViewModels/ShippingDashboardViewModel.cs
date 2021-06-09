@@ -20,6 +20,8 @@ using QRCoder;
 using ArtPix_Dashboard.Views.Dialogs;
 using ModernWpf.Controls;
 using ArtPix_Dashboard.Models;
+using ToastNotifications;
+using ToastNotifications.Messages;
 
 namespace ArtPix_Dashboard.ViewModels
 {
@@ -74,6 +76,13 @@ namespace ArtPix_Dashboard.ViewModels
 			get => _onFindBestService;
 			set => SetProperty(ref _onFindBestService, value);
 		}
+		private ICommand _onAssignMachine;
+		public ICommand OnAssignMachine
+		{
+			get => _onAssignMachine;
+			set => SetProperty(ref _onAssignMachine, value);
+		}
+		
 		private ICommand _onImageClick;
 		public ICommand OnImageClick
 		{
@@ -149,6 +158,7 @@ namespace ArtPix_Dashboard.ViewModels
 		private void InitializeCommands()
 		{
 			OnImageClick = new DelegateCommand(OpenImage);
+			OnAssignMachine = new DelegateCommand(OpenAssignMachineDialog);
 			ReloadList = new DelegateCommand(async param => await GetOrdersList());
 			OnOA = new DelegateCommand(Commands.OpenOrderOnOA);
 			OnCP = new DelegateCommand(Commands.OpenOrderOnCP);
@@ -157,6 +167,36 @@ namespace ArtPix_Dashboard.ViewModels
 			OnVitromark = new DelegateCommand(param => Commands.OpenFileInVitroMark(param.ToString()));
 			OnProductHistory = new DelegateCommand(OpenProductHistoryDialog);
 			OnFindBestService = new DelegateCommand(FindBestServiceButtonOnClick);
+		}
+
+		private async void OpenAssignMachineDialog(object param)
+		{
+			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Product)param).IdOrders);
+			var product = order?.Products.SingleOrDefault(p => p.IdProducts == ((Product)param).IdProducts);
+			var machines = await ArtPixAPI.GetMachines(product.IdProducts);
+			var dialog = new AssignMachineDialog(machines.Data);
+			var result = await dialog.ShowAsync();
+			if (result == ContentDialogResult.Primary)
+			{
+				IsLoaded = Visibility.Hidden;
+				IsLoading = true;
+				if (!string.IsNullOrEmpty(dialog.Combo2.Text))
+				{
+					var x = (Models.Machine.Machine)dialog.Combo2.SelectedItem;
+					var body = new AssignProcessingModel
+					{
+						machine = x.Name,
+						product_id = product.IdProducts,
+						order_id = product.IdOrders,
+						order_name = order.NameOrder
+					};
+					await ArtPixAPI.ProductAssignProcessing(body);
+					Utils.Utils.Notifier.ShowSuccess($"Assigned To Machine {body.machine} Successfully!");
+				}
+				order = await ArtPixAPI.GetOrder(product.IdOrders.ToString());
+				IsLoaded = Visibility.Visible;
+				IsLoading = false;
+			}
 		}
 		private async void FindBestServiceButtonOnClick(object param)
 		{
@@ -264,7 +304,6 @@ namespace ArtPix_Dashboard.ViewModels
 			Pages = withPages ? GetPages(pageNumber, perPage, hasShippingPackage, withShippingTotes, withProductionIssue, sortBy, shipByToday, storeName, shippingStatus, orderStatus, statusEngraving, nameOrder, withCrystal) : new ObservableCollection<PageModel>(Pages);
 			IsLoading = false;
 			IsLoaded = Visibility.Visible;
-			//CollectionViewSource.GetDefaultView(Orders.Data).Refresh();
 		}
 		private ObservableCollection<PageModel> GetPages(int currentPageNumber, string perPage = "15",
 			string hasShippingPackage = "", string withShippingTotes = "", string withProductionIssue = "", string sortBy = "", string shipByToday = "True", string storeName = "", string shippingStatus = "waiting",
