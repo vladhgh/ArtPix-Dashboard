@@ -117,9 +117,7 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ProductionIssuesViewModel.cs" />
     <Compile Include="Utils\PropertyChangedListener.cs" />
-    <Compile Include="ViewModels\SearchViewModel.cs" />
     <Compile Include="ViewModels\ShippingDashboardViewModel.cs" />
-    <Compile Include="ViewModels\ShippingViewModel.cs" />
     <Compile Include="ViewModels\UtilitiesViewModel.cs" />
     <Compile Include="Views\Dialogs\ProductHistoryDialog.xaml.cs">
       <DependentUpon>ProductHistoryDialog.xaml</DependentUpon>
@@ -148,14 +146,8 @@
     <Compile Include="Views\ProductionIssuesView.xaml.cs">
       <DependentUpon>ProductionIssuesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SearchView.xaml.cs">
-      <DependentUpon>SearchView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ShippingDashboardView.xaml.cs">
       <DependentUpon>ShippingDashboardView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ShippingView.xaml.cs">
-      <DependentUpon>ShippingView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UtilitiesView.xaml.cs">
       <DependentUpon>UtilitiesView.xaml</DependentUpon>
@@ -223,15 +215,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\SearchView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ShippingDashboardView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ShippingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

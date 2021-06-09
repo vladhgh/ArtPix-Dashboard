@@ -20,7 +20,6 @@ using QRCoder;
 using ArtPix_Dashboard.Views.Dialogs;
 using ModernWpf.Controls;
 using ArtPix_Dashboard.Models;
-using ToastNotifications;
 using ToastNotifications.Messages;
 
 namespace ArtPix_Dashboard.ViewModels
@@ -29,6 +28,12 @@ namespace ArtPix_Dashboard.ViewModels
 	{
 
 		#region PROPS
+		private AppStateModel _appState = new AppStateModel();
+		public AppStateModel AppState
+		{
+			get => _appState;
+			set => SetProperty(ref _appState, value);
+		}
 		private bool _isLoading;
 		public bool IsLoading
 		{
@@ -69,7 +74,24 @@ namespace ArtPix_Dashboard.ViewModels
 		#endregion
 
 		#region COMMANDS
-		
+		private ICommand _onManualComplete;
+		public ICommand OnManualComplete
+		{
+			get => _onManualComplete;
+			set => SetProperty(ref _onManualComplete, value);
+		}
+		private ICommand _onUnassignMachine;
+		public ICommand OnUnassignMachine
+		{
+			get => _onUnassignMachine;
+			set => SetProperty(ref _onUnassignMachine, value);
+		}
+		private ICommand _onAssignMachine;
+		public ICommand OnAssignMachine
+		{
+			get => _onAssignMachine;
+			set => SetProperty(ref _onAssignMachine, value);
+		}
 		private ICommand _onFindBestService;
 		public ICommand OnFindBestService
 		{
@@ -157,6 +179,9 @@ namespace ArtPix_Dashboard.ViewModels
 
 		private void InitializeCommands()
 		{
+			OnUnassignMachine = new DelegateCommand(OpenUnassignDialog);
+			OnManualComplete = new DelegateCommand(OpenManualCompleteDialog);
+			OnAssignMachine = new DelegateCommand(OpenAssignMachineDialog);
 			OnImageClick = new DelegateCommand(OpenImage);
 			OnAssignMachine = new DelegateCommand(OpenAssignMachineDialog);
 			ReloadList = new DelegateCommand(async param => await GetOrdersList());
@@ -168,43 +193,13 @@ namespace ArtPix_Dashboard.ViewModels
 			OnProductHistory = new DelegateCommand(OpenProductHistoryDialog);
 			OnFindBestService = new DelegateCommand(FindBestServiceButtonOnClick);
 		}
-
-		private async void OpenAssignMachineDialog(object param)
-		{
-			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Product)param).IdOrders);
-			var product = order?.Products.SingleOrDefault(p => p.IdProducts == ((Product)param).IdProducts);
-			var machines = await ArtPixAPI.GetMachines(product.IdProducts);
-			var dialog = new AssignMachineDialog(machines.Data);
-			var result = await dialog.ShowAsync();
-			if (result == ContentDialogResult.Primary)
-			{
-				IsLoaded = Visibility.Hidden;
-				IsLoading = true;
-				if (!string.IsNullOrEmpty(dialog.Combo2.Text))
-				{
-					var x = (Models.Machine.Machine)dialog.Combo2.SelectedItem;
-					var body = new AssignProcessingModel
-					{
-						machine = x.Name,
-						product_id = product.IdProducts,
-						order_id = product.IdOrders,
-						order_name = order.NameOrder
-					};
-					await ArtPixAPI.ProductAssignProcessing(body);
-					Utils.Utils.Notifier.ShowSuccess($"Assigned To Machine {body.machine} Successfully!");
-				}
-				order = await ArtPixAPI.GetOrder(product.IdOrders.ToString());
-				IsLoaded = Visibility.Visible;
-				IsLoading = false;
-			}
-		}
 		private async void FindBestServiceButtonOnClick(object param)
 		{
 			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == (int)param);
 			order.IsShippingInformationLoading = true;
 			var res = await ArtPixAPI.FindBestServiceAsync(new FindBestServiceRequestModel { order_id = param.ToString() });
 			order.ShippingOrderInfo = (await ArtPixAPI.GetOrder(param.ToString())).ShippingOrderInfo;
-			Debug.WriteLine(order.ShippingOrderInfo.Service);
+			//Debug.WriteLine(order.ShippingOrderInfo.Service);
 			order.IsShippingInformationLoading = false;
 			order.IsShippingServiceFound = "Shipping Service Found";
 			order.IsShippingServiceFoundColor = "DarkGreen";
@@ -283,7 +278,7 @@ namespace ArtPix_Dashboard.ViewModels
 		}
 
 
-		public async Task Initialize()
+		public async Task Initialize(AppStateModel appState)
 		{
 			InitializeCommands();
 			await GetOrdersList();

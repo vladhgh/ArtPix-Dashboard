@@ -28,8 +28,8 @@ namespace ArtPix_Dashboard.Views
 
 		protected override async void OnNavigatedTo(NavigationEventArgs e)
 		{
-			await _vm.Initialize();
 			_appState = (AppStateModel)e.ExtraData;
+			await _vm.Initialize(_appState);
 			if (_appState.OrderFilterGroup == null) return;
 			SortByComboBox.SelectedValue = _appState.OrderFilterGroup.sortBy ?? "estimate_processing_max_date";
 			EngravingStatusComboBox.SelectedValue = _appState.OrderFilterGroup.statusEngraving ?? "";

@@ -635,14 +635,14 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("status")]
 		public string Status { get; set; }
 
-		public string VersionStatusColor => VersionStatus == "Package Not Approved" ? "DarkRed" : "DarkGreen";
+		public string VersionStatusColor => VersionStatus == "Package Not Found" ? "DarkRed" : "DarkGreen";
 
 		private string _versionStatus;
 
 		[JsonProperty("version_status")]
 		public string VersionStatus
 		{
-			get => _versionStatus == "not_approved" ? "Package Not Approved" : "Package Approved";
+			get => _versionStatus == "not_approved" || _versionStatus == "waiting" ? "Package Not Found" : "Package Approved";
 			set => _versionStatus = value;
 		}
 
@@ -811,6 +811,9 @@ namespace ArtPix_Dashboard.Models.Order
 			get => _isShippingInformationLoading;
 			set => SetProperty(ref _isShippingInformationLoading, value);
 		}
+
+		public Visibility ShippingPanelVisibility =>
+			ShippingMethodName == "Local Pickup" ? Visibility.Collapsed : Visibility.Visible;
 		public Visibility TrackingNumberTextBlockVisibility => ShippingOrderInfo.TrackingNumber == null ? Visibility.Collapsed : Visibility.Visible;
 		private Visibility _shippingInformationPanelVisibility;
 		public Visibility ShippingInformationPanelVisibility
@@ -1364,6 +1367,8 @@ namespace ArtPix_Dashboard.Models.Order
 
 	public class OrderModel
 	{
+
+
 		[JsonProperty("data")]
 		public List<Datum> Data { get; set; }
 
