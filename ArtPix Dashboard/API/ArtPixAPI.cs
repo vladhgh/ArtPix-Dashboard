@@ -90,6 +90,17 @@ namespace ArtPix_Dashboard.Utils
 		{
 			var items = await GetMachineAssignItemsAsync("processing", "All", "1" , "100");
 			var machinesList = items.Data.Select(item => new Machine {Name = item.MachineId}).ToList();
+			var i = 1;
+			while (items.Meta.LastPage > i)
+			{
+				i++;
+				items = await GetMachineAssignItemsAsync("processing", "All", i.ToString(), "100");
+				foreach (var item in items.Data)
+				{
+					machinesList.Add(new Machine { Name = item.MachineId });
+				}
+				
+			}
 			var res = machinesList.GroupBy(l => l.Name).Select(g => new Machine
 			{
 				Name = g.Key,
@@ -97,7 +108,7 @@ namespace ArtPix_Dashboard.Utils
 			});
 			var sort = new List<Machine>(res);
 			
-			return sort.OrderBy(x => x.Name).ToList();
+			return sort.OrderBy(x => x.Name).OrderBy(y => y.Workstation).ToList();
 		}
 
 
@@ -261,7 +272,12 @@ namespace ArtPix_Dashboard.Utils
 			req.AddHeader("Authorization", "Bearer " + bearerToken);
 			req.AlwaysMultipartFormData = true;
 			var res = await client.GetAsync<OrderAssignModel>(req);
-			res.Data.ForEach(x => orderList.Add(x));
+			foreach (var order in res.Data)
+			{
+				if (DateTime.Parse(order.Order.UpdatedAt, CultureInfo.CurrentUICulture) >
+						DateTime.Parse(today + " 12:00:00", CultureInfo.CurrentUICulture))
+					orderList.Add(order);
+			}
 			var i = 1;
 			while (DateTime.Parse(res.Data[res.Data.Count - 1].Order.UpdatedAt, CultureInfo.CurrentUICulture) > DateTime.Parse(today + " 12:00:00", CultureInfo.CurrentUICulture))
 			{

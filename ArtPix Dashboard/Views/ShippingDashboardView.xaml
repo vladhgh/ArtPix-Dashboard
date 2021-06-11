@@ -55,6 +55,7 @@
 				<ComboBoxItem Content="Offline Store" Tag="OfflineStore"/>
 			</ComboBox>
 			<ComboBox Name="OrderStatusComboBox" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Order Status:" ui:ControlHelper.PlaceholderText="Select Order Status">
+                <ComboBoxItem Content="All Statuses" Tag=""/>
 				<ComboBoxItem Content="On Hold" Tag="on-hold"/>
 				<ComboBoxItem Content="Processing" Tag="processing"/>
 				<ComboBoxItem Content="Completed" Tag="completed"/>
@@ -69,7 +70,8 @@
 				<ComboBoxItem Content="Completed" Tag="engrave_done&amp;with_crystal_product_status[]=completed"/>
 			</ComboBox>
 			<ComboBox Name="ShippingStatusComboBox" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Shipping Status:" ui:ControlHelper.PlaceholderText="Select Shipping Status">
-				<ComboBoxItem Content="Awaiting Shipment" Tag="waiting"/>
+                <ComboBoxItem Content="All Statuses" Tag=""/>
+                <ComboBoxItem Content="Awaiting Shipment" Tag="waiting"/>
 				<ComboBoxItem Content="Processing" Tag="processing"/>
 				<ComboBoxItem Content="Shipped" Tag="done"/>
 			</ComboBox>

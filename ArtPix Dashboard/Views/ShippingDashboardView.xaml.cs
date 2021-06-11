@@ -36,17 +36,6 @@ namespace ArtPix_Dashboard.Views
 			_vm.Initialize();
 			if (_vm.AppState.OrderFilterGroup == null) return;
 
-			SortByComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.sort_by;
-			EngravingStatusComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.status_engraving;
-			ShippingStatusComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.status_shipping;
-			OrderStatusComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.status_order;
-			StoreComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.store_name;
-			ToggleShipByToday.IsChecked = _vm.AppState.OrderFilterGroup.shipByToday == "True";
-			ToggleNoPackage.IsChecked = _vm.AppState.OrderFilterGroup.has_shipping_package == "0";
-			ToggleInTotes.IsChecked = _vm.AppState.OrderFilterGroup.with_shipping_totes == "True";
-			ToggleNoCrystal.IsChecked = _vm.AppState.OrderFilterGroup.with_crystals == "0";
-			SearchTextBox.Text = _vm.AppState.OrderFilterGroup.name_order;
-
 			SendCombinedRequest();
 
 			SortByComboBox.SelectionChanged += SortByComboBoxOnSelectionChanged;
@@ -64,6 +53,17 @@ namespace ArtPix_Dashboard.Views
 
 		private async void SendCombinedRequest()
 		{
+			SortByComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.sort_by;
+			EngravingStatusComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.status_engraving;
+			ShippingStatusComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.status_shipping;
+			OrderStatusComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.status_order;
+			StoreComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.store_name;
+			ToggleShipByToday.IsChecked = _vm.AppState.OrderFilterGroup.shipByToday == "True";
+			ToggleNoPackage.IsChecked = _vm.AppState.OrderFilterGroup.has_shipping_package == "0";
+			ToggleInTotes.IsChecked = _vm.AppState.OrderFilterGroup.with_shipping_totes == "True";
+			ToggleNoCrystal.IsChecked = _vm.AppState.OrderFilterGroup.with_crystals == "0";
+			SearchTextBox.Text = _vm.AppState.OrderFilterGroup.name_order;
+
 			await _vm.GetOrdersList(1, 15, true, _vm.AppState.OrderFilterGroup);
 
 			if (_vm.Orders.Data == null) return;
@@ -153,13 +153,21 @@ namespace ArtPix_Dashboard.Views
 		}
 		private void SearchTextBoxOnQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
 		{
-			_vm.AppState.OrderFilterGroup.name_order = SearchTextBox.Text ?? "";
+			_vm.AppState.OrderFilterGroup.status_engraving = "";
+			_vm.AppState.OrderFilterGroup.status_order = "";
+			_vm.AppState.OrderFilterGroup.status_shipping = "";
+			_vm.AppState.OrderFilterGroup.shipByToday = "";
+			_vm.AppState.OrderFilterGroup.name_order = SearchTextBox.Text ?? "" ;
 			SendCombinedRequest();
 		}
 
 		private void ButtonSearchOnClick(object sender, RoutedEventArgs e)
 		{
-			_vm.AppState.OrderFilterGroup.name_order = SearchTextBox.Text ?? "";
+			_vm.AppState.OrderFilterGroup.status_engraving = "";
+			_vm.AppState.OrderFilterGroup.status_order = "";
+			_vm.AppState.OrderFilterGroup.status_shipping = "";
+			_vm.AppState.OrderFilterGroup.shipByToday = "";
+			_vm.AppState.OrderFilterGroup.name_order = SearchTextBox.Text ?? "" ;
 			SendCombinedRequest();
 		}
 
@@ -175,6 +183,7 @@ namespace ArtPix_Dashboard.Views
 		{
 			if (sender.Text != "") return;
 			_vm.AppState.OrderFilterGroup.name_order = "";
+			_vm.AppState.OrderFilterGroup.status_order = "processing";
 			SendCombinedRequest();
 
 		}

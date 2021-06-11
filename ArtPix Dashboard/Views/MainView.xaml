@@ -10,7 +10,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         Icon="../Assets/logo.ico"
-		Title="ArtPix Dashboard v1.3"
+		Title="ArtPix Dashboard v1.4"
 		Top="{Binding AppState.Top, Mode=TwoWay}"
 		Left="{Binding AppState.Left, Mode=TwoWay}"
 		Height="{Binding AppState.Height, Mode=TwoWay}"
@@ -112,8 +112,8 @@
 			
 			
 			<ui:NavigationView.Header>
-                <ui:SimpleStackPanel Orientation="Vertical" Margin="0 0 10 0" Width="{Binding AppState.Width, Mode=OneWay}">
-                    <Grid MinHeight="50"  Name="EngravingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Margin="0 10 25 0" Visibility="{Binding EngravingStatusGroupVisibility}" >
+                <ui:SimpleStackPanel Orientation="Vertical"  Width="{Binding AppState.Width, Mode=OneWay}" >
+                    <Grid MinHeight="50"  Name="EngravingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Margin="0 10 50 0" Visibility="{Binding EngravingStatusGroupVisibility}" >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
@@ -152,7 +152,7 @@
                             FontWeight="Black"
                             Style="{DynamicResource TitleTextBlockStyle}"/>
                     </Grid>
-                    <Grid MinHeight="50" Name="ShippingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding ShippingStatusGroupVisibility}" Margin="0 10 25 0" >
+                    <Grid MinHeight="50" Name="ShippingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding ShippingStatusGroupVisibility}" Margin="0 10 40 0" >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
@@ -208,14 +208,14 @@
                             Style="{DynamicResource TitleTextBlockStyle}"/>
                     </Grid>
                     <UniformGrid Rows="1" Name="ActiveMachinesGroupVisibility" MinHeight="50" HorizontalAlignment="Center" Margin="0 10 0 0" Visibility="{Binding ActiveMachinesGroupVisibility }" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}">
-                        <ItemsControl VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="{Binding AppState.Width}" ItemsSource="{Binding ActiveMachinesList}" >
+                        <ItemsControl VerticalAlignment="Center" HorizontalAlignment="Stretch"  ItemsSource="{Binding ActiveMachinesList}" >
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <ui:SimpleStackPanel Margin="0 0 20 0"  HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Vertical" Spacing="2">
+                                    <ui:SimpleStackPanel Margin="0 0 10 0"  HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Vertical" Spacing="2">
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             FontWeight="Bold"
-                                            FontSize="16"
+                                            FontSize="14"
                                             Text="{Binding Name, StringFormat=Machine {0:F0}}"
                                             Style="{DynamicResource SubtitleTextBlockStyle}" />
                                         <Button Background="{Binding JobsCountColor}" Cursor="Hand" Tag="{Binding Name}" Height="20" Width="35" Style="{StaticResource InactiveButtonStyle}" HorizontalAlignment="Center" Opacity="0.9">
