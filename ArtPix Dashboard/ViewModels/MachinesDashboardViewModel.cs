@@ -69,14 +69,6 @@ namespace ArtPix_Dashboard.ViewModels
 				return list;
 			}
 		}
-
-		private List<Machine> _activeMachinesList = new List<Machine>();
-
-		public List<Machine> ActiveMachinesList
-		{
-			get => _activeMachinesList;
-			set => SetProperty(ref _activeMachinesList, value);
-		}
 		#endregion
 
 		#region COMMANDS
@@ -187,13 +179,8 @@ namespace ArtPix_Dashboard.ViewModels
 						order_id = item.OrderId,
 						order_name = item.OrderName
 					};
-					/*Debug.WriteLine(body.machine);
-					Debug.WriteLine(body.product_id);
-					Debug.WriteLine(body.order_id);
-					Debug.WriteLine(body.order_name);*/
 					await ArtPixAPI.ProductAssignProcessing(body);
 					Notifier.ShowSuccess($"Assigned To Machine {body.machine} Successfully!");
-					ActiveMachinesList = await ArtPixAPI.GetActiveMachines();
 				}
 				await GetMachineAssignItems(_status, _machine, MachineAssignedItems.Meta.CurrentPage, false);
 			}
@@ -258,18 +245,11 @@ namespace ArtPix_Dashboard.ViewModels
 			IsLoaded = Visibility.Visible;
 		}
 
-		public async void GetActiveMachines()
-		{
-			ActiveMachinesList = await ArtPixAPI.GetActiveMachines();
-			var timer = Observable.Interval(TimeSpan.FromSeconds(30));
-			timer.Do(x => Debug.WriteLine("!MACHINES LOADED!")).Subscribe(async tick => ActiveMachinesList = await ArtPixAPI.GetActiveMachines());
-			
-		}
+
 
 		public async Task Initialize(AppStateModel appState)
 		{
 			AppState = appState;
-			GetActiveMachines();
 			await GetMachineAssignItems();
 			InitializeCommands();
 		}

@@ -101,6 +101,7 @@
     <Compile Include="Models\MachineAssignItemModel.cs" />
     <Compile Include="Models\MachineModel.cs" />
     <Compile Include="Models\NewStatusModel.cs" />
+    <Compile Include="Models\OrderAssignModel.cs" />
     <Compile Include="Models\OrderModel.cs" />
     <Compile Include="Models\PageModel.cs" />
     <Compile Include="Models\ProductHistoryModel.cs" />

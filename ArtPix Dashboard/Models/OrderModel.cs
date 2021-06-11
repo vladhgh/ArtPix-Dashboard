@@ -636,6 +636,7 @@ namespace ArtPix_Dashboard.Models.Order
 		public string Status { get; set; }
 
 		public string VersionStatusColor => VersionStatus == "Package Not Found" ? "DarkRed" : "DarkGreen";
+		public Visibility ShippingPackageInformationVisibility => VersionStatus == "Package Not Found" ? Visibility.Collapsed : Visibility.Visible;
 
 		private string _versionStatus;
 
@@ -834,6 +835,7 @@ namespace ArtPix_Dashboard.Models.Order
 			set => SetProperty(ref _shippingInformationPanelVisibility, value);
 
 		}
+		
 
 		public Visibility FindBestServiceButtonVisibility
 		{
@@ -958,7 +960,6 @@ namespace ArtPix_Dashboard.Models.Order
 			
 				if (item != null)
 				{
-					Debug.WriteLine(item.UrlRenderImg);
 					return TotalCrystal == 1 && !string.IsNullOrEmpty(item.UrlRenderImg) ? item.UrlRenderImg : "/Assets/multiple_item_order_preview.png";
 				}
 				return "/Assets/multiple_item_order_preview.png";
@@ -1171,23 +1172,11 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("has_issue_opened")]
 		public bool HasIssueOpened { get; set; }
 
-		public Visibility IssueOpened
-		{
-			get
-			{
-				return HasIssueOpened ? Visibility.Visible : Visibility.Collapsed;
-			}
-		}
+		public Visibility IssueOpened => HasIssueOpened ? Visibility.Visible : Visibility.Collapsed;
 
 		[JsonProperty("has_issue_resolved")]
 		public bool HasIssueResolved { get; set; }
-		public Visibility IssueResolved
-		{
-			get
-			{
-				return HasIssueResolved ? Visibility.Visible : Visibility.Collapsed;
-			}
-		}
+		public Visibility IssueResolved => HasIssueResolved ? Visibility.Visible : Visibility.Collapsed;
 
 		[JsonProperty("has_rework")]
 		public bool HasRework { get; set; }

@@ -106,5 +106,29 @@ namespace ArtPix_Dashboard.Properties {
                 this["LastVisitedViewTag"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OrderFilterGroup {
+            get {
+                return ((string)(this["OrderFilterGroup"]));
+            }
+            set {
+                this["OrderFilterGroup"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Engraving")]
+        public string StatusGroup {
+            get {
+                return ((string)(this["StatusGroup"]));
+            }
+            set {
+                this["StatusGroup"] = value;
+            }
+        }
     }
 }

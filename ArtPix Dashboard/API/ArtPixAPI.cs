@@ -7,7 +7,9 @@ using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,6 +17,7 @@ using ArtPix_Dashboard.Models;
 using ArtPix_Dashboard.Models.ProductHistory;
 using ArtPix_Dashboard.Models.Shipping;
 using RestSharp.Extensions;
+using Order = ArtPix_Dashboard.Models.Machine.Order;
 
 namespace ArtPix_Dashboard.Utils
 {
@@ -25,6 +28,7 @@ namespace ArtPix_Dashboard.Utils
 		public static RestClient client = new RestClient("https://order-archive.artpix3d.com/api/v1");
 		public static RestClient clientCP = new RestClient("https://confirmation.artpix3d.com/api");
 
+		#region CP
 		public static async Task<ProductHistoryModel> GetProductHistoryAsync(int productId)
 		{
 			var req = new RestRequest("/order-item-history/" + productId.ToString());
@@ -33,6 +37,9 @@ namespace ArtPix_Dashboard.Utils
 			var res = await clientCP.GetAsync<ProductHistoryModel>(req);
 			return res;
 		}
+		#endregion
+
+
 
 		public static async Task<StatsModel> GetAllStatsAsync()
 		{
@@ -45,6 +52,36 @@ namespace ArtPix_Dashboard.Utils
 				EngravedCount = machineAssignItems[2].Meta.Total,
 				EngravedTodayCount = machineAssignItems[3].Meta.Total,
 				IssueCount = productionIssues.Meta.Total
+			};
+			return stats;
+		}
+		public static async Task<StatsModel> GetShippingStatsAsync()
+		{
+			var awaitingShipmentModel = new OrderCombineFilterModel
+			{
+				status_order = "processing",
+				status_shipping = "waiting"
+			};
+			var shipByTodayModel = new OrderCombineFilterModel
+			{
+				status_order = "processing",
+				status_shipping = "waiting",
+				shipByToday = "True"
+			};
+			var readyToShip = new OrderCombineFilterModel
+			{
+				status_order = "processing",
+				status_shipping = "waiting",
+				status_engraving = "engrave_done&amp;with_crystal_product_status[]=completed"
+			};
+			var orders = await Task.WhenAll(GetOrdersAsync(1, 1, awaitingShipmentModel), GetOrdersAsync(1, 1, shipByTodayModel), GetOrdersAsync(1, 1, readyToShip));
+			var shippedOrders = await GetShippedTodayOrders();
+			var stats = new StatsModel
+			{
+				AwaitingShipment = orders[0].Meta.Total,
+				ShipByToday = orders[1].Meta.Total,
+				ReadyToShip = orders[2].Meta.Total,
+				ShippedToday = shippedOrders.Count
 			};
 			return stats;
 		}
@@ -75,57 +112,44 @@ namespace ArtPix_Dashboard.Utils
 			var res = await client.GetAsync<OrderModel>(req);
 			return res.Data.Count > 0 ? res.Data[0] : null;
 		}
-		public static async Task<OrderModel> GetOrdersAsync(string statusOrder = "", string statusShipping = "", string page = "1", string perPage = "15",
-			string hasShippingPackage = "", string withShippingTotes = "", string withProductionIssue = "", string sortBy = "", string shipByToday = "",
-			string storeName = "", string statusEngraving = "", string nameOrder = "", string withCrystal = "3")
+
+
+		public static async Task<OrderModel> GetOrdersAsync(int page, int perPage, OrderCombineFilterModel filterGroup)
 		{
 			var today = DateTime.Now.Date.ToString("yyyy-MM-dd");
 			var request = $"/order?page={page}&per_page={perPage}";
-			if (withCrystal != "3")
+			foreach (var propertyInfo in filterGroup.GetType().GetProperties())
 			{
-				request += $"&with_crystals={withCrystal}";
+				var propName = propertyInfo.Name;
+				var propValue = propertyInfo.GetValue(filterGroup, null);
+				if (propValue == null) continue;
+				if (propName == "with_crystals" && propValue.ToString() == "3") continue;
+				if (propName == "name_order" && propValue.ToString() == "0") continue;
+				if (propValue.ToString() == "") continue;
+				switch (propName)
+				{
+					case "with_shipping_totes" when propValue.ToString() == "True":
+						request += "&with_shipping_totes=1";
+						continue;
+					case "with_shipping_totes" :
+						continue;
+					case "status_engraving" when propValue.ToString() != "":
+						request += $"&with_crystal_product_status[]={propValue}";
+						continue;
+					case "shipByToday" when propValue.ToString() == "True" && propValue.ToString() != "":
+						request += "&with_ship_by_min=true&ship_by_min_before=" + today + " 23:59:59";
+						continue;
+					case "shipByToday":
+						continue;
+					case "store_name":
+						request += $"&store_name[]={propValue}";
+						continue;
+					default:
+						request += $"&{propName}={propValue}";
+						break;
+				}
 			}
-			if (statusOrder != "")
-			{
-				request += $"&status_order={statusOrder}";
-			}
-			if (statusShipping != "")
-			{
-				request += $"&status_shipping={statusShipping}";
-			}
-			if (nameOrder != "")
-			{
-				request += $"&name_order={nameOrder}";
-			}
-			if (shipByToday == "True")
-			{
-				request += ("&estimate_processing_max_date_before=" + today + " 23:59:59");
-			}
-
-			if (statusEngraving != "")
-			{
-				request += $"&with_crystal_product_status[]={statusEngraving}";
-			}
-			if (storeName != "")
-			{
-				request += $"&store_name[]={storeName}";
-			}
-			if (withShippingTotes == "True")
-			{
-				request += "&with_shipping_totes=1";
-			}
-			if (sortBy != "")
-			{
-				request += $"&sort_by={sortBy}";
-			}
-			if (hasShippingPackage != "")
-			{
-				request += $"&has_shipping_package={hasShippingPackage}";
-			}
-			if (withProductionIssue != "")
-			{
-				request += $"&with_production_issue={withProductionIssue}";
-			}
+			Debug.WriteLine(request);
 			var req = new RestRequest(request);
 			req.AddHeader("Accept", "application/json");
 			req.AddHeader("Authorization", "Bearer " + bearerToken);
@@ -227,6 +251,44 @@ namespace ArtPix_Dashboard.Utils
 			return JsonConvert.DeserializeObject<FindBestServiceModel>(response.Content);
 			//Debug.WriteLine(res.Success);
 		}
+		public static async Task<List<Models.Shipping.Datum>> GetShippedTodayOrders()
+		{
+			var today = DateTime.Now.Date.ToString("yyyy-MM-dd");
+			var orderList = new List<Models.Shipping.Datum>();
+			var req = new RestRequest("/shipping/order-assign?per_page=100");
+			//while last element in the list check updated at date and if it's earlier then 7AM of today's date then stop API calls
+			req.AddHeader("Accept", "application/json");
+			req.AddHeader("Authorization", "Bearer " + bearerToken);
+			req.AlwaysMultipartFormData = true;
+			var res = await client.GetAsync<OrderAssignModel>(req);
+			res.Data.ForEach(x => orderList.Add(x));
+			var i = 1;
+			while (DateTime.Parse(res.Data[res.Data.Count - 1].Order.UpdatedAt, CultureInfo.CurrentUICulture) > DateTime.Parse(today + " 12:00:00", CultureInfo.CurrentUICulture))
+			{
+				i++;
+				req = new RestRequest($"/shipping/order-assign?per_page=100&page={i}");
+				res = await client.GetAsync<OrderAssignModel>(req);
+				res.Data.ForEach(x =>
+				{
+					if (DateTime.Parse(x.Order.UpdatedAt, CultureInfo.CurrentUICulture) >
+					    DateTime.Parse(today + " 12:00:00", CultureInfo.CurrentUICulture))
+						orderList.Add(x);
+				});
+
+			}
+			var result = orderList.GroupBy(l => l.User).Select(g => new Models.Shipping.Datum
+			{
+				User = g.Key,
+				ShippedOrdersCount = g.Select(l => l.User).Count()
+			});
+			var sort = new List<Models.Shipping.Datum>(result);
+			foreach (var item in sort)
+			{
+				Debug.WriteLine($"USER: {item.User}, ORDERS SHIPPED: {item.ShippedOrdersCount}");
+			}
+
+			return orderList;
+		}	
 		#endregion
 	}
 }

@@ -7,6 +7,8 @@
 		xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
         xmlns:viewmodels="clr-namespace:ArtPix_Dashboard.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         Icon="../Assets/logo.ico"
 		Title="ArtPix Dashboard v1.3"
 		Top="{Binding AppState.Top, Mode=TwoWay}"
@@ -14,6 +16,7 @@
 		Height="{Binding AppState.Height, Mode=TwoWay}"
 		Width="{Binding AppState.Width, Mode=TwoWay}"
 		WindowState="{Binding AppState.WindowState, Mode=TwoWay}"
+		Loaded="MainViewOnLoaded"
 		Background="{DynamicResource SystemControlPageBackgroundMediumAltMediumBrush}"
         ui:WindowHelper.UseModernWindowStyle="True"
 		ui:TitleBar.ExtendViewIntoTitleBar="True"
@@ -79,11 +82,11 @@
 			
 		</Grid>
 
-        <ui:ProgressRing Name="ProgressRing" Grid.Row="1" Margin="10 0 0 0" Height="50" Width="50" IsActive="{Binding AppState.IsLoading}"/>
+        <ui:ProgressRing Name="ProgressRing" Grid.Row="1" Margin="10 0 0 0" Height="50" Width="50" IsActive="{Binding AppState.IsMainViewLoading}"/>
 		<ui:NavigationView
 											x:Name="MainNavigationView"
 											Grid.Row="1"
-                                            Visibility="Hidden"
+                                            Visibility="{Binding AppState.MainNavigationViewVisibility}"
 											PaneDisplayMode="Top" 
 											IsTabStop="True"
 											SelectionFollowsFocus="Disabled"
@@ -109,45 +112,133 @@
 			
 			
 			<ui:NavigationView.Header>
-                <Grid Margin="0 10 25 0" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock
-										Text="{Binding Stats.TotalCount, StringFormat=To Engrave: {0:F0}, Mode=OneWay}"
-										HorizontalAlignment="Center"
-										Grid.Column="2"
-										FontWeight="Black"
-										Style="{DynamicResource TitleTextBlockStyle}" />
-                    <TextBlock
-										Text="{Binding Stats.EngravedTodayCount, StringFormat=Engraved Today: {0:F0}, Mode=OneWay}"
-										HorizontalAlignment="Center"
-										Grid.Column="3"
-										FontWeight="Black"
-										Style="{DynamicResource TitleTextBlockStyle}" />
-                    <TextBlock
-										Text="{Binding Stats.ReadyToEngraveCount, StringFormat=Ready To Engrave: {0:F0}, Mode=OneWay}"
-										HorizontalAlignment="Left"
-										Grid.Column="0"
-										FontWeight="Black"
-										Style="{DynamicResource TitleTextBlockStyle}" />
-                    <TextBlock
-										Text="{Binding Stats.ProcessingCount, StringFormat=Engraving: {0:F0}, Mode=OneWay}"
-										HorizontalAlignment="Center"
-										Grid.Column="1"
-										FontWeight="Black"
-										Style="{DynamicResource TitleTextBlockStyle}"/>
-                    <TextBlock
-										Text="{Binding Stats.IssueCount, StringFormat=Production Issues: {0:F0}, Mode=OneWay}"
-										HorizontalAlignment="Right"
-										Grid.Column="4"
-										FontWeight="Black"
-										Style="{DynamicResource TitleTextBlockStyle}"/>
-                </Grid>
+                <ui:SimpleStackPanel Orientation="Vertical" Margin="0 0 10 0" Width="{Binding AppState.Width, Mode=OneWay}">
+                    <Grid MinHeight="50"  Name="EngravingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Margin="0 10 25 0" Visibility="{Binding EngravingStatusGroupVisibility}" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Text="{Binding Stats.TotalCount, StringFormat=To Engrave: {0:F0}, Mode=OneWay}"
+                            HorizontalAlignment="Center"
+                            Grid.Column="2"
+                            FontWeight="Black"
+                            Style="{DynamicResource TitleTextBlockStyle}" />
+                        <TextBlock
+                            Text="{Binding Stats.EngravedTodayCount, StringFormat=Engraved Today: {0:F0}, Mode=OneWay}"
+                            HorizontalAlignment="Center"
+                            Grid.Column="3"
+                            FontWeight="Black"
+                            Style="{DynamicResource TitleTextBlockStyle}" />
+                        <TextBlock
+                            Text="{Binding Stats.ReadyToEngraveCount, StringFormat=Ready To Engrave: {0:F0}, Mode=OneWay}"
+                            HorizontalAlignment="Left"
+                            Grid.Column="0"
+                            FontWeight="Black"
+                            Style="{DynamicResource TitleTextBlockStyle}" />
+                        <TextBlock
+                            Text="{Binding Stats.ProcessingCount, StringFormat=Engraving: {0:F0}, Mode=OneWay}"
+                            HorizontalAlignment="Center"
+                            Grid.Column="1"
+                            FontWeight="Black"
+                            Style="{DynamicResource TitleTextBlockStyle}"/>
+                        <TextBlock
+                            Text="{Binding Stats.IssueCount, StringFormat=Production Issues: {0:F0}, Mode=OneWay}"
+                            HorizontalAlignment="Right"
+                            Grid.Column="4"
+                            FontWeight="Black"
+                            Style="{DynamicResource TitleTextBlockStyle}"/>
+                    </Grid>
+                    <Grid MinHeight="50" Name="ShippingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding ShippingStatusGroupVisibility}" Margin="0 10 25 0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button
+                            Grid.Column="0"
+                            Background="Transparent"
+                            HorizontalAlignment="Left"
+                            Cursor="Hand"
+                            Height="auto"
+                            Click="AwaitingShipmentButtonOnClick"
+                            Style="{StaticResource InactiveButtonStyle}">
+                            <TextBlock
+                                Text="{Binding ShippingStats.AwaitingShipment, StringFormat=Awaiting Shipment: {0:F0}, Mode=OneWay}"
+                                FontWeight="Black"
+                                Style="{DynamicResource TitleTextBlockStyle}" />
+                        </Button>
+                        <Button
+                            Grid.Column="1"
+                            Background="Transparent"
+                            HorizontalAlignment="Center"
+                            Cursor="Hand"
+                            Height="auto"
+                            Click="ShipByTodayButtonOnClick"
+                            Style="{StaticResource InactiveButtonStyle}">
+                            <TextBlock
+                                Text="{Binding ShippingStats.ShipByToday, StringFormat=Ship By Today: {0:F0}, Mode=OneWay}"
+                                FontWeight="Black"
+                                Style="{DynamicResource TitleTextBlockStyle}" />
+                        </Button>
+                        <Button
+                            Grid.Column="2"
+                            Background="Transparent"
+                            HorizontalAlignment="Center"
+                            Cursor="Hand"
+                            Height="auto"
+                            Click="ReadyToShipButtonOnClick"
+                            Style="{StaticResource InactiveButtonStyle}">
+                            <TextBlock
+                                Text="{Binding ShippingStats.ReadyToShip, StringFormat=Ready To Ship: {0:F0}, Mode=OneWay}"
+                                FontWeight="Black"
+                                Style="{DynamicResource TitleTextBlockStyle}" />
+                        </Button>
+                        
+                        <TextBlock
+                            Text="{Binding ShippingStats.ShippedToday, StringFormat=Shipped Today: {0:F0}, Mode=OneWay}"
+                            HorizontalAlignment="Right"
+                            Grid.Column="3"
+                            FontWeight="Black"
+                            Margin="0 0 10 0"
+                            Style="{DynamicResource TitleTextBlockStyle}"/>
+                    </Grid>
+                    <UniformGrid Rows="1" Name="ActiveMachinesGroupVisibility" MinHeight="50" HorizontalAlignment="Center" Margin="0 10 0 0" Visibility="{Binding ActiveMachinesGroupVisibility }" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}">
+                        <ItemsControl VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="{Binding AppState.Width}" ItemsSource="{Binding ActiveMachinesList}" >
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ui:SimpleStackPanel Margin="0 0 20 0"  HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Vertical" Spacing="2">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            FontWeight="Bold"
+                                            FontSize="16"
+                                            Text="{Binding Name, StringFormat=Machine {0:F0}}"
+                                            Style="{DynamicResource SubtitleTextBlockStyle}" />
+                                        <Button Background="{Binding JobsCountColor}" Cursor="Hand" Tag="{Binding Name}" Height="20" Width="35" Style="{StaticResource InactiveButtonStyle}" HorizontalAlignment="Center" Opacity="0.9">
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                FontWeight="SemiBold"
+                                                Text="{Binding JobsCount}"
+                                                FontSize="11"
+                                                Style="{DynamicResource SubtitleTextBlockStyle}" />
+                                        </Button>
+                                    </ui:SimpleStackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Rows="1"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </UniformGrid>
+                </ui:SimpleStackPanel>
+                
             </ui:NavigationView.Header>
 	  
 			<ui:NavigationView.PaneFooter>
@@ -155,19 +246,19 @@
                     <ui:NavigationViewItem Cursor="Hand" Tag="ShippingDashboardView" MaxWidth="60"  >
                         <ui:PersonPicture ProfilePicture="/Assets/logo.ico" MaxHeight="24"/>
                     </ui:NavigationViewItem>
-                    <ui:AppBarButton Cursor="Hand" IsCompact="True" MaxWidth="60" ToolTip="Last Updated: " Label="Settings">
+                    <ui:AppBarButton Name="SwitchStatusPanelButton" Cursor="Hand" IsCompact="True" Click="SwitchStatusPanelButtonOnClick" MaxWidth="60" ToolTip="Switch Status Panel" Label="Settings">
                         <ui:AppBarButton.Icon>
                             <ui:FontIcon
 								Foreground="White"
                                 FontSize="44"
-                                FontFamily="Segoe MDL2 Assets" Glyph="&#xE753;" />
+                                FontFamily="Segoe MDL2 Assets" Glyph="&#xE8AB;" />
                         </ui:AppBarButton.Icon>
                     </ui:AppBarButton>
                     <ui:AppBarButton Cursor="Hand" Icon="Setting" ToolTip="Settings" MaxWidth="60" Label="Settings" IsCompact="True" />
 				</StackPanel>
 			</ui:NavigationView.PaneFooter>
 
-            <ui:Frame x:Name="contentFrame"/>
+            <ui:Frame x:Name="ContentFrame"/>
 
 
         </ui:NavigationView>

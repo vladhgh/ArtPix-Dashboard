@@ -17,36 +17,34 @@ namespace ArtPix_Dashboard.Models
 		private double _top;
 		public double Top
 		{
-			get { return _top; }
-			set { SetProperty(ref _top, value); }
+			get => _top;
+			set => SetProperty(ref _top, value);
 		}
 		private double _left;
 		public double Left
 		{
-			get { return _left; }
-			set { SetProperty(ref _left, value); }
+			get => _left;
+			set => SetProperty(ref _left, value);
 		}
 		private double _height;
 		public double Height
 		{
-			get { return _height; }
-			set { SetProperty(ref _height, value); }
+			get => _height;
+			set => SetProperty(ref _height, value);
 		}
 		private double _width;
 		public double Width
 		{
-			get { return _width; }
-			set { SetProperty(ref _width, value); }
+			get => _width;
+			set => SetProperty(ref _width, value);
 		}
 		private WindowState _windowState;
 		public WindowState WindowState
 		{
-			get { return _windowState; }
-			set { SetProperty(ref _windowState, value); }
+			get => _windowState;
+			set => SetProperty(ref _windowState, value);
 		}
 		#endregion
-
-
 
 		#region PROPS
 		private OrderCombineFilterModel _orderFilterGroup = new OrderCombineFilterModel();
@@ -55,8 +53,12 @@ namespace ArtPix_Dashboard.Models
 			get => _orderFilterGroup;
 			set => SetProperty(ref _orderFilterGroup, value);
 		}
-
-
+		private string _statusGroup;
+		public string StatusGroup
+		{
+			get => _statusGroup;
+			set => SetProperty(ref _statusGroup, value);
+		}
 		private string _employeeName;
 		public string EmployeeName
 		{
@@ -64,36 +66,28 @@ namespace ArtPix_Dashboard.Models
 			set => SetProperty(ref _employeeName, value);
 		}
 
-		private bool _isLoading = true;
-		public bool IsLoading
+		private bool _isMainViewLoading = true;
+		public bool IsMainViewLoading
 		{
-			get => _isLoading;
-			set => SetProperty(ref _isLoading, value);
+			get => _isMainViewLoading;
+			set => SetProperty(ref _isMainViewLoading, value);
 		}
-		private bool _tabPressed = true;
-		public bool TabPressed
+		private Visibility _mainNavigationViewVisibility;
+		public Visibility MainNavigationViewVisibility
 		{
-			get => _tabPressed;
-			set => SetProperty(ref _tabPressed, value);
+			get => _mainNavigationViewVisibility;
+			set => SetProperty(ref _mainNavigationViewVisibility, value);
 		}
-
-		private string _inputString = "";
-		public string InputString
-		{
-			get => _inputString;
-			set => SetProperty(ref _inputString, value);
-		}
+		
 
 		private Type _lastVisitedViewType;
 		public Type LastVisitedViewType
 		{
-			get { return _lastVisitedViewType; }
-			set { SetProperty(ref _lastVisitedViewType, value); }
+			get => _lastVisitedViewType;
+			set => SetProperty(ref _lastVisitedViewType, value);
 		}
 
 		private NavigationViewItem _selectedItem;
-
-		public Frame contentFrame;
 
 		public NavigationViewItem SelectedItem
 		{
@@ -105,10 +99,7 @@ namespace ArtPix_Dashboard.Models
 			}
 		}
 
-		public bool IsVitroMarkRunning
-		{
-			get => Process.GetProcessesByName("VitroMark_LE").Length > 0;
-		}
+		public bool IsVitroMarkRunning => Process.GetProcessesByName("VitroMark_LE").Length > 0;
 
 		#endregion
 	}

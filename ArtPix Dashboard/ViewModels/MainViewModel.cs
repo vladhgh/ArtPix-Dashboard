@@ -6,99 +6,95 @@ using ArtPix_Dashboard.Views;
 using ModernWpf.Controls;
 using ModernWpf.Media.Animation;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
+using ArtPix_Dashboard.Models.Machine;
 
 namespace ArtPix_Dashboard.ViewModels
 {
     public class MainViewModel : PropertyChangedListener
     {
-
-		private StatsModel _stats = new StatsModel();
-
-		public StatsModel Stats
+	    #region PROPS
+	    private StatsModel _stats = new StatsModel();
+	    public StatsModel Stats
 		{
 			get => _stats;
 			set => SetProperty(ref _stats, value);
 		}
+	    private StatsModel _shippingStats = new StatsModel();
+	    public StatsModel ShippingStats
+	    {
+		    get => _shippingStats;
+		    set => SetProperty(ref _shippingStats, value);
+	    }
+		private Visibility _shippingStatusGroupVisibility = Visibility.Collapsed;
+		public Visibility ShippingStatusGroupVisibility
+		{
+			get => _shippingStatusGroupVisibility;
+			set => SetProperty(ref _shippingStatusGroupVisibility, value);
+		}
+		private Visibility _engravingStatusGroupVisibility = Visibility.Collapsed;
+		public Visibility EngravingStatusGroupVisibility
+		{
+			get => _engravingStatusGroupVisibility;
+			set => SetProperty(ref _engravingStatusGroupVisibility, value);
+		}
+
 
 		private AppStateModel _appState = new AppStateModel();
-
 		public AppStateModel AppState
 		{
 			get => _appState;
 			set => SetProperty(ref _appState, value);
 		}
 
-		public async void Initialize(MainView view)
+		private List<Machine> _activeMachinesList = new List<Machine>();
+		public List<Machine> ActiveMachinesList
 		{
-			AppState.IsLoading = true;
-			view.MainNavigationView.Visibility = Visibility.Hidden;
+			get => _activeMachinesList;
+			set => SetProperty(ref _activeMachinesList, value);
+		}
+
+		private Visibility _activeMachinesGroupVisibility = Visibility.Collapsed;
+		public Visibility ActiveMachinesGroupVisibility
+		{
+			get => _activeMachinesGroupVisibility;
+			set => SetProperty(ref _activeMachinesGroupVisibility, value);
+		}
+
+		#endregion
+
+		public async void Initialize()
+		{
+			AppState.IsMainViewLoading = true;
+			AppState.MainNavigationViewVisibility = Visibility.Hidden;
 			try
 			{
-				InitializeSettings();
 				Stats = await ArtPixAPI.GetAllStatsAsync();
-				InitializeUI(view);
+				ShippingStats = await ArtPixAPI.GetShippingStatsAsync();
+
 			} catch (Exception e)
 			{
 				Debug.WriteLine("EXCEPTION UNHANDLED: " + e.Message);
 			}
-			view.MainNavigationView.Visibility = Visibility.Visible;
-			AppState.IsLoading = false;
+			AppState.MainNavigationViewVisibility = Visibility.Visible;
+			AppState.IsMainViewLoading = false;
 			var timer = Observable.Interval(TimeSpan.FromSeconds(30));
-			timer.Do(x => Debug.WriteLine("!STATS LOADED!")).Subscribe(async tick => Stats = await ArtPixAPI.GetAllStatsAsync());
+			timer.Do(x => Debug.WriteLine("!ENGRAVING STATS LOADED!")).Subscribe(async tick => Stats = await ArtPixAPI.GetAllStatsAsync());
+			var timer2 = Observable.Interval(TimeSpan.FromSeconds(60));
+			timer2.Do(x => Debug.WriteLine("!SHIPPING STATS LOADED!")).Subscribe(async tick => ShippingStats = await ArtPixAPI.GetShippingStatsAsync());
+			GetActiveMachines();
 
 		}
-		private void InitializeSettings()
-		{
-			AppState.EmployeeName = "Supervisor";
-			AppState.Top = Settings.Default.Top;
-			AppState.Left = Settings.Default.Left;
-			AppState.Height = Settings.Default.Height;
-			AppState.Width = Settings.Default.Width;
-			AppState.WindowState = Settings.Default.Maximized ? WindowState.Maximized : WindowState.Normal;
-		}
-		private void InitializeUI(MainView view)
-		{
-			
-			AppState.contentFrame = view.contentFrame;
-			view.Window.Closing += Window_Closing;
-			view.MainNavigationView.SelectionChanged += NavigateToSelectedPage;
-			AppState.SelectedItem = view.MainNavigationView.MenuItems.OfType<NavigationViewItem>().FirstOrDefault(x => x.Tag.ToString() == Settings.Default.LastVisitedViewTag);
-		}
-		
 
-		private void NavigateToSelectedPage(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+		public async void GetActiveMachines()
 		{
-			var selected = (NavigationViewItem)args.SelectedItem;
-			
-			switch (selected.Tag)
-			{
-				case "ProductionIssuesView":
-					AppState.contentFrame.Navigate(typeof(ProductionIssuesView), AppState, new DrillInNavigationTransitionInfo());
-					return;
-				case "UtilitiesView":
-					AppState.contentFrame.Navigate(typeof(UtilitiesView), AppState, new DrillInNavigationTransitionInfo());
-					return;
-				case "ShippingDashboardView":
-					AppState.contentFrame.Navigate(typeof(ShippingDashboardView), AppState, new DrillInNavigationTransitionInfo());
-					return;
-				case "MachinesDashboardView":
-					AppState.contentFrame.Navigate(typeof(MachinesDashboardView), AppState, new DrillInNavigationTransitionInfo());
-					return;
-			}
+			ActiveMachinesList = await ArtPixAPI.GetActiveMachines();
+			var timer = Observable.Interval(TimeSpan.FromSeconds(30));
+			timer.Do(x => Debug.WriteLine("!MACHINES LOADED!")).Subscribe(async tick => ActiveMachinesList = await ArtPixAPI.GetActiveMachines());
 		}
-		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-		{
-			Settings.Default.Top = AppState.Top;
-			Settings.Default.Left = AppState.Left;
-			Settings.Default.Height = AppState.Height;
-			Settings.Default.Width = AppState.Width;
-			Settings.Default.Maximized = AppState.WindowState == WindowState.Maximized;
-			Settings.Default.LastVisitedViewTag = AppState.SelectedItem.Tag.ToString();
-			Settings.Default.Save();
-		}
-    }
+	}
 }

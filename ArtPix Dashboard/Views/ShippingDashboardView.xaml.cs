@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Specialized;
+using System.Linq;
 using System.Diagnostics;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -8,10 +10,13 @@ using System.Windows.Media;
 using ArtPix_Dashboard.ViewModels;
 using System.Windows.Navigation;
 using ArtPix_Dashboard.Models;
+using ArtPix_Dashboard.Models.Machine;
 using ArtPix_Dashboard.Models.Order;
+using ArtPix_Dashboard.Properties;
 using ModernWpf.Controls;
 using ListView = ModernWpf.Controls.ListView;
 using ArtPix_Dashboard.Utils;
+using Newtonsoft.Json;
 
 namespace ArtPix_Dashboard.Views
 {
@@ -19,40 +24,28 @@ namespace ArtPix_Dashboard.Views
 	public partial class ShippingDashboardView
 	{
 		private readonly ShippingDashboardViewModel _vm = new ShippingDashboardViewModel();
-		private AppStateModel _appState = new AppStateModel();
 		public ShippingDashboardView()
 		{
 			InitializeComponent();
 			DataContext = _vm;
 		}
 
-		protected override async void OnNavigatedTo(NavigationEventArgs e)
+		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			_appState = (AppStateModel)e.ExtraData;
-			await _vm.Initialize(_appState);
-			if (_appState.OrderFilterGroup == null) return;
-			SortByComboBox.SelectedValue = _appState.OrderFilterGroup.sortBy ?? "estimate_processing_max_date";
-			EngravingStatusComboBox.SelectedValue = _appState.OrderFilterGroup.statusEngraving ?? "";
-			ShippingStatusComboBox.SelectedValue = _appState.OrderFilterGroup.shippingStatus ?? "waiting";
-			OrderStatusComboBox.SelectedValue = _appState.OrderFilterGroup.orderStatus ?? "processing";
-			StoreComboBox.SelectedValue = _appState.OrderFilterGroup.storeName ?? "";
-			ToggleShipByToday.IsChecked = _appState.OrderFilterGroup.shipByToday == null || _appState.OrderFilterGroup.shipByToday == "True";
-			ToggleNoPackage.IsChecked = _appState.OrderFilterGroup.hasShippingPackage != null && _appState.OrderFilterGroup.hasShippingPackage == "0";
-			ToggleInTotes.IsChecked = _appState.OrderFilterGroup.withShippingTotes != null && _appState.OrderFilterGroup.withShippingTotes == "True";
-			ToggleNoCrystal.IsChecked = _appState.OrderFilterGroup.withCrystal != null && _appState.OrderFilterGroup.withCrystal == "0";
+			_vm.AppState = (AppStateModel)e.ExtraData;
+			_vm.Initialize();
+			if (_vm.AppState.OrderFilterGroup == null) return;
 
-			ScrollViewer scrollViewer = Utils.Utils.GetChildOfType<ScrollViewer>(ShippingItemsListView);
-			Debug.WriteLine("LOOKING FOR SCROLLVIEWER");
-			if (scrollViewer != null)
-			{
-				Debug.WriteLine("SCROLLVIEWER FOUND");
-				scrollViewer.CanContentScroll = false;
-				scrollViewer.PanningMode = PanningMode.Both;
-			}
-			else
-			{
-				Debug.WriteLine("SCROLLVIEWER IS NULL");
-			}
+			SortByComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.sort_by;
+			EngravingStatusComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.status_engraving;
+			ShippingStatusComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.status_shipping;
+			OrderStatusComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.status_order;
+			StoreComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.store_name;
+			ToggleShipByToday.IsChecked = _vm.AppState.OrderFilterGroup.shipByToday == "True";
+			ToggleNoPackage.IsChecked = _vm.AppState.OrderFilterGroup.has_shipping_package == "0";
+			ToggleInTotes.IsChecked = _vm.AppState.OrderFilterGroup.with_shipping_totes == "True";
+			ToggleNoCrystal.IsChecked = _vm.AppState.OrderFilterGroup.with_crystals == "0";
+			SearchTextBox.Text = _vm.AppState.OrderFilterGroup.name_order;
 
 			SendCombinedRequest();
 
@@ -66,69 +59,32 @@ namespace ArtPix_Dashboard.Views
 			ToggleInTotes.Click += ToggleInTotes_Click;
 			ToggleNoCrystal.Click += ToggleNoCrystal_Click;
 
+
 		}
+
+		private async void SendCombinedRequest()
+		{
+			await _vm.GetOrdersList(1, 15, true, _vm.AppState.OrderFilterGroup);
+
+			if (_vm.Orders.Data == null) return;
+			if (_vm.Orders.Data.Count <= 0) return;
+			ShippingItemsListView.ScrollIntoView(_vm.Orders.Data[0]);
+			var scrollViewer = ShippingItemsListView.GetChildOfType<ScrollViewer>();
+			if (scrollViewer == null) return;
+			scrollViewer.CanContentScroll = false;
+			scrollViewer.PanningMode = PanningMode.Both;
+
+		}
+
+		#region EVENT HANDLERS
 
 		private void ToggleNoCrystal_Click(object sender, RoutedEventArgs e)
 		{
 			if (sender is ToggleButton btn)
 				if (btn.IsChecked != null)
-					_appState.OrderFilterGroup.withCrystal = (bool)btn.IsChecked ? "0" : "3";
+					_vm.AppState.OrderFilterGroup.with_crystals = (bool)btn.IsChecked ? "0" : "3";
 			SendCombinedRequest();
 		}
-
-		private async void SendCombinedRequest(bool withOrderName = false)
-		{
-			if (withOrderName)
-			{
-				await _vm.GetOrdersList(1, true, "15",
-					 "",
-					"",
-					"",
-					"",
-					"",
-					"",
-					"",
-					"",
-					"",
-					SearchTextBox.Text ?? "");
-			}
-			else
-			{
-				await _vm.GetOrdersList(1, true, "15",
-					_appState.OrderFilterGroup.hasShippingPackage ?? "",
-					_appState.OrderFilterGroup.withShippingTotes ?? "",
-					"",
-					_appState.OrderFilterGroup.sortBy ?? "",
-					_appState.OrderFilterGroup.shipByToday ?? "True",
-					_appState.OrderFilterGroup.storeName ?? "",
-					_appState.OrderFilterGroup.shippingStatus ?? "waiting",
-					_appState.OrderFilterGroup.orderStatus ?? "processing",
-					_appState.OrderFilterGroup.statusEngraving ?? "", "",
-					_appState.OrderFilterGroup.withCrystal ?? "3");
-			}
-			
-			if (_vm.Orders.Data != null)
-				if (_vm.Orders.Data.Count > 0)
-				{
-					ShippingItemsListView.ScrollIntoView(_vm.Orders.Data[0]);
-					ScrollViewer scrollViewer = Utils.Utils.GetChildOfType<ScrollViewer>(ShippingItemsListView);
-					Debug.WriteLine("LOOKING FOR SCROLLVIEWER");
-					if (scrollViewer != null)
-					{
-						Debug.WriteLine("SCROLLVIEWER FOUND");
-						scrollViewer.CanContentScroll = false;
-						scrollViewer.PanningMode = PanningMode.Both;
-					}
-					else
-					{
-						Debug.WriteLine("SCROLLVIEWER IS NULL");
-					}
-					
-				}
-					
-		}
-
-		#region EVENT HANDLERS
 
 		private void ButtonReloadOnClick(object sender, RoutedEventArgs e)
 		{
@@ -139,33 +95,33 @@ namespace ArtPix_Dashboard.Views
 		{
 			if (sender is ToggleButton btn)
 				if (btn.IsChecked != null)
-					_appState.OrderFilterGroup.hasShippingPackage = (bool)btn.IsChecked ? "0" : "";
+					_vm.AppState.OrderFilterGroup.has_shipping_package = (bool)btn.IsChecked ? "0" : "";
 			SendCombinedRequest();
 		}
 
 		private void EngravingStatusComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			_appState.OrderFilterGroup.statusEngraving =
+			_vm.AppState.OrderFilterGroup.status_engraving =
 				((ComboBoxItem)EngravingStatusComboBox.SelectedItem).Tag.ToString();
 			SendCombinedRequest();
 		}
 
 		private void OrderStatusComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			_appState.OrderFilterGroup.orderStatus = ((ComboBoxItem)OrderStatusComboBox.SelectedItem).Tag.ToString();
+			_vm.AppState.OrderFilterGroup.status_order = ((ComboBoxItem)OrderStatusComboBox.SelectedItem).Tag.ToString();
 			SendCombinedRequest();
 		}
 
 		private void ShippingStatusComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			_appState.OrderFilterGroup.shippingStatus =
+			_vm.AppState.OrderFilterGroup.status_shipping =
 				((ComboBoxItem)ShippingStatusComboBox.SelectedItem).Tag.ToString();
 			SendCombinedRequest();
 		}
 
 		private void StoreComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			_appState.OrderFilterGroup.storeName = ((ComboBoxItem)StoreComboBox.SelectedItem).Tag.ToString();
+			_vm.AppState.OrderFilterGroup.store_name = ((ComboBoxItem)StoreComboBox.SelectedItem).Tag.ToString();
 			SendCombinedRequest();
 		}
 
@@ -173,7 +129,7 @@ namespace ArtPix_Dashboard.Views
 		{
 			if (sender is ToggleButton btn)
 				if (btn.IsChecked != null)
-					_appState.OrderFilterGroup.withShippingTotes = ((bool)btn.IsChecked).ToString();
+					_vm.AppState.OrderFilterGroup.with_shipping_totes = ((bool)btn.IsChecked).ToString();
 			SendCombinedRequest();
 		}
 
@@ -181,14 +137,13 @@ namespace ArtPix_Dashboard.Views
 		{
 			if (sender is ToggleButton btn)
 				if (btn.IsChecked != null)
-					_appState.OrderFilterGroup.shipByToday = ((bool)btn.IsChecked).ToString();
+					_vm.AppState.OrderFilterGroup.shipByToday = ((bool)btn.IsChecked).ToString();
 			SendCombinedRequest();
 		}
 
 		private void SortByComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			Debug.WriteLine("SortByComboBox Selection Changed");
-			_appState.OrderFilterGroup.sortBy = ((ComboBoxItem)SortByComboBox.SelectedItem).Tag.ToString();
+			_vm.AppState.OrderFilterGroup.sort_by = ((ComboBoxItem)SortByComboBox.SelectedItem).Tag.ToString();
 			SendCombinedRequest();
 		}
 
@@ -196,18 +151,16 @@ namespace ArtPix_Dashboard.Views
 		{
 			if (_vm.Orders.Data.Count > 0) ShippingItemsListView.ScrollIntoView(_vm.Orders.Data[0]);
 		}
-
-		#endregion
-
-
 		private void SearchTextBoxOnQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
 		{
-			SendCombinedRequest(true);
+			_vm.AppState.OrderFilterGroup.name_order = SearchTextBox.Text ?? "";
+			SendCombinedRequest();
 		}
 
 		private void ButtonSearchOnClick(object sender, RoutedEventArgs e)
 		{
-			SendCombinedRequest(true);
+			_vm.AppState.OrderFilterGroup.name_order = SearchTextBox.Text ?? "";
+			SendCombinedRequest();
 		}
 
 
@@ -216,23 +169,14 @@ namespace ArtPix_Dashboard.Views
 			ShippingItemsListView.ScrollIntoView(_vm.Orders.Data.Find(i => i.NameOrder == ((Expander)sender).Tag.ToString()));
 		}
 
-		private void ShippingDashboardView_OnLoaded(object sender, RoutedEventArgs e)
+		#endregion
+
+		private void SearchTextBox_OnTextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
 		{
-			ScrollViewer scrollViewer = Utils.Utils.GetChildOfType<ScrollViewer>(ShippingItemsListView);
-			Debug.WriteLine("LOOKING FOR SCROLLVIEWER");
-			if (scrollViewer != null)
-			{
-				Debug.WriteLine("SCROLLVIEWER FOUND");
-				scrollViewer.CanContentScroll = false;
-				scrollViewer.PanningMode = PanningMode.Both;
-			}
-			else
-			{
-				Debug.WriteLine("SCROLLVIEWER IS NULL");
-			}
+			if (sender.Text != "") return;
+			_vm.AppState.OrderFilterGroup.name_order = "";
+			SendCombinedRequest();
 
 		}
-
-		
 	}
 }

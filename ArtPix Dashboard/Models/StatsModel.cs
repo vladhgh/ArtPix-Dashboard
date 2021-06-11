@@ -67,6 +67,30 @@ namespace ArtPix_Dashboard.Models.Types
 			get => _reworkCount;
 			set => SetProperty(ref _reworkCount, value);
 		}
+		private int _awaitingShipment;
+		public int AwaitingShipment
+		{
+			get => _awaitingShipment;
+			set => SetProperty(ref _awaitingShipment, value);
+		}
+		private int _readyToShip;
+		public int ReadyToShip
+		{
+			get => _readyToShip;
+			set => SetProperty(ref _readyToShip, value);
+		}
+		private int _shipByToday;
+		public int ShipByToday
+		{
+			get => _shipByToday;
+			set => SetProperty(ref _shipByToday, value);
+		}
+		private int _shippedToday;
+		public int ShippedToday
+		{
+			get => _shippedToday;
+			set => SetProperty(ref _shippedToday, value);
+		}
 		#endregion
 	}
 }

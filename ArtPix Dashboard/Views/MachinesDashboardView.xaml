@@ -457,7 +457,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="10"/>
+            <RowDefinition Height="0"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -546,50 +546,6 @@
 
             </ui:SimpleStackPanel>
         </ui:SimpleStackPanel>
-
-
-        <Grid Name="MachinesGrid" Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom" Margin="30 0 0 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-
-
-            <ScrollViewer Grid.Column="0" Grid.Row="0" VerticalAlignment="Bottom" VerticalScrollBarVisibility="Visible" >
-                <ItemsControl HorizontalAlignment="Left" VerticalAlignment="Bottom"  MaxWidth="1100" ItemsSource="{Binding ActiveMachinesList}" >
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <ui:SimpleStackPanel Margin="0 0 30 0"  HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Vertical" Spacing="3">
-                                <TextBlock
-                                        HorizontalAlignment="Center"
-                                        FontWeight="Bold"
-                                        Text="{Binding Name, StringFormat=Machine {0:F0}}"
-                                        Style="{DynamicResource SubtitleTextBlockStyle}" />
-                                <Button Background="{Binding JobsCountColor}" Cursor="Hand" Tag="{Binding Name}" Click="ActiveMachineButton_OnClick"  Height="25" Width="40" Style="{StaticResource InactiveButtonStyle}" HorizontalAlignment="Center" Margin="0 0 10 0"  Opacity="0.9">
-                                    <TextBlock
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            FontWeight="SemiBold"
-                                            Text="{Binding JobsCount}"
-                                            FontSize="12"
-                                            Style="{DynamicResource SubtitleTextBlockStyle}" />
-                                </Button>
-                            </ui:SimpleStackPanel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-            </ScrollViewer>
-            
-            
-        </Grid>
 
         <TextBlock
                     Grid.Row="4" Grid.Column="1"

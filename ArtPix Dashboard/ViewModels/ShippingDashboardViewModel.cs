@@ -257,14 +257,17 @@ namespace ArtPix_Dashboard.ViewModels
 		private async void FindBestServiceButtonOnClick(object param)
 		{
 			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == (int)param);
-			order.IsShippingInformationLoading = true;
-			var res = await ArtPixAPI.FindBestServiceAsync(new FindBestServiceRequestModel { order_id = param.ToString() });
-			order.ShippingOrderInfo = (await ArtPixAPI.GetOrder(param.ToString())).ShippingOrderInfo;
-			//Debug.WriteLine(order.ShippingOrderInfo.Service);
-			order.IsShippingInformationLoading = false;
-			order.IsShippingServiceFound = "Shipping Service Found";
-			order.IsShippingServiceFoundColor = "DarkGreen";
-			order.ShippingInformationPanelVisibility = Visibility.Visible;
+			if (order != null)
+			{
+				order.IsShippingInformationLoading = true;
+				var res = await ArtPixAPI.FindBestServiceAsync(new FindBestServiceRequestModel
+					{order_id = param.ToString()});
+				order.ShippingOrderInfo = (await ArtPixAPI.GetOrder(param.ToString())).ShippingOrderInfo;
+				order.IsShippingInformationLoading = false;
+				order.IsShippingServiceFound = "Shipping Service Found";
+				order.IsShippingServiceFoundColor = "DarkGreen";
+				order.ShippingInformationPanelVisibility = Visibility.Visible;
+			}
 		}
 
 		private async void OpenProductHistoryDialog(object param)
@@ -339,31 +342,25 @@ namespace ArtPix_Dashboard.ViewModels
 		}
 
 
-		public async Task Initialize(AppStateModel appState)
+		public void Initialize()
 		{
 			InitializeCommands();
-			await GetOrdersList();
 		}
 
-		public async Task GetOrdersList(int pageNumber = 1, bool withPages = true, string perPage = "15",
-			string hasShippingPackage = "", string withShippingTotes = "", string withProductionIssue = "",
-			string sortBy = "", string shipByToday = "True", string storeName = "", string shippingStatus = "waiting",
-			string orderStatus = "processing", string statusEngraving = "", string nameOrder = "", string withCrystal = "3")
+		public async Task GetOrdersList(int pageNumber = 1, int perPage = 15, bool withPages = true, OrderCombineFilterModel filterGroup = null)
 		{
 			IsLoading = true;
 			IsLoaded = Visibility.Collapsed;
-			Orders = await ArtPixAPI.GetOrdersAsync(orderStatus, shippingStatus, pageNumber.ToString(), perPage, hasShippingPackage, withShippingTotes, withProductionIssue, sortBy, shipByToday, storeName, statusEngraving, nameOrder, withCrystal);
+			Orders = await ArtPixAPI.GetOrdersAsync(pageNumber, perPage, filterGroup);
 			foreach (var page in Pages)
 			{
 				page.IsSelected = page.PageNumber == pageNumber;
 			}
-			Pages = withPages ? GetPages(pageNumber, perPage, hasShippingPackage, withShippingTotes, withProductionIssue, sortBy, shipByToday, storeName, shippingStatus, orderStatus, statusEngraving, nameOrder, withCrystal) : new ObservableCollection<PageModel>(Pages);
+			Pages = withPages ? GetPages(pageNumber, perPage, filterGroup) : new ObservableCollection<PageModel>(Pages);
 			IsLoading = false;
 			IsLoaded = Visibility.Visible;
 		}
-		private ObservableCollection<PageModel> GetPages(int currentPageNumber, string perPage = "15",
-			string hasShippingPackage = "", string withShippingTotes = "", string withProductionIssue = "", string sortBy = "", string shipByToday = "True", string storeName = "", string shippingStatus = "waiting",
-			string orderStatus = "processing", string statusEngraving = "", string nameOrder = "", string withCrystal = "3")
+		private ObservableCollection<PageModel> GetPages(int currentPageNumber, int perPage = 15, OrderCombineFilterModel filterGroup = null)
 		{
 			var pages = new ObservableCollection<PageModel>();
 			for (var i = Orders.Meta.CurrentPage; i <= Orders.Meta.LastPage; i++)
@@ -374,8 +371,7 @@ namespace ArtPix_Dashboard.ViewModels
 					{
 						IsSelected = i == Orders.Meta.CurrentPage,
 						NavigateToSelectedPage = new DelegateCommand(async param => await GetOrdersList((currentPageNumber + 5),
-							true, perPage, hasShippingPackage, withShippingTotes, withProductionIssue, sortBy,
-							shipByToday, storeName, shippingStatus, orderStatus, statusEngraving, nameOrder, withCrystal))
+							perPage, true, filterGroup))
 					};
 					pages.Add(page);
 				}
@@ -384,8 +380,7 @@ namespace ArtPix_Dashboard.ViewModels
 					var page = new PageModel(i, i.ToString(), Orders.Meta.Path + "?page=" + i)
 					{
 						IsSelected = i == Orders.Meta.CurrentPage,
-						NavigateToSelectedPage = new DelegateCommand(async param => await GetOrdersList((int) param, false, perPage,
-							hasShippingPackage, withShippingTotes, withProductionIssue, sortBy, shipByToday, storeName, shippingStatus, orderStatus, statusEngraving, nameOrder, withCrystal))
+						NavigateToSelectedPage = new DelegateCommand(async param => await GetOrdersList((int) param, perPage, false, filterGroup))
 					};
 					pages.Add(page);
 				}

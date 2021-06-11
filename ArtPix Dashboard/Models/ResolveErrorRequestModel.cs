@@ -33,18 +33,17 @@ namespace ArtPix_Dashboard.Models
 
     public class OrderCombineFilterModel
     {
-	    public int pageNumber { get; set; }
-	    public bool withPages { get; set; }
-        public string withCrystal { get; set; }
-        public string perPage { get; set; }
-	    public string hasShippingPackage { get; set; }
-	    public string withShippingTotes { get; set; }
-	    public string withProductionIssue { get; set; }
-	    public string sortBy { get; set; }
+	    public string name_order { get; set; }
+        public string status_engraving { get; set; }
+        public string status_shipping { get; set; }
+	    public string status_order { get; set; }
+        public string with_crystals { get; set; }
+	    public string has_shipping_package { get; set; }
+	    public string with_shipping_totes { get; set; }
+	    public string with_production_issue { get; set; }
+	    public string sort_by { get; set; }
 	    public string shipByToday { get; set; }
-	    public string storeName { get; set; }
-	    public string shippingStatus { get; set; }
-	    public string orderStatus { get; set; }
-	    public string statusEngraving { get; set; }
+	    public string store_name { get; set; }
+
     }
 }

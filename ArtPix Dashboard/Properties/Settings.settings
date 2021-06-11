@@ -23,5 +23,11 @@
     <Setting Name="LastVisitedViewTag" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="OrderFilterGroup" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="StatusGroup" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Engraving</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
