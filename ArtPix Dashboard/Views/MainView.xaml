@@ -208,6 +208,7 @@
                             Style="{DynamicResource TitleTextBlockStyle}"/>
                     </Grid>
                     <UniformGrid Rows="1" Name="ActiveMachinesGroupVisibility" MinHeight="50" HorizontalAlignment="Center" Margin="0 10 0 0" Visibility="{Binding ActiveMachinesGroupVisibility }" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}">
+                        
                         <ItemsControl VerticalAlignment="Center" HorizontalAlignment="Stretch"  ItemsSource="{Binding ActiveMachinesList}" >
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>

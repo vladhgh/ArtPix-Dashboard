@@ -109,6 +109,7 @@
     <Compile Include="Models\ResolveErrorRequestModel.cs" />
     <Compile Include="Models\StatsModel.cs" />
     <Compile Include="API\ArtPixAPI.cs" />
+    <Compile Include="Models\WorkstationsModel.cs" />
     <Compile Include="Utils\PixelsToGridLengthConverter.cs" />
     <Compile Include="Utils\Utils.cs" />
     <Compile Include="API\WinAPI.cs" />
@@ -259,6 +260,9 @@
     <Resource Include="Assets\logo.ico" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
+      <Version>7.0.2</Version>
+    </PackageReference>
     <PackageReference Include="ModernWpfUI">
       <Version>0.9.4</Version>
     </PackageReference>

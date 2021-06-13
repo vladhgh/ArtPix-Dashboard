@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
 using ArtPix_Dashboard.Models.Machine;
+using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace ArtPix_Dashboard.ViewModels
 {
@@ -87,7 +88,12 @@ namespace ArtPix_Dashboard.ViewModels
 			var timer2 = Observable.Interval(TimeSpan.FromSeconds(60));
 			timer2.Do(x => Debug.WriteLine("!SHIPPING STATS LOADED!")).Subscribe(async tick => ShippingStats = await ArtPixAPI.GetShippingStatsAsync());
 			GetActiveMachines();
-
+			/*new ToastContentBuilder()
+				.AddArgument("action", "viewConversation")
+				.AddArgument("conversationId", 9813)
+				.AddText("Andrew sent you a picture")
+				.AddText("Check this out, The Enchantments in Washington!")
+				.Show();*/
 		}
 
 		public async void GetActiveMachines()

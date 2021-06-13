@@ -48,7 +48,7 @@ namespace ArtPix_Dashboard.Utils
 			var stats = new StatsModel
 			{
 				ReadyToEngraveCount = machineAssignItems[0].Meta.Total - 5,
-				ProcessingCount = machineAssignItems[1].Meta.Total,
+				ProcessingCount = machineAssignItems[1].Meta.Total - 1,
 				EngravedCount = machineAssignItems[2].Meta.Total,
 				EngravedTodayCount = machineAssignItems[3].Meta.Total,
 				IssueCount = productionIssues.Meta.Total
