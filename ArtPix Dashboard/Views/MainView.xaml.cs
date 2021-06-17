@@ -6,6 +6,8 @@ using ArtPix_Dashboard.ViewModels;
 using ModernWpf.Controls;
 using ModernWpf.Media.Animation;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using ArtPix_Dashboard.Models;
 using ArtPix_Dashboard.Properties;
@@ -141,7 +143,7 @@ namespace ArtPix_Dashboard.Views
 		{
 			_vm.AppState.OrderFilterGroup.status_engraving = "engrave_done&with_crystal_product_status[]=completed";
 			_vm.AppState.OrderFilterGroup.shipByToday = "False";
-			ContentFrame.Navigate(typeof(ShippingDashboardView), _vm.AppState, new SuppressNavigationTransitionInfo());
+			MainNavigationView.SelectedItem = MainNavigationView.MenuItems[1];
 		}
 
 		private void AwaitingShipmentButtonOnClick(object sender, RoutedEventArgs e)
@@ -150,14 +152,65 @@ namespace ArtPix_Dashboard.Views
 			_vm.AppState.OrderFilterGroup.shipByToday = "False";
 			_vm.AppState.OrderFilterGroup.status_order = "processing";
 			_vm.AppState.OrderFilterGroup.status_shipping = "waiting";
-			ContentFrame.Navigate(typeof(ShippingDashboardView), _vm.AppState, new SuppressNavigationTransitionInfo());
+			MainNavigationView.SelectedItem = MainNavigationView.MenuItems[1];
 		}
 
 		private void ShipByTodayButtonOnClick(object sender, RoutedEventArgs e)
 		{
 			_vm.AppState.OrderFilterGroup.status_engraving = "";
 			_vm.AppState.OrderFilterGroup.shipByToday = "True";
-			ContentFrame.Navigate(typeof(ShippingDashboardView), _vm.AppState, new SuppressNavigationTransitionInfo());
+			MainNavigationView.SelectedItem = MainNavigationView.MenuItems[1];
+		}
+
+		private void WorkstationButtonOnClick(object sender, RoutedEventArgs e)
+		{
+			var tag = (int)((ToggleButton) sender).Tag;
+			foreach (var workstation in _vm.Workstations.Data)
+			{
+				if (workstation.Id == tag && workstation.MachinesGroupVisibility == Visibility.Visible)
+				{
+					_vm.Workstations.PanelSpacing = 51;
+					workstation.MachinesGroupVisibility = Visibility.Collapsed;
+					return;
+				}
+				if (workstation.MachinesGroupVisibility == Visibility.Visible)
+				{
+					_vm.Workstations.PanelSpacing = 51;
+					workstation.MachinesGroupVisibility = Visibility.Collapsed;
+				}
+				if (workstation.Id == tag)
+				{
+					workstation.MachinesGroupVisibility = Visibility.Visible;
+					if (workstation.Id == 10 || workstation.Id == 11)
+					{
+						_vm.Workstations.PanelSpacing = 40;
+					}
+				}
+				
+			}
+		}
+
+		private void ReadyToEngraveButtonOnClick(object sender, RoutedEventArgs e)
+		{
+			_vm.AppState.OrderFilterGroup.status_engraving = "ready_to_engrave&with_crystal_product_status[]=engrave_redo";
+			_vm.AppState.OrderFilterGroup.shipByToday = "False";
+			_vm.AppState.OrderFilterGroup.status_order = "processing";
+			_vm.AppState.OrderFilterGroup.status_shipping = "waiting";
+			MainNavigationView.SelectedItem = MainNavigationView.MenuItems[1];
+		}
+
+		private void EngravingButtonOnClick(object sender, RoutedEventArgs e)
+		{
+			_vm.AppState.OrderFilterGroup.status_engraving = "engrave_processing";
+			_vm.AppState.OrderFilterGroup.shipByToday = "False";
+			_vm.AppState.OrderFilterGroup.status_order = "processing";
+			_vm.AppState.OrderFilterGroup.status_shipping = "waiting";
+			MainNavigationView.SelectedItem = MainNavigationView.MenuItems[1];
+		}
+
+		private void ProductionIssuesButtonOnClick(object sender, RoutedEventArgs e)
+		{
+			MainNavigationView.SelectedItem = MainNavigationView.MenuItems[2];
 		}
 	}
 }

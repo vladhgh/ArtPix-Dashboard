@@ -10,20 +10,23 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows;
-using ArtPix_Dashboard.Models.Machine;
+using ArtPix_Dashboard.Models.Workstation;
 using Microsoft.Toolkit.Uwp.Notifications;
+using Datum = ArtPix_Dashboard.Models.Workstation.Datum;
+using Machine = ArtPix_Dashboard.Models.Machine.Machine;
 
 namespace ArtPix_Dashboard.ViewModels
 {
     public class MainViewModel : PropertyChangedListener
     {
 	    #region PROPS
-	    private StatsModel _stats = new StatsModel();
-	    public StatsModel Stats
+	    private StatsModel _engravingStats = new StatsModel();
+	    public StatsModel EngravingStats
 		{
-			get => _stats;
-			set => SetProperty(ref _stats, value);
+			get => _engravingStats;
+			set => SetProperty(ref _engravingStats, value);
 		}
 	    private StatsModel _shippingStats = new StatsModel();
 	    public StatsModel ShippingStats
@@ -52,11 +55,17 @@ namespace ArtPix_Dashboard.ViewModels
 			set => SetProperty(ref _appState, value);
 		}
 
-		private List<Machine> _activeMachinesList = new List<Machine>();
-		public List<Machine> ActiveMachinesList
+		private List<Models.Workstation.Machine> _activeMachinesList = new List<Models.Workstation.Machine>();
+		public List<Models.Workstation.Machine> ActiveMachinesList
 		{
 			get => _activeMachinesList;
 			set => SetProperty(ref _activeMachinesList, value);
+		}
+		private WorkstationsModel _workstations = new WorkstationsModel();
+		public WorkstationsModel Workstations
+		{
+			get => _workstations;
+			set => SetProperty(ref _workstations, value);
 		}
 
 		private Visibility _activeMachinesGroupVisibility = Visibility.Collapsed;
@@ -74,9 +83,9 @@ namespace ArtPix_Dashboard.ViewModels
 			AppState.MainNavigationViewVisibility = Visibility.Hidden;
 			try
 			{
-				Stats = await ArtPixAPI.GetAllStatsAsync();
+				EngravingStats = await ArtPixAPI.GetAllStatsAsync();
 				ShippingStats = await ArtPixAPI.GetShippingStatsAsync();
-
+				Workstations = await ArtPixAPI.GetWorkstations();
 			} catch (Exception e)
 			{
 				Debug.WriteLine("EXCEPTION UNHANDLED: " + e.Message);
@@ -84,10 +93,9 @@ namespace ArtPix_Dashboard.ViewModels
 			AppState.MainNavigationViewVisibility = Visibility.Visible;
 			AppState.IsMainViewLoading = false;
 			var timer = Observable.Interval(TimeSpan.FromSeconds(30));
-			timer.Do(x => Debug.WriteLine("!ENGRAVING STATS LOADED!")).Subscribe(async tick => Stats = await ArtPixAPI.GetAllStatsAsync());
+			timer.Do(x => Debug.WriteLine("!ENGRAVING STATS LOADED!")).Subscribe(async tick => EngravingStats = await ArtPixAPI.GetAllStatsAsync());
 			var timer2 = Observable.Interval(TimeSpan.FromSeconds(60));
 			timer2.Do(x => Debug.WriteLine("!SHIPPING STATS LOADED!")).Subscribe(async tick => ShippingStats = await ArtPixAPI.GetShippingStatsAsync());
-			GetActiveMachines();
 			/*new ToastContentBuilder()
 				.AddArgument("action", "viewConversation")
 				.AddArgument("conversationId", 9813)
@@ -95,12 +103,5 @@ namespace ArtPix_Dashboard.ViewModels
 				.AddText("Check this out, The Enchantments in Washington!")
 				.Show();*/
 		}
-
-		public async void GetActiveMachines()
-		{
-			ActiveMachinesList = await ArtPixAPI.GetActiveMachines();
-			var timer = Observable.Interval(TimeSpan.FromSeconds(30));
-			timer.Do(x => Debug.WriteLine("!MACHINES LOADED!")).Subscribe(async tick => ActiveMachinesList = await ArtPixAPI.GetActiveMachines());
-		}
-	}
+    }
 }

@@ -422,6 +422,9 @@ namespace ArtPix_Dashboard.Models.Order
 		public Retouch Retouch { get; set; }
 
 		public Visibility VitroMarkButtonVisibility => Retouch == null ? Visibility.Collapsed : Visibility.Visible;
+
+		public Visibility ReEngraveButtonVisibility =>
+			Status == "engrave_done" ? Visibility.Visible : Visibility.Collapsed;
 	}
 	[Serializable()]
 	public class Retouch

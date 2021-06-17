@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
+using ArtPix_Dashboard.ViewModels;
 using Newtonsoft.Json;
 
 namespace ArtPix_Dashboard.Models.Workstation
 {
-    public class Machine
+    public class Machine : PropertyChangedListener
     {
         [JsonProperty("id_machines")]
         public int IdMachines { get; set; }
@@ -29,9 +28,18 @@ namespace ArtPix_Dashboard.Models.Workstation
 
         [JsonProperty("updated_at")]
         public string UpdatedAt { get; set; }
+
+        private int _jobsCount;
+
+        public int JobsCount
+        {
+	        get => _jobsCount;
+	        set => SetProperty(ref _jobsCount, value);
+        }
+        public string JobsCountColor => JobsCount < 3 ? "DarkRed" : JobsCount < 5 ? "DarkOrange" : "DarkGreen";
     }
 
-    public class Datum
+    public class Datum : PropertyChangedListener
     {
         [JsonProperty("id")]
         public int Id { get; set; }
@@ -48,8 +56,36 @@ namespace ArtPix_Dashboard.Models.Workstation
         [JsonProperty("updated_at")]
         public string UpdatedAt { get; set; }
 
+        private int _jobsCount;
+
+        public int JobsCount
+        {
+	        get => _jobsCount;
+	        set => SetProperty(ref _jobsCount, value);
+        }
+        public string JobsCountColor => JobsCount < 3 ? "DarkRed" : JobsCount < 5 ? "DarkOrange" : "DarkGreen";
+
+
+        private List<Machine> _machines = new List<Machine>();
+
         [JsonProperty("machines")]
-        public List<Machine> Machines { get; set; }
+        public List<Machine> Machines
+        {
+	        get => _machines;
+	        set => SetProperty(ref _machines, value);
+        }
+
+
+        private Visibility _machinesGroupVisibility = Visibility.Collapsed;
+
+        public Visibility MachinesGroupVisibility
+        {
+	        get => _machinesGroupVisibility;
+	        set => SetProperty(ref _machinesGroupVisibility, value);
+        }
+
+        public Visibility JobsCountVisibility => JobsCount > 0 ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility OfflineTextVisibility => JobsCount == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
     public class Links
@@ -91,10 +127,24 @@ namespace ArtPix_Dashboard.Models.Workstation
         public int Total { get; set; }
     }
 
-    public class WorkstationsModel
+    public class WorkstationsModel : PropertyChangedListener
     {
-        [JsonProperty("data")]
-        public List<Datum> Data { get; set; }
+	    private List<Datum> _data;
+
+	    [JsonProperty("data")]
+	    public List<Datum> Data
+	    {
+		    get => _data;
+		    set => SetProperty(ref _data, value);
+	    }
+
+	    private Double _panelSpacing = 51;
+
+        public Double PanelSpacing
+        {
+	        get => _panelSpacing;
+	        set => SetProperty(ref _panelSpacing, value);
+        }
 
         [JsonProperty("links")]
         public Links Links { get; set; }

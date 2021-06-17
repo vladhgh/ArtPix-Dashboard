@@ -16,7 +16,7 @@
 	mc:Ignorable="d">
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="10"/>
+			<RowDefinition Height="0"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
@@ -87,7 +87,7 @@
                     <ToggleButton x:Name="ToggleNoCrystal" Content="No Crystal"  Cursor="Hand" VerticalAlignment="Bottom"/>
 					<ToggleButton x:Name="ToggleInTotes" Content="In Totes"  Cursor="Hand" VerticalAlignment="Bottom"/>
 					<ToggleButton x:Name="ToggleNoPackage" Content="No Package"  Cursor="Hand" VerticalAlignment="Bottom"/>
-					<Button Content="Reload List" Cursor="Hand" VerticalAlignment="Bottom" Click="ButtonReloadOnClick"/>
+					<Button Content="Reload List" Cursor="Hand" VerticalAlignment="Bottom" Click="ButtonReloadOnClick" Style="{DynamicResource ButtonStyle1}"/>
 				</ui:SimpleStackPanel>
 			</ui:SimpleStackPanel>
 
@@ -410,6 +410,7 @@
                                                                 <!--
                                                                 <Button Cursor="Hand" Content="Crystal Issue" Visibility="{Binding CrystalIssueButtonVisibility}" Margin="0 0 10 0" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnCrystalIssue}" CommandParameter="{Binding }" Opacity="0.9" Style="{StaticResource AddCrystalIssueButtonStyle}"/>
                                                                 -->
+                                                                <Button Cursor="Hand" Content="Re-Engrave" Visibility="{Binding ReEngraveButtonVisibility}" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnReEngrave}" CommandParameter="{Binding }" Margin="0 0 10 0" Opacity="0.9" Style="{StaticResource ReworkButtonStyle}"/>
                                                                 <Button Cursor="Hand" Content="Manual Complete" Visibility="{Binding ManualCompleteButtonVisibility}" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnManualComplete}" CommandParameter="{Binding }" Margin="0 0 10 0" Opacity="0.9" Style="{StaticResource ManualCompleteButtonStyle}"/>
                                                                 <Button Cursor="Hand" Content="Product History" Margin="0 0 10 0" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnProductHistory}" CommandParameter="{Binding IdProducts}" Opacity="0.9" />
                                                             </ui:SimpleStackPanel>

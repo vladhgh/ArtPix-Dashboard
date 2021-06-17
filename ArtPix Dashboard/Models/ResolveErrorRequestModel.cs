@@ -20,11 +20,13 @@ namespace ArtPix_Dashboard.Models
 	    public int product_id { get; set; }
 
 	    public int order_id { get; set; }
-        public int copy_id { get; set; }
+        public int machine_assign_item_id { get; set; }
 
         public string order_name { get; set; }
 
 	    public string machine { get; set; }
+
+        public string user { get; set; }
     }
     public class FindBestServiceRequestModel
 	{

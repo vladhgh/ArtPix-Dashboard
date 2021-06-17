@@ -20,7 +20,9 @@ using QRCoder;
 using ArtPix_Dashboard.Views.Dialogs;
 using ModernWpf.Controls;
 using ArtPix_Dashboard.Models;
+using ArtPix_Dashboard.Models.Machine;
 using ToastNotifications.Messages;
+using Product = ArtPix_Dashboard.Models.Order.Product;
 
 namespace ArtPix_Dashboard.ViewModels
 {
@@ -168,6 +170,12 @@ namespace ArtPix_Dashboard.ViewModels
 			set => SetProperty(ref _onVitromark, value);
 		}
 
+		private ICommand _onReEngrave;
+		public ICommand OnReEngrave
+		{
+			get => _onReEngrave;
+			set => SetProperty(ref _onReEngrave, value);
+		}
 
 		#endregion
 
@@ -185,7 +193,36 @@ namespace ArtPix_Dashboard.ViewModels
 			OnVitromark = new DelegateCommand(param => Commands.OpenFileInVitroMark(param.ToString()));
 			OnProductHistory = new DelegateCommand(OpenProductHistoryDialog);
 			OnFindBestService = new DelegateCommand(FindBestServiceButtonOnClick);
+			OnReEngrave = new DelegateCommand(OpenReEngraveDialog);
 		}
+
+		private async void OpenReEngraveDialog(object param)
+		{
+			var product = (Product)param;
+			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == product.IdOrders);
+			var machines = await ArtPixAPI.GetMachines(product.IdProducts);
+			var dialog = new ReEngraveDialog(machines.Data);
+			var result = await dialog.ShowAsync();
+			if (result == ContentDialogResult.Primary)
+			{
+				if (!string.IsNullOrEmpty(dialog.Combo2.Text))
+				{
+					var x = (Models.Machine.Machine)dialog.Combo2.SelectedItem;
+					var body = new AssignProcessingModel
+					{
+						machine = x.Name,
+						machine_assign_item_id = product.MachineAssignItemId
+
+					};
+					await ArtPixAPI.ProductReEngrave(body);
+					Utils.Utils.Notifier.ShowSuccess($"Product re-engrave success!");
+				}
+				//order = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
+				var index = Orders.Data.IndexOf(order);
+				Orders.Data[index] = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
+			}
+		}
+
 		private async void OpenAssignMachineDialog(object param)
 		{
 			var product = (Product)param;
@@ -208,7 +245,8 @@ namespace ArtPix_Dashboard.ViewModels
 					await ArtPixAPI.ProductAssignProcessing(body);
 					Utils.Utils.Notifier.ShowSuccess($"Assigned To Machine {body.machine} Successfully!");
 				}
-				order = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
+				var index = Orders.Data.IndexOf(order);
+				Orders.Data[index] = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
 			}
 		}
 

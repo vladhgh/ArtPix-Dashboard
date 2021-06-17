@@ -109,7 +109,7 @@
     <Compile Include="Models\ResolveErrorRequestModel.cs" />
     <Compile Include="Models\StatsModel.cs" />
     <Compile Include="API\ArtPixAPI.cs" />
-    <Compile Include="Models\WorkstationsModel.cs" />
+    <Compile Include="Models\Workstation\WorkstationsModel.cs" />
     <Compile Include="Utils\PixelsToGridLengthConverter.cs" />
     <Compile Include="Utils\Utils.cs" />
     <Compile Include="API\WinAPI.cs" />
@@ -121,6 +121,9 @@
     <Compile Include="Utils\PropertyChangedListener.cs" />
     <Compile Include="ViewModels\ShippingDashboardViewModel.cs" />
     <Compile Include="ViewModels\UtilitiesViewModel.cs" />
+    <Compile Include="Views\Dialogs\ReEngraveDialog.xaml.cs">
+      <DependentUpon>ReEngraveDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\ProductHistoryDialog.xaml.cs">
       <DependentUpon>ProductHistoryDialog.xaml</DependentUpon>
     </Compile>
@@ -161,6 +164,10 @@
     <Page Include="Styles\Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\ReEngraveDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\ProductHistoryDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -381,5 +388,6 @@
   <ItemGroup>
     <Resource Include="Assets\golden_star_wrapping_paper.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
