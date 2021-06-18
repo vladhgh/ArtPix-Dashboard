@@ -92,10 +92,12 @@ namespace ArtPix_Dashboard.ViewModels
 			}
 			AppState.MainNavigationViewVisibility = Visibility.Visible;
 			AppState.IsMainViewLoading = false;
-			var timer = Observable.Interval(TimeSpan.FromSeconds(30));
-			timer.Do(x => Debug.WriteLine("!ENGRAVING STATS LOADED!")).Subscribe(async tick => EngravingStats = await ArtPixAPI.GetAllStatsAsync());
-			var timer2 = Observable.Interval(TimeSpan.FromSeconds(60));
-			timer2.Do(x => Debug.WriteLine("!SHIPPING STATS LOADED!")).Subscribe(async tick => ShippingStats = await ArtPixAPI.GetShippingStatsAsync());
+			var engravingStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
+			engravingStatsTimer.Do(x => Debug.WriteLine("!ENGRAVING STATS LOADED!")).Subscribe(async tick => EngravingStats = await ArtPixAPI.GetAllStatsAsync());
+			var shippingStatsTimer = Observable.Interval(TimeSpan.FromSeconds(60));
+			shippingStatsTimer.Do(x => Debug.WriteLine("!SHIPPING STATS LOADED!")).Subscribe(async tick => ShippingStats = await ArtPixAPI.GetShippingStatsAsync());
+			var workstationsStatsTimer = Observable.Interval(TimeSpan.FromSeconds(60));
+			workstationsStatsTimer.Do(x => Debug.WriteLine("!WORKSTATIONS LOADED!")).Subscribe(async tick => Workstations = await ArtPixAPI.GetWorkstations());
 			/*new ToastContentBuilder()
 				.AddArgument("action", "viewConversation")
 				.AddArgument("conversationId", 9813)

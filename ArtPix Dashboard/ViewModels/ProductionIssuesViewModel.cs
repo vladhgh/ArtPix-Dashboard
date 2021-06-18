@@ -293,6 +293,11 @@ namespace ArtPix_Dashboard.ViewModels
 					await ArtPixAPI.ProductAssignProcessing(body);
 					Notifier.ShowSuccess("Assigned To Machine Successfully!");
 				}
+				if (System.IO.Directory.Exists($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{item.ProductId}"))
+				{
+					System.IO.Directory.Delete($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{item.ProductId}", true);
+					Notifier.ShowSuccess($"Local Files Removed Successfully For Product {item.ProductId}!");
+				}
 				GetIssuesList(Issues.Meta.CurrentPage, false);
 			}
 			IsLoading = false;
@@ -322,6 +327,11 @@ namespace ArtPix_Dashboard.ViewModels
 					GetIssuesList(Issues.Meta.CurrentPage, false);
 					Notifier.ShowInformation(item.ProductId + " Product Sent To Retoucher Rework Successfully!");
 					IsLoading = false;
+					if (System.IO.Directory.Exists($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{item.ProductId}"))
+					{
+						System.IO.Directory.Delete($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{item.ProductId}", true);
+						Notifier.ShowSuccess($"Local Files Removed Successfully For Product {item.ProductId}!");
+					}
 					break;
 				}
 				case ContentDialogResult.Secondary:
@@ -343,6 +353,11 @@ namespace ArtPix_Dashboard.ViewModels
 					GetIssuesList(Issues.Meta.CurrentPage, false);
 					Notifier.ShowInformation(item.ProductId + " Product Sent To Looxis Rework Successfully!");
 					IsLoading = false;
+					if (System.IO.Directory.Exists($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{item.ProductId}"))
+					{
+						System.IO.Directory.Delete($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{item.ProductId}", true);
+						Notifier.ShowSuccess($"Local Files Removed Successfully For Product {item.ProductId}!");
+					}
 					break;
 				}
 				case ContentDialogResult.None:
