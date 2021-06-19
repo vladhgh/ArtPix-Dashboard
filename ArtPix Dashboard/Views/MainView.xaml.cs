@@ -13,6 +13,11 @@ using ArtPix_Dashboard.Models;
 using ArtPix_Dashboard.Properties;
 using Newtonsoft.Json;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
+using System.Net.NetworkInformation;
+using System.Net;
+using System.Net.Sockets;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace ArtPix_Dashboard.Views
 {
@@ -212,5 +217,11 @@ namespace ArtPix_Dashboard.Views
 		{
 			MainNavigationView.SelectedItem = MainNavigationView.MenuItems[2];
 		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			//GetAllMacAddressesAndIppairs();
+		}
+		
 	}
 }

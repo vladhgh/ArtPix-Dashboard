@@ -211,6 +211,7 @@ namespace ArtPix_Dashboard.ViewModels
 					var body = new AssignProcessingModel
 					{
 						machine = x.Name,
+						user = "Supervisor",
 						machine_assign_item_id = product.MachineAssignItemId
 
 					};
@@ -269,7 +270,7 @@ namespace ArtPix_Dashboard.ViewModels
 					product_id = item.IdProducts
 				};
 				await ArtPixAPI.ChangeMachineAssignItemStatusAsync(newStatus);
-				order = await ArtPixAPI.GetOrder(param.ToString());
+				//order = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
 			}
 		}
 		private async void OpenUnassignDialog(object param)
@@ -289,7 +290,7 @@ namespace ArtPix_Dashboard.ViewModels
 					product_id = item.IdProducts
 				};
 				await ArtPixAPI.UnassignMachineAssignItemAsync(body);
-				order = await ArtPixAPI.GetOrder(param.ToString());
+				//order = await ArtPixAPI.GetOrder(param.ToString());
 			}
 		}
 		private async void FindBestServiceButtonOnClick(object param)

@@ -23,6 +23,14 @@ namespace ArtPix_Dashboard.Models.Workstation
         [JsonProperty("status")]
         public bool Status { get; set; }
 
+        private string _networkStatus = "Offline";
+
+        public string NetworkStatus
+		{
+            get => _networkStatus;
+            set => SetProperty(ref _networkStatus, value);
+		}
+
         [JsonProperty("created_at")]
         public string CreatedAt { get; set; }
 

@@ -262,7 +262,7 @@
                                         <ItemsControl ItemsSource="{Binding Machines}" Background="{DynamicResource ButtonBackgroundPointerOver}" Padding="10 5" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding MachinesGroupVisibility}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <Button Background="Transparent" Height="auto" Cursor="Hand">
+                                                    <Button Background="Transparent" Height="auto" Cursor="Hand" Click="Button_Click">
                                                         <ui:SimpleStackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Vertical"  Spacing="2">
                                                             <TextBlock
                                                                 HorizontalAlignment="Center"

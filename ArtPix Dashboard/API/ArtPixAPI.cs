@@ -20,6 +20,7 @@ using ArtPix_Dashboard.Models.Workstation;
 using RestSharp.Extensions;
 using Machine = ArtPix_Dashboard.Models.Machine.Machine;
 using Order = ArtPix_Dashboard.Models.Machine.Order;
+using Windows.Globalization.DateTimeFormatting;
 
 namespace ArtPix_Dashboard.Utils
 {
@@ -113,11 +114,37 @@ namespace ArtPix_Dashboard.Utils
 		{
 			var req = new RestRequest("/work-stations");
 			req.AddHeader("Accept", "application/json");
+			var networkAddresses = Utils.GetAllMacAddressesAndIppairs();
 			var workstations = await Client.GetAsync<WorkstationsModel>(req);
 			var activeMachines = await GetActiveMachines();
+			var online = new Dictionary<int, bool>();
+
+			foreach (var item in Utils.MachineAddresses)
+			{
+				online[Int32.Parse(item.Value)] = networkAddresses.Find(p => p.MacAddress == item.Key).MacAddress != null;
+			}
+			foreach (var workstation in workstations.Data)
+			{
+				foreach (var machine in workstation.Machines)
+				{
+					try
+					{
+						var _ = online[machine.IdMachines];
+						machine.NetworkStatus = "Online";
+					}
+					catch
+					{
+						machine.NetworkStatus = "Offline";
+					}
+
+				}
+			}
+
+
 			foreach (var activeMachine in activeMachines)
 			{
-				Debug.WriteLine($"MACHINE {activeMachine.IdMachines} JOBS {activeMachine.JobsCount}");
+				//Debug.WriteLine($"MACHINE {activeMachine.IdMachines} JOBS {activeMachine.JobsCount}");
+
 				if (activeMachine.IdMachines >= 1 && activeMachine.IdMachines <= 4)
 				{
 					workstations.Data[0].Machines.ForEach(x => x.JobsCount = x.IdMachines == activeMachine.IdMachines ? activeMachine.JobsCount : x.JobsCount);
@@ -348,20 +375,21 @@ namespace ArtPix_Dashboard.Utils
 			var res = await Client.GetAsync<OrderAssignModel>(req);
 			foreach (var order in res.Data)
 			{
-				if (DateTime.Parse(order.Order.UpdatedAt, CultureInfo.CurrentUICulture) >
-						DateTime.Parse(today + " 12:00:00", CultureInfo.CurrentUICulture))
+				if (DateTime.Parse(order.Order.UpdatedAt, CultureInfo.CurrentUICulture).AddHours(-5) >
+						DateTime.Parse(today + " 7:00:00", CultureInfo.CurrentUICulture))
 					orderList.Add(order);
 			}
 			var i = 1;
-			while (DateTime.Parse(res.Data[res.Data.Count - 1].Order.UpdatedAt, CultureInfo.CurrentUICulture) > DateTime.Parse(today + " 12:00:00", CultureInfo.CurrentUICulture))
+			while (DateTime.Parse(res.Data[res.Data.Count - 1].Order.UpdatedAt, CultureInfo.CurrentUICulture).AddHours(-5)
+				> DateTime.Parse(today + " 7:00:00", CultureInfo.CurrentUICulture))
 			{
 				i++;
 				req = new RestRequest($"/shipping/order-assign?per_page=100&page={i}");
 				res = await Client.GetAsync<OrderAssignModel>(req);
 				res.Data.ForEach(x =>
 				{
-					if (DateTime.Parse(x.Order.UpdatedAt, CultureInfo.CurrentUICulture) >
-					    DateTime.Parse(today + " 12:00:00", CultureInfo.CurrentUICulture))
+					if (DateTime.Parse(x.Order.UpdatedAt, CultureInfo.CurrentUICulture).AddHours(-5) >
+					    DateTime.Parse(today + " 7:00:00", CultureInfo.CurrentUICulture))
 						orderList.Add(x);
 				});
 

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -15,6 +17,59 @@ namespace ArtPix_Dashboard.Utils
 {
 	public static class Utils
 	{
+
+		public struct MacIpPair
+		{
+			public string MacAddress;
+			public string IpAddress;
+		}
+
+		public static Dictionary<string, string> MachineAddresses = new Dictionary<string, string>()
+		{
+			{ "94-de-80-fc-3a-fb", "1" },
+		};
+
+		public static string GetMacByIp(string ip)
+		{
+			var macIpPairs = GetAllMacAddressesAndIppairs();
+			int index = macIpPairs.FindIndex(x => x.IpAddress == ip);
+			if (index >= 0)
+			{
+				return macIpPairs[index].MacAddress.ToUpper();
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		public static List<MacIpPair> GetAllMacAddressesAndIppairs()
+		{
+			List<MacIpPair> mip = new List<MacIpPair>();
+			Process pProcess = new Process();
+			pProcess.StartInfo.FileName = "arp";
+			pProcess.StartInfo.Arguments = "-a ";
+			pProcess.StartInfo.UseShellExecute = false;
+			pProcess.StartInfo.RedirectStandardOutput = true;
+			pProcess.StartInfo.CreateNoWindow = true;
+			pProcess.Start();
+			string cmdOutput = pProcess.StandardOutput.ReadToEnd();
+			string pattern = @"(?<ip>([0-9]{1,3}\.?){4})\s*(?<mac>([a-f0-9]{2}-?){6})";
+
+			foreach (Match m in Regex.Matches(cmdOutput, pattern, RegexOptions.IgnoreCase))
+			{
+				mip.Add(new MacIpPair()
+				{
+					MacAddress = m.Groups["mac"].Value,
+					IpAddress = m.Groups["ip"].Value
+				});
+				Debug.WriteLine($"MAC: {m.Groups["mac"].Value} IP: {m.Groups["ip"].Value}");
+			}
+
+			return mip;
+		}
+		
+
 		public static T DeepCopy<T>(T other)
 		{
 			using (MemoryStream ms = new MemoryStream())
