@@ -130,5 +130,26 @@ namespace ArtPix_Dashboard.Properties {
                 this["StatusGroup"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DEV BUILD")]
+        public string CurrentVersion {
+            get {
+                return ((string)(this["CurrentVersion"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PreviousVersion {
+            get {
+                return ((string)(this["PreviousVersion"]));
+            }
+            set {
+                this["PreviousVersion"] = value;
+            }
+        }
     }
 }

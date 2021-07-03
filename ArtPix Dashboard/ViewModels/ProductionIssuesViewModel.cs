@@ -19,6 +19,12 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using ToastNotifications.Messages;
 using static ArtPix_Dashboard.Utils.Utils;
+using System.Drawing.Printing;
+using System.Security.Cryptography.X509Certificates;
+using System.Drawing;
+using QRCoder;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 namespace ArtPix_Dashboard.ViewModels
 {
@@ -158,6 +164,8 @@ namespace ArtPix_Dashboard.ViewModels
 		
 
 		#endregion
+
+		public Models.Product.Datum SelectedItem;
 
 		private void InitializeCommands()
 		{
@@ -369,6 +377,7 @@ namespace ArtPix_Dashboard.ViewModels
 		private async void OpenCancelIssueDialog(object param)
 		{
 			var item = Issues.Data.SingleOrDefault(p => p.MachineAssignItemId == (int)param);
+			SelectedItem = item;
 			var dialog = new CancelIssueDialog(item);
 			var result = await dialog.ShowAsync();
 			if (result == ContentDialogResult.Primary)
@@ -379,12 +388,69 @@ namespace ArtPix_Dashboard.ViewModels
 					user = "Supervisor",
 					message = "Life Is Good!"
 				};
+				if ((bool)dialog.PrintShippingLabel.IsChecked)
+				{
+					PrintDocument pd = new PrintDocument();
+					pd.PrinterSettings.DefaultPageSettings.PaperSize = new PaperSize("QR",62, 29);
+					pd.OriginAtMargins = false;
+					pd.PrintPage += PrintPage;
+					pd.Print();
+				}
+				
 				await ArtPixAPI.CancelProductionIssueAsync(requestBody);
 				GetIssuesList(Issues.Meta.CurrentPage, false);
 				Notifier.ShowSuccess(item.ProductId + " Issue Canceled Successfully!");
 				IsLoading = false;
 			}
 		}
-		
+		public void PrintPage(object o, PrintPageEventArgs e)
+		{
+			var item = SelectedItem;
+			QRCodeGenerator qrGenerator = new QRCodeGenerator();
+			QRCodeData qrCodeData = qrGenerator.CreateQrCode("\t" + $"{item.Order.Id}-{item.ProductId}-{item.MachineAssignItemId}" + "\n", QRCodeGenerator.ECCLevel.Q);
+			QRCode qrCode = new QRCode(qrCodeData);
+			var qr = qrCode.GetGraphic(20);
+			qr = ResizeImage(qr, 95, 95);
+			var img = (System.Drawing.Image)qr;
+			System.Drawing.Point loc = new System.Drawing.Point(0, 0);
+			Rectangle rect = new Rectangle(2, 2, 225, 88);
+			e.Graphics.DrawImage(img, loc);
+			Pen blackPen = new Pen(Color.Black, 3);
+			//e.Graphics.DrawRectangle(blackPen, rect);
+			if (SelectedItem.Order.Name.Length > 6)
+			{
+				e.Graphics.DrawString($"{SelectedItem.Order.Name}", new Font("Consolas", 9), new SolidBrush(Color.Black), 95, 45);
+			}
+			else
+			{
+				e.Graphics.DrawString($"{SelectedItem.Order.Name}", new Font("Consolas", 12), new SolidBrush(Color.Black), 125, 45);
+			}
+		}
+
+		public static Bitmap ResizeImage(System.Drawing.Image image, int width, int height)
+		{
+			var destRect = new Rectangle(0, 0, width, height);
+			var destImage = new Bitmap(width, height);
+
+			destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+			using (var graphics = Graphics.FromImage(destImage))
+			{
+				graphics.CompositingMode = CompositingMode.SourceCopy;
+				graphics.CompositingQuality = CompositingQuality.HighQuality;
+				graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+				graphics.SmoothingMode = SmoothingMode.HighQuality;
+				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+				using (var wrapMode = new ImageAttributes())
+				{
+					wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+					graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+				}
+			}
+
+			return destImage;
+		}
+
 	}
 }

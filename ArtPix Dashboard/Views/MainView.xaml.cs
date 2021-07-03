@@ -18,6 +18,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using ArtPix_Dashboard.Views.Dialogs;
+using ArtPix_Dashboard.Utils;
 
 namespace ArtPix_Dashboard.Views
 {
@@ -36,9 +38,10 @@ namespace ArtPix_Dashboard.Views
 			_vm.Initialize();
 			Window.Closing += Window_Closing;
 			MainNavigationView.SelectionChanged += NavigateToSelectedPage;
-			_vm.AppState.SelectedItem = MainNavigationView.MenuItems.OfType<NavigationViewItem>().FirstOrDefault(x => x.Tag.ToString() == Settings.Default.LastVisitedViewTag);
+			var tag = String.IsNullOrEmpty(Settings.Default.LastVisitedViewTag) ? "ProductionIssuesView" : Settings.Default.LastVisitedViewTag;
+			_vm.AppState.SelectedItem = MainNavigationView.MenuItems.OfType<NavigationViewItem>().FirstOrDefault(x => x.Tag.ToString() == tag);
 		}
-		private void InitializeSettings()
+		private async void InitializeSettings()
 		{
 			_vm.AppState.EmployeeName = "Supervisor";
 			_vm.AppState.Top = Settings.Default.Top;
@@ -47,9 +50,16 @@ namespace ArtPix_Dashboard.Views
 			_vm.AppState.Width = Settings.Default.Width;
 			_vm.AppState.WindowState = Settings.Default.Maximized ? WindowState.Maximized : WindowState.Normal;
 			_vm.AppState.StatusGroup = Settings.Default.StatusGroup ?? "Engraving";
+			_vm.AppState.CurrentVersion = Settings.Default.CurrentVersion ?? "DEV";
+			_vm.AppState.PreviousVersion = Settings.Default.PreviousVersion ?? "DEV";
+			//if (_vm.AppState.CurrentVersion != _vm.AppState.PreviousVersion)
+			//{
+			//	var dialog = new ChangeLogsDialog();
+			//	var result = await dialog.ShowAsync();
+			//	_vm.AppState.PreviousVersion = _vm.AppState.CurrentVersion;
+			//}
 			SwitchStatusPanel();
-			var filterGroup =
-				JsonConvert.DeserializeObject<OrderCombineFilterModel>(Settings.Default.OrderFilterGroup);
+			var filterGroup = JsonConvert.DeserializeObject<OrderCombineFilterModel>(Settings.Default.OrderFilterGroup);
 			if (filterGroup != null)
 				_vm.AppState.OrderFilterGroup = new OrderCombineFilterModel
 				{
@@ -112,13 +122,13 @@ namespace ArtPix_Dashboard.Views
 			Settings.Default.LastVisitedViewTag = _vm.AppState.SelectedItem.Tag.ToString();
 			Settings.Default.OrderFilterGroup = JsonConvert.SerializeObject(_vm.AppState.OrderFilterGroup, Formatting.Indented);
 			Settings.Default.StatusGroup = _vm.AppState.StatusGroup;
+			Settings.Default.PreviousVersion = _vm.AppState.PreviousVersion;
 			Settings.Default.Save();
 		}
 
 
 		private void SwitchStatusPanel()
 		{
-			Debug.WriteLine(_vm.AppState.StatusGroup);
 			switch (_vm.AppState.StatusGroup)
 			{
 				case "Engraving":
@@ -222,6 +232,28 @@ namespace ArtPix_Dashboard.Views
 		{
 			//GetAllMacAddressesAndIppairs();
 		}
-		
+
+		private async void MenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			System.Windows.Forms.MessageBox.Show("Machine 1 Waking Up!");
+			SendWakeOnLan(PhysicalAddress.Parse("94-DE-80-FC-3A-FB"));
+		}
+		public void SendWakeOnLan(PhysicalAddress target)
+		{
+			var header = Enumerable.Repeat(byte.MaxValue, 6);
+			var data = Enumerable.Repeat(target.GetAddressBytes(), 16).SelectMany(mac => mac);
+
+			var magicPacket = header.Concat(data).ToArray();
+
+			var client = new UdpClient();
+
+			client.Send(magicPacket, magicPacket.Length, new IPEndPoint(IPAddress.Broadcast, 9));
+		}
+
+		private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+		{
+			System.Diagnostics.Process.Start("shutdown", "-s -f -t 00 -m \\\\1-AB1-LL");
+			//System.Windows.Forms.MessageBox.Show(WinAPI.InitiateSystemShutdownEx("\\\\1-AB1-LL", null, 0, true, false, 0x40000000).ToString());
+		}
 	}
 }

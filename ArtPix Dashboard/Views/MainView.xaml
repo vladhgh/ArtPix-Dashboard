@@ -10,7 +10,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         Icon="../Assets/logo.ico"
-		Title="ArtPix Dashboard v1.4"
+		Title="{Binding AppState.CurrentVersion, StringFormat=ArtPix Dashboard {0:N}}"
 		Top="{Binding AppState.Top, Mode=TwoWay}"
 		Left="{Binding AppState.Left, Mode=TwoWay}"
 		Height="{Binding AppState.Height, Mode=TwoWay}"
@@ -281,6 +281,26 @@
                                                             </Button>
                                                             
                                                         </ui:SimpleStackPanel>
+                                                        <ui:FlyoutService.Flyout>
+                                                            <ui:MenuFlyout Placement="BottomEdgeAlignedLeft">
+                                                                <MenuItem Header="Turn PC On" Cursor="Hand" Click="MenuItem_Click">
+                                                                    <MenuItem.Icon>
+                                                                        <ui:FontIcon Glyph="&#xE895;" />
+                                                                    </MenuItem.Icon>
+                                                                </MenuItem>
+                                                                <MenuItem Header="Turn PC Off" Cursor="Hand" Click="MenuItem_Click_1">
+                                                                    <MenuItem.Icon>
+                                                                        <ui:FontIcon Glyph="&#xE894;" />
+                                                                    </MenuItem.Icon>
+                                                                </MenuItem>
+                                                                <Separator />
+                                                                <MenuItem Header="Unassign Jobs" Cursor="Hand">
+                                                                    <MenuItem.Icon>
+                                                                        <ui:FontIcon Glyph="&#xE894;" />
+                                                                    </MenuItem.Icon>
+                                                                </MenuItem>
+                                                            </ui:MenuFlyout>
+                                                        </ui:FlyoutService.Flyout>
                                                     </Button>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>

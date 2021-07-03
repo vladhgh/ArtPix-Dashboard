@@ -1,0 +1,36 @@
+﻿<ui:ContentDialog
+    x:Class="ArtPix_Dashboard.Views.Dialogs.ChangeLogsDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:xamlFlair="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    DefaultButton="Primary">
+
+    <ui:SimpleStackPanel Orientation="Vertical">
+        <TextBlock
+            Text="Change Logs:"
+            FontFamily="Segoe UI"
+            FontWeight="Black"
+            xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}"
+            Style="{DynamicResource TitleTextBlockStyle}"
+            Margin="0 0 0 10"/>
+        <ui:SimpleStackPanel Orientation="Vertical">
+            <TextBlock
+                Text="03/06:"
+                FontFamily="Segoe UI"
+                FontWeight="Bold"
+                xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}"
+                Style="{DynamicResource SubtitleTextBlockStyle}"
+                Margin="0 0 0 5"/>
+            <TextBlock
+                Text="- print QR code when cancelling issue"
+                FontFamily="Segoe UI"
+                FontWeight="SemiBold"
+                xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}"
+                Style="{DynamicResource BaseTextBlockStyle}"
+                Margin="0 0 0 10"/>
+        </ui:SimpleStackPanel>
+        <Button Content="Got it!" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}" HorizontalAlignment="Center" Cursor="Hand" Margin="0 10 0 0" Width="250" Click="Button_Click"/>
+    </ui:SimpleStackPanel>
+
+</ui:ContentDialog>

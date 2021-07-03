@@ -8,6 +8,8 @@ using System.Windows.Documents;
 using System.Windows.Forms;
 using ArtPix_Dashboard.Models.Order;
 using QRCoder;
+using System.Drawing;
+using System.Drawing.Printing;
 
 namespace ArtPix_Dashboard.ViewModels
 {
@@ -68,16 +70,5 @@ namespace ArtPix_Dashboard.ViewModels
 			}
 		}
 
-		public static void PrintQR(object obj)
-		{
-			foreach (var item in (List<MachineAssignItem>) obj)
-			{
-				Debug.WriteLine(item.Id);
-			}
-			QRCodeGenerator qrGenerator = new QRCodeGenerator();
-			QRCodeData qrCodeData = qrGenerator.CreateQrCode("The text which should be encoded.", QRCodeGenerator.ECCLevel.Q);
-			QRCode qrCode = new QRCode(qrCodeData);
-			var qrCodeImage = qrCode.GetGraphic(20);
-		}
 	}
 }

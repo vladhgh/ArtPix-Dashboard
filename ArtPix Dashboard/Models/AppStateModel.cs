@@ -59,6 +59,18 @@ namespace ArtPix_Dashboard.Models
 			get => _statusGroup;
 			set => SetProperty(ref _statusGroup, value);
 		}
+		private string _currentVersion;
+		public string CurrentVersion
+		{
+			get => _currentVersion;
+			set => SetProperty(ref _currentVersion, value);
+		}
+		private string _previousVersion;
+		public string PreviousVersion
+		{
+			get => _previousVersion;
+			set => SetProperty(ref _previousVersion, value);
+		}
 		private string _employeeName;
 		public string EmployeeName
 		{

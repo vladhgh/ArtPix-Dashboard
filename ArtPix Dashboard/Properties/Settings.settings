@@ -29,5 +29,11 @@
     <Setting Name="StatusGroup" Type="System.String" Scope="User">
       <Value Profile="(Default)">Engraving</Value>
     </Setting>
+    <Setting Name="CurrentVersion" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">DEV BUILD</Value>
+    </Setting>
+    <Setting Name="PreviousVersion" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
