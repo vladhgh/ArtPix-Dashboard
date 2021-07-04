@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using ArtPix_Dashboard.ViewModels;
 using Newtonsoft.Json;
@@ -44,6 +46,86 @@ namespace ArtPix_Dashboard.Models.Workstation
 	        get => _jobsCount;
 	        set => SetProperty(ref _jobsCount, value);
         }
+
+        public string MacAddress
+		{
+            get
+			{
+                if (Utils.Utils.MachineAddresses.FirstOrDefault(x => x.Value == Name).Key is string value)
+				{
+                    Debug.WriteLine("MAC FOUND: " + value);
+                    return value;
+				}
+				else
+				{
+                    Debug.WriteLine("Unknown");
+                    return "Unknown";
+				}
+            }
+		}
+
+        public string NetworkPath
+		{
+            get
+			{
+                switch (Name)
+				{
+                    case "1":
+                        return "\\\\1-AB1-LL";
+                    case "2":
+                        return "\\\\2-AB1-LL";
+                    case "3":
+                        return "\\\\3-AB1-LL";
+                    case "4":
+                        return "\\\\4-AB1-LL";
+                    case "5":
+                        return "\\\\5-AB1-LL";
+                    case "6":
+                        return "\\\\6-AB1-LL";
+                    case "7":
+                        return "\\\\7-AB1-LL";
+                    case "8":
+                        return "\\\\8-AB1-LL";
+                    case "9":
+                        return "\\\\9-AB1-LL";
+                    case "10":
+                        return "\\\\10-AB1-LL";
+                    case "11":
+                        return "\\\\11-AB1-LL";
+                    case "12":
+                        return "\\\\12-AB1-LL";
+                    case "13":
+                        return "\\\\13-AB2-SL";
+                    case "14":
+                        return "\\\\14-AB2-SL";
+                    case "15":
+                        return "\\\\15-AB2-SL";
+                    case "16":
+                        return "\\\\16-AB3-SL";
+                    case "17":
+                        return "\\\\17-AB4-SL";
+                    case "18":
+                        return "\\\\18-AB2-SL";
+                    case "19":
+                        return "\\\\19-AB2-SL";
+                    case "20":
+                        return "\\\\20-AB1-LL";
+                    case "21":
+                        return "\\\\21-AB1-LL";
+                    case "22":
+                        return "\\\\22-AB1-LL";
+                    case "23":
+                        return "\\\\23-AB1-LL";
+                    case "24":
+                        return "\\\\24-AB1-LL";
+                    case "25":
+                        return "\\\\25-AB1-LL";
+                    default:
+                        return "none";
+                }
+			}
+		}
+
         public string JobsCountColor => JobsCount < 3 ? "DarkRed" : JobsCount < 5 ? "DarkOrange" : "DarkGreen";
 
         public Visibility OfflineTextVisibility => NetworkStatus == "Offline" && JobsCount == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -99,7 +181,34 @@ namespace ArtPix_Dashboard.Models.Workstation
         }
 
         public Visibility JobsCountVisibility => JobsCount > 0 ? Visibility.Visible : Visibility.Collapsed;
-        public Visibility OfflineTextVisibility => JobsCount == 0 ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility OfflineTextVisibility
+        {
+            get
+            {
+                foreach (var machine in Machines)
+                {
+                    if (machine.NetworkStatus == "Online")
+                    {
+                        return Visibility.Collapsed;
+                    }
+                }
+                return JobsCount == 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+        public Visibility OnlineTextVisibility
+		{
+            get
+			{
+                foreach (var machine in Machines)
+				{
+                    if (machine.NetworkStatus == "Online")
+					{
+                        return JobsCount == 0 ? Visibility.Visible : Visibility.Collapsed;
+                    }
+				}
+                return Visibility.Collapsed;
+            }
+		}
 
         private bool _isChecked;
 

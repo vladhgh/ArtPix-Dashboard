@@ -257,6 +257,15 @@
                                                     Text="Offline"
                                                     FontSize="14"
                                                     Style="{DynamicResource SubtitleTextBlockStyle}" />
+                                                <TextBlock
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    FontWeight="SemiBold"
+                                                    Visibility="{Binding OnlineTextVisibility}"
+                                                    Foreground="DarkGreen"
+                                                    Text="Online"
+                                                    FontSize="14"
+                                                    Style="{DynamicResource SubtitleTextBlockStyle}" />
                                             </ui:SimpleStackPanel>
                                         </ToggleButton>
                                         <ItemsControl ItemsSource="{Binding Machines}" Background="{DynamicResource ButtonBackgroundPointerOver}" Padding="10 5" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding MachinesGroupVisibility}">
@@ -300,12 +309,12 @@
                                                         </ui:SimpleStackPanel>
                                                         <ui:FlyoutService.Flyout>
                                                             <ui:MenuFlyout Placement="BottomEdgeAlignedLeft">
-                                                                <MenuItem Header="Turn PC On" Cursor="Hand" Click="MenuItem_Click">
+                                                                <MenuItem Header="Turn PC On" Cursor="Hand" Tag="{Binding MacAddress}" Click="MenuItem_Click">
                                                                     <MenuItem.Icon>
                                                                         <ui:FontIcon Glyph="&#xE895;" />
                                                                     </MenuItem.Icon>
                                                                 </MenuItem>
-                                                                <MenuItem Header="Turn PC Off" Cursor="Hand" Click="MenuItem_Click_1">
+                                                                <MenuItem Header="Turn PC Off" Cursor="Hand" Click="MenuItem_Click_1" Tag="{Binding NetworkPath}">
                                                                     <MenuItem.Icon>
                                                                         <ui:FontIcon Glyph="&#xE894;" />
                                                                     </MenuItem.Icon>

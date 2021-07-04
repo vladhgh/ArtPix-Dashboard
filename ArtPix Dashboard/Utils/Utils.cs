@@ -31,7 +31,7 @@ namespace ArtPix_Dashboard.Utils
 
 		public static Dictionary<string, string> MachineAddresses = new Dictionary<string, string>()
 		{
-			{ "94-de-80-fc-3a-fb", "1" },
+			{ "94-DE-80-FC-3A-FB", "1" },
 			{ "B4-2E-99-5D-61-5C", "2" },
 			{ "B4-2E-99-D9-65-DA", "3" },
 			{ "B4-2E-99-B6-A8-60", "4" },

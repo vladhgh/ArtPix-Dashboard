@@ -121,7 +121,7 @@ namespace ArtPix_Dashboard.Utils
 
 			foreach (var item in Utils.MachineAddresses)
 			{
-				online[int.Parse(item.Value)] = networkAddresses.Find(p => p.MacAddress == item.Key).MacAddress != null;
+				online[int.Parse(item.Value)] = networkAddresses.Find(p => p.MacAddress.ToUpper() == item.Key).MacAddress != null;
 			}
 			foreach (var machine in workstations.Data.SelectMany(workstation => workstation.Machines))
 			{

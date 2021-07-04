@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using ArtPix_Dashboard.Views.Dialogs;
 using ArtPix_Dashboard.Utils;
+using ToastNotifications.Messages;
 
 namespace ArtPix_Dashboard.Views
 {
@@ -238,8 +239,9 @@ namespace ArtPix_Dashboard.Views
 
 		private void MenuItem_Click(object sender, RoutedEventArgs e)
 		{
-			System.Windows.Forms.MessageBox.Show("Machine 1 Waking Up!");
-			SendWakeOnLan(PhysicalAddress.Parse("94-DE-80-FC-3A-FB"));
+			SendWakeOnLan(PhysicalAddress.Parse(((MenuItem)sender).Tag.ToString()));
+			Utils.Utils.Notifier.ShowSuccess("Machine Turned On Succesfully!\nPlease Wait....");
+
 		}
 		public void SendWakeOnLan(PhysicalAddress target)
 		{
@@ -255,7 +257,9 @@ namespace ArtPix_Dashboard.Views
 
 		private void MenuItem_Click_1(object sender, RoutedEventArgs e)
 		{
-			System.Diagnostics.Process.Start("shutdown", "-s -f -t 00 -m \\\\1-AB1-LL");
+			var tag = ((MenuItem)sender).Tag.ToString();
+			System.Diagnostics.Process.Start("shutdown", $"-s -f -t 00 -m {tag}");
+			Utils.Utils.Notifier.ShowSuccess($"Machine{tag.Split('-')[0].Replace('\\', ' ')} Turned Off Succesfully!\nPlease Wait....");
 			//System.Windows.Forms.MessageBox.Show(WinAPI.InitiateSystemShutdownEx("\\\\1-AB1-LL", null, 0, true, false, 0x40000000).ToString());
 		}
 	}
