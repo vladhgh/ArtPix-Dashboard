@@ -121,22 +121,18 @@ namespace ArtPix_Dashboard.Utils
 
 			foreach (var item in Utils.MachineAddresses)
 			{
-				online[Int32.Parse(item.Value)] = networkAddresses.Find(p => p.MacAddress == item.Key).MacAddress != null;
+				online[int.Parse(item.Value)] = networkAddresses.Find(p => p.MacAddress == item.Key).MacAddress != null;
 			}
-			foreach (var workstation in workstations.Data)
+			foreach (var machine in workstations.Data.SelectMany(workstation => workstation.Machines))
 			{
-				foreach (var machine in workstation.Machines)
+				if (online.TryGetValue(machine.IdMachines, out bool val))
 				{
-					try
-					{
-						var _ = online[machine.IdMachines];
-						machine.NetworkStatus = "Online";
-					}
-					catch
-					{
-						machine.NetworkStatus = "Offline";
-					}
-
+					machine.NetworkStatus = val ? "Online" : "Offline";
+					Console.WriteLine("Fetched value: {0}", val);
+				}
+				else
+				{
+					Console.WriteLine("No such key: {0}", machine.IdMachines);
 				}
 			}
 

@@ -231,7 +231,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <ui:SimpleStackPanel Orientation="Horizontal">
-                                        <ToggleButton Margin="0 0 0 0" Tag="{Binding Id}" Background="Transparent" Height="auto" Click="WorkstationButtonOnClick" Cursor="Hand" >
+                                        <ToggleButton Margin="0 0 0 0" IsChecked="{Binding IsChecked}" Tag="{Binding Id}" Background="Transparent" Height="auto" Click="WorkstationButtonOnClick" Cursor="Hand" >
                                             <ui:SimpleStackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical" Spacing="2">
                                                 <TextBlock
                                                     HorizontalAlignment="Center"
@@ -270,7 +270,7 @@
                                                                 FontSize="12"
                                                                 Text="{Binding Name, StringFormat=Machine {0:F0}}"
                                                                 Style="{DynamicResource SubtitleTextBlockStyle}" />
-                                                            <Button Background="{Binding JobsCountColor}"  Cursor="Hand" Tag="{Binding Name}" Height="15" Width="30" Padding="0 0 0 2" Style="{StaticResource InactiveButtonStyle}" HorizontalAlignment="Center" Opacity="0.9">
+                                                            <Button Visibility="{Binding JobsCountVisibility}" Background="{Binding JobsCountColor}"  Cursor="Hand" Tag="{Binding Name}" Height="15" Width="30" Padding="0 0 0 2" Style="{StaticResource InactiveButtonStyle}" HorizontalAlignment="Center" Opacity="0.9">
                                                                 <TextBlock
                                                                     HorizontalAlignment="Center"
                                                                     VerticalAlignment="Center"
@@ -279,7 +279,24 @@
                                                                     FontSize="10"
                                                                     Style="{DynamicResource SubtitleTextBlockStyle}" />
                                                             </Button>
-                                                            
+                                                            <TextBlock
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center"
+                                                                FontWeight="SemiBold"
+                                                                Visibility="{Binding OfflineTextVisibility}"
+                                                                Foreground="DarkRed"
+                                                                Text="Offline"
+                                                                FontSize="10"
+                                                                Style="{DynamicResource SubtitleTextBlockStyle}" />
+                                                            <TextBlock
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center"
+                                                                FontWeight="SemiBold"
+                                                                Visibility="{Binding OnlineTextVisibility}"
+                                                                Foreground="DarkGreen"
+                                                                Text="Online"
+                                                                FontSize="10"
+                                                                Style="{DynamicResource SubtitleTextBlockStyle}" />
                                                         </ui:SimpleStackPanel>
                                                         <ui:FlyoutService.Flyout>
                                                             <ui:MenuFlyout Placement="BottomEdgeAlignedLeft">

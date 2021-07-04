@@ -32,7 +32,7 @@ namespace ArtPix_Dashboard.Views
 			DataContext = _vm;
 			InitializeComponent();
 		}
-		private void MainViewOnLoaded(object sender, RoutedEventArgs e)
+		private async void MainViewOnLoaded(object sender, RoutedEventArgs e)
 		{
 			InitializeSettings();
 			_vm.Initialize();
@@ -40,8 +40,14 @@ namespace ArtPix_Dashboard.Views
 			MainNavigationView.SelectionChanged += NavigateToSelectedPage;
 			var tag = String.IsNullOrEmpty(Settings.Default.LastVisitedViewTag) ? "ProductionIssuesView" : Settings.Default.LastVisitedViewTag;
 			_vm.AppState.SelectedItem = MainNavigationView.MenuItems.OfType<NavigationViewItem>().FirstOrDefault(x => x.Tag.ToString() == tag);
+			if (_vm.AppState.CurrentVersion != _vm.AppState.PreviousVersion)
+			{
+				var dialog = new ChangeLogsDialog();
+				var result = await dialog.ShowAsync();
+				_vm.AppState.PreviousVersion = _vm.AppState.CurrentVersion;
+			}
 		}
-		private async void InitializeSettings()
+		private void InitializeSettings()
 		{
 			_vm.AppState.EmployeeName = "Supervisor";
 			_vm.AppState.Top = Settings.Default.Top;
@@ -52,12 +58,6 @@ namespace ArtPix_Dashboard.Views
 			_vm.AppState.StatusGroup = Settings.Default.StatusGroup ?? "Engraving";
 			_vm.AppState.CurrentVersion = Settings.Default.CurrentVersion ?? "DEV";
 			_vm.AppState.PreviousVersion = Settings.Default.PreviousVersion ?? "DEV";
-			//if (_vm.AppState.CurrentVersion != _vm.AppState.PreviousVersion)
-			//{
-			//	var dialog = new ChangeLogsDialog();
-			//	var result = await dialog.ShowAsync();
-			//	_vm.AppState.PreviousVersion = _vm.AppState.CurrentVersion;
-			//}
 			SwitchStatusPanel();
 			var filterGroup = JsonConvert.DeserializeObject<OrderCombineFilterModel>(Settings.Default.OrderFilterGroup);
 			if (filterGroup != null)
@@ -186,16 +186,19 @@ namespace ArtPix_Dashboard.Views
 				{
 					_vm.Workstations.PanelSpacing = 51;
 					workstation.MachinesGroupVisibility = Visibility.Collapsed;
+					workstation.IsChecked = false;
 					return;
 				}
 				if (workstation.MachinesGroupVisibility == Visibility.Visible)
 				{
 					_vm.Workstations.PanelSpacing = 51;
 					workstation.MachinesGroupVisibility = Visibility.Collapsed;
+					workstation.IsChecked = false;
 				}
 				if (workstation.Id == tag)
 				{
 					workstation.MachinesGroupVisibility = Visibility.Visible;
+					workstation.IsChecked = true;
 					if (workstation.Id == 10 || workstation.Id == 11)
 					{
 						_vm.Workstations.PanelSpacing = 40;
@@ -233,7 +236,7 @@ namespace ArtPix_Dashboard.Views
 			//GetAllMacAddressesAndIppairs();
 		}
 
-		private async void MenuItem_Click(object sender, RoutedEventArgs e)
+		private void MenuItem_Click(object sender, RoutedEventArgs e)
 		{
 			System.Windows.Forms.MessageBox.Show("Machine 1 Waking Up!");
 			SendWakeOnLan(PhysicalAddress.Parse("94-DE-80-FC-3A-FB"));

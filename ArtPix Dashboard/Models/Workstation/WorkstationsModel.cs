@@ -45,6 +45,12 @@ namespace ArtPix_Dashboard.Models.Workstation
 	        set => SetProperty(ref _jobsCount, value);
         }
         public string JobsCountColor => JobsCount < 3 ? "DarkRed" : JobsCount < 5 ? "DarkOrange" : "DarkGreen";
+
+        public Visibility OfflineTextVisibility => NetworkStatus == "Offline" && JobsCount == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        public Visibility OnlineTextVisibility => NetworkStatus == "Online" && JobsCount == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        public Visibility JobsCountVisibility => JobsCount > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
     public class Datum : PropertyChangedListener
@@ -94,6 +100,14 @@ namespace ArtPix_Dashboard.Models.Workstation
 
         public Visibility JobsCountVisibility => JobsCount > 0 ? Visibility.Visible : Visibility.Collapsed;
         public Visibility OfflineTextVisibility => JobsCount == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        private bool _isChecked;
+
+        public bool IsChecked
+        {
+	        get => _isChecked;
+	        set => SetProperty(ref _isChecked, value);
+        }
     }
 
     public class Links

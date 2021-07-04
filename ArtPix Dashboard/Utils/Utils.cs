@@ -32,21 +32,31 @@ namespace ArtPix_Dashboard.Utils
 		public static Dictionary<string, string> MachineAddresses = new Dictionary<string, string>()
 		{
 			{ "94-de-80-fc-3a-fb", "1" },
+			{ "B4-2E-99-5D-61-5C", "2" },
+			{ "B4-2E-99-D9-65-DA", "3" },
+			{ "B4-2E-99-B6-A8-60", "4" },
+			{ "B4-2E-99-D9-64-A1", "5" },
+			{ "B4-2E-99-D9-67-8B", "6" },
+			{ "18-C0-4D-12-B9-D9", "7" },
+			{ "B4-2E-99-B8-C7-30", "8" },
+			{ "B4-2E-99-5D-5A-7D", "9" },
+			{ "B4-2E-99-75-46-79", "10" },
+			{ "B4-2E-99-5D-61-64", "11" },
+			{ "B4-2E-99-5D-61-10", "12" },
+			{ "E0-D5-5E-CE-E5-99", "13" },
+			{ "B4-2E-99-20-7A-98", "14" },
+			{ "E0-D5-5E-CE-E5-72", "15" },
+			{ "78-24-AF-8F-D6-AB", "16" },
+			{ "14-DD-A9-56-B1-7F", "17" },
+			{ "B4-2E-99-B8-C7-53", "18" },
+			{ "14-DD-A9-25-20-7E", "19" },
+			{ "B4-2E-99-75-46-7E", "20" },
+			{ "B4-2E-99-5D-60-4E", "21" },
+			{ "B4-2E-99-5D-61-57", "22" },
+			{ "B4-2E-99-B8-C6-67", "23" },
+			{ "B4-2E-99-5D-61-5E", "24" },
+			{ "B4-2E-99-75-46-7D", "25" },
 		};
-
-		public static string GetMacByIp(string ip)
-		{
-			var macIpPairs = GetAllMacAddressesAndIppairs();
-			int index = macIpPairs.FindIndex(x => x.IpAddress == ip);
-			if (index >= 0)
-			{
-				return macIpPairs[index].MacAddress.ToUpper();
-			}
-			else
-			{
-				return null;
-			}
-		}
 
 		public static List<MacIpPair> GetAllMacAddressesAndIppairs()
 		{
@@ -136,79 +146,6 @@ namespace ArtPix_Dashboard.Utils
 			cfg.Dispatcher = Application.Current.Dispatcher;
 		});
 		#endregion
-	}
-
-
-	public static class WOL
-	{
-
-		public static async Task WakeOnLan(string macAddress)
-		{
-			byte[] magicPacket = BuildMagicPacket(macAddress);
-			foreach (NetworkInterface networkInterface in NetworkInterface.GetAllNetworkInterfaces().Where((n) =>
-				n.NetworkInterfaceType != NetworkInterfaceType.Loopback && n.OperationalStatus == OperationalStatus.Up))
-			{
-				IPInterfaceProperties iPInterfaceProperties = networkInterface.GetIPProperties();
-				foreach (MulticastIPAddressInformation multicastIPAddressInformation in iPInterfaceProperties.MulticastAddresses)
-				{
-					IPAddress multicastIpAddress = multicastIPAddressInformation.Address;
-					if (multicastIpAddress.ToString().StartsWith("ff02::1%", StringComparison.OrdinalIgnoreCase)) // Ipv6: All hosts on LAN (with zone index)
-					{
-						UnicastIPAddressInformation unicastIPAddressInformation = iPInterfaceProperties.UnicastAddresses.Where((u) =>
-							u.Address.AddressFamily == AddressFamily.InterNetworkV6 && !u.Address.IsIPv6LinkLocal).FirstOrDefault();
-						if (unicastIPAddressInformation != null)
-						{
-							await SendWakeOnLan(unicastIPAddressInformation.Address, multicastIpAddress, magicPacket);
-							break;
-						}
-					}
-					else if (multicastIpAddress.ToString().Equals("224.0.0.1")) // Ipv4: All hosts on LAN
-					{
-						UnicastIPAddressInformation unicastIPAddressInformation = iPInterfaceProperties.UnicastAddresses.Where((u) =>
-							u.Address.AddressFamily == AddressFamily.InterNetwork && !iPInterfaceProperties.GetIPv4Properties().IsAutomaticPrivateAddressingActive).FirstOrDefault();
-						if (unicastIPAddressInformation != null)
-						{
-							await SendWakeOnLan(unicastIPAddressInformation.Address, multicastIpAddress, magicPacket);
-							break;
-						}
-					}
-				}
-			}
-		}
-
-		static byte[] BuildMagicPacket(string macAddress) // MacAddress in any standard HEX format
-		{
-			macAddress = Regex.Replace(macAddress, "[: -]", "");
-			byte[] macBytes = new byte[6];
-			for (int i = 0; i < 6; i++)
-			{
-				macBytes[i] = Convert.ToByte(macAddress.Substring(i * 2, 2), 16);
-			}
-
-			using (MemoryStream ms = new MemoryStream())
-			{
-				using (BinaryWriter bw = new BinaryWriter(ms))
-				{
-					for (int i = 0; i < 6; i++)  //First 6 times 0xff
-					{
-						bw.Write((byte)0xff);
-					}
-					for (int i = 0; i < 16; i++) // then 16 times MacAddress
-					{
-						bw.Write(macBytes);
-					}
-				}
-				return ms.ToArray(); // 102 bytes magic packet
-			}
-		}
-
-		static async Task SendWakeOnLan(IPAddress localIpAddress, IPAddress multicastIpAddress, byte[] magicPacket)
-		{
-			using (UdpClient client = new UdpClient(new IPEndPoint(localIpAddress, 0)))
-			{
-				await client.SendAsync(magicPacket, magicPacket.Length, multicastIpAddress.ToString(), 9);
-			}
-		}
 	}
 
 }
