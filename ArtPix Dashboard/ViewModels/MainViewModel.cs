@@ -86,24 +86,22 @@ namespace ArtPix_Dashboard.ViewModels
 				EngravingStats = await ArtPixAPI.GetAllStatsAsync();
 				ShippingStats = await ArtPixAPI.GetShippingStatsAsync();
 				Workstations = await ArtPixAPI.GetWorkstations();
+				await ArtPixAPI.GetEntityLogsAsync();
 			} catch (Exception e)
 			{
-				Debug.WriteLine("EXCEPTION UNHANDLED: " + e.Message);
+				Debug.WriteLine("MAIN VIEW MODEL\nLINE 92\nEXCEPTION UNHANDLED: " + e.Message);
 			}
 			AppState.MainNavigationViewVisibility = Visibility.Visible;
 			AppState.IsMainViewLoading = false;
 			var engravingStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
 			engravingStatsTimer.Do(x => Debug.WriteLine("!ENGRAVING STATS LOADED!")).Subscribe(async tick => EngravingStats = await ArtPixAPI.GetAllStatsAsync());
-			var shippingStatsTimer = Observable.Interval(TimeSpan.FromSeconds(60));
+			var shippingStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
 			shippingStatsTimer.Do(x => Debug.WriteLine("!SHIPPING STATS LOADED!")).Subscribe(async tick => ShippingStats = await ArtPixAPI.GetShippingStatsAsync());
-			var workstationsStatsTimer = Observable.Interval(TimeSpan.FromSeconds(60));
+			var workstationsStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
 			workstationsStatsTimer.Do(x => Debug.WriteLine("!WORKSTATIONS LOADED!")).Subscribe(async tick => Workstations = await ArtPixAPI.GetWorkstations());
-			/*new ToastContentBuilder()
-				.AddArgument("action", "viewConversation")
-				.AddArgument("conversationId", 9813)
-				.AddText("Andrew sent you a picture")
-				.AddText("Check this out, The Enchantments in Washington!")
-				.Show();*/
+			var entityLogsTimer = Observable.Interval(TimeSpan.FromSeconds(15));
+			entityLogsTimer.Do(x => Debug.WriteLine("!ENTITY LOGS LOADED!")).Subscribe(async tick => await ArtPixAPI.GetEntityLogsAsync());
+
 		}
-    }
+	}
 }

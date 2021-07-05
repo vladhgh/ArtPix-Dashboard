@@ -56,6 +56,14 @@ namespace ArtPix_Dashboard.Utils
 			{ "B4-2E-99-B8-C6-67", "23" },
 			{ "B4-2E-99-5D-61-5E", "24" },
 			{ "B4-2E-99-75-46-7D", "25" },
+			{ "00-D8-61-7E-B4-91", "26" },
+			{ "00-D8-61-7F-A0-94", "27" },
+			{ "00-D8-61-7F-A0-B2", "28" },
+			{ "00-D8-61-7F-A0-BE", "29" },
+			{ "00-D8-61-7F-A0-96", "30" },
+			{ "00-D8-61-7E-B4-B1", "31" },
+			{ "00-D8-61-7F-A0-AC", "32" },
+			{ "00-19-0F-37-0C-34", "33" }
 		};
 
 		public static List<MacIpPair> GetAllMacAddressesAndIppairs()
@@ -78,7 +86,7 @@ namespace ArtPix_Dashboard.Utils
 					MacAddress = m.Groups["mac"].Value,
 					IpAddress = m.Groups["ip"].Value
 				});
-				Debug.WriteLine($"MAC: {m.Groups["mac"].Value} IP: {m.Groups["ip"].Value}");
+				//Debug.WriteLine($"MAC: {m.Groups["mac"].Value} IP: {m.Groups["ip"].Value}");
 			}
 
 			return mip;
@@ -115,10 +123,10 @@ namespace ArtPix_Dashboard.Utils
 		public static void EnableTouchScrollForListView(ListView listView)
 		{
 			ScrollViewer scrollViewer = GetChildOfType<ScrollViewer>(listView);
-			Debug.WriteLine("LOOKING FOR SCROLLVIEWER");
+			//Debug.WriteLine("LOOKING FOR SCROLLVIEWER");
 			if (scrollViewer != null)
 			{
-				Debug.WriteLine("SCROLLVIEWER FOUND");
+				//Debug.WriteLine("SCROLLVIEWER FOUND");
 				scrollViewer.CanContentScroll = false;
 				scrollViewer.PanningDeceleration = 2;
 				scrollViewer.PanningRatio = 0.75;
@@ -126,7 +134,7 @@ namespace ArtPix_Dashboard.Utils
 			}
 			else
 			{
-				Debug.WriteLine("SCROLLVIEWER IS NULL");
+				//Debug.WriteLine("SCROLLVIEWER IS NULL");
 			}
 		}
 		#region NOTIFIER

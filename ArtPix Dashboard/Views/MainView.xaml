@@ -320,7 +320,7 @@
                                                                     </MenuItem.Icon>
                                                                 </MenuItem>
                                                                 <Separator />
-                                                                <MenuItem Header="Unassign Jobs" Cursor="Hand">
+                                                                <MenuItem Header="Unassign Jobs" Tag="{Binding IdMachines}" Click="MenuItem_Click_2" Cursor="Hand">
                                                                     <MenuItem.Icon>
                                                                         <ui:FontIcon Glyph="&#xE894;" />
                                                                     </MenuItem.Icon>

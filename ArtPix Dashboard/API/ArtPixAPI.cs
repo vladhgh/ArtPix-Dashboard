@@ -21,6 +21,11 @@ using RestSharp.Extensions;
 using Machine = ArtPix_Dashboard.Models.Machine.Machine;
 using Order = ArtPix_Dashboard.Models.Machine.Order;
 using Windows.Globalization.DateTimeFormatting;
+using System.Web;
+using ToastNotifications.Messages;
+using ArtPix_Dashboard.Properties;
+using ArtPix_Dashboard.Models.Logs;
+using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace ArtPix_Dashboard.Utils
 {
@@ -198,6 +203,12 @@ namespace ArtPix_Dashboard.Utils
 				}
 			}
 
+			if (Settings.Default.SelectedWorkstation > 0)
+			{
+				workstations.Data[Settings.Default.SelectedWorkstation - 1].IsChecked = true;
+				workstations.Data[Settings.Default.SelectedWorkstation - 1].MachinesGroupVisibility = System.Windows.Visibility.Visible;
+			}
+
 			return workstations;
 		}
 
@@ -250,7 +261,7 @@ namespace ArtPix_Dashboard.Utils
 						break;
 				}
 			}
-			Debug.WriteLine(request);
+			//Debug.WriteLine(request);
 			var req = new RestRequest(request);
 			req.AddHeader("Accept", "application/json");
 			req.AddHeader("Authorization", "Bearer " + bearerToken);
@@ -292,7 +303,20 @@ namespace ArtPix_Dashboard.Utils
 			Debug.WriteLine(res);
 
 		}
-		
+		public static async Task RemoveCurrentJobsFromMachineAsync(int machineId)
+		{
+			var request = new RestRequest($"/removeCurrentJobs?machine_id={machineId}", Method.GET).AddHeader("Accept", "application/json");
+			var res = await Client.ExecuteAsync(request);
+			if (res.Content == "0")
+			{
+				Utils.Notifier.ShowError($"No jobs on machine {machineId} to remove!");
+			} else
+			{
+				Utils.Notifier.ShowSuccess($"{res.Content} jobs were removed from machine {machineId} successfully!");
+			}
+
+		}
+
 		public static async Task ChangeMachineAssignItemStatusAsync(NewStatusModel requestBody)
 		{
 			var request = new RestRequest("/machine/assign-item/status").AddJsonBody(requestBody).AddHeader("Accept", "application/json");
@@ -402,7 +426,97 @@ namespace ArtPix_Dashboard.Utils
 			}
 
 			return orderList;
-		}	
+		}
+		#endregion
+
+		#region LOGS
+
+		public static async Task GetEntityLogsAsync()
+		{
+			var request = new RestRequest("/entity-logs?entity_type=machine_assign_item&per_page=100", DataFormat.Json);
+			request.AddHeader("Accept", "application/json");
+			request.AddHeader("Content-Type", "application/json");
+			var res = await Client.GetAsync<EntityLogsModel>(request);
+			DateTime startEngravingTime = new DateTime();
+			DateTime endEngravingTime = new DateTime(); ;
+			TimeSpan engravingGap = new TimeSpan();
+			var previousLog = new Models.Logs.Datum();
+			var lastIssueLog = new Models.Logs.Datum();
+
+			foreach (var issueLog in res.Data.ToList())
+			{
+				if (issueLog.Type == "machine_issue" && Settings.Default.LastIssueEntityLogId < issueLog.Id)
+				{
+					new ToastContentBuilder()
+						.AddArgument("action", "viewConversation")
+						.AddArgument("conversationId", 9813)
+						.AddText($"Machine {issueLog.Data.Machine}: Issue Created")
+						.AddText($"Issue: {issueLog.Data.Error}\nEmployee: {issueLog.Data.User}")
+						.AddButton(new ToastButton()
+							.SetContent("Show Details")
+							.AddArgument("action", "like")
+							.SetBackgroundActivation())
+						.Show();
+					Settings.Default.LastIssueEntityLogId = issueLog.Id;
+				}
+			}
+
+
+			foreach (var log in res.Data)
+			{
+				// Check if log id is the same as the last processed one - stop
+				if (log.Id <= Settings.Default.LastEntityLogId)
+				{
+					return;
+				}
+
+				//Start looking for engraving start. Previous log must be null.
+				if (log.Type == "engraving_start" && previousLog.EventDate == null)
+				{
+					if (int.Parse(log.Data.Machine) > 25)
+					{
+						startEngravingTime = DateTime.Parse(log.EventDate).Add(-(TimeSpan.Parse(log.Data.LaserTime)));
+					} else
+					{
+						startEngravingTime = DateTime.Parse(log.EventDate);
+					}
+					previousLog = previousLog.EventDate != null ? previousLog : log;
+					Debug.WriteLine($"START ENGRAVING: {startEngravingTime}");
+					continue;
+				}
+				if (log.Type == "engraving_end" && startEngravingTime.Day == DateTime.Now.Day)
+				{
+					if (previousLog.Data.Machine == log.Data.Machine)
+					{
+						endEngravingTime = DateTime.Parse(log.EventDate);
+						Debug.WriteLine($"END ENGRAVING: {endEngravingTime}");
+					}
+				}
+				if (endEngravingTime.Day == DateTime.Now.Day && startEngravingTime.Day == DateTime.Now.Day)
+				{
+					engravingGap = startEngravingTime - endEngravingTime;
+					Debug.WriteLine($"ENGRAVING GAP: {engravingGap}\n");
+					new ToastContentBuilder()
+						.AddArgument("action", "viewConversation")
+						.AddArgument("conversationId", 9813)
+						.AddText($"Machine {previousLog.Data.Machine}: Time gap between end and start engraving exceeded!")
+						.AddText($"Start Engraving: {startEngravingTime}\nEnd Engraving: {endEngravingTime}\nTime Gap: {engravingGap}\nEmployee: {previousLog.Data.User}")
+						.AddButton(new ToastButton()
+							.SetContent("Got it!")
+							.AddArgument("action", "like")
+							.SetBackgroundActivation())
+						.Show();
+					startEngravingTime = new DateTime();
+					endEngravingTime = new DateTime();
+					Settings.Default.LastEntityLogId = previousLog.Id;
+				}
+
+			}
+
+
+			
+		}
+
 		#endregion
 	}
 }

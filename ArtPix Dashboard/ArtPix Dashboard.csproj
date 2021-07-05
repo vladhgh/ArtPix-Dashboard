@@ -96,6 +96,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\AppStateModel.cs" />
+    <Compile Include="Models\EntityLogsModel.cs" />
     <Compile Include="Models\FindBestServiceModel.cs" />
     <Compile Include="Models\IssueReasonsModel.cs" />
     <Compile Include="Models\MachineAssignItemModel.cs" />

@@ -21,6 +21,7 @@ using System.Text.RegularExpressions;
 using ArtPix_Dashboard.Views.Dialogs;
 using ArtPix_Dashboard.Utils;
 using ToastNotifications.Messages;
+using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace ArtPix_Dashboard.Views
 {
@@ -115,6 +116,7 @@ namespace ArtPix_Dashboard.Views
 		}
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
+			ToastNotificationManagerCompat.History.Clear();
 			Settings.Default.Top = _vm.AppState.Top;
 			Settings.Default.Left = _vm.AppState.Left;
 			Settings.Default.Height = _vm.AppState.Height;
@@ -188,6 +190,7 @@ namespace ArtPix_Dashboard.Views
 					_vm.Workstations.PanelSpacing = 51;
 					workstation.MachinesGroupVisibility = Visibility.Collapsed;
 					workstation.IsChecked = false;
+					Settings.Default.SelectedWorkstation = 0;
 					return;
 				}
 				if (workstation.MachinesGroupVisibility == Visibility.Visible)
@@ -195,11 +198,13 @@ namespace ArtPix_Dashboard.Views
 					_vm.Workstations.PanelSpacing = 51;
 					workstation.MachinesGroupVisibility = Visibility.Collapsed;
 					workstation.IsChecked = false;
+					Settings.Default.SelectedWorkstation = 0;
 				}
 				if (workstation.Id == tag)
 				{
 					workstation.MachinesGroupVisibility = Visibility.Visible;
 					workstation.IsChecked = true;
+					Settings.Default.SelectedWorkstation = workstation.Id;
 					if (workstation.Id == 10 || workstation.Id == 11)
 					{
 						_vm.Workstations.PanelSpacing = 40;
@@ -260,7 +265,15 @@ namespace ArtPix_Dashboard.Views
 			var tag = ((MenuItem)sender).Tag.ToString();
 			System.Diagnostics.Process.Start("shutdown", $"-s -f -t 00 -m {tag}");
 			Utils.Utils.Notifier.ShowSuccess($"Machine{tag.Split('-')[0].Replace('\\', ' ')} Turned Off Succesfully!\nPlease Wait....");
-			//System.Windows.Forms.MessageBox.Show(WinAPI.InitiateSystemShutdownEx("\\\\1-AB1-LL", null, 0, true, false, 0x40000000).ToString());
+		}
+
+		private async void MenuItem_Click_2(object sender, RoutedEventArgs e)
+		{
+			var tag = ((MenuItem)sender).Tag;
+			if (tag != null)
+			{
+				await ArtPixAPI.RemoveCurrentJobsFromMachineAsync((int)tag);
+			}
 		}
 	}
 }

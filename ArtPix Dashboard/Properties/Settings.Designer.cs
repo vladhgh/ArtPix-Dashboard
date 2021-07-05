@@ -151,5 +151,41 @@ namespace ArtPix_Dashboard.Properties {
                 this["PreviousVersion"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SelectedWorkstation {
+            get {
+                return ((int)(this["SelectedWorkstation"]));
+            }
+            set {
+                this["SelectedWorkstation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("245316")]
+        public int LastEntityLogId {
+            get {
+                return ((int)(this["LastEntityLogId"]));
+            }
+            set {
+                this["LastEntityLogId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("245316")]
+        public int LastIssueEntityLogId {
+            get {
+                return ((int)(this["LastIssueEntityLogId"]));
+            }
+            set {
+                this["LastIssueEntityLogId"] = value;
+            }
+        }
     }
 }

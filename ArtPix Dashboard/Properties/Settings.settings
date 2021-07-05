@@ -35,5 +35,14 @@
     <Setting Name="PreviousVersion" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="SelectedWorkstation" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="LastEntityLogId" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">245316</Value>
+    </Setting>
+    <Setting Name="LastIssueEntityLogId" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">245316</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
