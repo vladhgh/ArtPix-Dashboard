@@ -188,7 +188,6 @@ namespace ArtPix_Dashboard.ViewModels
 			ReloadList = new DelegateCommand(async param => await GetOrdersList());
 			OnOA = new DelegateCommand(Commands.OpenOrderOnOA);
 			OnCP = new DelegateCommand(Commands.OpenOrderOnCP);
-			OnPrintQR = new DelegateCommand(PrintQR);
 			CopyToClipboard = new DelegateCommand(param => Commands.CopyTextToClipboard(param.ToString()));
 			OnVitromark = new DelegateCommand(param => Commands.OpenFileInVitroMark(param.ToString()));
 			OnProductHistory = new DelegateCommand(OpenProductHistoryDialog);
@@ -315,68 +314,14 @@ namespace ArtPix_Dashboard.ViewModels
 			await dialog.ShowAsync();
 		}
 
-		public void OpenImage(object param)
+		public async void OpenImage(object param)
 		{
 			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Product)param).IdOrders);
 			var product = order?.Products.SingleOrDefault(p => p.IdProducts == ((Product) param).IdProducts);
 			if (product != null)
 			{
-				product.IsImageExpanded = !product.IsImageExpanded;
-				product.UrlRenderImgSize = product.IsImageExpanded ? 350 : 175;
-			}
-		}
-		public void PrintQR(object obj)
-		{
-			var item = (List<MachineAssignItem>) obj;
-
-			QRCodeGenerator qrGenerator = new QRCodeGenerator();
-			QRCodeData qrCodeData = qrGenerator.CreateQrCode($"\t{item[0].OrderId}-{item[0].ProductId}-{item[0].Id}\n", QRCodeGenerator.ECCLevel.Q);
-			QRCode qrCode = new QRCode(qrCodeData);
-			var img = qrCode.GetGraphic(20);
-			Bitmap bmp = new Bitmap(300, 125);
-
-			RectangleF rectQR = new RectangleF(0, 0, 125, 125);
-			RectangleF rectText = new RectangleF(130, 60, 170, 25);
-
-			Graphics g = Graphics.FromImage(bmp);
-			g.Clear(Color.White);
-			g.SmoothingMode = SmoothingMode.AntiAlias;
-			g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-			g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-			g.DrawImage(img, rectQR);
-			g.DrawString(item[0].OrderName, new Font("Consolas", 12), Brushes.Black, rectText);
-
-			g.Flush();
-
-			QrCodeBitmap = bmp;
-			QrCode = BitmapToImageSource(bmp);
-
-			PrintDocument pd = new PrintDocument();
-			pd.OriginAtMargins = true;
-			pd.DefaultPageSettings.Landscape = true;
-			pd.PrintPage += pd_PrintPage;
-			pd.Print();
-
-
-		}
-
-		void pd_PrintPage(object sender, PrintPageEventArgs e)
-		{
-			e.Graphics.DrawImage(QrCodeBitmap, -100, -100);
-		}
-
-		BitmapImage BitmapToImageSource(Bitmap bitmap)
-		{
-			using (MemoryStream memory = new MemoryStream())
-			{
-				bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
-				memory.Position = 0;
-				BitmapImage bitmapimage = new BitmapImage();
-				bitmapimage.BeginInit();
-				bitmapimage.StreamSource = memory;
-				bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
-				bitmapimage.EndInit();
-				return bitmapimage;
+				var dialog = new PhotoPreviewDialog(product);
+				var result = await dialog.ShowAsync();
 			}
 		}
 

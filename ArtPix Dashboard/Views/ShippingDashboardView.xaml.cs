@@ -16,6 +16,7 @@ using ArtPix_Dashboard.Properties;
 using ModernWpf.Controls;
 using ListView = ModernWpf.Controls.ListView;
 using ArtPix_Dashboard.Utils;
+using ArtPix_Dashboard.Views.Dialogs;
 using Newtonsoft.Json;
 
 namespace ArtPix_Dashboard.Views

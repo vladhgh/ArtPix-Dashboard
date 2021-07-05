@@ -8,7 +8,7 @@
 
     <ui:SimpleStackPanel Orientation="Vertical">
         <TextBlock
-            Text="Change Logs:"
+            Text="Change Log:"
             FontFamily="Segoe UI"
             FontWeight="Black"
             xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}"
@@ -16,21 +16,23 @@
             Margin="0 0 0 10"/>
         <ui:SimpleStackPanel Orientation="Vertical">
             <TextBlock
-                Text="03/06:"
+                Text="Version 1.6 Beta:"
                 FontFamily="Segoe UI"
                 FontWeight="Bold"
+                FontSize="16"
                 xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}"
                 Style="{DynamicResource SubtitleTextBlockStyle}"
                 Margin="0 0 0 5"/>
+            <Separator/>
             <TextBlock
                 Text="- print QR code when cancelling issue"
                 FontFamily="Segoe UI"
                 FontWeight="SemiBold"
                 xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}"
                 Style="{DynamicResource BaseTextBlockStyle}"
-                Margin="0 0 0 10"/>
+                Margin="0 5 0 10"/>
         </ui:SimpleStackPanel>
-        <Button Content="Got it!" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}" HorizontalAlignment="Center" Cursor="Hand" Margin="0 10 0 0" Width="250" Click="Button_Click"/>
+        <Button Content="Got it!" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}" HorizontalAlignment="Center" Cursor="Hand" Margin="0 10 0 0" Width="300" Click="Button_Click"/>
     </ui:SimpleStackPanel>
 
 </ui:ContentDialog>

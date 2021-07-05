@@ -310,10 +310,12 @@
                                         <DataTemplate DataType="order:Product">
                                             <ui:SimpleStackPanel Orientation="Vertical" >
                                                 <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="10" Margin="0 20 0 20">
+                                                    <Button Style="{StaticResource InactiveButtonStyle}" Height="auto" Background="Transparent" CommandParameter="{Binding}" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnImageClick}">
                                                         <Image VerticalAlignment="Center"
-                                                               Source="{Binding Path=UrlRenderImg}"
-                                                               MinWidth="175" Width="{Binding UrlRenderImgSize}" Height="{Binding UrlRenderImgSize}" Stretch="Uniform" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=400}">
+                                                           Source="{Binding Path=UrlRenderImg}"
+                                                           MinWidth="175" Width="{Binding UrlRenderImgSize}" Height="{Binding UrlRenderImgSize}" Stretch="Uniform" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=400}">
                                                         </Image>
+                                                    </Button>
                                                     <ui:SimpleStackPanel VerticalAlignment="Center" Orientation="Vertical" Spacing="5" Margin="0,0,0,0" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=400}">
                                                         <ui:SimpleStackPanel Orientation="Horizontal">
                                                             <TextBlock

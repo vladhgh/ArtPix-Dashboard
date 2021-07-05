@@ -17,7 +17,7 @@
         <ui:ListView
             ItemsSource="{Binding ProductHistory.Data}"
             MaxHeight="400"
-            MaxWidth="400"
+            MinWidth="490"
             BorderThickness="1"
 			BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
 			xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}"
@@ -59,7 +59,7 @@
                 </DataTemplate>
             </ui:ListView.ItemTemplate>
         </ui:ListView>
-        <Button Content="Go Back" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}" HorizontalAlignment="Center" Cursor="Hand" Margin="0 10 0 0" Width="250" Click="Button_Click"/>
+        <Button Content="Go Back" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}" HorizontalAlignment="Center" Cursor="Hand" Margin="0 10 0 0" Width="350" Click="Button_Click"/>
     </ui:SimpleStackPanel>
 
 </ui:ContentDialog>

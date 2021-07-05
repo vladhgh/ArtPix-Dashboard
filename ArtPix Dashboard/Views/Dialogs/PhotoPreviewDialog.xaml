@@ -1,0 +1,29 @@
+﻿<ui:ContentDialog
+    x:Class="ArtPix_Dashboard.Views.Dialogs.PhotoPreviewDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.modernwpf.com/2019" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:xamlFlair="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
+    mc:Ignorable="d"
+    DefaultButton="Primary">
+
+    <ui:SimpleStackPanel Orientation="Vertical" >
+        <TextBlock
+            Text="Product Pictures:"
+            FontFamily="Segoe UI"
+            FontWeight="Black"
+            xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}"
+            Style="{DynamicResource TitleTextBlockStyle}"/>
+        <Image
+            xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}"
+            Source="{Binding Product.UrlRenderImg}"
+            Stretch="Fill"
+            Width="490"
+            MouseEnter="UIElement_OnMouseEnter"
+            MouseLeave="UIElement_OnMouseLeave"/>
+        <Button Content="Go Back" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}" HorizontalAlignment="Center" Cursor="Hand" Margin="0 0 0 0" Width="350" Click="Button_Click"/>
+
+    </ui:SimpleStackPanel>
+
+</ui:ContentDialog>

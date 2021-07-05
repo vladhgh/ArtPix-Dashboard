@@ -121,6 +121,9 @@
     <Compile Include="Utils\PropertyChangedListener.cs" />
     <Compile Include="ViewModels\ShippingDashboardViewModel.cs" />
     <Compile Include="ViewModels\UtilitiesViewModel.cs" />
+    <Compile Include="Views\Dialogs\CancelIssueDialog - Copy.xaml.cs">
+      <DependentUpon>PhotoPreviewDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\ChangeLogsDialog.xaml.cs">
       <DependentUpon>ChangeLogsDialog.xaml</DependentUpon>
     </Compile>
@@ -167,6 +170,10 @@
     <Page Include="Styles\Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\PhotoPreviewDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\ChangeLogsDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
