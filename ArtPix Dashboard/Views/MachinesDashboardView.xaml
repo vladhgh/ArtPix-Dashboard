@@ -11,7 +11,7 @@
     xmlns:viewmodels="clr-namespace:ArtPix_Dashboard.ViewModels"
     d:DataContext="{d:DesignInstance Type=viewmodels:MachinesDashboardViewModel}"
     mc:Ignorable="d"
-	Background="{DynamicResource SystemControlPageBackgroundMediumAltMediumBrush}">
+    Background="Transparent">
     <ui:Page.Resources>
         <Style x:Key="ComboBoxStyle1" TargetType="{x:Type ComboBox}">
             <Setter Property="OverridesDefaultStyle" Value="True"/>

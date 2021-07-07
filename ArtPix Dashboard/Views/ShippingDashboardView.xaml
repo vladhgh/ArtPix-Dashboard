@@ -11,10 +11,10 @@
 	xmlns:order="clr-namespace:ArtPix_Dashboard.Models.Order"
 	xmlns:types="clr-namespace:ArtPix_Dashboard.Models.Types"
 	d:DataContext="{d:DesignInstance Type=viewmodels:ShippingDashboardViewModel}"
-	Background="{DynamicResource SystemControlPageBackgroundMediumAltMediumBrush}"
+	Background="Transparent"
 	Title="Shipping Dashboard"
 	mc:Ignorable="d">
-	<Grid>
+    <Grid >
 		<Grid.RowDefinitions>
 			<RowDefinition Height="0"/>
 			<RowDefinition Height="Auto"/>
@@ -130,8 +130,8 @@
 							Style="{DynamicResource CustomExpanderStyle}"
 							VerticalAlignment="Top">
 						<Expander.Header>
-							<ui:SimpleStackPanel Orientation="Horizontal"  Margin="20 20 0 20" Spacing="10" HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}">
-								<Image Width="150" Height="150" VerticalAlignment="Center" Stretch="Uniform" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=600}" >
+							<ui:SimpleStackPanel Orientation="Horizontal"  Margin="0 0 0 0" Spacing="10" HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}">
+								<Image Width="100" Height="100" VerticalAlignment="Center" Stretch="Uniform" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=600}" >
 									<Image.Source>
 										<BitmapImage DecodePixelWidth="175" UriSource="{Binding Path=OrderImage}" />
 									</Image.Source>
@@ -247,7 +247,7 @@
 												Style="{DynamicResource BaseTextBlockStyle}"/>
 										</Button>
 									</ui:SimpleStackPanel>
-                                    <ui:SimpleStackPanel Orientation="Horizontal" >
+                                    <!--<ui:SimpleStackPanel Orientation="Horizontal" >
                                         <TextBlock
 											Text="Shipping: "
 											HorizontalAlignment="Left"
@@ -272,7 +272,7 @@
 											Text="{Binding Path=EstimateDeliveryMaxDate, Mode=OneTime, StringFormat=Deliver By: {0:0}}"
 											Style="{DynamicResource BaseTextBlockStyle}"
 											Foreground="LightGray"
-											HorizontalAlignment="Left" VerticalAlignment="Center" />
+											HorizontalAlignment="Left" VerticalAlignment="Center" />-->
                                 </ui:SimpleStackPanel>
 							</ui:SimpleStackPanel>
 						</Expander.Header>

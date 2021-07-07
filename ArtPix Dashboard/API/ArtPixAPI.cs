@@ -84,12 +84,22 @@ namespace ArtPix_Dashboard.Utils
 			};
 			var orders = await Task.WhenAll(GetOrdersAsync(1, 1, awaitingShipmentModel), GetOrdersAsync(1, 1, shipByTodayModel), GetOrdersAsync(1, 1, readyToShip));
 			var shippedOrders = await GetShippedTodayOrders();
+
+			var result = shippedOrders.GroupBy(l => l.User).Select(g => new Models.Shipping.Datum
+			{
+				User = g.Key,
+				ShippedOrdersCount = g.Select(l => l.User).Count()
+			});
+			var sort = new List<Models.Shipping.Datum>(result);
+			var ordersShippedByUser = sort.Aggregate("", (current, item) => current + $"USER: {item.User}, ORDERS SHIPPED: {item.ShippedOrdersCount}\n");
+
 			var stats = new StatsModel
 			{
 				AwaitingShipment = orders[0].Meta.Total,
 				ShipByToday = orders[1].Meta.Total,
 				ReadyToShip = orders[2].Meta.Total,
-				ShippedToday = shippedOrders.Count
+				ShippedToday = shippedOrders.Count,
+				OrdersShipped = ordersShippedByUser
 			};
 			return stats;
 		}
@@ -414,17 +424,6 @@ namespace ArtPix_Dashboard.Utils
 				});
 
 			}
-			var result = orderList.GroupBy(l => l.User).Select(g => new Models.Shipping.Datum
-			{
-				User = g.Key,
-				ShippedOrdersCount = g.Select(l => l.User).Count()
-			});
-			var sort = new List<Models.Shipping.Datum>(result);
-			foreach (var item in sort)
-			{
-				Debug.WriteLine($"USER: {item.User}, ORDERS SHIPPED: {item.ShippedOrdersCount}");
-			}
-
 			return orderList;
 		}
 		#endregion

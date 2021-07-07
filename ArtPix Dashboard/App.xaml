@@ -8,6 +8,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/Animations.xaml" />
                 <ResourceDictionary Source="Styles/Styles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/FluentWPF;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
                 <ui:ThemeResources />
                 <ui:XamlControlsResources />

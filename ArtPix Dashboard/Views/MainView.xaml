@@ -1,77 +1,216 @@
-﻿<Window x:Class="ArtPix_Dashboard.Views.MainView"
-		x:Name="Window"
-		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:local="clr-namespace:ArtPix_Dashboard.Utils"
-		xmlns:ui="http://schemas.modernwpf.com/2019"
-		xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
-        xmlns:viewmodels="clr-namespace:ArtPix_Dashboard.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
-        Icon="../Assets/logo.ico"
-		Title="{Binding AppState.CurrentVersion, StringFormat=ArtPix Dashboard {0:N}}"
-		Top="{Binding AppState.Top, Mode=TwoWay}"
-		Left="{Binding AppState.Left, Mode=TwoWay}"
-		Height="{Binding AppState.Height, Mode=TwoWay}"
-		Width="{Binding AppState.Width, Mode=TwoWay}"
-        MinWidth="1920"
-		WindowState="{Binding AppState.WindowState, Mode=TwoWay}"
-		Loaded="MainViewOnLoaded"
-		Background="{DynamicResource SystemControlPageBackgroundMediumAltMediumBrush}"
-        ui:WindowHelper.UseModernWindowStyle="True"
-		ui:TitleBar.ExtendViewIntoTitleBar="True"
-		ui:TitleBar.IsBackEnabled="True"
-		ui:TitleBar.Style="{DynamicResource AppTitleBarStyle}"
-		ui:TitleBar.ButtonStyle="{DynamicResource AppTitleBarButtonStyle}"
-		ui:TitleBar.BackButtonStyle="{DynamicResource AppTitleBarBackButtonStyle}">
-	<Window.Resources>
-		<local:PixelsToGridLengthConverter x:Key="PixelsToGridLength" />
+﻿<fw:AcrylicWindow x:Class="ArtPix_Dashboard.Views.MainView"
+                  x:Name="Window"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:local="clr-namespace:ArtPix_Dashboard.Utils"
+                  xmlns:ui="http://schemas.modernwpf.com/2019"
+                  xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
+                  xmlns:viewmodels="clr-namespace:ArtPix_Dashboard.ViewModels"
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+                  xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
+                  d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
+                  Icon="../Assets/logo.ico"
+                  Title="{Binding AppState.CurrentVersion, StringFormat=ArtPix Dashboard {0:N}}"
+                  Top="{Binding AppState.Top, Mode=TwoWay}"
+                  Left="{Binding AppState.Left, Mode=TwoWay}"
+                  Height="{Binding AppState.Height, Mode=TwoWay}"
+                  Width="{Binding AppState.Width, Mode=TwoWay}"
+                  MinWidth="1920"
+                  WindowState="{Binding AppState.WindowState, Mode=TwoWay}"
+                  Loaded="MainViewOnLoaded"
+                  Background="{DynamicResource SystemControlPageBackgroundMediumAltMediumBrush}"
+                  ui:WindowHelper.UseModernWindowStyle="True"
+                  ui:TitleBar.ExtendViewIntoTitleBar="True"
+                  ui:TitleBar.IsBackEnabled="True"
+                  ui:TitleBar.Style="{DynamicResource AppTitleBarStyle}"
+                  ui:TitleBar.ButtonStyle="{DynamicResource AppTitleBarButtonStyle}"
+                  ui:TitleBar.BackButtonStyle="{DynamicResource AppTitleBarBackButtonStyle}">
+    <Window.Resources>
+        <local:PixelsToGridLengthConverter x:Key="PixelsToGridLength" />
 
-		<Style x:Key="AppTitleBarStyle" TargetType="ui:TitleBarControl">
-			<Setter Property="ui:ThemeManager.RequestedTheme" Value="Dark" />
-		</Style>
-		<Style x:Key="AppTitleBarButtonStyle" TargetType="ui:TitleBarButton">
-			<Setter Property="IsActive" Value="{Binding IsActive, ElementName=Window}" />
-			<Setter Property="Background" Value="{DynamicResource SystemControlPageTextChromeBlackMediumLowBrush}" />
-		</Style>
-		<Style x:Key="AppTitleBarBackButtonStyle" TargetType="ui:TitleBarButton" BasedOn="{StaticResource TitleBarBackButtonStyle}">
-			<Setter Property="IsActive" Value="{Binding IsActive, ElementName=Window}" />
-			<Setter Property="Background" Value="{DynamicResource SystemControlPageTextChromeBlackMediumLowBrush}" />
-		</Style>
+        <Style x:Key="AppTitleBarStyle" TargetType="ui:TitleBarControl">
+            <Setter Property="ui:ThemeManager.RequestedTheme" Value="Dark" />
+        </Style>
+        <Style x:Key="AppTitleBarButtonStyle" TargetType="ui:TitleBarButton">
+            <Setter Property="IsActive" Value="{Binding IsActive, ElementName=Window}" />
+            <Setter Property="Background" Value="{DynamicResource SystemControlPageTextChromeBlackMediumLowBrush}" />
+        </Style>
+        <Style x:Key="AppTitleBarBackButtonStyle" TargetType="ui:TitleBarButton" BasedOn="{StaticResource TitleBarBackButtonStyle}">
+            <Setter Property="IsActive" Value="{Binding IsActive, ElementName=Window}" />
+            <Setter Property="Background" Value="{DynamicResource SystemControlPageTextChromeBlackMediumLowBrush}" />
+        </Style>
+        <Style x:Key="ToggleButtonStyle1" TargetType="{x:Type ToggleButton}">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Background" Value="{DynamicResource ToggleButtonBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ToggleButtonForeground}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ToggleButtonBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="{DynamicResource ToggleButtonBorderThemeThickness}"/>
+            <Setter Property="Padding" Value="{DynamicResource ButtonPadding}"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontFamily" Value="{DynamicResource ContentControlThemeFontFamily}"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}"/>
+            <Setter Property="ui:ControlHelper.CornerRadius" Value="{DynamicResource ControlCornerRadius}"/>
+            <Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}"/>
+            <Setter Property="ui:FocusVisualHelper.UseSystemFocusVisuals" Value="{DynamicResource UseSystemFocusVisuals}"/>
+            <Setter Property="ui:FocusVisualHelper.FocusVisualMargin" Value="-3"/>
+            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border x:Name="Background" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding ui:ControlHelper.CornerRadius}" SnapsToDevicePixels="True">
+                            <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding ui:ControlHelper.CornerRadius}" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </Border>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked" Value="False"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
+                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundPointerOver}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked" Value="False"/>
+                                    <Condition Property="IsPressed" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundPressed}"/>
+                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushPressed}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundPressed}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked" Value="False"/>
+                                    <Condition Property="IsEnabled" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundDisabled}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundDisabled}"/>
+                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushDisabled}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked" Value="True"/>
+                                    <Condition Property="IsMouseOver" Value="False"/>
+                                    <Condition Property="IsPressed" Value="False"/>
+                                    <Condition Property="IsEnabled" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundChecked}"/>
+                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked" Value="True"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
+                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundCheckedPointerOver}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked" Value="True"/>
+                                    <Condition Property="IsPressed" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundCheckedPressed}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundCheckedPressed}"/>
+                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushCheckedPressed}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked" Value="True"/>
+                                    <Condition Property="IsEnabled" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundCheckedDisabled}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundCheckedDisabled}"/>
+                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushCheckedDisabled}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked" Value="{x:Null}"/>
+                                    <Condition Property="IsMouseOver" Value="False"/>
+                                    <Condition Property="IsPressed" Value="False"/>
+                                    <Condition Property="IsEnabled" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminate}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminate}"/>
+                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminate}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked" Value="{x:Null}"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminatePointerOver}"/>
+                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminatePointerOver}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminatePointerOver}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked" Value="{x:Null}"/>
+                                    <Condition Property="IsPressed" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminatePressed}"/>
+                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminatePressed}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminatePressed}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked" Value="{x:Null}"/>
+                                    <Condition Property="IsEnabled" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminateDisabled}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminateDisabled}"/>
+                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminateDisabled}"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition />
-		</Grid.RowDefinitions>
 
-		<Grid
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Grid
 				x:Name="AppTitleBar"
                 Background="{DynamicResource SystemControlPageBackgroundMediumAltMediumBrush}"
 				Height="{Binding ElementName=Window, Path=(ui:TitleBar.Height)}">
 
-			<Grid.Style>
-				<Style TargetType="Grid">
-					<Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
-					<Style.Triggers>
-						<DataTrigger Binding="{Binding IsActive, ElementName=Window}" Value="False">
-							<Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlDisabledBaseMediumLowBrush}" />
-						</DataTrigger>
-					</Style.Triggers>
-				</Style>
-			</Grid.Style>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="{Binding ElementName=Window, Path=(ui:TitleBar.SystemOverlayLeftInset), Converter={StaticResource PixelsToGridLength}}" />
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition />
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="{Binding ElementName=Window, Path=(ui:TitleBar.SystemOverlayRightInset), Converter={StaticResource PixelsToGridLength}}" />
-			</Grid.ColumnDefinitions>
-			
-			<Image Source="/Assets/ap3dlogo.png" MaxHeight="20" Margin="10 10 0 5" Grid.Column="1"/>
-			<TextBlock
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsActive, ElementName=Window}" Value="False">
+                            <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlDisabledBaseMediumLowBrush}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{Binding ElementName=Window, Path=(ui:TitleBar.SystemOverlayLeftInset), Converter={StaticResource PixelsToGridLength}}" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="{Binding ElementName=Window, Path=(ui:TitleBar.SystemOverlayRightInset), Converter={StaticResource PixelsToGridLength}}" />
+            </Grid.ColumnDefinitions>
+
+            <Image Source="/Assets/ap3dlogo2.png" MaxHeight="20" Margin="10 10 0 5" Grid.Column="1"/>
+            <TextBlock
 						Grid.Column="0"
 						Grid.ColumnSpan="5"
 						FontSize="13"
@@ -80,16 +219,17 @@
 						HorizontalAlignment="Center"
 						VerticalAlignment="Center"
 						Text="{Binding ElementName=Window, Path=Title}" />
-			
-		</Grid>
+
+        </Grid>
 
         <ui:ProgressRing Name="ProgressRing" Grid.Row="1" Margin="10 0 0 0" Height="50" Width="50" IsActive="{Binding AppState.IsMainViewLoading}"/>
-		<ui:NavigationView
+        <ui:NavigationView
 											x:Name="MainNavigationView"
 											Grid.Row="1"
                                             Visibility="{Binding AppState.MainNavigationViewVisibility}"
 											PaneDisplayMode="Top" 
 											IsTabStop="True"
+                                            Background="#99000000"
 											SelectionFollowsFocus="Disabled"
 											IsBackButtonVisible="Visible"
 											IsBackEnabled="True"
@@ -99,20 +239,20 @@
 											SelectedItem="{Binding AppState.SelectedItem, Mode=TwoWay}">
 
             <ui:NavigationView.Resources>
-                <SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="Black" />
-                <DoubleAnimation x:Key="an" BeginTime="0:0:4" Duration="0:0:0.5" Storyboard.TargetProperty="(ui:NavigationView.Opacity)" Storyboard.TargetName="MainNavigationView"  From="1.0" To="0.0" RepeatBehavior="Forever" AutoReverse="True" />
+                <SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="#99000000" />
+                <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="#99000000" />
             </ui:NavigationView.Resources>
 
             <ui:NavigationView.MenuItems>
-				<ui:NavigationViewItem Content="Machines Dashboard" FontWeight="Bold" Tag="MachinesDashboardView" Cursor="Hand" ToolTip="Machines Dashboard" />
-				<ui:NavigationViewItem Content="Shipping Dashboard" FontWeight="Bold" Tag="ShippingDashboardView" Cursor="Hand" ToolTip="Shipping Dashboard" />
-				<ui:NavigationViewItem Content="Production Issues" FontWeight="Bold" Tag="ProductionIssuesView" Cursor="Hand" ToolTip="Production Issues" />
+                <ui:NavigationViewItem Content="Machines Dashboard" FontWeight="Bold" Tag="MachinesDashboardView" Cursor="Hand" ToolTip="Machines Dashboard" />
+                <ui:NavigationViewItem Content="Shipping Dashboard" FontWeight="Bold" Tag="ShippingDashboardView" Cursor="Hand" ToolTip="Shipping Dashboard" />
+                <ui:NavigationViewItem Content="Production Issues" FontWeight="Bold" Tag="ProductionIssuesView" Cursor="Hand" ToolTip="Production Issues" />
             </ui:NavigationView.MenuItems>
-			
-			
-			
-			
-			<ui:NavigationView.Header>
+
+
+
+
+            <ui:NavigationView.Header>
                 <ui:SimpleStackPanel Orientation="Vertical"  MinWidth="{Binding AppState.Width, Mode=OneWay}" >
                     <Grid Height="60"  Name="EngravingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Margin="0 0 30 0" Visibility="{Binding EngravingStatusGroupVisibility}" >
                         <Grid.ColumnDefinitions>
@@ -217,21 +357,27 @@
                                 FontWeight="Black"
                                 Style="{DynamicResource TitleTextBlockStyle}" />
                         </Button>
-                        
-                        <TextBlock
-                            Text="{Binding ShippingStats.ShippedToday, StringFormat=Shipped Today: {0:F0}, Mode=OneWay}"
-                            HorizontalAlignment="Right"
+
+                        <Button
                             Grid.Column="3"
-                            FontWeight="Black"
-                            Margin="0 0 10 0"
-                            Style="{DynamicResource TitleTextBlockStyle}"/>
+                            Background="Transparent"
+                            HorizontalAlignment="Right"
+                            Cursor="Hand"
+                            Height="auto"
+                            ToolTip="{Binding ShippingStats.OrdersShipped}"
+                            Style="{StaticResource InactiveButtonStyle}">
+                            <TextBlock
+                                Text="{Binding ShippingStats.ShippedToday, StringFormat=Shipped Today: {0:F0}, Mode=OneWay}"
+                                FontWeight="Black"
+                                Style="{DynamicResource TitleTextBlockStyle}"/>
+                        </Button>
                     </Grid>
                     <ui:SimpleStackPanel Name="WorkstationsGroup" Height="60" HorizontalAlignment="Left" Margin="0 0 0 0" Visibility="{Binding ActiveMachinesGroupVisibility }" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}">
                         <ItemsControl VerticalAlignment="Center" HorizontalAlignment="Center"  ItemsSource="{Binding Workstations.Data}" >
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <ui:SimpleStackPanel Orientation="Horizontal">
-                                        <ToggleButton Margin="0 0 0 0" IsChecked="{Binding IsChecked}" Tag="{Binding Id}" Background="Transparent" Height="auto" Click="WorkstationButtonOnClick" Cursor="Hand" >
+                                        <ToggleButton Margin="0 0 0 0" IsChecked="{Binding IsChecked}" Tag="{Binding Id}" Background="Transparent"  Click="WorkstationButtonOnClick" Cursor="Hand"  Style="{DynamicResource ToggleButtonStyle1}" >
                                             <ui:SimpleStackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical" Spacing="2">
                                                 <TextBlock
                                                     HorizontalAlignment="Center"
@@ -268,7 +414,7 @@
                                                     Style="{DynamicResource SubtitleTextBlockStyle}" />
                                             </ui:SimpleStackPanel>
                                         </ToggleButton>
-                                        <ItemsControl ItemsSource="{Binding Machines}" Background="{DynamicResource ButtonBackgroundPointerOver}" Padding="10 5" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding MachinesGroupVisibility}">
+                                        <ItemsControl ItemsSource="{Binding Machines}" Background="Transparent" Padding="10 5" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding MachinesGroupVisibility}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Button Background="Transparent" Height="auto" Cursor="Hand" Click="Button_Click">
@@ -337,7 +483,7 @@
                                             </ItemsControl.ItemsPanel>
                                         </ItemsControl>
                                     </ui:SimpleStackPanel>
-                                    
+
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                             <ItemsControl.ItemsPanel>
@@ -348,11 +494,11 @@
                         </ItemsControl>
                     </ui:SimpleStackPanel>
                 </ui:SimpleStackPanel>
-                
+
             </ui:NavigationView.Header>
-	  
-			<ui:NavigationView.PaneFooter>
-				<StackPanel Orientation="Horizontal">
+
+            <ui:NavigationView.PaneFooter>
+                <StackPanel Orientation="Horizontal">
                     <ui:NavigationViewItem Cursor="Hand" Tag="ShippingDashboardView" MaxWidth="60"  >
                         <ui:PersonPicture ProfilePicture="/Assets/logo.ico" MaxHeight="24"/>
                     </ui:NavigationViewItem>
@@ -365,14 +511,14 @@
                         </ui:AppBarButton.Icon>
                     </ui:AppBarButton>
                     <ui:AppBarButton Cursor="Hand" Icon="Setting" ToolTip="Settings" MaxWidth="60" Label="Settings" IsCompact="True" />
-				</StackPanel>
-			</ui:NavigationView.PaneFooter>
+                </StackPanel>
+            </ui:NavigationView.PaneFooter>
 
             <ui:Frame x:Name="ContentFrame"/>
 
 
         </ui:NavigationView>
-		
-		
-	</Grid>
-</Window>
+
+
+    </Grid>
+</fw:AcrylicWindow>

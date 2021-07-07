@@ -10,7 +10,7 @@
         xmlns:product="clr-namespace:ArtPix_Dashboard.Models.Product"
         xmlns:viewmodels="clr-namespace:ArtPix_Dashboard.ViewModels"
         Focusable="True"
-        Background="{DynamicResource SystemControlPageBackgroundMediumAltMediumBrush}">
+        Background="Transparent">
      <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0"/>

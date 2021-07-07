@@ -91,6 +91,12 @@ namespace ArtPix_Dashboard.Models.Types
 			get => _shippedToday;
 			set => SetProperty(ref _shippedToday, value);
 		}
+		private string _ordersShipped;
+		public string OrdersShipped
+		{
+			get => _ordersShipped;
+			set => SetProperty(ref _ordersShipped, value);
+		}
 		#endregion
 	}
 }
