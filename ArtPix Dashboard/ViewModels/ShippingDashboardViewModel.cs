@@ -23,6 +23,7 @@ using ArtPix_Dashboard.Models;
 using ArtPix_Dashboard.Models.Machine;
 using ToastNotifications.Messages;
 using Product = ArtPix_Dashboard.Models.Order.Product;
+using System.Drawing.Imaging;
 
 namespace ArtPix_Dashboard.ViewModels
 {
@@ -30,6 +31,10 @@ namespace ArtPix_Dashboard.ViewModels
 	{
 
 		#region PROPS
+
+		private Product SelectedItem;
+		private Models.Order.Datum SelectedOrder;
+
 		private AppStateModel _appState = new AppStateModel();
 		public AppStateModel AppState
 		{
@@ -188,11 +193,80 @@ namespace ArtPix_Dashboard.ViewModels
 			ReloadList = new DelegateCommand(async param => await GetOrdersList());
 			OnOA = new DelegateCommand(Commands.OpenOrderOnOA);
 			OnCP = new DelegateCommand(Commands.OpenOrderOnCP);
+			OnPrintQR = new DelegateCommand(PrintQR);
 			CopyToClipboard = new DelegateCommand(param => Commands.CopyTextToClipboard(param.ToString()));
 			OnVitromark = new DelegateCommand(param => Commands.OpenFileInVitroMark(param.ToString()));
 			OnProductHistory = new DelegateCommand(OpenProductHistoryDialog);
 			OnFindBestService = new DelegateCommand(FindBestServiceButtonOnClick);
 			OnReEngrave = new DelegateCommand(OpenReEngraveDialog);
+		}
+
+		public void PrintQR(object param)
+		{
+			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Models.Order.Product)param).IdOrders);
+			var product = order.Products.SingleOrDefault(p => p.MachineAssignItemId == ((Models.Order.Product)param).MachineAssignItemId);
+			if (product is Product)
+			{
+				SelectedOrder = order;
+				SelectedItem = product;
+				PrintDocument pd = new PrintDocument();
+				pd.PrinterSettings.DefaultPageSettings.PaperSize = new PaperSize("QR", 62, 29);
+				pd.OriginAtMargins = false;
+				pd.PrintPage += PrintPage;
+				pd.Print();
+			}
+
+			Utils.Utils.Notifier.ShowSuccess($" QR code for product {product.IdProducts} printed successfully!");
+		}
+
+
+		public void PrintPage(object o, PrintPageEventArgs e)
+		{
+			var item = SelectedItem;
+			QRCodeGenerator qrGenerator = new QRCodeGenerator();
+			QRCodeData qrCodeData = qrGenerator.CreateQrCode("\t" + $"{item.IdOrders}-{item.IdProducts}-{item.MachineAssignItemId}" + "\n", QRCodeGenerator.ECCLevel.Q);
+			QRCode qrCode = new QRCode(qrCodeData);
+			var qr = qrCode.GetGraphic(20);
+			qr = ResizeImage(qr, 95, 95);
+			var img = (System.Drawing.Image)qr;
+			System.Drawing.Point loc = new System.Drawing.Point(0, 0);
+			Rectangle rect = new Rectangle(2, 2, 225, 88);
+			e.Graphics.DrawImage(img, loc);
+			Pen blackPen = new Pen(Color.Black, 3);
+			//e.Graphics.DrawRectangle(blackPen, rect);
+			if (SelectedOrder.NameOrder.Length > 6)
+			{
+				e.Graphics.DrawString($"{SelectedOrder.NameOrder}", new Font("Consolas", 9), new SolidBrush(Color.Black), 95, 45);
+			}
+			else
+			{
+				e.Graphics.DrawString($"{SelectedOrder.NameOrder}", new Font("Consolas", 12), new SolidBrush(Color.Black), 125, 45);
+			}
+		}
+
+		public static Bitmap ResizeImage(System.Drawing.Image image, int width, int height)
+		{
+			var destRect = new Rectangle(0, 0, width, height);
+			var destImage = new Bitmap(width, height);
+
+			destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+			using (var graphics = Graphics.FromImage(destImage))
+			{
+				graphics.CompositingMode = CompositingMode.SourceCopy;
+				graphics.CompositingQuality = CompositingQuality.HighQuality;
+				graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+				graphics.SmoothingMode = SmoothingMode.HighQuality;
+				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+				using (var wrapMode = new ImageAttributes())
+				{
+					wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+					graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+				}
+			}
+
+			return destImage;
 		}
 
 		private async void OpenReEngraveDialog(object param)

@@ -128,6 +128,19 @@ namespace ArtPix_Dashboard.Models.Order
 		public string MachineId { get; set; }
 		public int MachineAssignItemId { get; set; }
 
+		public double ProductImageSize
+		{
+			get 
+			{
+				var crystalType = CrystalType.Sku.ToCharArray()[1];
+				if ((crystalType == 'R' || crystalType == 'L' || crystalType == 'G') || (crystalType == 'F' && CrystalType.Sku.ToCharArray()[0] == '5'))
+				{
+					return 125;
+				}
+				return 175;
+			}
+		}
+
 		public Visibility MachineButtonVisibility =>
 			string.IsNullOrEmpty(MachineId) ? Visibility.Collapsed : Visibility.Visible;
 		public Visibility ManualCompleteButtonVisibility => Status == "engrave_done" ? Visibility.Collapsed : Visibility.Visible;
@@ -159,32 +172,10 @@ namespace ArtPix_Dashboard.Models.Order
 		public int ConvertTo3d { get; set; }
 
 
-		private bool _isImageExpanded;
-
-		public bool IsImageExpanded
-		{
-			get => _isImageExpanded;
-			set => SetProperty(ref _isImageExpanded, value);
-		}
-
-
 		[JsonProperty("url_original_img")]
 		public string UrlOriginalImg { get; set; }
 
 		private string _urlRenderImg;
-
-
-		private int _urlRenderImgSize;
-
-		public int UrlRenderImgSize
-		{
-			get =>
-				IsImageExpanded ? _urlRenderImgSize : CrystalType.Type == "Crystal" || CrystalType.Type == "Necklace" ||
-													  CrystalType.Type == "Keychain" || CrystalType.Type == "Fingerprint"
-					? 175
-					: 100;
-			set => SetProperty(ref _urlRenderImgSize, value);
-		}
 
 		[JsonProperty("url_render_img")]
 		public string UrlRenderImg {
@@ -768,6 +759,15 @@ namespace ArtPix_Dashboard.Models.Order
 
 	public class Datum : PropertyChangedListener
 	{
+
+		private bool _isExpanded;
+
+		public bool IsExpanded
+		{
+			get => _isExpanded;
+			set => SetProperty(ref _isExpanded, value);
+		}
+
 		[JsonProperty("id_orders")]
 		public int IdOrders { get; set; }
 
@@ -1118,7 +1118,7 @@ namespace ArtPix_Dashboard.Models.Order
 			}
 		}
 
-		public bool IsLateShipment => DateTime.Parse(EstimateProcessingMaxDate, CultureInfo.CurrentUICulture) < DateTime.Now;
+		public Visibility IsLateShipment => DateTime.Parse(EstimateProcessingMaxDate, CultureInfo.CurrentUICulture) < DateTime.Now ? Visibility.Visible : Visibility.Collapsed;
 
 		[JsonProperty("ip_address")]
 		public string IpAddress { get; set; }

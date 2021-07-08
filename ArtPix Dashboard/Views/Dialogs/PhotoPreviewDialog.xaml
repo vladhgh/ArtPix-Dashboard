@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.modernwpf.com/2019" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     xmlns:xamlFlair="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
     mc:Ignorable="d"
     DefaultButton="Primary">
@@ -20,8 +21,13 @@
             Source="{Binding Product.UrlRenderImg}"
             Stretch="Fill"
             Width="490"
+            Cursor="None"
             MouseEnter="UIElement_OnMouseEnter"
-            MouseLeave="UIElement_OnMouseLeave"/>
+            MouseLeave="UIElement_OnMouseLeave">
+            <xctk:MagnifierManager.Magnifier>
+                <xctk:Magnifier Radius="80" ZoomFactor=".6" />
+            </xctk:MagnifierManager.Magnifier>
+        </Image>
         <Button Content="Go Back" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}" HorizontalAlignment="Center" Cursor="Hand" Margin="0 0 0 0" Width="350" Click="Button_Click"/>
 
     </ui:SimpleStackPanel>

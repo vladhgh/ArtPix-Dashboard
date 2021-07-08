@@ -472,7 +472,7 @@ namespace ArtPix_Dashboard.Utils
 				//Start looking for engraving start. Previous log must be null.
 				if (log.Type == "engraving_start" && previousLog.EventDate == null)
 				{
-					if (int.Parse(log.Data.Machine) > 25)
+					if (int.Parse(log.Data.Machine) > 25 && int.Parse(log.Data.Machine) != 34)
 					{
 						startEngravingTime = DateTime.Parse(log.EventDate).Add(-(TimeSpan.Parse(log.Data.LaserTime)));
 					} else

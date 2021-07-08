@@ -18,6 +18,7 @@ using ListView = ModernWpf.Controls.ListView;
 using ArtPix_Dashboard.Utils;
 using ArtPix_Dashboard.Views.Dialogs;
 using Newtonsoft.Json;
+using System.Windows.Input;
 
 namespace ArtPix_Dashboard.Views
 {
@@ -70,10 +71,10 @@ namespace ArtPix_Dashboard.Views
 			if (_vm.Orders.Data == null) return;
 			if (_vm.Orders.Data.Count <= 0) return;
 			ShippingItemsListView.ScrollIntoView(_vm.Orders.Data[0]);
-			var scrollViewer = ShippingItemsListView.GetChildOfType<ScrollViewer>();
-			if (scrollViewer == null) return;
-			scrollViewer.CanContentScroll = false;
-			scrollViewer.PanningMode = PanningMode.Both;
+			//var scrollViewer = ShippingItemsListView.GetChildOfType<ScrollViewer>();
+			//if (scrollViewer == null) return;
+			//scrollViewer.CanContentScroll = false;
+			//scrollViewer.PanningMode = PanningMode.Both;
 
 		}
 
@@ -175,7 +176,10 @@ namespace ArtPix_Dashboard.Views
 
 		private void Expander_OnExpanded(object sender, RoutedEventArgs e)
 		{
-			ShippingItemsListView.ScrollIntoView(_vm.Orders.Data.Find(i => i.NameOrder == ((Expander)sender).Tag.ToString()));
+			ScrollViewer scrollViewer = GetScrollViewer(ShippingItemsListView) as ScrollViewer;
+			var order = _vm.Orders.Data.Find(i => i.NameOrder == ((Expander)sender).Tag.ToString());
+			
+			//scrollViewer.ScrollToVerticalOffset(_vm.Orders.Data.IndexOf(order));
 		}
 
 		#endregion
@@ -187,6 +191,67 @@ namespace ArtPix_Dashboard.Views
 			_vm.AppState.OrderFilterGroup.status_order = "processing";
 			SendCombinedRequest();
 
+		}
+
+		private Point myMousePlacementPoint;
+
+		private void OnListViewMouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.MiddleButton == MouseButtonState.Pressed)
+			{
+				myMousePlacementPoint = this.PointToScreen(Mouse.GetPosition(this));
+			}
+		}
+
+		private void OnListViewMouseMove(object sender, MouseEventArgs e)
+		{
+			ScrollViewer scrollViewer = GetScrollViewer(ShippingItemsListView) as ScrollViewer;
+
+			if (e.MiddleButton == MouseButtonState.Pressed)
+			{
+				var currentPoint = this.PointToScreen(Mouse.GetPosition(this));
+
+				if (currentPoint.Y < myMousePlacementPoint.Y)
+				{
+					scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - 3);
+				}
+				else if (currentPoint.Y > myMousePlacementPoint.Y)
+				{
+					scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + 3);
+				}
+
+				if (currentPoint.X < myMousePlacementPoint.X)
+				{
+					scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - 3);
+				}
+				else if (currentPoint.X > myMousePlacementPoint.X)
+				{
+					scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset + 3);
+				}
+			}
+		}
+
+		public static DependencyObject GetScrollViewer(DependencyObject o)
+		{
+			// Return the DependencyObject if it is a ScrollViewer
+			if (o is ScrollViewer)
+			{ return o; }
+
+			for (int i = 0; i < VisualTreeHelper.GetChildrenCount(o); i++)
+			{
+				var child = VisualTreeHelper.GetChild(o, i);
+
+				var result = GetScrollViewer(child);
+				if (result == null)
+				{
+					continue;
+				}
+				else
+				{
+					return result;
+				}
+			}
+			return null;
 		}
 	}
 }

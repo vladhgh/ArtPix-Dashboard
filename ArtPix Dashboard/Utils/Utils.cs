@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -12,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
@@ -20,6 +22,27 @@ using ListView = ModernWpf.Controls.ListView;
 
 namespace ArtPix_Dashboard.Utils
 {
+
+	public class MultiplyConverter : IMultiValueConverter
+	{
+		public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+		{
+			double result = 1.0;
+			for (int i = 0; i < values.Length; i++)
+			{
+				if (values[i] is double)
+					result *= (double)values[i];
+			}
+
+			return result;
+		}
+
+		public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+		{
+			throw new Exception("Not implemented");
+		}
+	}
+
 	public static class Utils
 	{
 
