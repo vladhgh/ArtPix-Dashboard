@@ -177,9 +177,19 @@ namespace ArtPix_Dashboard.Views
 		private void Expander_OnExpanded(object sender, RoutedEventArgs e)
 		{
 			ScrollViewer scrollViewer = GetScrollViewer(ShippingItemsListView) as ScrollViewer;
-			var order = _vm.Orders.Data.Find(i => i.NameOrder == ((Expander)sender).Tag.ToString());
-			
-			//scrollViewer.ScrollToVerticalOffset(_vm.Orders.Data.IndexOf(order));
+			var thisOrder = _vm.Orders.Data.Find(i => i.NameOrder == ((Expander)sender).Tag.ToString());
+			foreach (var order in _vm.Orders.Data)
+			{
+				order.IsExpanded = order.IdOrders == thisOrder.IdOrders;
+			}
+			Debug.WriteLine("SWH: " + ((Expander)sender).ActualHeight);
+			if (_vm.Orders.Data.IndexOf(thisOrder) == 14)
+			{
+				scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + 400);
+			} else
+			{
+				scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + ((Expander)sender).ActualHeight - 50);
+			}
 		}
 
 		#endregion

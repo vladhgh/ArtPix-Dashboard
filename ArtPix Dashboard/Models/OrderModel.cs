@@ -7,6 +7,8 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using ArtPix_Dashboard.ViewModels;
+using System.IO;
+using System.Reflection;
 
 namespace ArtPix_Dashboard.Models.Order
 {
@@ -135,7 +137,11 @@ namespace ArtPix_Dashboard.Models.Order
 				var crystalType = CrystalType.Sku.ToCharArray()[1];
 				if ((crystalType == 'R' || crystalType == 'L' || crystalType == 'G') || (crystalType == 'F' && CrystalType.Sku.ToCharArray()[0] == '5'))
 				{
-					return 125;
+					return 100;
+				}
+				if (CrystalType.Sku.ToCharArray()[0] == '7')
+				{
+					return 100;
 				}
 				return 175;
 			}
@@ -383,15 +389,15 @@ namespace ArtPix_Dashboard.Models.Order
 			get
 			{
 				var lastUpdated = DateTime.Parse(_updatedAt, CultureInfo.CurrentUICulture);
-				/*foreach (var product in Products.Where(product => product.Comments.Count > 0))
+				foreach (var comment in Comments)
 				{
-					var date = DateTime.Parse(product.Comments[product.Comments.Count - 1].UpdatedAt,
+					var date = DateTime.Parse(comment.UpdatedAt,
 						CultureInfo.CurrentUICulture);
 					if (date > lastUpdated)
 					{
 						lastUpdated = date;
 					}
-				}*/
+				}
 				return lastUpdated.AddHours(-5).ToString(CultureInfo.CurrentUICulture);
 			}
 			set => _updatedAt = value;
@@ -877,6 +883,9 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("store_order")]
 		public int StoreOrder { get; set; }
 
+		[JsonProperty("status")]
+		public string Status { get; set; }
+
 		[JsonProperty("status_order")]
 		public string StatusOrder { get; set; }
 		public string StatusOrderColor
@@ -960,12 +969,16 @@ namespace ArtPix_Dashboard.Models.Order
 			get
 			{
 				var item = this.Products.Find(x => x.CrystalType.Type == "Crystal" || x.CrystalType.Type == "Keychain");
-			
+				var outPutDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+				var logoimage = Path.Combine(outPutDirectory, "..\\..\\Assets\\multiple_item_order_preview.png");
+				string relLogo = new Uri(logoimage).LocalPath;
+
 				if (item != null)
 				{
-					return TotalCrystal == 1 && !string.IsNullOrEmpty(item.UrlRenderImg) ? item.UrlRenderImg : "/Assets/multiple_item_order_preview.png";
+					return TotalCrystal == 1 && !string.IsNullOrEmpty(item.UrlRenderImg) ? item.UrlRenderImg : relLogo;
 				}
-				return "/Assets/multiple_item_order_preview.png";
+				
+				return relLogo;
 			}
 		}
 
@@ -1142,6 +1155,7 @@ namespace ArtPix_Dashboard.Models.Order
 					case "amazon_expedited": return "Amazon Expedited";
 					case "amazon_second_day": return "Amazon Second Day";
 					case "amazon_next_day": return "Amazon Next Day";
+					case "dhl_parcel_direct": return "DHL Parcel Direct";
 					default: return "Not Found";
 				}
 			}
@@ -1154,16 +1168,17 @@ namespace ArtPix_Dashboard.Models.Order
 				switch (_shippingType)
 				{
 					case "free_shipping": return "Gray";
-					case "standard": return "Green";
-					case "economy": return "Green";
+					case "standard": return "DarkGreen";
+					case "economy": return "DarkGreen";
 					case "express": return "Red";
 					case "high_priority_express": return "Red";
 					case "local_pickup": return "Brown";
 					case "amazon": return "Orange";
-					case "amazon_standard": return "Green";
+					case "amazon_standard": return "DarkGreen";
 					case "amazon_expedited": return "Orange";
 					case "amazon_second_day": return "Red";
 					case "amazon_next_day": return "Red";
+					case "dhl_parcel_direct": return "DarkGreen";
 					default: return "White";
 				}
 			}
@@ -1171,6 +1186,8 @@ namespace ArtPix_Dashboard.Models.Order
 
 		[JsonProperty("is_redo")]
 		public bool IsRedo { get; set; }
+
+		public Visibility RedoVisibility => IsRedo ? Visibility.Visible : Visibility.Collapsed;
 
 		[JsonProperty("has_issue_opened")]
 		public bool HasIssueOpened { get; set; }

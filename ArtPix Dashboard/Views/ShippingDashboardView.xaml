@@ -10,10 +10,14 @@
 	xmlns:viewmodels="clr-namespace:ArtPix_Dashboard.ViewModels"
 	xmlns:order="clr-namespace:ArtPix_Dashboard.Models.Order"
 	xmlns:types="clr-namespace:ArtPix_Dashboard.Models.Types"
+    xmlns:local="clr-namespace:ArtPix_Dashboard.Utils.Converters"
 	d:DataContext="{d:DesignInstance Type=viewmodels:ShippingDashboardViewModel}"
 	Background="Transparent"
 	Title="Shipping Dashboard"
 	mc:Ignorable="d">
+    <ui:Page.Resources>
+        <local:PathToBitmapImagelConverter x:Key="PathToBitmapImagelConverter"/>
+    </ui:Page.Resources>
     <Grid >
 		<Grid.RowDefinitions>
 			<RowDefinition Height="0"/>
@@ -116,6 +120,7 @@
 					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=400}"
 					MinWidth="550"
 					BorderThickness="1"
+					ScrollViewer.CanContentScroll="False"
 					VirtualizingPanel.ScrollUnit="Pixel"
 					BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}">
             <ui:ListView.ItemTemplate>
@@ -126,20 +131,16 @@
 							ExpandDirection="Up"
 							IsExpanded="{Binding IsExpanded}"
 							Expanded="Expander_OnExpanded"
-							Padding="0 0 0 20"
+							Padding="0 0 0 0"
 							Tag="{Binding NameOrder}"
-							Template="{StaticResource RevealExpanderTemp}"
-							OverridesDefaultStyle="True"
 							Style="{DynamicResource CustomExpanderStyle}"
 							VerticalAlignment="Top">
 						<Expander.Header>
-							<ui:SimpleStackPanel Orientation="Horizontal"  Margin="40 10 0 10" Spacing="10" HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}">
-								<Image Width="75" Height="75" VerticalAlignment="Center" Stretch="Uniform" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=600}" >
-									<Image.Source>
-										<BitmapImage DecodePixelWidth="100" UriSource="{Binding Path=OrderImage}" />
-									</Image.Source>
-								</Image>
-								<ui:SimpleStackPanel
+							<ui:SimpleStackPanel Orientation="Horizontal"  Margin="30 10 0 10" Spacing="10" HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}">
+                                <Image 
+                                    Source="{Binding OrderImage, Converter={StaticResource PathToBitmapImagelConverter}}"
+                                    Width="120" Height="120" VerticalAlignment="Center" Stretch="Uniform" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=600}" />
+                                <ui:SimpleStackPanel
 											Orientation="Vertical"
 											VerticalAlignment="Center"
 											Spacing="2"
@@ -165,40 +166,41 @@
                                                 VerticalOffset="10"/>
                                             </ToolTipService.ToolTip>
                                         </TextBlock>
-                                        <Button Background="DarkRed" Style="{DynamicResource InactiveButtonStyle}" MaxHeight="25" Opacity="0.9" Visibility="{Binding IssueOpened}" Margin="0 0 10 0">
+                                       
+                                        <Button Background="Red" Style="{DynamicResource InactiveButtonStyle}" MaxHeight="25" Opacity="0.9" Visibility="{Binding IssueOpened}" Margin="0 0 10 0">
 											<TextBlock
 													Text="Issue"
 													FontSize="10"
 													Style="{DynamicResource BaseTextBlockStyle}"/>
 										</Button>
-										<Button Background="SteelBlue" Style="{DynamicResource InactiveButtonStyle}" MaxHeight="25" Opacity="0.9" Visibility="{Binding IssueResolved}" Margin="0 0 10 0">
+										<Button Background="SteelBlue" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Visibility="{Binding IssueResolved}" Margin="0 0 10 0">
 											<TextBlock
 													Text="Issue Resolved"
 													FontSize="10"
 													Style="{DynamicResource BaseTextBlockStyle}"/>
 										</Button>
-										<Button Background="DarkMagenta" Style="{DynamicResource CrystalRedoButtonStyle}" MaxHeight="25" Opacity="0.9" Margin="0 0 10 0">
+										<Button Background="DarkMagenta" Visibility="{Binding RedoVisibility}" Style="{DynamicResource CrystalRedoButtonStyle}" MaxHeight="25" Opacity="0.9" Margin="0 0 10 0">
 											<TextBlock
 													Text="Redo"
 													FontSize="10"
 													Style="{DynamicResource BaseTextBlockStyle}"/>
 										</Button>
-                                        <ItemsControl Name="ToteItemsControl"  ItemsSource="{Binding ShippingTotes}" Margin="0 6.5 0 0">
+                                        <ItemsControl Name="ToteItemsControl"  ItemsSource="{Binding ShippingTotes}" Margin="0 0 0 0">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
-                                                    <WrapPanel />
+                                                    <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" />
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <ui:SimpleStackPanel Orientation="Horizontal">
-                                                        <Button  Style="{DynamicResource ToteButtonStyle}" MaxHeight="25" Opacity="0.9" VerticalAlignment="Center" Margin="0 0 10 0">
+                                                        <Button  Style="{DynamicResource ToteButtonStyle}" Height="auto" Opacity="0.9"  Margin="0 0 10 0">
                                                             <TextBlock
 																	Text="{Binding Name}"
 																	FontSize="10"
 																	Style="{DynamicResource BaseTextBlockStyle}"/>
                                                         </Button>
-                                                        <Button Style="{DynamicResource SlotButtonStyle}" Visibility="{Binding SlotButtonVisibility}" MaxHeight="25" Opacity="0.9" VerticalAlignment="Center" Margin="0 0 10 0">
+                                                        <Button Style="{DynamicResource SlotButtonStyle}" Visibility="{Binding SlotButtonVisibility}" Height="auto" Opacity="0.9" Margin="0 0 10 0">
                                                             <TextBlock
 																	Text="{Binding ShippingSlot.Alias}"
 																	FontSize="10"
@@ -209,13 +211,13 @@
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
-                                        <Button Background="{Binding UpdatedAtAgeColor}" Style="{DynamicResource InactiveButtonStyle}"  Opacity="0.9" Margin="0 0 10 0">
+                                        <Button Background="{Binding UpdatedAtAgeColor}" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Margin="0 0 10 0">
 											<TextBlock
 													Text="{Binding UpdatedAtAge, StringFormat=Last Updated: {0:0} ago}"
 													FontSize="10"
 													Style="{DynamicResource BaseTextBlockStyle}"/>
 										</Button>
-                                        <Button Background="DarkRed" Visibility="{Binding IsLateShipment}" Style="{DynamicResource LateShipmentButtonStyle}" MaxHeight="25" Opacity="0.9" Margin="0 0 10 0">
+                                        <Button Background="DarkRed" Visibility="{Binding IsLateShipment}" Style="{DynamicResource LateShipmentButtonStyle}" Height="auto" Opacity="0.9" Margin="0 0 10 0">
                                             <TextBlock
 													Text="Late Shipment"
 													FontSize="10"
@@ -225,14 +227,14 @@
 									<ui:SimpleStackPanel Orientation="Horizontal" Spacing="10" Margin="0 0 0 5">
 										<Button Background="{Binding StatusOrderColor}" Style="{DynamicResource InactiveButtonStyle}"  Opacity="0.9">
 											<TextBlock
-												Text="{Binding StatusOrder, StringFormat=Shop: {0:N}, Mode=OneWay}"
+												Text="{Binding Status, StringFormat=Status: {0:N}, Mode=OneWay}"
 												Margin="10 0 10 2"
 												HorizontalAlignment="Left"
 												VerticalAlignment="Center"
 												FontSize="10"
 												Style="{DynamicResource BaseTextBlockStyle}"/>
 										</Button>
-										<Button Background="{Binding StatusEngravingColor}" Style="{DynamicResource InactiveButtonStyle}" MaxHeight="25" Opacity="0.9">
+										<!--<Button Background="{Binding StatusEngravingColor}" Style="{DynamicResource InactiveButtonStyle}" MaxHeight="25" Opacity="0.9">
 											<TextBlock
 												Text="{Binding StatusEngraving, StringFormat=Engraving: {0:N}, Mode=OneWay}"
 												Margin="10 0 10 2"
@@ -249,9 +251,9 @@
 												VerticalAlignment="Center"
 												FontSize="10"
 												Style="{DynamicResource BaseTextBlockStyle}"/>
-										</Button>
+										</Button>-->
 									</ui:SimpleStackPanel>
-                                    <!--<ui:SimpleStackPanel Orientation="Horizontal" >
+                                    <ui:SimpleStackPanel Orientation="Horizontal" >
                                         <TextBlock
 											Text="Shipping: "
 											HorizontalAlignment="Left"
@@ -267,16 +269,18 @@
 											TextTrimming="CharacterEllipsis"
 											TextWrapping="NoWrap"/>
                                     </ui:SimpleStackPanel>
-                                    <TextBlock
-											Text="{Binding Path=EstimateProcessingMaxDate, Mode=OneTime, StringFormat=Ship By: {0:0}}"
-											Style="{DynamicResource BaseTextBlockStyle}"
-											Foreground="LightGray"
-											HorizontalAlignment="Left" VerticalAlignment="Center" />
-                                    <TextBlock
-											Text="{Binding Path=EstimateDeliveryMaxDate, Mode=OneTime, StringFormat=Deliver By: {0:0}}"
-											Style="{DynamicResource BaseTextBlockStyle}"
-											Foreground="LightGray"
-											HorizontalAlignment="Left" VerticalAlignment="Center" />-->
+                                    <ui:SimpleStackPanel Orientation="Vertical" >
+										<TextBlock
+												Text="{Binding Path=EstimateProcessingMaxDate, Mode=OneTime, StringFormat=Ship By: {0:0}}"
+												Style="{DynamicResource BaseTextBlockStyle}"
+												Foreground="LightGray"
+												HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                        <TextBlock
+												Text="{Binding Path=EstimateDeliveryMaxDate, Mode=OneTime, StringFormat=Deliver By: {0:0}}"
+												Style="{DynamicResource BaseTextBlockStyle}"
+												Foreground="LightGray"
+												HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                    </ui:SimpleStackPanel>
                                 </ui:SimpleStackPanel>
 							</ui:SimpleStackPanel>
 						</Expander.Header>
@@ -291,11 +295,13 @@
                             </Grid.RowDefinitions>
                             <ui:SimpleStackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" Margin="50 0 100 20">
                                 <TextBlock
-									Margin="20 0 0 10"
-									HorizontalAlignment="Left"
-									VerticalAlignment="Center"
-									Style="{DynamicResource SubtitleTextBlockStyle}"
-									FontWeight="Black">
+										Margin="20 0 0 10"
+										HorizontalAlignment="Left"
+										VerticalAlignment="Center"
+										Style="{DynamicResource SubtitleTextBlockStyle}"
+										xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
+										xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=200}"
+										FontWeight="Black">
 									<Run Text="Products"/>
 									<Run Text="{Binding Path=TotalProducts, StringFormat=({0:F0}):}" />
                                 </TextBlock>
@@ -305,20 +311,20 @@
 									x:Name="ProductsListView"
 									ItemsSource="{Binding Products}"
 									IsSelectionEnabled="False"
-									BorderThickness="0"
-									MaxHeight="460"
+									BorderThickness="1"
+									MaxHeight="425"
 									BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
                                     xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
-									xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeInAndSlideFromTop}, Event=None, Duration=600, Delay=200}"
+									xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=400}"
 									VirtualizingPanel.ScrollUnit="Pixel">
                                     <ui:ListView.ItemTemplate>
                                         <DataTemplate DataType="order:Product">
-                                                <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="10" Margin="0 20 0 20">
+                                                <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="10" Margin="0">
                                                     <Button Style="{StaticResource InactiveButtonStyle}" Width="175" Height="auto" Background="Transparent" CommandParameter="{Binding}" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnImageClick}">
                                                         <Image VerticalAlignment="Center" HorizontalAlignment="Center"
-                                                           MaxWidth="{Binding ProductImageSize}" MaxHeight="{Binding ProductImageSize}" Stretch="Uniform">
+                                                           Width="{Binding ProductImageSize}" Height="{Binding ProductImageSize}" Stretch="Uniform">
                                                             <Image.Source>
-                                                                <BitmapImage DecodePixelWidth="175" UriSource="{Binding Path=UrlRenderImg}"/>
+                                                                <BitmapImage DecodePixelWidth="175" CacheOption="OnLoad" UriSource="{Binding Path=UrlRenderImg}"/>
                                                             </Image.Source>
                                                         </Image>
                                                     </Button>

@@ -2,245 +2,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:ui="http://schemas.modernwpf.com/2019"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                    xmlns:local="clr-namespace:ArtPix_Dashboard.Utils">
-
-
-    <ControlTemplate x:Key="AnimatedExpanderButtonTemp" TargetType="{x:Type ToggleButton}">
-        <Border x:Name="ExpanderArrow" CornerRadius="5"
-                Background="{TemplateBinding Background}"
-                BorderBrush="{TemplateBinding BorderBrush}"
-                BorderThickness="{TemplateBinding BorderThickness}"
-                Padding="{TemplateBinding Padding}"
-                >
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Rectangle Fill="Transparent"
-                           Grid.ColumnSpan="2"/>
-                <Ellipse Name="Circle"
-                     Grid.Column="0"
-                     Stroke="DarkGray"
-                     StrokeThickness="0"
-                     Visibility="Collapsed"
-                     Width="20"
-                     Height="20"
-                     HorizontalAlignment="Center"
-                     VerticalAlignment="Center"
-                     />
-                <Path x:Name="Arrow"
-                  Grid.Column="0"
-                  Margin="15 0 0 0"
-                  Data="M 0 0 L 5,5 L 10,0"
-                  Stroke="DarkGray"
-                  StrokeThickness="3"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Center"
-                  RenderTransformOrigin="0.5,0.5"
-                  >
-                    <Path.RenderTransform>
-                        <RotateTransform Angle="0"/>
-                    </Path.RenderTransform>
-                </Path>
-                <ContentPresenter x:Name="HeaderContent"                                      
-                                  Margin="4,0,0,0"
-                                  ContentSource="Content"/>
-            </Grid>
-        </Border>
-        <ControlTemplate.Triggers>
-            <Trigger Property="DockPanel.Dock"
-                     Value="Right">
-                <Setter Property="Data" TargetName="Arrow" Value="M 0 0 L 3 3 L 0 6 "/>
-
-            </Trigger>
-
-            <Trigger Property="DockPanel.Dock"
-                     Value="Left">
-                <Setter Property="Data" TargetName="Arrow" Value="M 0 0 L 3 3 L 0 6"/>
-
-            </Trigger>
-
-            <Trigger Property="DockPanel.Dock"
-                     Value="Top">
-                <Setter Property="Data" TargetName="Arrow" Value="M 0 0 L 5,5 L 10,0"/>
-
-            </Trigger>
-
-
-
-            <!-- Animate arrow when toggled-->
-            <Trigger Property="IsChecked"
-                     Value="True">
-                <Trigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="Arrow"
-                                             Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"
-                                             To="180"
-                                             Duration="0:0:0.4">
-                                <DoubleAnimation.EasingFunction>
-                                    <CubicEase EasingMode="EaseInOut"/>
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.EnterActions>
-                <Trigger.ExitActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="Arrow"
-                                             Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"
-                                             To="0"
-                                             Duration="0:0:0.4">
-                                <DoubleAnimation.EasingFunction>
-                                    <CubicEase EasingMode="EaseInOut"/>
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.ExitActions>
-            </Trigger>
-
-            <!-- MouseOver, Pressed behaviours-->
-            <Trigger Property="IsMouseOver"
-                             Value="true">
-                <Setter Property="Stroke"
-                                Value="#FF666666"
-                                TargetName="Circle"/>
-                <Setter Property="Stroke"
-                                Value="#FF666666"
-                                TargetName="Arrow"/>
-            </Trigger>
-            <Trigger Property="IsPressed"
-                             Value="true">
-                <Setter Property="Stroke"
-                                Value="#FF666666"
-                                TargetName="Circle"/>
-                <Setter Property="StrokeThickness"
-                                Value="1.5"
-                                TargetName="Circle"/>
-                <Setter Property="Stroke"
-                                Value="#333"
-                                TargetName="Arrow"/>
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-
-
-    <!-- Slide Out Content Expander's Template, 
-    Uses: AnimatedExpanderButtonTemp from above, 
-          MultiplyConverter in codebehind-->
+                    xmlns:local="clr-namespace:ArtPix_Dashboard.Utils"
+                    xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF">
     <local:MultiplyConverter x:Key="multiplyConverter" />
-    <ControlTemplate x:Key="RevealExpanderTemp" TargetType="{x:Type Expander}">
-        <DockPanel>
-            <!--<Border x:Name="ExpanderButtonBorder" Background="{Binding Path=Background, RelativeSource={RelativeSource TemplatedParent}}" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom" Padding="5,3">-->
-            <ToggleButton x:Name="ExpanderButton" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom"
-                          Template="{StaticResource AnimatedExpanderButtonTemp}"
-                          Content="{TemplateBinding Header}"
-                          IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
-                          Background="{Binding Path=Background, RelativeSource={RelativeSource TemplatedParent}}"
-                          OverridesDefaultStyle="True"
-                          Padding="0">
-            </ToggleButton>
-            <!--</Border>-->
-            <ScrollViewer x:Name="ExpanderContentScrollView" DockPanel.Dock="Top"
-                          HorizontalScrollBarVisibility="Hidden"
-                          VerticalScrollBarVisibility="Hidden"
-                          HorizontalContentAlignment="Stretch"
-                          VerticalContentAlignment="Bottom"
-                          >
-                <ScrollViewer.Tag>
-                    <sys:Double>0.0</sys:Double>
-                </ScrollViewer.Tag>
-                <ContentPresenter x:Name="ExpanderContent"  ContentSource="Content"/>
-            </ScrollViewer>
-        </DockPanel>
-        <ControlTemplate.Triggers>
-
-            <Trigger Property="ExpandDirection" Value="Right">
-                <Setter Property="DockPanel.Dock" TargetName="ExpanderButton" Value="Right"/>
-                <Setter Property="DockPanel.Dock" TargetName="ExpanderContentScrollView" Value="Left"/>
-                <Setter Property="Width" TargetName="ExpanderContentScrollView">
-                    <Setter.Value>
-                        <MultiBinding Converter="{StaticResource multiplyConverter}">
-                            <Binding Path="ActualWidth" ElementName="ExpanderContent"/>
-                            <Binding Path="Tag" RelativeSource="{RelativeSource Self}" />
-                        </MultiBinding>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-            <Trigger Property="ExpandDirection" Value="Up">
-                <Setter Property="DockPanel.Dock" TargetName="ExpanderButton" Value="Top"/>
-                <Setter Property="DockPanel.Dock" TargetName="ExpanderContentScrollView" Value="Bottom"/>
-                <Setter Property="Height" TargetName="ExpanderContentScrollView">
-                    <Setter.Value>
-                        <MultiBinding Converter="{StaticResource multiplyConverter}">
-                            <Binding Path="ActualHeight" ElementName="ExpanderContent"/>
-                            <Binding Path="Tag" RelativeSource="{RelativeSource Self}" />
-                        </MultiBinding>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-            <Trigger Property="ExpandDirection" Value="Left">
-                <Setter Property="DockPanel.Dock" TargetName="ExpanderButton" Value="Left"/>
-                <Setter Property="DockPanel.Dock" TargetName="ExpanderContentScrollView" Value="Right"/>
-                <Setter Property="Width" TargetName="ExpanderContentScrollView">
-                    <Setter.Value>
-                        <MultiBinding Converter="{StaticResource multiplyConverter}">
-                            <Binding Path="ActualWidth" ElementName="ExpanderContent"/>
-                            <Binding Path="Tag" RelativeSource="{RelativeSource Self}" />
-                        </MultiBinding>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-
-            <Trigger Property="ExpandDirection" Value="Down">
-                <Setter Property="Height" TargetName="ExpanderContentScrollView">
-                    <Setter.Value>
-                        <MultiBinding Converter="{StaticResource multiplyConverter}">
-                            <Binding Path="ActualHeight" ElementName="ExpanderContent"/>
-                            <Binding Path="Tag" RelativeSource="{RelativeSource Self}" />
-                        </MultiBinding>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-            </Trigger>
-
-
-            <Trigger Property="IsExpanded" Value="True">
-                <Trigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="ExpanderContentScrollView"
-                                             Storyboard.TargetProperty="Tag"                                                 
-                                             To="1"
-                                             Duration="0:0:0.4">
-                                <DoubleAnimation.EasingFunction>
-                                    <CubicEase EasingMode="EaseInOut"/>
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.EnterActions>
-                <Trigger.ExitActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="ExpanderContentScrollView"
-                                             Storyboard.TargetProperty="Tag"                                                 
-                                             To="0"
-                                             Duration="0:0:0.4">
-                                <DoubleAnimation.EasingFunction>
-                                    <CubicEase EasingMode="EaseInOut"/>
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.ExitActions>
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
 
     <Style x:Key="InactiveButtonStyle" TargetType="Button">
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
@@ -285,7 +49,6 @@
         </Setter>
     </Style>
     <Style x:Key="CrystalRedoButtonStyle" TargetType="Button">
-        <Setter Property="Visibility" Value="Collapsed"/>
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
         <Setter Property="BorderThickness" Value="{DynamicResource ButtonBorderThemeThickness}" />
@@ -297,21 +60,21 @@
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
         <Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}" />
-        <Setter Property="Padding" Value="8,5,8,6" />
+        <Setter Property="Padding" Value="8,2,8,4" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border
                         x:Name="Background"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="2"
+                        CornerRadius="5"
                         SnapsToDevicePixels="True">
                         <Border
                             x:Name="Border"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Padding="{TemplateBinding Padding}"
-                            CornerRadius="2">
+                            CornerRadius="5">
                             <ContentPresenter
                                 x:Name="ContentPresenter"
                                 TextElement.Foreground="{TemplateBinding Foreground}"
@@ -514,7 +277,7 @@
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
         <Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}" />
-        <Setter Property="Padding" Value="8,5,8,6" />
+        <Setter Property="Padding" Value="8,2,8,4" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -802,7 +565,7 @@
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
         <Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}" />
-        <Setter Property="Padding" Value="8,5,8,6" />
+        <Setter Property="Padding" Value="8,2,8,4" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -988,7 +751,28 @@
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="*"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="1" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="Left" Margin="8,0,0,0" RecognizesAccessKey="True" SnapsToDevicePixels="True" VerticalAlignment="Center"/>
+                                                            <Path x:Name="Arrow"
+                                                                    Grid.Column="0"
+                                                                    Margin="15 0 0 0"
+                                                                    Data="M 0 0 L 5,5 L 10,0"
+                                                                    Stroke="DarkGray"
+                                                                    StrokeThickness="3"
+                                                                    HorizontalAlignment="Left"
+                                                                    VerticalAlignment="Center"
+                                                                    RenderTransformOrigin="0.5,0.5">
+                                                                <Path.RenderTransform>
+                                                                    <RotateTransform Angle="0"/>
+                                                                </Path.RenderTransform>
+                                                            </Path>
+                                                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                                              Content="{TemplateBinding Content}"
+                                                                              Grid.Column="1"
+                                                                              ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                                                              HorizontalAlignment="Left"
+                                                                              Margin="8,0,0,0"
+                                                                              RecognizesAccessKey="True"
+                                                                              SnapsToDevicePixels="True"
+                                                                              VerticalAlignment="Center"/>
                                                         </Grid>
                                                     </Border>
                                                 </ControlTemplate>
@@ -997,12 +781,51 @@
                                     </Style>
                                 </ToggleButton.Style>
                             </ToggleButton>
-                            <ContentPresenter x:Name="ExpandSite" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" DockPanel.Dock="Bottom" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" Visibility="Collapsed" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            <ContentPresenter x:Name="ExpandSite"
+                                              xf:Animations.CombinedBinding="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                                                                            xf:Animations.Primary="{xf:Animate BasedOn={StaticResource ScaleFromTop}, Event=None, TransformOn=Layout}"
+                                                                            xf:Animations.Secondary="{xf:Animate BasedOn={StaticResource ScaleToTop}, Event=None, TransformOn=Layout}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" DockPanel.Dock="Bottom" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" Visibility="Collapsed" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                <ContentPresenter.LayoutTransform>
+                                    <ScaleTransform ScaleX="1" ScaleY="0" />
+                                </ContentPresenter.LayoutTransform>
+                            </ContentPresenter>
                         </DockPanel>
                     </Border>
                     <ControlTemplate.Triggers>
+
+
                         <Trigger Property="IsExpanded" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.Target="{Binding ElementName=Arrow}"
+                                             Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"
+                                             To="180"
+                                             Duration="0:0:0.4">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.Target="{Binding ElementName=Arrow}"
+                                             Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"
+                                             To="0"
+                                             Duration="0:0:0.4">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
                             <Setter Property="Visibility" TargetName="ExpandSite" Value="Visible"/>
+                            
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{DynamicResource SystemControlDisabledBaseMediumLowBrush}"/>
