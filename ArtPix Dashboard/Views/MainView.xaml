@@ -1,4 +1,4 @@
-﻿<fw:AcrylicWindow x:Class="ArtPix_Dashboard.Views.MainView"
+﻿<Window x:Class="ArtPix_Dashboard.Views.MainView"
                   x:Name="Window"
                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -223,7 +223,7 @@
 
         </Grid>
 
-        <ui:ProgressRing Name="ProgressRing" Grid.Row="1" Margin="10 0 0 0" Height="50" Width="50" IsActive="{Binding AppState.IsMainViewLoading}" />
+        <ui:ProgressRing Name="ProgressRing" Foreground="SteelBlue" Grid.Row="1" Margin="10 0 0 0" Height="50" Width="50" IsActive="{Binding AppState.IsMainViewLoading}" />
         <ui:NavigationView
 											x:Name="MainNavigationView"
 											Grid.Row="1"
@@ -522,4 +522,4 @@
 
 
     </Grid>
-</fw:AcrylicWindow>
+</Window>

@@ -17,7 +17,9 @@ using System.Net.NetworkInformation;
 using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Windows.Interop;
 using ArtPix_Dashboard.Views.Dialogs;
 using ArtPix_Dashboard.Utils;
 using ToastNotifications.Messages;
@@ -25,9 +27,81 @@ using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace ArtPix_Dashboard.Views
 {
+	internal enum AccentState
+	{
+		ACCENT_DISABLED = 0,
+		ACCENT_ENABLE_GRADIENT = 1,
+		ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
+		ACCENT_ENABLE_BLURBEHIND = 3,
+		ACCENT_ENABLE_ACRYLICBLURBEHIND = 4,
+		ACCENT_INVALID_STATE = 5
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	internal struct AccentPolicy
+	{
+		public AccentState AccentState;
+		public uint AccentFlags;
+		public uint GradientColor;
+		public uint AnimationId;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	internal struct WindowCompositionAttributeData
+	{
+		public WindowCompositionAttribute Attribute;
+		public IntPtr Data;
+		public int SizeOfData;
+	}
+
+	internal enum WindowCompositionAttribute
+	{
+		// ...
+		WCA_ACCENT_POLICY = 19
+		// ...
+	}
+
+
 	public partial class MainView
 	{
 		private readonly MainViewModel _vm = new MainViewModel();
+
+		[DllImport("user32.dll")]
+		internal static extern int SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);
+
+		private uint _blurOpacity;
+		public double BlurOpacity
+		{
+			get { return _blurOpacity; }
+			set { _blurOpacity = (uint)value; EnableBlur(); }
+		}
+
+		private uint _blurBackgroundColor = 0x990000; /* BGR color format */
+
+		internal void EnableBlur()
+		{
+			var windowHelper = new WindowInteropHelper(this);
+
+			var accent = new AccentPolicy();
+			accent.AccentState = AccentState.ACCENT_ENABLE_ACRYLICBLURBEHIND;
+			accent.GradientColor = (_blurOpacity << 24) | (_blurBackgroundColor & 0xFFFFFF);
+
+			var accentStructSize = Marshal.SizeOf(accent);
+
+			var accentPtr = Marshal.AllocHGlobal(accentStructSize);
+			Marshal.StructureToPtr(accent, accentPtr, false);
+
+			var data = new WindowCompositionAttributeData();
+			data.Attribute = WindowCompositionAttribute.WCA_ACCENT_POLICY;
+			data.SizeOfData = accentStructSize;
+			data.Data = accentPtr;
+
+			SetWindowCompositionAttribute(windowHelper.Handle, ref data);
+
+			Marshal.FreeHGlobal(accentPtr);
+		}
+
+
 
 		public MainView()
 		{
@@ -36,6 +110,7 @@ namespace ArtPix_Dashboard.Views
 		}
 		private async void MainViewOnLoaded(object sender, RoutedEventArgs e)
 		{
+			EnableBlur();
 			InitializeSettings();
 			_vm.Initialize();
 			Window.Closing += Window_Closing;
@@ -128,7 +203,6 @@ namespace ArtPix_Dashboard.Views
 			Settings.Default.PreviousVersion = _vm.AppState.PreviousVersion;
 			Settings.Default.Save();
 		}
-
 
 		private void SwitchStatusPanel()
 		{

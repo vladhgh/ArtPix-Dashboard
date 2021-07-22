@@ -337,14 +337,14 @@
                     <Border
                         x:Name="Background"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="2"
+                        CornerRadius="4"
                         SnapsToDevicePixels="True">
                         <Border
                             x:Name="Border"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Padding="{TemplateBinding Padding}"
-                            CornerRadius="2">
+                            CornerRadius="4">
                             <ContentPresenter
                                 x:Name="ContentPresenter"
                                 TextElement.Foreground="{TemplateBinding Foreground}"
@@ -1103,7 +1103,7 @@
                                 <Condition Property="IsChecked" Value="True"/>
                                 <Condition Property="IsMouseOver" Value="True"/>
                             </MultiTrigger.Conditions>
-                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundCheckedPointerOver}"/>
+                            <Setter Property="Background" TargetName="Background" Value="SteelBlue"/>
                             <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushCheckedPointerOver}"/>
                             <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundCheckedPointerOver}"/>
                         </MultiTrigger>
@@ -1168,5 +1168,83 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style x:Key="SearchButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Background" Value="SteelBlue"/>
+        <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="{DynamicResource ButtonBorderThemeThickness}"/>
+        <Setter Property="Padding" Value="8,5,8,6"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="FontFamily" Value="{DynamicResource ContentControlThemeFontFamily}"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}"/>
+        <Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}"/>
+        <Setter Property="ui:FocusVisualHelper.UseSystemFocusVisuals" Value="{DynamicResource UseSystemFocusVisuals}"/>
+        <Setter Property="ui:FocusVisualHelper.FocusVisualMargin" Value="-3"/>
+        <Setter Property="ui:ControlHelper.CornerRadius" Value="{DynamicResource ControlCornerRadius}"/>
+        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="Background" Background="{TemplateBinding Background}" CornerRadius="4" SnapsToDevicePixels="True">
+                        <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="Background" Value="SteelBlue"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ButtonBorderBrushPointerOver}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ButtonForegroundPointerOver}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource ButtonBackgroundPressed}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ButtonBorderBrushPressed}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ButtonForegroundPressed}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource ButtonBackgroundDisabled}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ButtonBorderBrushDisabled}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ButtonForegroundDisabled}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <ControlTemplate x:Key="TitleBarButtonControlTemplate1" TargetType="{x:Type ui:TitleBarButton}">
+            <Border x:Name="Background" Background="{TemplateBinding Background}" CornerRadius="4" SnapsToDevicePixels="True">
+                <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                    <ContentPresenter x:Name="Content" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                </Border>
+            </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsActive" Value="False">
+                <Setter Property="Background" TargetName="Background" Value="{Binding InactiveBackground, RelativeSource={RelativeSource TemplatedParent}}"/>
+                <Setter Property="TextElement.Foreground" TargetName="Content" Value="{Binding InactiveForeground, RelativeSource={RelativeSource TemplatedParent}}"/>
+            </Trigger>
+            <Trigger Property="IsActive" Value="True">
+                <Setter Property="Background" TargetName="Background" Value="{Binding HoverBackground, RelativeSource={RelativeSource TemplatedParent}}"/>
+                <Setter Property="TextElement.Foreground" TargetName="Content" Value="{Binding HoverForeground, RelativeSource={RelativeSource TemplatedParent}}"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" TargetName="Background" Value="{Binding HoverBackground, RelativeSource={RelativeSource TemplatedParent}}"/>
+                <Setter Property="TextElement.Foreground" TargetName="Content" Value="{Binding HoverForeground, RelativeSource={RelativeSource TemplatedParent}}"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" TargetName="Background" Value="{Binding PressedBackground, RelativeSource={RelativeSource TemplatedParent}}"/>
+                <Setter Property="TextElement.Foreground" TargetName="Content" Value="{Binding PressedForeground, RelativeSource={RelativeSource TemplatedParent}}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" TargetName="Background" Value="{DynamicResource SystemControlDisabledTransparentBrush}"/>
+                <Setter Property="TextElement.Foreground" TargetName="Content" Value="{DynamicResource SystemControlDisabledBaseMediumLowBrush}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
 
 </ResourceDictionary>

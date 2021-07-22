@@ -975,7 +975,7 @@ namespace ArtPix_Dashboard.Models.Order
 			{
 				if (HasIssueOpened)
 				{
-					return "Red";
+					return "DarkRed";
 				}
 
 				switch (_status)
