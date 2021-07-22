@@ -143,7 +143,7 @@ namespace ArtPix_Dashboard.Utils
 				if (online.TryGetValue(machine.IdMachines, out bool val))
 				{
 					machine.NetworkStatus = val ? "Online" : "Offline";
-					Console.WriteLine("Fetched value: {0}", val);
+					//Console.WriteLine("Fetched value: {0}", val);
 				}
 				else
 				{

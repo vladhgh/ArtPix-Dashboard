@@ -9,6 +9,7 @@ using System.Windows;
 using ArtPix_Dashboard.ViewModels;
 using System.IO;
 using System.Reflection;
+using System.Windows.Media.Imaging;
 
 namespace ArtPix_Dashboard.Models.Order
 {
@@ -150,7 +151,7 @@ namespace ArtPix_Dashboard.Models.Order
 		public Visibility MachineButtonVisibility =>
 			string.IsNullOrEmpty(MachineId) ? Visibility.Collapsed : Visibility.Visible;
 		public Visibility ManualCompleteButtonVisibility => Status == "engrave_done" ? Visibility.Collapsed : Visibility.Visible;
-		public Visibility CrystalIssueButtonVisibility => Status == "engrave_processing" ? Visibility.Visible : Visibility.Collapsed;
+		public Visibility CrystalIssueButtonVisibility => Status == "engrave_processing" || Status == "engrave_ready" || Status == "engrave_done" || Status == "engrave_redo" ? Visibility.Visible : Visibility.Collapsed;
 		public Visibility AssignMachineButtonVisibility => Status == "ready_to_engrave" || Status == "engrave_redo" ? Visibility.Visible : Visibility.Collapsed; 
 		public Visibility UnAssignMachineButtonVisibility => Status == "engrave_processing" ? Visibility.Visible : Visibility.Collapsed;
 		[JsonProperty("id_products")]
@@ -183,6 +184,38 @@ namespace ArtPix_Dashboard.Models.Order
 
 		private string _urlRenderImg;
 
+
+		public BitmapImage ProductImage
+		{
+			get
+			{
+				var outPutDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+				var productImagePath = Path.Combine(outPutDirectory, $"..\\..\\Assets\\{UrlRenderImg}");
+				var productImageLocalPath = new Uri(productImagePath).LocalPath;
+
+				if (String.IsNullOrEmpty(_urlRenderImg))
+				{
+					var bmp = new BitmapImage();
+					bmp.BeginInit();
+					bmp.CacheOption = BitmapCacheOption.OnLoad;
+					bmp.DecodePixelWidth = 100;
+					bmp.UriSource = new Uri(productImageLocalPath, UriKind.RelativeOrAbsolute);
+					bmp.EndInit();
+					return bmp;
+				}
+				else
+				{
+					var bmp = new BitmapImage();
+					bmp.BeginInit();
+					bmp.CacheOption = BitmapCacheOption.OnLoad;
+					bmp.DecodePixelWidth = 175;
+					bmp.UriSource = new Uri(_urlRenderImg, UriKind.RelativeOrAbsolute);
+					bmp.EndInit();
+					return bmp;
+				}
+			}
+		}
+
 		[JsonProperty("url_render_img")]
 		public string UrlRenderImg {
 			get
@@ -190,53 +223,53 @@ namespace ArtPix_Dashboard.Models.Order
 				switch (Name)
 				{
 					case "Rotating Base Small":
-						return "/Assets/rotating_base_small.png";
+						return "rotating_base_small.png";
 					case "Rotating Base Large":
-						return "/Assets/rotating_base_large.png";
+						return "rotating_base_large.png";
 					case "Small Wood Base with Light":
-						return "/Assets/light_base_small.png";
+						return "light_base_small.png";
 					case "Small Wood Light Base":
-						return "/Assets/light_base_small.png";
+						return "light_base_small.png";
 					case "Light Base Small":
-						return "/Assets/light_base_small.png";
+						return "light_base_small.png";
 					case "Medium Wood Base with Light":
-						return "/Assets/light_base_medium.png";
+						return "light_base_medium.png";
 					case "Medium Wood Light Base":
-						return "/Assets/light_base_medium.png";
+						return "light_base_medium.png";
 					case "Light Base Medium":
-						return "/Assets/light_base_medium.png";
+						return "light_base_medium.png";
 					case "Large Wood Base with Light":
-						return "/Assets/light_base_large.png";
+						return "light_base_large.png";
 					case "Large Wood Light Base":
-						return "/Assets/light_base_large.png";
+						return "light_base_large.png";
 					case "Light Base Large":
-						return "/Assets/light_base_large.png";
+						return "light_base_large.png";
 					case "XL Wood Light Base":
-						return "/Assets/light_base_xl.png";
+						return "light_base_xl.png";
 					case "Small Rotating Light Base":
-						return "/Assets/rotating_base_small.png";
+						return "rotating_base_small.png";
 					case "Large Rotating Light Base":
-						return "/Assets/rotating_base_large.png";
+						return "rotating_base_large.png";
 					case "3D Clover Flower Set With Blue Ribbon Card":
 						return "https://artpix3d.com/wp-content/uploads/2020/12/Greeting-card-2-2.jpg";
 					case "3D Clover Flower Set With Orange Ribbon Card":
 						return "https://artpix3d.com/wp-content/uploads/2020/12/Greeting-card-3-2.jpg";
 					case "Cleaning Kit":
-						return "/Assets/cleaning_kit.png";
+						return "cleaning_kit.png";
 					case "Sunshine Wrapping Paper":
-						return "/Assets/sunshine_wrapping_paper.png";
+						return "sunshine_wrapping_paper.png";
 					case "Balloon Wrapping Paper":
-						return "/Assets/baloon_wrapping_paper.png";
+						return "baloon_wrapping_paper.png";
 					case "Red Star Wrapping Paper":
-						return "/Assets/red_star_wrapping_paper.png";
+						return "red_star_wrapping_paper.png";
 					case "Golden Star Wrapping Paper":
-						return "/Assets/golden_star_wrapping_paper.png";
+						return "golden_star_wrapping_paper.png";
 					case "Blue Polka Dot Wrapping Paper":
-						return "/Assets/blue_polka_dot_wrapping_paper.png";
+						return "blue_polka_dot_wrapping_paper.png";
 					case "3D Sunflower Set Card":
-						return "/Assets/sunflower_greeting_card.png"; 
+						return "sunflower_greeting_card.png"; 
 					default:
-						return _urlRenderImg ?? "/Assets/placeholder.png";
+						return _urlRenderImg ?? "placeholder.png";
 				}
 			}
 			set => _urlRenderImg = value;
@@ -264,8 +297,33 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("crystal_position")]
 		public string CrystalPosition { get; set; }
 
+
+		private string _status;
+
 		[JsonProperty("status")]
-		public string Status { get; set; }
+		public string Status
+		{
+			get
+			{
+				switch (_status)
+				{
+					case "photoshop": return "In Photoshop";
+					case "issue": return "Customer Service Issue";
+					case "3d_model_in_progress": return "3D Model In Progress";
+					case "3d_model_pending": return "3D Model Pending";
+					case "retoucher_in_progress": return "Retouch In Progress";
+					case "retoucher_pending": return "Retouch Pending";
+					case "waiting_to_confirm": return "Awaiting Confirmation";
+					case "wait_model": return "Awaiting Model";
+					case "engrave_issue": return "Engraving Issue";
+					case "engrave_processing": return "Engraving In Progress";
+					case "engrave_done": return "Engraving Done";
+					case "shipping_label_printed": return "Shipped";
+					default: return "Unknown Status";
+				}
+			}
+			set => SetProperty(ref _status, value);
+		}
 
 		public Visibility ProductStatusVisibility => CrystalType.Type == "Crystal" || CrystalType.Type == "Necklace" || CrystalType.Type == "Keychain" || CrystalType.Type == "Fingerprint" || CrystalType.Type == "Wine Stopper" ? Visibility.Visible : Visibility.Collapsed;
 
@@ -273,21 +331,21 @@ namespace ArtPix_Dashboard.Models.Order
 		{
 			get
 			{
-				switch (Status)
+				switch (_status)
 				{
-					case "photoshop": return "SteelBlue";
+					case "photoshop": return "#bf6900";
 					case "issue": return "DarkRed";
 					case "3d_model_in_progress": return "SteelBlue";
-					case "3d_model_pending": return "DarkOrange";
+					case "3d_model_pending": return "#bf6900";
 					case "retoucher_in_progress": return "SteelBlue";
-					case "retoucher_pending": return "DarkOrange";
-					case "waiting_to_confirm": return "DarkOrange";
-					case "wait_model": return "DarkOrange";
+					case "retoucher_pending": return "#bf6900";
+					case "waiting_to_confirm": return "#bf6900";
+					case "wait_model": return "#bf6900";
 					case "engrave_issue": return "DarkRed";
 					case "engrave_processing": return "SteelBlue";
 					case "engrave_done": return "DarkGreen";
-					case "shipping_label_printed": return "Green";
-					default: return "Gray";
+					case "shipping_label_printed": return "DarkGreen";
+					default: return "#494949";
 				}
 			}
 		}
@@ -364,20 +422,20 @@ namespace ArtPix_Dashboard.Models.Order
 
 				if (diff.Days == 1)
 				{
-					return "DarkOrange";
+					return "#bf6900";
 				}
 
 				if (diff.Days < 1)
 				{
-					return "Gray";
+					return "#494949";
 				}
 
 				if (diff.Hours == 1)
 				{
-					return "Gray";
+					return "#494949";
 				}
 
-				return diff.Hours < 1 ? "Gray" : "nan";
+				return diff.Hours < 1 ? "#494949" : "nan";
 			}
 		}
 
@@ -883,8 +941,31 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("store_order")]
 		public int StoreOrder { get; set; }
 
+
+		private string _status;
+
 		[JsonProperty("status")]
-		public string Status { get; set; }
+		public string Status
+		{
+			get
+			{
+				if (HasIssueOpened)
+				{
+					return "Customer Service Issue";
+				}
+				switch (_status)
+				{
+					case "shipped" : return "Shipped";
+					case "ready_to_ship": return "Ready To Ship";
+					case "3d_conversion": return "3D Conversion";
+					case "engraving": return "Engraving";
+					case "retouching": return "Retouching";
+					case "waiting_to_confirm": return "Awaiting Confirmation";
+					default: return "Unknown Status";
+				}
+			}
+			set => SetProperty(ref _status, value);
+		}
 
 		[JsonProperty("status_order")]
 		public string StatusOrder { get; set; }
@@ -892,50 +973,32 @@ namespace ArtPix_Dashboard.Models.Order
 		{
 			get
 			{
-				switch (StatusOrder)
+				if (HasIssueOpened)
 				{
-					case "processing": return "SteelBlue";
-					case "completed": return "Green";
-					default: return "Gray";
+					return "Red";
+				}
 
+				switch (_status)
+				{
+					case "shipped": return "DarkGreen";
+					case "ready_to_ship": return "DarkGreen";
+					case "3d_conversion": return "#bf6900";
+					case "engraving": return "SteelBlue";
+					case "retouching": return "SteelBlue";
+					case "waiting_to_confirm": return "#bf6900";
+					default: return "#494949";
 				}
 			}
 		}
 
 		[JsonProperty("status_engraving")]
 		public string StatusEngraving { get; set; }
-		public string StatusEngravingColor
-		{
-			get
-			{
-				switch (StatusEngraving)
-				{
-					case "wait_models": return "DarkOrange";
-					case "done": return "Green";
-					case "error": return "Red";
-					case "processing": return "SteelBlue";
-					default: return "Gray";
 
-				}
-			}
-		}
 
 		[JsonProperty("status_shipping")]
 		public string StatusShipping { get; set; }
 
-		public string StatusShippingColor
-		{
-			get
-			{
-				switch (StatusShipping)
-				{
-					case "waiting": return "DarkOrange";
-					case "done": return "Green";
-					default: return "Gray";
 
-				}
-			}
-		}
 
 		[JsonProperty("discount_total")]
 		public double? DiscountTotal { get; set; }
@@ -964,22 +1027,40 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("total_crystal")]
 		public int TotalCrystal { get; set; }
 
-		public string OrderImage
+		public BitmapImage OrderImage
 		{
 			get
 			{
-				var item = this.Products.Find(x => x.CrystalType.Type == "Crystal" || x.CrystalType.Type == "Keychain");
+				var item = this.Products.Find(x => x.CrystalType.Type == "Crystal" || x.CrystalType.Type == "Keychain" || x.CrystalType.Type == "Necklace" || x.CrystalType.Type == "Wine Stopper" || x.CrystalType.Type.Contains("Fingerprint"));
 				var outPutDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-				var logoimage = Path.Combine(outPutDirectory, "..\\..\\Assets\\multiple_item_order_preview.png");
-				string relLogo = new Uri(logoimage).LocalPath;
+				var logoImage = Path.Combine(outPutDirectory, "..\\..\\Assets\\multiple_item_order_preview.png");
+				var relLogo = new Uri(logoImage).LocalPath;
 
-				if (item != null)
+				if (item == null)
 				{
-					return TotalCrystal == 1 && !string.IsNullOrEmpty(item.UrlRenderImg) ? item.UrlRenderImg : relLogo;
+					var bmp = new BitmapImage();
+					bmp.BeginInit();
+					bmp.CacheOption = BitmapCacheOption.OnLoad;
+					bmp.DecodePixelWidth = 100;
+					bmp.UriSource = new Uri(logoImage, UriKind.RelativeOrAbsolute);
+					bmp.EndInit();
+					return bmp;
 				}
-				
-				return relLogo;
+				else
+				{
+					var img = TotalCrystal == 1 && !string.IsNullOrEmpty(item.UrlRenderImg) ? item.UrlRenderImg : relLogo;
+
+					var bmp = new BitmapImage();
+					bmp.BeginInit();
+					bmp.CacheOption = BitmapCacheOption.OnLoad;
+					bmp.DecodePixelWidth = 100;
+					bmp.UriSource = new Uri(img, UriKind.RelativeOrAbsolute);
+					bmp.EndInit();
+					return bmp;
+				}
+
 			}
+			
 		}
 
 		[JsonProperty("total_products")]
@@ -1015,7 +1096,7 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("estimate_processing_max_date")]
 		public string EstimateProcessingMaxDate
 		{
-			get => DateTime.Parse(_estimateProcessingMaxDate, CultureInfo.CurrentUICulture).AddHours(-5).ToString(CultureInfo.CurrentUICulture);
+			get => DateTime.Parse(_estimateProcessingMaxDate, CultureInfo.CurrentUICulture).AddHours(-5).ToString(CultureInfo.CurrentUICulture).Split(' ')[0];
 			set => _estimateProcessingMaxDate = value;
 		}
 
@@ -1028,7 +1109,7 @@ namespace ArtPix_Dashboard.Models.Order
 		public string EstimateDeliveryMaxDate
 		{
 			get => DateTime.Parse(_estimatedDeliveryMaxDate, CultureInfo.CurrentUICulture).AddHours(-5)
-				.ToString(CultureInfo.CurrentUICulture);
+				.ToString(CultureInfo.CurrentUICulture).Split(' ')[0];
 			set => _estimatedDeliveryMaxDate = value;
 		}
 
@@ -1081,20 +1162,20 @@ namespace ArtPix_Dashboard.Models.Order
 
 				if (diff.Days == 1)
 				{
-					return "DarkOrange";
+					return "#bf6900";
 				}
 
 				if (diff.Days < 1)
 				{
-					return "Gray";
+					return "#494949";
 				}
 
 				if (diff.Hours == 1)
 				{
-					return "Gray";
+					return "#494949";
 				}
 
-				return diff.Hours < 1 ? "Gray" : "nan";
+				return diff.Hours < 1 ? "#494949" : "nan";
 			}
 		}
 
@@ -1167,19 +1248,19 @@ namespace ArtPix_Dashboard.Models.Order
 			{
 				switch (_shippingType)
 				{
-					case "free_shipping": return "Gray";
+					case "free_shipping": return "DarkGray";
 					case "standard": return "DarkGreen";
 					case "economy": return "DarkGreen";
-					case "express": return "Red";
-					case "high_priority_express": return "Red";
-					case "local_pickup": return "Brown";
+					case "express": return "DarkRed";
+					case "high_priority_express": return "DarkRed";
+					case "local_pickup": return "DarkGray";
 					case "amazon": return "Orange";
 					case "amazon_standard": return "DarkGreen";
 					case "amazon_expedited": return "Orange";
-					case "amazon_second_day": return "Red";
-					case "amazon_next_day": return "Red";
+					case "amazon_second_day": return "DarkRed";
+					case "amazon_next_day": return "DarkRed";
 					case "dhl_parcel_direct": return "DarkGreen";
-					default: return "White";
+					default: return "DarkGray";
 				}
 			}
 		}
@@ -1252,7 +1333,7 @@ namespace ArtPix_Dashboard.Models.Order
 						}
 					
 					}
-					if(product.CrystalType.Type == "Light Base" || product.CrystalType.Type == "Rotating Base" || product.CrystalType.Type == "Full Kit" || product.CrystalType.Type == "Greeting Card" || product.CrystalType.Type == "Greeting Cards")
+					if(product.CrystalType.Type.Contains("Base") || product.CrystalType.Type == "Full Kit" || product.CrystalType.Type.Contains("Card") || product.CrystalType.Type.Contains("Paper"))
 					{
 						TotalProducts++;
 						for (int i = 0; i < product.Quantity - 1; i++)

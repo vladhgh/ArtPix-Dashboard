@@ -26,14 +26,14 @@
                     <Border
                         x:Name="Background"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="5"
+                        CornerRadius="4"
                         SnapsToDevicePixels="True">
                         <Border
                             x:Name="Border"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Padding="{TemplateBinding Padding}"
-                            CornerRadius="5">
+                            CornerRadius="4">
                             <ContentPresenter
                                 x:Name="ContentPresenter"
                                 TextElement.Foreground="{TemplateBinding Foreground}"
@@ -150,7 +150,7 @@
     </Style>
     <Style x:Key="ReworkButtonStyle" TargetType="Button">
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
-        <Setter Property="Background" Value="#CCFFB900" />
+        <Setter Property="Background" Value="#bf6900 " />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
         <Setter Property="BorderThickness" Value="{DynamicResource ButtonBorderThemeThickness}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -168,14 +168,14 @@
                     <Border
                         x:Name="Background"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="2"
+                        CornerRadius="4"
                         SnapsToDevicePixels="True">
                         <Border
                             x:Name="Border"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Padding="{TemplateBinding Padding}"
-                            CornerRadius="2">
+                            CornerRadius="4">
                             <ContentPresenter
                                 x:Name="ContentPresenter"
                                 TextElement.Foreground="{TemplateBinding Foreground}"
@@ -209,7 +209,7 @@
     </Style>
     <Style x:Key="RedoButtonStyle" TargetType="Button">
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
-        <Setter Property="Background" Value="#CC0063B1" />
+        <Setter Property="Background" Value="SteelBlue" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
         <Setter Property="BorderThickness" Value="{DynamicResource ButtonBorderThemeThickness}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -227,14 +227,14 @@
                     <Border
                         x:Name="Background"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="2"
+                        CornerRadius="4"
                         SnapsToDevicePixels="True">
                         <Border
                             x:Name="Border"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Padding="{TemplateBinding Padding}"
-                            CornerRadius="2">
+                            CornerRadius="4">
                             <ContentPresenter
                                 x:Name="ContentPresenter"
                                 TextElement.Foreground="{TemplateBinding Foreground}"
@@ -454,14 +454,14 @@
                     <Border
 						x:Name="Background"
 						Background="{TemplateBinding Background}"
-						CornerRadius="5"
+						CornerRadius="4"
 						SnapsToDevicePixels="True">
                         <Border
 							x:Name="Border"
 							BorderBrush="{TemplateBinding BorderBrush}"
 							BorderThickness="{TemplateBinding BorderThickness}"
 							Padding="{TemplateBinding Padding}"
-							CornerRadius="2">
+							CornerRadius="4">
                             <ContentPresenter
 								x:Name="ContentPresenter"
 								TextElement.Foreground="{TemplateBinding Foreground}"
@@ -513,14 +513,14 @@
                     <Border
 						x:Name="Background"
 						Background="{TemplateBinding Background}"
-						CornerRadius="5"
+						CornerRadius="4"
 						SnapsToDevicePixels="True">
                         <Border
 							x:Name="Border"
 							BorderBrush="{TemplateBinding BorderBrush}"
 							BorderThickness="{TemplateBinding BorderThickness}"
 							Padding="{TemplateBinding Padding}"
-							CornerRadius="2">
+							CornerRadius="4">
                             <ContentPresenter
 								x:Name="ContentPresenter"
 								TextElement.Foreground="{TemplateBinding Foreground}"
@@ -572,14 +572,14 @@
                     <Border
 						x:Name="Background"
 						Background="{TemplateBinding Background}"
-						CornerRadius="5"
+						CornerRadius="4"
 						SnapsToDevicePixels="True">
                         <Border
 							x:Name="Border"
 							BorderBrush="{TemplateBinding BorderBrush}"
 							BorderThickness="{TemplateBinding BorderThickness}"
 							Padding="{TemplateBinding Padding}"
-							CornerRadius="5">
+							CornerRadius="4">
                             <ContentPresenter
 								x:Name="ContentPresenter"
 								TextElement.Foreground="{TemplateBinding Foreground}"
@@ -672,7 +672,7 @@
     </Style>
     <Style x:Key="ManualCompleteButtonStyle" TargetType="Button">
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
-        <Setter Property="Background" Value="ForestGreen" />
+        <Setter Property="Background" Value="DarkGreen" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
         <Setter Property="BorderThickness" Value="{DynamicResource ButtonBorderThemeThickness}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -690,14 +690,14 @@
                     <Border
 						x:Name="Background"
 						Background="{TemplateBinding Background}"
-						CornerRadius="2"
+						CornerRadius="4"
 						SnapsToDevicePixels="True">
                         <Border
 							x:Name="Border"
 							BorderBrush="{TemplateBinding BorderBrush}"
 							BorderThickness="{TemplateBinding BorderThickness}"
 							Padding="{TemplateBinding Padding}"
-							CornerRadius="2">
+							CornerRadius="4">
                             <ContentPresenter
 								x:Name="ContentPresenter"
 								TextElement.Foreground="{TemplateBinding Foreground}"
@@ -728,6 +728,79 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style x:Key="ExpanderArrow" TargetType="ToggleButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border Padding="{TemplateBinding Padding}">
+                        <Grid Background="Transparent" SnapsToDevicePixels="False">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Path x:Name="Arrow"
+                                    Grid.Column="0"
+                                    Margin="15 0 0 0"
+                                    Data="M 0 0 L 5,5 L 10,0"
+                                    Stroke="DarkGray"
+                                    StrokeThickness="3"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=600}">
+                                <Path.RenderTransform>
+                                    <RotateTransform Angle="0"/>
+                                </Path.RenderTransform>
+                            </Path>
+                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                                              Content="{TemplateBinding Content}"
+                                                                              Grid.Column="1"
+                                                                              ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                                                              HorizontalAlignment="Left"
+                                                                              Margin="8,0,0,0"
+                                                                              RecognizesAccessKey="True"
+                                                                              SnapsToDevicePixels="True"
+                                                                              VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="Arrow"
+                                                         Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"
+                                                         To="180"
+                                                         Duration="0:0:0.5">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="Arrow"
+                                                         Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"
+                                                         To="0"
+                                                         Duration="0:0:0.5">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        
+    </Style>
+
     <Style x:Key="CustomExpanderStyle" TargetType="{x:Type Expander}">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
@@ -740,92 +813,50 @@
                 <ControlTemplate TargetType="{x:Type Expander}">
                     <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource ControlCornerRadius}" SnapsToDevicePixels="True">
                         <DockPanel>
-                            <ToggleButton x:Name="HeaderSite" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" DockPanel.Dock="Top" Foreground="{TemplateBinding Foreground}" ui:FocusVisualHelper.FocusVisualMargin="-3" FontWeight="{TemplateBinding FontWeight}" FocusVisualStyle="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}" FontStyle="{TemplateBinding FontStyle}" FontStretch="{TemplateBinding FontStretch}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" MinWidth="0" MinHeight="0" Padding="{TemplateBinding Padding}" ui:FocusVisualHelper.UseSystemFocusVisuals="True" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
-                                <ToggleButton.Style>
-                                    <Style TargetType="{x:Type ToggleButton}">
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                                    <Border Padding="{TemplateBinding Padding}">
-                                                        <Grid Background="Transparent" SnapsToDevicePixels="False">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <Path x:Name="Arrow"
-                                                                    Grid.Column="0"
-                                                                    Margin="15 0 0 0"
-                                                                    Data="M 0 0 L 5,5 L 10,0"
-                                                                    Stroke="DarkGray"
-                                                                    StrokeThickness="3"
-                                                                    HorizontalAlignment="Left"
-                                                                    VerticalAlignment="Center"
-                                                                    RenderTransformOrigin="0.5,0.5">
-                                                                <Path.RenderTransform>
-                                                                    <RotateTransform Angle="0"/>
-                                                                </Path.RenderTransform>
-                                                            </Path>
-                                                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                                              Content="{TemplateBinding Content}"
-                                                                              Grid.Column="1"
-                                                                              ContentStringFormat="{TemplateBinding ContentStringFormat}"
-                                                                              HorizontalAlignment="Left"
-                                                                              Margin="8,0,0,0"
-                                                                              RecognizesAccessKey="True"
-                                                                              SnapsToDevicePixels="True"
-                                                                              VerticalAlignment="Center"/>
-                                                        </Grid>
-                                                    </Border>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </ToggleButton.Style>
-                            </ToggleButton>
+                            <ToggleButton x:Name="HeaderSite"
+                                          ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                          Content="{TemplateBinding Header}"
+                                          DockPanel.Dock="Top"
+                                          Foreground="{TemplateBinding Foreground}"
+                                          ui:FocusVisualHelper.FocusVisualMargin="-3"
+                                          FontWeight="{TemplateBinding FontWeight}"
+                                          FocusVisualStyle="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}"
+                                          FontStyle="{TemplateBinding FontStyle}"
+                                          FontStretch="{TemplateBinding FontStretch}"
+                                          FontSize="{TemplateBinding FontSize}"
+                                          FontFamily="{TemplateBinding FontFamily}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                          Margin="1"
+                                          MinWidth="0"
+                                          MinHeight="0"
+                                          Padding="{TemplateBinding Padding}"
+                                          ui:FocusVisualHelper.UseSystemFocusVisuals="True"
+                                          Style="{StaticResource ExpanderArrow}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
                             <ContentPresenter x:Name="ExpandSite"
                                               xf:Animations.CombinedBinding="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
-                                                                            xf:Animations.Primary="{xf:Animate BasedOn={StaticResource ScaleFromTop}, Event=None, TransformOn=Layout}"
-                                                                            xf:Animations.Secondary="{xf:Animate BasedOn={StaticResource ScaleToTop}, Event=None, TransformOn=Layout}"
-                                ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" DockPanel.Dock="Bottom" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" Visibility="Collapsed" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                              xf:Animations.Primary="{xf:Animate BasedOn={StaticResource ScaleFromTop}, Event=None, TransformOn=Layout}"
+                                              xf:Animations.Secondary="{xf:Animate BasedOn={StaticResource ScaleToTop}, Event=None, TransformOn=Layout}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}"
+                                              ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                              DockPanel.Dock="Bottom"
+                                              Focusable="False"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}"
+                                              Visibility="Collapsed"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                                 <ContentPresenter.LayoutTransform>
                                     <ScaleTransform ScaleX="1" ScaleY="0" />
                                 </ContentPresenter.LayoutTransform>
                             </ContentPresenter>
                         </DockPanel>
                     </Border>
+                    
                     <ControlTemplate.Triggers>
-
-
                         <Trigger Property="IsExpanded" Value="True">
-                            <Trigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.Target="{Binding ElementName=Arrow}"
-                                             Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"
-                                             To="180"
-                                             Duration="0:0:0.4">
-                                            <DoubleAnimation.EasingFunction>
-                                                <CubicEase EasingMode="EaseInOut"/>
-                                            </DoubleAnimation.EasingFunction>
-                                        </DoubleAnimation>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.Target="{Binding ElementName=Arrow}"
-                                             Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"
-                                             To="0"
-                                             Duration="0:0:0.4">
-                                            <DoubleAnimation.EasingFunction>
-                                                <CubicEase EasingMode="EaseInOut"/>
-                                            </DoubleAnimation.EasingFunction>
-                                        </DoubleAnimation>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.ExitActions>
                             <Setter Property="Visibility" TargetName="ExpandSite" Value="Visible"/>
-                            
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{DynamicResource SystemControlDisabledBaseMediumLowBrush}"/>
@@ -896,7 +927,7 @@
     </Style>
     <Style x:Key="UnassignButtonStyle" TargetType="Button">
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
-        <Setter Property="Background" Value="#CCE81123" />
+        <Setter Property="Background" Value="DarkRed" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
         <Setter Property="BorderThickness" Value="{DynamicResource ButtonBorderThemeThickness}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -914,14 +945,14 @@
                     <Border
                         x:Name="Background"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="2"
+                        CornerRadius="4"
                         SnapsToDevicePixels="True">
                         <Border
                             x:Name="Border"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Padding="{TemplateBinding Padding}"
-                            CornerRadius="2">
+                            CornerRadius="4">
                             <ContentPresenter
                                 x:Name="ContentPresenter"
                                 TextElement.Foreground="{TemplateBinding Foreground}"
@@ -953,7 +984,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
+    <Style x:Key="CustomButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="Background" Value="{DynamicResource ButtonBackground}"/>
         <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}"/>
@@ -975,8 +1006,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border x:Name="Background" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding ui:ControlHelper.CornerRadius}" SnapsToDevicePixels="True">
-                        <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding ui:ControlHelper.CornerRadius}" Padding="{TemplateBinding Padding}">
+                    <Border x:Name="Background" Background="{TemplateBinding Background}" CornerRadius="4" SnapsToDevicePixels="True">
+                        <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4" Padding="{TemplateBinding Padding}">
                             <ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         </Border>
                     </Border>
@@ -996,6 +1027,142 @@
                             <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ButtonBorderBrushDisabled}"/>
                             <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ButtonForegroundDisabled}"/>
                         </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="CustomToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Background" Value="{DynamicResource ToggleButtonBackground}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ToggleButtonForeground}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ToggleButtonBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="{DynamicResource ToggleButtonBorderThemeThickness}"/>
+        <Setter Property="Padding" Value="{DynamicResource ButtonPadding}"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="FontFamily" Value="{DynamicResource ContentControlThemeFontFamily}"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}"/>
+        <Setter Property="ui:ControlHelper.CornerRadius" Value="{DynamicResource ControlCornerRadius}"/>
+        <Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}"/>
+        <Setter Property="ui:FocusVisualHelper.UseSystemFocusVisuals" Value="{DynamicResource UseSystemFocusVisuals}"/>
+        <Setter Property="ui:FocusVisualHelper.FocusVisualMargin" Value="-3"/>
+        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border x:Name="Background" Background="{TemplateBinding Background}" CornerRadius="4" SnapsToDevicePixels="True">
+                        <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked" Value="False"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundPointerOver}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushPointerOver}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundPointerOver}"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked" Value="False"/>
+                                <Condition Property="IsPressed" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundPressed}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushPressed}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundPressed}"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked" Value="False"/>
+                                <Condition Property="IsEnabled" Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundDisabled}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundDisabled}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushDisabled}"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked" Value="True"/>
+                                <Condition Property="IsMouseOver" Value="False"/>
+                                <Condition Property="IsPressed" Value="False"/>
+                                <Condition Property="IsEnabled" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Background" Value="SteelBlue"/>
+                            <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundChecked}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushChecked}"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked" Value="True"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundCheckedPointerOver}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushCheckedPointerOver}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundCheckedPointerOver}"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked" Value="True"/>
+                                <Condition Property="IsPressed" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundCheckedPressed}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundCheckedPressed}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushCheckedPressed}"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked" Value="True"/>
+                                <Condition Property="IsEnabled" Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundCheckedDisabled}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundCheckedDisabled}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushCheckedDisabled}"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked" Value="{x:Null}"/>
+                                <Condition Property="IsMouseOver" Value="False"/>
+                                <Condition Property="IsPressed" Value="False"/>
+                                <Condition Property="IsEnabled" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminate}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminate}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminate}"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked" Value="{x:Null}"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminatePointerOver}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminatePointerOver}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminatePointerOver}"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked" Value="{x:Null}"/>
+                                <Condition Property="IsPressed" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminatePressed}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminatePressed}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminatePressed}"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked" Value="{x:Null}"/>
+                                <Condition Property="IsEnabled" Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminateDisabled}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminateDisabled}"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminateDisabled}"/>
+                        </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

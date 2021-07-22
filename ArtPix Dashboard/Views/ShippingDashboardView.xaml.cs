@@ -19,6 +19,7 @@ using ArtPix_Dashboard.Utils;
 using ArtPix_Dashboard.Views.Dialogs;
 using Newtonsoft.Json;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 
 namespace ArtPix_Dashboard.Views
 {
@@ -53,7 +54,7 @@ namespace ArtPix_Dashboard.Views
 
 		}
 
-		private async void SendCombinedRequest()
+		private async void SendCombinedRequest(bool search = false)
 		{
 			SortByComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.sort_by;
 			EngravingStatusComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.status_engraving;
@@ -71,10 +72,10 @@ namespace ArtPix_Dashboard.Views
 			if (_vm.Orders.Data == null) return;
 			if (_vm.Orders.Data.Count <= 0) return;
 			ShippingItemsListView.ScrollIntoView(_vm.Orders.Data[0]);
-			//var scrollViewer = ShippingItemsListView.GetChildOfType<ScrollViewer>();
-			//if (scrollViewer == null) return;
-			//scrollViewer.CanContentScroll = false;
-			//scrollViewer.PanningMode = PanningMode.Both;
+			if (search)
+			{
+				_vm.Orders.Data[0].IsExpanded = true;
+			}
 
 		}
 
@@ -160,7 +161,8 @@ namespace ArtPix_Dashboard.Views
 			_vm.AppState.OrderFilterGroup.status_shipping = "";
 			_vm.AppState.OrderFilterGroup.shipByToday = "";
 			_vm.AppState.OrderFilterGroup.name_order = SearchTextBox.Text ?? "" ;
-			SendCombinedRequest();
+			SendCombinedRequest(true);
+			//_vm.Orders.Data[0].IsExpanded = true;
 		}
 
 		private void ButtonSearchOnClick(object sender, RoutedEventArgs e)
@@ -170,7 +172,8 @@ namespace ArtPix_Dashboard.Views
 			_vm.AppState.OrderFilterGroup.status_shipping = "";
 			_vm.AppState.OrderFilterGroup.shipByToday = "";
 			_vm.AppState.OrderFilterGroup.name_order = SearchTextBox.Text ?? "" ;
-			SendCombinedRequest();
+			SendCombinedRequest(true);
+			//_vm.Orders.Data[0].IsExpanded = true;
 		}
 
 
@@ -182,18 +185,22 @@ namespace ArtPix_Dashboard.Views
 			{
 				order.IsExpanded = order.IdOrders == thisOrder.IdOrders;
 			}
-			Debug.WriteLine("SWH: " + ((Expander)sender).ActualHeight);
 			if (_vm.Orders.Data.IndexOf(thisOrder) == 14)
 			{
 				scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + 400);
 			} else
 			{
-				scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + ((Expander)sender).ActualHeight - 50);
+				scrollViewer.ScrollToVerticalOffset(ShippingItemsListView.Items.IndexOf(thisOrder) * ((Expander)sender).ActualHeight);
 			}
 		}
+		private void Expander_OnCollapsed(object sender, RoutedEventArgs e)
+		{
+			var r = ((Expander)sender).Template.FindName("ExpandSite", ((Expander)sender)) as UIElement;
+			r.Visibility = System.Windows.Visibility.Visible;
 
-		#endregion
-
+			var sb1 = (Storyboard)((Expander)sender).FindResource("sbCollapse");
+			sb1.Begin();
+		}
 		private void SearchTextBox_OnTextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
 		{
 			if (sender.Text != "") return;
@@ -203,43 +210,9 @@ namespace ArtPix_Dashboard.Views
 
 		}
 
-		private Point myMousePlacementPoint;
+		#endregion
 
-		private void OnListViewMouseDown(object sender, MouseButtonEventArgs e)
-		{
-			if (e.MiddleButton == MouseButtonState.Pressed)
-			{
-				myMousePlacementPoint = this.PointToScreen(Mouse.GetPosition(this));
-			}
-		}
 
-		private void OnListViewMouseMove(object sender, MouseEventArgs e)
-		{
-			ScrollViewer scrollViewer = GetScrollViewer(ShippingItemsListView) as ScrollViewer;
-
-			if (e.MiddleButton == MouseButtonState.Pressed)
-			{
-				var currentPoint = this.PointToScreen(Mouse.GetPosition(this));
-
-				if (currentPoint.Y < myMousePlacementPoint.Y)
-				{
-					scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - 3);
-				}
-				else if (currentPoint.Y > myMousePlacementPoint.Y)
-				{
-					scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + 3);
-				}
-
-				if (currentPoint.X < myMousePlacementPoint.X)
-				{
-					scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - 3);
-				}
-				else if (currentPoint.X > myMousePlacementPoint.X)
-				{
-					scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset + 3);
-				}
-			}
-		}
 
 		public static DependencyObject GetScrollViewer(DependencyObject o)
 		{
@@ -263,5 +236,6 @@ namespace ArtPix_Dashboard.Views
 			}
 			return null;
 		}
+
 	}
 }

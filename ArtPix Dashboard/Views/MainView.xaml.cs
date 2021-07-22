@@ -159,9 +159,9 @@ namespace ArtPix_Dashboard.Views
 
 		private void ReadyToShipButtonOnClick(object sender, RoutedEventArgs e)
 		{
-			_vm.AppState.OrderFilterGroup.status_engraving = "engrave_done&with_crystal_product_status[]=completed";
+			_vm.AppState.OrderFilterGroup.status_engraving = "engrave_done&amp;with_crystal_product_status[]=completed";
 			_vm.AppState.OrderFilterGroup.shipByToday = "False";
-			MainNavigationView.SelectedItem = MainNavigationView.MenuItems[1];
+			ContentFrame.Navigate(typeof(ShippingDashboardView), _vm.AppState, new SuppressNavigationTransitionInfo());
 		}
 
 		private void AwaitingShipmentButtonOnClick(object sender, RoutedEventArgs e)
@@ -170,14 +170,15 @@ namespace ArtPix_Dashboard.Views
 			_vm.AppState.OrderFilterGroup.shipByToday = "False";
 			_vm.AppState.OrderFilterGroup.status_order = "processing";
 			_vm.AppState.OrderFilterGroup.status_shipping = "waiting";
-			MainNavigationView.SelectedItem = MainNavigationView.MenuItems[1];
+			ContentFrame.Navigate(typeof(ShippingDashboardView), _vm.AppState, new SuppressNavigationTransitionInfo());
+
 		}
 
 		private void ShipByTodayButtonOnClick(object sender, RoutedEventArgs e)
 		{
 			_vm.AppState.OrderFilterGroup.status_engraving = "";
 			_vm.AppState.OrderFilterGroup.shipByToday = "True";
-			MainNavigationView.SelectedItem = MainNavigationView.MenuItems[1];
+			ContentFrame.Navigate(typeof(ShippingDashboardView), _vm.AppState, new SuppressNavigationTransitionInfo());
 		}
 
 		private void WorkstationButtonOnClick(object sender, RoutedEventArgs e)
@@ -216,11 +217,11 @@ namespace ArtPix_Dashboard.Views
 
 		private void ReadyToEngraveButtonOnClick(object sender, RoutedEventArgs e)
 		{
-			_vm.AppState.OrderFilterGroup.status_engraving = "ready_to_engrave&with_crystal_product_status[]=engrave_redo";
+			_vm.AppState.OrderFilterGroup.status_engraving = "ready_to_engrave&amp;with_crystal_product_status[]=engrave_redo";
 			_vm.AppState.OrderFilterGroup.shipByToday = "False";
 			_vm.AppState.OrderFilterGroup.status_order = "processing";
 			_vm.AppState.OrderFilterGroup.status_shipping = "waiting";
-			MainNavigationView.SelectedItem = MainNavigationView.MenuItems[1];
+			ContentFrame.Navigate(typeof(ShippingDashboardView), _vm.AppState, new SuppressNavigationTransitionInfo());
 		}
 
 		private void EngravingButtonOnClick(object sender, RoutedEventArgs e)
@@ -229,7 +230,7 @@ namespace ArtPix_Dashboard.Views
 			_vm.AppState.OrderFilterGroup.shipByToday = "False";
 			_vm.AppState.OrderFilterGroup.status_order = "processing";
 			_vm.AppState.OrderFilterGroup.status_shipping = "waiting";
-			MainNavigationView.SelectedItem = MainNavigationView.MenuItems[1];
+			ContentFrame.Navigate(typeof(ShippingDashboardView), _vm.AppState, new SuppressNavigationTransitionInfo());
 		}
 
 		private void ProductionIssuesButtonOnClick(object sender, RoutedEventArgs e)

@@ -10,14 +10,11 @@
 	xmlns:viewmodels="clr-namespace:ArtPix_Dashboard.ViewModels"
 	xmlns:order="clr-namespace:ArtPix_Dashboard.Models.Order"
 	xmlns:types="clr-namespace:ArtPix_Dashboard.Models.Types"
-    xmlns:local="clr-namespace:ArtPix_Dashboard.Utils.Converters"
-	d:DataContext="{d:DesignInstance Type=viewmodels:ShippingDashboardViewModel}"
+    d:DataContext="{d:DesignInstance Type=viewmodels:ShippingDashboardViewModel}"
 	Background="Transparent"
 	Title="Shipping Dashboard"
 	mc:Ignorable="d">
-    <ui:Page.Resources>
-        <local:PathToBitmapImagelConverter x:Key="PathToBitmapImagelConverter"/>
-    </ui:Page.Resources>
+
     <Grid >
 		<Grid.RowDefinitions>
 			<RowDefinition Height="0"/>
@@ -51,20 +48,20 @@
 						TextChanged="SearchTextBox_OnTextChanged"
                         ui:ControlHelper.Header="Search Orders:"
 						ui:ControlHelper.PlaceholderText="Search by order name..."/>
-			<Button Content="Search" VerticalAlignment="Bottom" Style="{DynamicResource AccentButtonStyle}" Click="ButtonSearchOnClick" Margin="0 0 10 0"/>
+			<Button Content="Search" VerticalAlignment="Bottom" Style="{DynamicResource CustomButtonStyle}" Background="SteelBlue" Click="ButtonSearchOnClick" Margin="0 0 10 0"/>
 			<ComboBox Name="StoreComboBox" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Store:" ui:ControlHelper.PlaceholderText="Select Store">
 				<ComboBoxItem Content="All Stores" Tag=""/>
 				<ComboBoxItem Content="Amazon Store" Tag="Amazon"/>
 				<ComboBoxItem Content="WordPress Store" Tag="WordPress"/>
 				<ComboBoxItem Content="Offline Store" Tag="OfflineStore"/>
 			</ComboBox>
-			<ComboBox Name="OrderStatusComboBox" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Order Status:" ui:ControlHelper.PlaceholderText="Select Order Status">
+			<ComboBox Name="OrderStatusComboBox" Visibility="Collapsed" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Order Status:" ui:ControlHelper.PlaceholderText="Select Order Status">
                 <ComboBoxItem Content="All Statuses" Tag=""/>
 				<ComboBoxItem Content="On Hold" Tag="on-hold"/>
 				<ComboBoxItem Content="Processing" Tag="processing"/>
 				<ComboBoxItem Content="Completed" Tag="completed"/>
 			</ComboBox>
-			<ComboBox Name="EngravingStatusComboBox" SelectedValuePath="Tag" VerticalAlignment="Center" Width="150" ui:ControlHelper.Header="Engraving Status:" ui:ControlHelper.PlaceholderText="Select Engraving Status">
+			<ComboBox Name="EngravingStatusComboBox" SelectedValuePath="Tag" VerticalAlignment="Center" Width="150" ui:ControlHelper.Header="Order Status:" ui:ControlHelper.PlaceholderText="Select Order Status">
 				<ComboBoxItem Content="All Statuses" Tag=""/>
 				<ComboBoxItem Content="Waiting To Confirm" Tag="waiting_to_confirm&amp;with_crystal_product_status[]=photoshop"/>
 				<ComboBoxItem Content="Awaiting Model" Tag="3d_model_in_progress&amp;with_crystal_product_status[]=3d_model_pending&amp;with_crystal_product_status[]=3d_model_rework&amp;with_crystal_product_status[]=retoucher_in_progress&amp;with_crystal_product_status[]=retoucher_pending&amp;with_crystal_product_status[]=retoucher_rework"/>
@@ -73,13 +70,13 @@
 				<ComboBoxItem Content="Issue" Tag="engrave_issue&amp;with_crystal_product_status[]=retoucher_issue"/>
 				<ComboBoxItem Content="Completed" Tag="engrave_done&amp;with_crystal_product_status[]=completed"/>
 			</ComboBox>
-			<ComboBox Name="ShippingStatusComboBox" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Shipping Status:" ui:ControlHelper.PlaceholderText="Select Shipping Status">
+            <ComboBox Name="ShippingStatusComboBox" Visibility="Collapsed" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Shipping Status:" ui:ControlHelper.PlaceholderText="Select Shipping Status">
                 <ComboBoxItem Content="All Statuses" Tag=""/>
                 <ComboBoxItem Content="Awaiting Shipment" Tag="waiting"/>
-				<ComboBoxItem Content="Processing" Tag="processing"/>
-				<ComboBoxItem Content="Shipped" Tag="done"/>
-			</ComboBox>
-			<ComboBox Name="SortByComboBox" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Sort By:" ui:ControlHelper.PlaceholderText="Select Sorting">
+                <ComboBoxItem Content="Processing" Tag="processing"/>
+                <ComboBoxItem Content="Shipped" Tag="done"/>
+            </ComboBox>
+            <ComboBox Name="SortByComboBox" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Sort By:" ui:ControlHelper.PlaceholderText="Select Sorting">
 				<ComboBoxItem Content="Priority" Tag="priority"/>
 				<ComboBoxItem Content="Estimated Processing Max Date" Tag="estimate_processing_max_date"/>
 				<ComboBoxItem Content="Ship By Min" Tag="ship_by_min"/>
@@ -87,17 +84,19 @@
 			<ui:SimpleStackPanel Name="AdditionalControls" Orientation="Vertical" Margin="10 0 0 0">
 				<TextBlock Text="Additional Controls:" Margin="0 0 0 5"/>
 				<ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
-					<ToggleButton x:Name="ToggleShipByToday" IsChecked="True"  Content="Ship By Today" Cursor="Hand" VerticalAlignment="Bottom"/>
-                    <ToggleButton x:Name="ToggleNoCrystal" Content="No Crystal"  Cursor="Hand" VerticalAlignment="Bottom"/>
-					<ToggleButton x:Name="ToggleInTotes" Content="In Totes"  Cursor="Hand" VerticalAlignment="Bottom"/>
-					<ToggleButton x:Name="ToggleNoPackage" Content="No Package"  Cursor="Hand" VerticalAlignment="Bottom"/>
-					<Button Content="Reload List" Cursor="Hand" VerticalAlignment="Bottom" Click="ButtonReloadOnClick" Style="{DynamicResource ButtonStyle1}"/>
+                    <ToggleButton x:Name="ToggleShipByToday" IsChecked="True"  Content="Ship By Today" Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
+                    <ToggleButton x:Name="ToggleNoCrystal" Content="No Crystal"  Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
+                    <ToggleButton x:Name="ToggleInTotes" Content="In Totes"  Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
+					<ToggleButton x:Name="ToggleNoPackage" Content="No Package"  Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
+                    <Button Height="32" Width="32" Cursor="Hand" VerticalAlignment="Bottom" Click="ButtonReloadOnClick" Style="{DynamicResource CustomButtonStyle}">
+                        <ui:FontIcon Glyph="&#xE895;" FontSize="14"/>
+                    </Button>
 				</ui:SimpleStackPanel>
 			</ui:SimpleStackPanel>
 
 		</ui:SimpleStackPanel>
 		
-		<ui:ProgressRing Name="ProgressRing" Grid.Column="1" Grid.Row="4" Margin="10 0 0 0" Height="50" Width="50" IsActive="{Binding IsLoading}"/>
+		<ui:ProgressRing Name="ProgressRing"  Grid.Column="1" Grid.Row="4" Margin="10 0 0 0" Height="50" Width="50" IsActive="{Binding IsLoading}"/>
 
 		<TextBlock
 					Grid.Row="3" Grid.Column="1"
@@ -119,8 +118,9 @@
 					MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
 					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=400}"
 					MinWidth="550"
+					CornerRadius="8"
 					BorderThickness="1"
-					ScrollViewer.CanContentScroll="False"
+                    ScrollViewer.CanContentScroll="False"
 					VirtualizingPanel.ScrollUnit="Pixel"
 					BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}">
             <ui:ListView.ItemTemplate>
@@ -131,14 +131,24 @@
 							ExpandDirection="Up"
 							IsExpanded="{Binding IsExpanded}"
 							Expanded="Expander_OnExpanded"
-							Padding="0 0 0 0"
+							Collapsed="Expander_OnCollapsed"
+							Margin="10 0 0 0"
 							Tag="{Binding NameOrder}"
 							Style="{DynamicResource CustomExpanderStyle}"
 							VerticalAlignment="Top">
-						<Expander.Header>
-							<ui:SimpleStackPanel Orientation="Horizontal"  Margin="30 10 0 10" Spacing="10" HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}">
+						<Expander.Resources>
+                                <Storyboard x:Key="sbCollapse">
+                                    <DoubleAnimation Storyboard.TargetName="expander"
+                                                     From="1" 
+                                                     To="0" 
+                                                     Duration="0:0:0.8" 
+                                                     Storyboard.TargetProperty="(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleY)"/>
+                                </Storyboard>
+                        </Expander.Resources>
+                        <Expander.Header>
+							<ui:SimpleStackPanel Orientation="Horizontal"  Margin="40 10 0 10" Spacing="10" HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}">
                                 <Image 
-                                    Source="{Binding OrderImage, Converter={StaticResource PathToBitmapImagelConverter}}"
+                                    Source="{Binding OrderImage}"
                                     Width="120" Height="120" VerticalAlignment="Center" Stretch="Uniform" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=600}" />
                                 <ui:SimpleStackPanel
 											Orientation="Vertical"
@@ -163,28 +173,28 @@
                                                 Content="Click To Copy Order Name!"
                                                 Placement="MousePoint"
                                                 HorizontalOffset="20"
-                                                VerticalOffset="10"/>
+                                                VerticalOffset="30"/>
                                             </ToolTipService.ToolTip>
                                         </TextBlock>
                                        
-                                        <Button Background="Red" Style="{DynamicResource InactiveButtonStyle}" MaxHeight="25" Opacity="0.9" Visibility="{Binding IssueOpened}" Margin="0 0 10 0">
+                                        <!--<Button Background="Red" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Visibility="{Binding IssueOpened}" Margin="0 0 10 0">
 											<TextBlock
 													Text="Issue"
 													FontSize="10"
 													Style="{DynamicResource BaseTextBlockStyle}"/>
-										</Button>
+										</Button>-->
 										<Button Background="SteelBlue" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Visibility="{Binding IssueResolved}" Margin="0 0 10 0">
 											<TextBlock
 													Text="Issue Resolved"
 													FontSize="10"
 													Style="{DynamicResource BaseTextBlockStyle}"/>
 										</Button>
-										<Button Background="DarkMagenta" Visibility="{Binding RedoVisibility}" Style="{DynamicResource CrystalRedoButtonStyle}" MaxHeight="25" Opacity="0.9" Margin="0 0 10 0">
+										<!--<Button Background="DarkMagenta" Visibility="{Binding RedoVisibility}" Style="{DynamicResource CrystalRedoButtonStyle}" MaxHeight="25" Opacity="0.9" Margin="0 0 10 0">
 											<TextBlock
 													Text="Redo"
 													FontSize="10"
 													Style="{DynamicResource BaseTextBlockStyle}"/>
-										</Button>
+										</Button>-->
                                         <ItemsControl Name="ToteItemsControl"  ItemsSource="{Binding ShippingTotes}" Margin="0 0 0 0">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
@@ -213,22 +223,22 @@
                                         </ItemsControl>
                                         <Button Background="{Binding UpdatedAtAgeColor}" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Margin="0 0 10 0">
 											<TextBlock
-													Text="{Binding UpdatedAtAge, StringFormat=Last Updated: {0:0} ago}"
+													Text="{Binding UpdatedAtAge, StringFormat=Updated: {0:0} ago}"
 													FontSize="10"
 													Style="{DynamicResource BaseTextBlockStyle}"/>
 										</Button>
                                         <Button Background="DarkRed" Visibility="{Binding IsLateShipment}" Style="{DynamicResource LateShipmentButtonStyle}" Height="auto" Opacity="0.9" Margin="0 0 10 0">
                                             <TextBlock
-													Text="Late Shipment"
+													Text="Late Shipment!"
 													FontSize="10"
 													Style="{DynamicResource BaseTextBlockStyle}"/>
                                         </Button>
                                     </ui:SimpleStackPanel>
-									<ui:SimpleStackPanel Orientation="Horizontal" Spacing="10" Margin="0 0 0 5">
-										<Button Background="{Binding StatusOrderColor}" Style="{DynamicResource InactiveButtonStyle}"  Opacity="0.9">
+									<ui:SimpleStackPanel Orientation="Horizontal" Spacing="10" Margin="0 0 0 0">
+										<Button Background="{Binding StatusOrderColor}" Height="auto" Style="{DynamicResource InactiveButtonStyle}"  Opacity="0.9">
 											<TextBlock
-												Text="{Binding Status, StringFormat=Status: {0:N}, Mode=OneWay}"
-												Margin="10 0 10 2"
+												Text="{Binding Status,  Mode=OneWay}"
+												Margin="10 0 10 0"
 												HorizontalAlignment="Left"
 												VerticalAlignment="Center"
 												FontSize="10"
@@ -293,7 +303,7 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <ui:SimpleStackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" Margin="50 0 100 20">
+                            <ui:SimpleStackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" Margin="50 0 100 50">
                                 <TextBlock
 										Margin="20 0 0 10"
 										HorizontalAlignment="Left"
@@ -313,6 +323,7 @@
 									IsSelectionEnabled="False"
 									BorderThickness="1"
 									MaxHeight="425"
+									CornerRadius="8"
 									BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
                                     xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
 									xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=400}"
@@ -320,13 +331,20 @@
                                     <ui:ListView.ItemTemplate>
                                         <DataTemplate DataType="order:Product">
                                                 <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="10" Margin="0">
-                                                    <Button Style="{StaticResource InactiveButtonStyle}" Width="175" Height="auto" Background="Transparent" CommandParameter="{Binding}" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnImageClick}">
-                                                        <Image VerticalAlignment="Center" HorizontalAlignment="Center"
-                                                           Width="{Binding ProductImageSize}" Height="{Binding ProductImageSize}" Stretch="Uniform">
-                                                            <Image.Source>
-                                                                <BitmapImage DecodePixelWidth="175" CacheOption="OnLoad" UriSource="{Binding Path=UrlRenderImg}"/>
-                                                            </Image.Source>
-                                                        </Image>
+                                                    <Button
+                                                        Style="{StaticResource InactiveButtonStyle}"
+                                                        Width="175"
+                                                        Height="auto"
+                                                        Background="Transparent"
+                                                        CommandParameter="{Binding}"
+                                                        Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnImageClick}">
+                                                        <Image
+                                                              VerticalAlignment="Center"
+                                                              HorizontalAlignment="Center"
+															  Source="{Binding ProductImage}"
+                                                              Width="{Binding ProductImageSize}"
+                                                              Height="{Binding ProductImageSize}"
+                                                              Stretch="Uniform"/>
                                                     </Button>
                                                     <ui:SimpleStackPanel VerticalAlignment="Center" Orientation="Vertical" Spacing="5" Margin="0,0,0,0"
                                                                          xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=400}">
@@ -356,28 +374,27 @@
 																Style="{DynamicResource TitleTextBlockStyle}"
 																HorizontalAlignment="Left"
 																Margin="0,0,10,0" />
-                                                            <Button Background="{Binding UpdatedAtAgeColor}" Visibility="{Binding ProductStatusVisibility}" Style="{DynamicResource InactiveButtonStyle}" MaxHeight="25" Opacity="0.9" Margin="0 5 10 0">
+                                                            <Button Background="{Binding UpdatedAtAgeColor}" Visibility="{Binding ProductStatusVisibility}" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Margin="0 5 10 0">
                                                                 <TextBlock
-																Text="{Binding UpdatedAtAge, StringFormat=Last Updated: {0:0} ago}"
+																Text="{Binding UpdatedAtAge, StringFormat=Updated: {0:0} ago}"
 																FontSize="10"
 																Style="{DynamicResource BaseTextBlockStyle}"/>
                                                             </Button>
                                                         </ui:SimpleStackPanel>
                                                         <ui:SimpleStackPanel Orientation="Vertical" Margin="0 0 0 10" Spacing="2" VerticalAlignment="Center" Visibility="{Binding ProductStatusVisibility}">
                                                             <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10" Margin="0 0 0 5" VerticalAlignment="Center">
-                                                                <Button Background="{Binding StatusColor}" Style="{DynamicResource InactiveButtonStyle}" Height="25" Opacity="0.9">
+                                                                <Button Background="{Binding StatusColor}" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9">
                                                                     <TextBlock
-																		Text="{Binding Status, StringFormat=Status: {0:N}, Mode=OneWay}"
+																		Text="{Binding Status, Mode=OneWay}"
 																		Margin="10 0 10 0"
 																		FontSize="10"
 																		Style="{DynamicResource BaseTextBlockStyle}"/>
                                                                 </Button>
-                                                                <Button Style="{DynamicResource MachineButtonStyle}" Visibility="{Binding MachineButtonVisibility}" Height="25" Opacity="0.9" >
+                                                                <Button Style="{DynamicResource MachineButtonStyle}" Visibility="{Binding MachineButtonVisibility}" Height="auto" Opacity="0.9" >
                                                                     <TextBlock
                                                                         Text="{Binding MachineId, StringFormat=Machine: {0:N}}"
                                                                         FontSize="10"
 																		Margin="0"
-																		Padding="0"
                                                                         Style="{DynamicResource BaseTextBlockStyle}"/>
                                                                 </Button>
 
@@ -420,15 +437,67 @@
                                                                     Opacity="0.9"
                                                                     Margin="0 0 10 0"
                                                                     Style="{StaticResource VitroMarkButtonStyle}" />
-                                                                <Button Cursor="Hand" Content="Assign Machine" Visibility="{Binding AssignMachineButtonVisibility}" Margin="0 0 10 0" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnAssignMachine}" CommandParameter="{Binding }" Opacity="0.9" Style="{StaticResource RedoButtonStyle}"/>
-                                                                <Button Cursor="Hand" Content="Unassign" Margin="0 0 10 0" Visibility="{Binding UnAssignMachineButtonVisibility}" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnUnassignMachine}" CommandParameter="{Binding }" Opacity="0.9" Style="{StaticResource UnassignButtonStyle}"/>
-                                                                <!--
-                                                                <Button Cursor="Hand" Content="Crystal Issue" Visibility="{Binding CrystalIssueButtonVisibility}" Margin="0 0 10 0" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnCrystalIssue}" CommandParameter="{Binding }" Opacity="0.9" Style="{StaticResource AddCrystalIssueButtonStyle}"/>
-                                                                -->
-                                                                <Button Cursor="Hand" Content="Re-Engrave" Visibility="{Binding ReEngraveButtonVisibility}" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnReEngrave}" CommandParameter="{Binding }" Margin="0 0 10 0" Opacity="0.9" Style="{StaticResource ReworkButtonStyle}"/>
-                                                                <Button Cursor="Hand" Content="Manual Complete" Visibility="{Binding ManualCompleteButtonVisibility}" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnManualComplete}" CommandParameter="{Binding}" Margin="0 0 10 0" Opacity="0.9" Style="{StaticResource ManualCompleteButtonStyle}"/>
-                                                                <Button Cursor="Hand" Content="Print QR" Margin="0 0 10 0" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnPrintQR}" CommandParameter="{Binding }" Opacity="0.9"/>
-                                                                <Button Cursor="Hand" Content="Product History" Margin="0 0 10 0" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnProductHistory}" CommandParameter="{Binding IdProducts}" Opacity="0.9" />
+                                                                <Button
+                                                                    Cursor="Hand"
+                                                                    Content="Assign Machine"
+                                                                    Visibility="{Binding AssignMachineButtonVisibility}"
+                                                                    Margin="0 0 10 0"
+                                                                    Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnAssignMachine}"
+                                                                    CommandParameter="{Binding }"
+                                                                    Opacity="0.9"
+                                                                    Style="{StaticResource RedoButtonStyle}"/>
+                                                                <Button
+                                                                    Cursor="Hand"
+                                                                    Content="Unassign"
+                                                                    Margin="0 0 10 0"
+                                                                    Visibility="{Binding UnAssignMachineButtonVisibility}"
+                                                                    Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnUnassignMachine}"
+                                                                    CommandParameter="{Binding }"
+                                                                    Opacity="0.9"
+                                                                    Style="{StaticResource UnassignButtonStyle}"/>
+                                                                
+                                                                <Button
+                                                                    Cursor="Hand"
+                                                                    Content="Add Issue"
+                                                                    Visibility="{Binding CrystalIssueButtonVisibility}"
+                                                                    Margin="0 0 10 0"
+                                                                    Opacity="0.9"
+                                                                    Style="{StaticResource AddCrystalIssueButtonStyle}"/>
+                                                                
+                                                                <Button
+                                                                    Cursor="Hand"
+                                                                    Content="Re-Engrave"
+                                                                    Visibility="{Binding ReEngraveButtonVisibility}"
+                                                                    Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnReEngrave}"
+                                                                    CommandParameter="{Binding }"
+                                                                    Margin="0 0 10 0"
+                                                                    Opacity="0.9"
+                                                                    Style="{StaticResource ReworkButtonStyle}"/>
+                                                                <Button
+                                                                    Cursor="Hand"
+                                                                    Content="Manual Complete"
+                                                                    Visibility="{Binding ManualCompleteButtonVisibility}"
+                                                                    Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnManualComplete}"
+                                                                    CommandParameter="{Binding}"
+                                                                    Margin="0 0 10 0"
+                                                                    Opacity="0.9"
+                                                                    Style="{StaticResource ManualCompleteButtonStyle}"/>
+                                                                <Button
+                                                                    Cursor="Hand"
+                                                                    Content="Print QR"
+                                                                    Margin="0 0 10 0"
+                                                                    Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnPrintQR}"
+                                                                    CommandParameter="{Binding }"
+                                                                    Style="{StaticResource CustomButtonStyle}"
+                                                                    Opacity="0.9"/>
+                                                                <Button
+                                                                    Cursor="Hand"
+                                                                    Content="Product History"
+                                                                    Margin="0 0 10 0"
+                                                                    Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnProductHistory}"
+                                                                    CommandParameter="{Binding IdProducts}"
+																	Style="{StaticResource CustomButtonStyle}"
+                                                                    Opacity="0.9" />
                                                             </ui:SimpleStackPanel>
                                                         </ui:SimpleStackPanel>
                                                     </ui:SimpleStackPanel>
@@ -461,7 +530,7 @@
 															FontSize="10"
 															Style="{DynamicResource BaseTextBlockStyle}"/>
                                                     </Button>
-                                                    <Button Margin="5 0 0 10" MaxHeight="25" Opacity="0.9">
+                                                    <Button Margin="5 0 0 10" MaxHeight="25" Opacity="0.9" Style="{StaticResource CustomButtonStyle}">
                                                         <TextBlock
 															Text="Edit"
 															FontSize="10"
@@ -524,7 +593,7 @@
 														FontSize="10"
 														Style="{DynamicResource BaseTextBlockStyle}"/>
                                                 </Button>
-                                                <Button Margin="5 0 0 10" MaxHeight="25" Opacity="0.9">
+                                                <Button Margin="5 0 0 10" MaxHeight="25" Opacity="0.9" Style="{StaticResource CustomButtonStyle}">
                                                     <TextBlock
 														Text="Edit"
 														FontSize="10"
@@ -591,8 +660,8 @@
 											Style="{DynamicResource SubtitleTextBlockStyle}"
 											FontWeight="Black"/>
                                         <ui:SimpleStackPanel Orientation="Horizontal" Margin="20 0 0 0">
-                                            <Button Cursor="Hand" Content="Confirmation Page" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnCP}" CommandParameter="{Binding NameOrder}" Margin="0 0 10 0"/>
-                                            <Button Cursor="Hand" Content="Order Archive" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnOA}" CommandParameter="{Binding NameOrder}" Margin="0 0 10 0"/>
+                                            <Button Cursor="Hand" Content="Confirmation Page" Style="{StaticResource CustomButtonStyle}" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnCP}" CommandParameter="{Binding NameOrder}" Margin="0 0 10 0"/>
+                                            <Button Cursor="Hand" Content="Order Archive" Style="{StaticResource CustomButtonStyle}" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnOA}" CommandParameter="{Binding NameOrder}" Margin="0 0 10 0"/>
                                         </ui:SimpleStackPanel>
 
                                     </ui:SimpleStackPanel>
@@ -616,7 +685,7 @@
 												FontSize="10"
 												Style="{DynamicResource BaseTextBlockStyle}"/>
                                         </Button>
-                                        <Button Margin="5 0 0 10" Visibility="{Binding FindBestServiceButtonVisibility}" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnFindBestService}" CommandParameter="{Binding IdOrders}" MaxHeight="25" Opacity="0.9">
+                                        <Button Margin="5 0 0 10" Style="{StaticResource CustomButtonStyle}" Visibility="{Binding FindBestServiceButtonVisibility}" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnFindBestService}" CommandParameter="{Binding IdOrders}" MaxHeight="25" Opacity="0.9">
                                             <TextBlock
 												Text="Find Best Service"
 												FontSize="10"

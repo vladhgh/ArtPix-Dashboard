@@ -176,6 +176,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+    
     </Window.Resources>
 
 
@@ -222,7 +223,7 @@
 
         </Grid>
 
-        <ui:ProgressRing Name="ProgressRing" Grid.Row="1" Margin="10 0 0 0" Height="50" Width="50" IsActive="{Binding AppState.IsMainViewLoading}"/>
+        <ui:ProgressRing Name="ProgressRing" Grid.Row="1" Margin="10 0 0 0" Height="50" Width="50" IsActive="{Binding AppState.IsMainViewLoading}" />
         <ui:NavigationView
 											x:Name="MainNavigationView"
 											Grid.Row="1"
@@ -236,7 +237,7 @@
 											BackRequested="MainNavigationView_BackRequested"
 											IsSettingsVisible="False"
 											xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility}"
-											SelectedItem="{Binding AppState.SelectedItem, Mode=TwoWay}">
+											SelectedItem="{Binding AppState.SelectedItem, Mode=TwoWay}" HorizontalAlignment="Right" Width="1912">
 
             <ui:NavigationView.Resources>
                 <SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="#99000000" />
@@ -244,9 +245,9 @@
             </ui:NavigationView.Resources>
 
             <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="Machines Dashboard" FontWeight="Bold" Tag="MachinesDashboardView" Cursor="Hand" ToolTip="Machines Dashboard" />
-                <ui:NavigationViewItem Content="Shipping Dashboard" FontWeight="Bold" Tag="ShippingDashboardView" Cursor="Hand" ToolTip="Shipping Dashboard" />
-                <ui:NavigationViewItem Content="Production Issues" FontWeight="Bold" Tag="ProductionIssuesView" Cursor="Hand" ToolTip="Production Issues" />
+                <!--<ui:NavigationViewItem Content="Machines Dashboard" FontWeight="Bold" Tag="MachinesDashboardView" Cursor="Hand" ToolTip="Machines Dashboard" />-->
+                <ui:NavigationViewItem Content="Production Dashboard" FontWeight="Bold" Tag="ShippingDashboardView" Cursor="Hand" ToolTip="Production Dashboard" />
+                <!--<ui:NavigationViewItem Content="Production Issues" FontWeight="Bold" Tag="ProductionIssuesView" Cursor="Hand" ToolTip="Production Issues" />-->
             </ui:NavigationView.MenuItems>
 
 
