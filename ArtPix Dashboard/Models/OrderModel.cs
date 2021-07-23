@@ -144,16 +144,20 @@ namespace ArtPix_Dashboard.Models.Order
 				{
 					return 100;
 				}
+				if (CrystalType.Sku == "1PBS" || CrystalType.Sku == "1PBM")
+				{
+					return 100;
+				}
 				return 175;
 			}
 		}
 
 		public Visibility MachineButtonVisibility =>
 			string.IsNullOrEmpty(MachineId) ? Visibility.Collapsed : Visibility.Visible;
-		public Visibility ManualCompleteButtonVisibility => Status == "engrave_done" ? Visibility.Collapsed : Visibility.Visible;
-		public Visibility CrystalIssueButtonVisibility => Status == "engrave_processing" || Status == "engrave_ready" || Status == "engrave_done" || Status == "engrave_redo" ? Visibility.Visible : Visibility.Collapsed;
-		public Visibility AssignMachineButtonVisibility => Status == "ready_to_engrave" || Status == "engrave_redo" ? Visibility.Visible : Visibility.Collapsed; 
-		public Visibility UnAssignMachineButtonVisibility => Status == "engrave_processing" ? Visibility.Visible : Visibility.Collapsed;
+		public Visibility ManualCompleteButtonVisibility => _status == "engrave_done" ? Visibility.Collapsed : Visibility.Visible;
+		public Visibility CrystalIssueButtonVisibility => _status == "engrave_processing" || Status == "engrave_ready" || Status == "engrave_done" || Status == "engrave_redo" ? Visibility.Visible : Visibility.Collapsed;
+		public Visibility AssignMachineButtonVisibility => _status == "ready_to_engrave" || Status == "engrave_redo" ? Visibility.Visible : Visibility.Collapsed; 
+		public Visibility UnAssignMachineButtonVisibility => _status == "engrave_processing" ? Visibility.Visible : Visibility.Collapsed;
 		[JsonProperty("id_products")]
 		public int IdProducts { get; set; }
 
@@ -243,8 +247,10 @@ namespace ArtPix_Dashboard.Models.Order
 					case "Large Wood Light Base":
 						return "light_base_large.png";
 					case "Light Base Large":
-						return "light_base_large.png";
+						return "light_base_large.png"; 
 					case "XL Wood Light Base":
+						return "light_base_xl.png";
+					case "Light Base X-Large":
 						return "light_base_xl.png";
 					case "Small Rotating Light Base":
 						return "rotating_base_small.png";
@@ -267,7 +273,11 @@ namespace ArtPix_Dashboard.Models.Order
 					case "Blue Polka Dot Wrapping Paper":
 						return "blue_polka_dot_wrapping_paper.png";
 					case "3D Sunflower Set Card":
-						return "sunflower_greeting_card.png"; 
+						return "sunflower_greeting_card.png";
+					case "Medium Plastic Light Base":
+						return "plastic_light_base_medium.png";
+					case "Small Plastic Light Base":
+						return "plastic_light_base_medium.png";
 					default:
 						return _urlRenderImg ?? "placeholder.png";
 				}
@@ -315,6 +325,7 @@ namespace ArtPix_Dashboard.Models.Order
 					case "retoucher_pending": return "Retouch Pending";
 					case "waiting_to_confirm": return "Awaiting Confirmation";
 					case "wait_model": return "Awaiting Model";
+					case "ready_to_engrave": return "Ready To Engrave";
 					case "engrave_issue": return "Engraving Issue";
 					case "engrave_processing": return "Engraving In Progress";
 					case "engrave_done": return "Engraving Done";
@@ -479,7 +490,7 @@ namespace ArtPix_Dashboard.Models.Order
 		public Visibility VitroMarkButtonVisibility => Retouch == null ? Visibility.Collapsed : Visibility.Visible;
 
 		public Visibility ReEngraveButtonVisibility =>
-			Status == "engrave_done" ? Visibility.Visible : Visibility.Collapsed;
+			_status == "engrave_done" ? Visibility.Visible : Visibility.Collapsed;
 	}
 	[Serializable()]
 	public class Retouch

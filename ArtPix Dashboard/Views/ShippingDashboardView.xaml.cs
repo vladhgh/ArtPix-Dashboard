@@ -27,6 +27,11 @@ namespace ArtPix_Dashboard.Views
 	public partial class ShippingDashboardView
 	{
 		private readonly ShippingDashboardViewModel _vm = new ShippingDashboardViewModel();
+
+		private string _inputString;
+
+		private bool _tabPressed;
+
 		public ShippingDashboardView()
 		{
 			InitializeComponent();
@@ -37,6 +42,10 @@ namespace ArtPix_Dashboard.Views
 		{
 			_vm.AppState = (AppStateModel)e.ExtraData;
 			_vm.Initialize();
+
+			ShippingDashboardPage.PreviewKeyDown += KeyPressEventListener;
+			ShippingDashboardPage.Focus();
+
 			if (_vm.AppState.OrderFilterGroup == null) return;
 
 			SendCombinedRequest();
@@ -75,17 +84,62 @@ namespace ArtPix_Dashboard.Views
 			if (search)
 			{
 				_vm.Orders.Data[0].IsExpanded = true;
+				_vm.AppState.OrderFilterGroup.name_order = _vm.Orders.Data[0].NameOrder;
+				SearchTextBox.Text = _vm.AppState.OrderFilterGroup.name_order;
 			}
 
 		}
 
 		#region EVENT HANDLERS
 
+		public void KeyPressEventListener(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Tab && !_tabPressed)
+			{
+				_tabPressed = true;
+				e.Handled = true;
+			}
+
+			if (e.Key != Key.Tab && _tabPressed)
+			{
+				if ((e.Key >= Key.D0) && (e.Key <= Key.D9))
+				{
+					_inputString += e.Key.ToString().ToCharArray()[1];
+					e.Handled = true;
+				}
+
+				if (e.Key == Key.OemMinus)
+				{
+					_inputString += "-";
+					e.Handled = true;
+				}
+			}
+
+			if (e.Key == Key.Enter)
+			{
+				_tabPressed = false;
+				_vm.AppState.OrderFilterGroup.status_engraving = "";
+				_vm.AppState.OrderFilterGroup.status_order = "";
+				_vm.AppState.OrderFilterGroup.status_shipping = "";
+				_vm.AppState.OrderFilterGroup.shipByToday = "";
+				_vm.AppState.OrderFilterGroup.order_id = _inputString.Split('-')[0];
+				SendCombinedRequest(true);
+				_inputString = "";
+				e.Handled = true;
+			}
+		}
+
+
 		private void ToggleNoCrystal_Click(object sender, RoutedEventArgs e)
 		{
 			if (sender is ToggleButton btn)
+			{
 				if (btn.IsChecked != null)
+				{
 					_vm.AppState.OrderFilterGroup.with_crystals = (bool)btn.IsChecked ? "0" : "3";
+					_vm.AppState.OrderFilterGroup.status_shipping = (bool)btn.IsChecked ? "" : "waiting";
+				}
+			}
 			SendCombinedRequest();
 		}
 
@@ -162,7 +216,6 @@ namespace ArtPix_Dashboard.Views
 			_vm.AppState.OrderFilterGroup.shipByToday = "";
 			_vm.AppState.OrderFilterGroup.name_order = SearchTextBox.Text ?? "" ;
 			SendCombinedRequest(true);
-			//_vm.Orders.Data[0].IsExpanded = true;
 		}
 
 		private void ButtonSearchOnClick(object sender, RoutedEventArgs e)
@@ -173,7 +226,6 @@ namespace ArtPix_Dashboard.Views
 			_vm.AppState.OrderFilterGroup.shipByToday = "";
 			_vm.AppState.OrderFilterGroup.name_order = SearchTextBox.Text ?? "" ;
 			SendCombinedRequest(true);
-			//_vm.Orders.Data[0].IsExpanded = true;
 		}
 
 
@@ -237,5 +289,17 @@ namespace ArtPix_Dashboard.Views
 			return null;
 		}
 
+		private async void EditAddressButtonClick(object sender, RoutedEventArgs e)
+		{
+			//var product = (Product)param;
+			//var order = Orders.Data.SingleOrDefault(p => p.IdOrders == product.IdOrders);
+			//var machines = await ArtPixAPI.GetMachines(product.IdProducts);
+			var dialog = new ChangeAddressDialog();
+			var result = await dialog.ShowAsync();
+			if (result == ContentDialogResult.Primary)
+			{
+				
+			}
+		}
 	}
 }

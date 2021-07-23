@@ -9,19 +9,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using ArtPix_Dashboard.Models;
 using ArtPix_Dashboard.Models.ProductHistory;
 using ArtPix_Dashboard.Models.Shipping;
 using ArtPix_Dashboard.Models.Workstation;
-using RestSharp.Extensions;
-using Machine = ArtPix_Dashboard.Models.Machine.Machine;
-using Order = ArtPix_Dashboard.Models.Machine.Order;
-using Windows.Globalization.DateTimeFormatting;
-using System.Web;
 using ToastNotifications.Messages;
 using ArtPix_Dashboard.Properties;
 using ArtPix_Dashboard.Models.Logs;
@@ -231,6 +223,7 @@ namespace ArtPix_Dashboard.Utils
 			req.AddHeader("Accept", "application/json");
 			req.AddHeader("Authorization", "Bearer " + bearerToken);
 			req.AlwaysMultipartFormData = true;
+			Debug.WriteLine($"API GetOrder Request: {request}");
 			var res = await Client.GetAsync<OrderModel>(req);
 			return res.Data.Count > 0 ? res.Data[0] : null;
 		}
@@ -271,7 +264,7 @@ namespace ArtPix_Dashboard.Utils
 						break;
 				}
 			}
-			//Debug.WriteLine(request);
+			Debug.WriteLine($"API GetOrders Request: {request}");
 			var req = new RestRequest(request);
 			req.AddHeader("Accept", "application/json");
 			req.AddHeader("Authorization", "Bearer " + bearerToken);

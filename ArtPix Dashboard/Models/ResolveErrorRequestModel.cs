@@ -37,8 +37,14 @@ namespace ArtPix_Dashboard.Models
     public class OrderCombineFilterModel : PropertyChangedListener
     {
 
+		private string _order_id;
 
-	    private string _name_order;
+		public string order_id
+		{
+			get => _order_id;
+			set => SetProperty(ref _order_id, value);
+		}
+		private string _name_order;
 
 	    public string name_order
 	    {

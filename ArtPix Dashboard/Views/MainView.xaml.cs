@@ -309,7 +309,11 @@ namespace ArtPix_Dashboard.Views
 
 		private void ProductionIssuesButtonOnClick(object sender, RoutedEventArgs e)
 		{
-			MainNavigationView.SelectedItem = MainNavigationView.MenuItems[2];
+			_vm.AppState.OrderFilterGroup.status_engraving = "engrave_issue";
+			_vm.AppState.OrderFilterGroup.shipByToday = "False";
+			_vm.AppState.OrderFilterGroup.status_order = "processing";
+			_vm.AppState.OrderFilterGroup.status_shipping = "waiting";
+			ContentFrame.Navigate(typeof(ShippingDashboardView), _vm.AppState, new SuppressNavigationTransitionInfo());
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e)

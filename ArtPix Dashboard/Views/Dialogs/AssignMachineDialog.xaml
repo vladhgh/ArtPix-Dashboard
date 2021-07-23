@@ -24,6 +24,7 @@
             x:Name="Combo2"  
             ui:ControlHelper.PlaceholderText="Assign Machine"
             ItemsSource="{Binding Machines}"
+            Style="{StaticResource CustomComboBoxStyle}"
             Width="200">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
