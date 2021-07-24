@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace ArtPix_Dashboard.Utils
+namespace ArtPix_Dashboard.API
 {
     public class PixelsToGridLengthConverter : IValueConverter
     {

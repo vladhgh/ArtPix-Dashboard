@@ -11,6 +11,7 @@ namespace ArtPix_Dashboard.Views.Dialogs
 		    InitializeComponent();
 		    DataContext = this;
 		    this.Machines = machines;
+			
 	    }
     }
 }

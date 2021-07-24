@@ -19,7 +19,7 @@ using ArtPix_Dashboard.Properties;
 using ArtPix_Dashboard.Models.Logs;
 using Microsoft.Toolkit.Uwp.Notifications;
 
-namespace ArtPix_Dashboard.Utils
+namespace ArtPix_Dashboard.API
 {
 	public class ArtPixAPI
 	{
@@ -505,8 +505,21 @@ namespace ArtPix_Dashboard.Utils
 
 			}
 
-
 			
+
+
+		}
+
+
+
+		public static async Task<string> GetProductionIssueReasonFromEntityLogsAsync(string productId)
+		{
+			var request = new RestRequest($"/entity-logs?type=machine_issue&product_id={productId}",
+				RestSharp.DataFormat.Json);
+			request.AddHeader("Accept", "application/json");
+			request.AddHeader("Content-Type", "application/json");
+			var res = await Client.GetAsync<EntityLogsModel>(request);
+			return res.Data[0].Data.Error;
 		}
 
 		#endregion

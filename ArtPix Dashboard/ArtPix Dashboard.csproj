@@ -115,13 +115,12 @@
     <Compile Include="Models\Workstation\WorkstationsModel.cs" />
     <Compile Include="Utils\Converters.cs" />
     <Compile Include="Utils\PixelsToGridLengthConverter.cs" />
+    <Compile Include="Utils\ScrollAnimationBehavior.cs" />
     <Compile Include="Utils\Utils.cs" />
     <Compile Include="API\WinAPI.cs" />
     <Compile Include="ViewModels\Commands.cs" />
     <Compile Include="Utils\DelegateCommand.cs" />
-    <Compile Include="ViewModels\MachinesDashboardViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\ProductionIssuesViewModel.cs" />
     <Compile Include="Utils\PropertyChangedListener.cs" />
     <Compile Include="ViewModels\ShippingDashboardViewModel.cs" />
     <Compile Include="ViewModels\UtilitiesViewModel.cs" />
@@ -157,12 +156,6 @@
     </Compile>
     <Compile Include="Views\Dialogs\ReworkDialog.xaml.cs">
       <DependentUpon>ReworkDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MachinesDashboardView.xaml.cs">
-      <DependentUpon>MachinesDashboardView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ProductionIssuesView.xaml.cs">
-      <DependentUpon>ProductionIssuesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ShippingDashboardView.xaml.cs">
       <DependentUpon>ShippingDashboardView.xaml</DependentUpon>
@@ -249,14 +242,6 @@
       <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\MachinesDashboardView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ProductionIssuesView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ShippingDashboardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

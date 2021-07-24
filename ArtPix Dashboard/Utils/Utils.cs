@@ -20,7 +20,7 @@ using ToastNotifications.Lifetime;
 using ToastNotifications.Position;
 using ListView = ModernWpf.Controls.ListView;
 
-namespace ArtPix_Dashboard.Utils
+namespace ArtPix_Dashboard.API
 {
 
 	public class MultiplyConverter : IMultiValueConverter

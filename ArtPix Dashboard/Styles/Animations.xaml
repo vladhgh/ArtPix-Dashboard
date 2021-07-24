@@ -196,6 +196,22 @@
 						  Opacity="0"
 						  ScaleX="{StaticResource SmallScaleFactor}"
 						  ScaleY="{StaticResource SmallScaleFactor}" />
+    <xf:CompoundSettings x:Key="FadeOutAndShrinkToFadeInAndGrow">
+        <xf:CompoundSettings.Sequence>
+            <xf:AnimationSettings 
+                                  Kind="FadeTo,ScaleXTo,ScaleYTo"
+                                  Opacity="0"
+                                  ScaleX="{StaticResource SmallScaleFactor}"
+                                  ScaleY="{StaticResource SmallScaleFactor}"
+                                  Duration="300"/>
+            <xf:AnimationSettings 
+                                  Kind="FadeFrom,ScaleXFrom,ScaleYFrom"
+                                  Opacity="0"
+                                  Duration="300"
+                                  ScaleX="{StaticResource SmallScaleFactor}"
+                                  ScaleY="{StaticResource SmallScaleFactor}" />
+        </xf:CompoundSettings.Sequence>
+    </xf:CompoundSettings>
 
     <xf:AnimationSettings x:Key="FadeInAndGrowHorizontally"
 						  Kind="FadeFrom,ScaleXFrom"

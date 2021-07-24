@@ -11,7 +11,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace ArtPix_Dashboard.Utils.Converters
+namespace ArtPix_Dashboard.API.Converters
 {
     public class CircleProgressCenterConverter : IMultiValueConverter
     {

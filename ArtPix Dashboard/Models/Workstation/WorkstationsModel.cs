@@ -51,7 +51,7 @@ namespace ArtPix_Dashboard.Models.Workstation
 		{
             get
 			{
-                if (Utils.Utils.MachineAddresses.FirstOrDefault(x => x.Value == Name).Key is string value)
+                if (API.Utils.MachineAddresses.FirstOrDefault(x => x.Value == Name).Key is string value)
 				{
                     Debug.WriteLine("MAC FOUND: " + value);
                     return value;

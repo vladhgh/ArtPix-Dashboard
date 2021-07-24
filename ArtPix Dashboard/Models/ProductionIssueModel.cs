@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
-using ArtPix_Dashboard.Utils;
+using ArtPix_Dashboard.API;
 using ArtPix_Dashboard.ViewModels;
 
 namespace ArtPix_Dashboard.Models.Product

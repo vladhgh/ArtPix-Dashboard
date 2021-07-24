@@ -1,6 +1,6 @@
 ﻿using ArtPix_Dashboard.Models.Order;
 using ArtPix_Dashboard.Models.Types;
-using ArtPix_Dashboard.Utils;
+using ArtPix_Dashboard.API;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -24,6 +24,7 @@ using ArtPix_Dashboard.Models.Machine;
 using ToastNotifications.Messages;
 using Product = ArtPix_Dashboard.Models.Order.Product;
 using System.Drawing.Imaging;
+using System.Threading;
 
 namespace ArtPix_Dashboard.ViewModels
 {
@@ -46,6 +47,12 @@ namespace ArtPix_Dashboard.ViewModels
 		{
 			get => _isLoading;
 			set => SetProperty(ref _isLoading, value);
+		}
+		private bool _isOrderLoading;
+		public bool IsOrderLoading
+		{
+			get => _isOrderLoading;
+			set => SetProperty(ref _isOrderLoading, value);
 		}
 		private Bitmap _qrCodeBitmap;
 		public Bitmap QrCodeBitmap
@@ -216,7 +223,7 @@ namespace ArtPix_Dashboard.ViewModels
 				pd.Print();
 			}
 
-			Utils.Utils.Notifier.ShowSuccess($" QR code for product {product.IdProducts} printed successfully!");
+			API.Utils.Notifier.ShowSuccess($" QR code for product {product.IdProducts} printed successfully!");
 		}
 
 
@@ -289,7 +296,7 @@ namespace ArtPix_Dashboard.ViewModels
 
 					};
 					await ArtPixAPI.ProductReEngrave(body);
-					Utils.Utils.Notifier.ShowSuccess($"Product re-engrave success!");
+					API.Utils.Notifier.ShowSuccess($"Product re-engrave success!");
 				}
 				//order = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
 				var index = Orders.Data.IndexOf(order);
@@ -317,7 +324,7 @@ namespace ArtPix_Dashboard.ViewModels
 						order_name = order.NameOrder
 					};
 					await ArtPixAPI.ProductAssignProcessing(body);
-					Utils.Utils.Notifier.ShowSuccess($"Assigned To Machine {body.machine} Successfully!");
+					API.Utils.Notifier.ShowSuccess($"Assigned To Machine {body.machine} Successfully!");
 				}
 				var index = Orders.Data.IndexOf(order);
 				Orders.Data[index] = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
@@ -332,8 +339,8 @@ namespace ArtPix_Dashboard.ViewModels
 			var result = await dialog.ShowAsync();
 			if (result == ContentDialogResult.Primary)
 			{
-				IsLoaded = Visibility.Hidden;
-				IsLoading = true;
+				order.ExpanderVisibility = Visibility.Hidden;
+				order.IsOrderLoading = true;
 				var newStatus = new NewStatusModel
 				{
 					machine_assign_item_id = item.MachineAssignItemId,
@@ -343,7 +350,21 @@ namespace ArtPix_Dashboard.ViewModels
 					product_id = item.IdProducts
 				};
 				await ArtPixAPI.ChangeMachineAssignItemStatusAsync(newStatus);
-				//order = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
+				var updatedOrder = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
+				order.Status = updatedOrder.Status;
+				//Debug.WriteLine("ORDER STATUS: " + order.Status);
+				order.UpdatedAt = updatedOrder.UpdatedAt;
+				for (var i = 0; i < order.Products.Count; i++)
+				{
+					order.Products[i].Status = updatedOrder.Products[i].Status;
+					order.Products[i].ManualCompleteButtonVisibility =
+						updatedOrder.Products[i].ManualCompleteButtonVisibility;
+					//Debug.WriteLine("PRODUCT STATUS: " + order.Products[i].Status); 
+					order.Products[i].UpdatedAt = updatedOrder.Products[i].UpdatedAt;
+
+				}
+				order.ExpanderVisibility = Visibility.Visible;
+				order.IsOrderLoading = false;
 			}
 		}
 		private async void OpenUnassignDialog(object param)

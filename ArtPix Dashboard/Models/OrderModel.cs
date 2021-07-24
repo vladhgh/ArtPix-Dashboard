@@ -10,6 +10,10 @@ using ArtPix_Dashboard.ViewModels;
 using System.IO;
 using System.Reflection;
 using System.Windows.Media.Imaging;
+using ArtPix_Dashboard.API;
+using ArtPix_Dashboard.Models.Logs;
+using RestSharp;
+using DataFormat = System.Windows.DataFormat;
 
 namespace ArtPix_Dashboard.Models.Order
 {
@@ -154,9 +158,22 @@ namespace ArtPix_Dashboard.Models.Order
 
 		public Visibility MachineButtonVisibility =>
 			string.IsNullOrEmpty(MachineId) ? Visibility.Collapsed : Visibility.Visible;
-		public Visibility ManualCompleteButtonVisibility => _status == "engrave_done" ? Visibility.Collapsed : Visibility.Visible;
-		public Visibility CrystalIssueButtonVisibility => _status == "engrave_processing" || Status == "engrave_ready" || Status == "engrave_done" || Status == "engrave_redo" ? Visibility.Visible : Visibility.Collapsed;
-		public Visibility AssignMachineButtonVisibility => _status == "ready_to_engrave" || Status == "engrave_redo" ? Visibility.Visible : Visibility.Collapsed; 
+
+
+		private Visibility _manualCompleteButtonVisibility;
+		
+		public Visibility ManualCompleteButtonVisibility
+		{
+			get
+			{
+
+				_manualCompleteButtonVisibility = _status == "engrave_done" ? Visibility.Collapsed : Visibility.Visible;
+				return _manualCompleteButtonVisibility;
+			}
+			set => SetProperty(ref _manualCompleteButtonVisibility, value);
+		}
+		public Visibility CrystalIssueButtonVisibility => _status == "engrave_processing" || _status == "engrave_ready" || _status == "engrave_done" || _status == "engrave_redo" ? Visibility.Visible : Visibility.Collapsed;
+		public Visibility AssignMachineButtonVisibility => _status == "ready_to_engrave" || _status == "engrave_redo" ? Visibility.Visible : Visibility.Collapsed; 
 		public Visibility UnAssignMachineButtonVisibility => _status == "engrave_processing" ? Visibility.Visible : Visibility.Collapsed;
 		[JsonProperty("id_products")]
 		public int IdProducts { get; set; }
@@ -285,6 +302,11 @@ namespace ArtPix_Dashboard.Models.Order
 			set => _urlRenderImg = value;
 		}
 
+		public Visibility OUploadButtonVisibility =>
+			String.IsNullOrEmpty(UrlOriginalOriginal) ? Visibility.Collapsed : Visibility.Visible;
+		public Visibility ORenderButtonVisibility =>
+			String.IsNullOrEmpty(UrlOriginalRender) ? Visibility.Collapsed : Visibility.Visible;
+
 		[JsonProperty("url_shape_img")]
 		public string UrlShapeImg { get; set; }
 
@@ -328,9 +350,10 @@ namespace ArtPix_Dashboard.Models.Order
 					case "ready_to_engrave": return "Ready To Engrave";
 					case "engrave_issue": return "Engraving Issue";
 					case "engrave_processing": return "Engraving In Progress";
+					case "engrave_redo": return "Ready To Engrave";
 					case "engrave_done": return "Engraving Done";
 					case "shipping_label_printed": return "Shipped";
-					default: return "Unknown Status";
+					default: return _status;
 				}
 			}
 			set => SetProperty(ref _status, value);
@@ -489,6 +512,8 @@ namespace ArtPix_Dashboard.Models.Order
 
 		public Visibility VitroMarkButtonVisibility => Retouch == null ? Visibility.Collapsed : Visibility.Visible;
 
+		public Visibility ProductionIssueButtonsVisibility => _status == "engrave_issue" ? Visibility.Visible : Visibility.Collapsed;
+		
 		public Visibility ReEngraveButtonVisibility =>
 			_status == "engrave_done" ? Visibility.Visible : Visibility.Collapsed;
 	}
@@ -835,6 +860,15 @@ namespace ArtPix_Dashboard.Models.Order
 	public class Datum : PropertyChangedListener
 	{
 
+		private Visibility _expanderVisibility = Visibility.Visible;
+
+		public Visibility ExpanderVisibility
+		{
+			get => _expanderVisibility;
+			set => SetProperty(ref _expanderVisibility, value);
+		}
+
+
 		private bool _isExpanded;
 
 		public bool IsExpanded
@@ -949,6 +983,14 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("name_order")]
 		public string NameOrder { get; set; }
 
+
+		private double _productsGridOpacity = 1;
+		public double ProductsGridOpacity
+		{
+			get => _productsGridOpacity;
+			set => SetProperty(ref _productsGridOpacity, value);
+		}
+
 		[JsonProperty("store_order")]
 		public int StoreOrder { get; set; }
 
@@ -964,15 +1006,37 @@ namespace ArtPix_Dashboard.Models.Order
 				{
 					return "Customer Service Issue";
 				}
+				
+
+				if (_status == "engraving" || _status == "3d_conversion" || _status == "retouching")
+				{
+					var newStatus = "";
+					foreach (var product in Products)
+					{
+						if (product.CrystalType.Type == "Crystal" || product.CrystalType.Type == "Necklace" ||
+						    product.CrystalType.Type == "Keychain" || product.CrystalType.Type == "Fingerprint")
+						{
+							if (product.Status == "3D Model Pending" || product.Status == "3D Model In Progress")
+							{
+								return product.Status;
+							}
+							newStatus = newStatus == product
+								.Status
+								? newStatus
+								: product.Status;
+						}
+					}
+
+					return newStatus;
+				}
 				switch (_status)
 				{
 					case "shipped" : return "Shipped";
 					case "ready_to_ship": return "Ready To Ship";
 					case "3d_conversion": return "3D Conversion";
-					case "engraving": return "Engraving";
 					case "retouching": return "Retouching";
 					case "waiting_to_confirm": return "Awaiting Confirmation";
-					default: return "Unknown Status";
+					default: return _status;
 				}
 			}
 			set => SetProperty(ref _status, value);
@@ -989,13 +1053,21 @@ namespace ArtPix_Dashboard.Models.Order
 					return "DarkRed";
 				}
 
+				switch (Status)
+				{
+					case "Ready To Engrave": return "#494949";
+					case "Engraving Issue": return "DarkRed";
+					case "Retouch Pending": return "#bf6900";
+					case "Retouch In Progress": return "SteelBlue";
+					case "Engraving In Progress": return "SteelBlue";
+					case "3D Model Pending": return "#bf6900";
+					case "3D Model In Progress": return "SteelBlue";
+				}
+
 				switch (_status)
 				{
 					case "shipped": return "DarkGreen";
 					case "ready_to_ship": return "DarkGreen";
-					case "3d_conversion": return "#bf6900";
-					case "engraving": return "SteelBlue";
-					case "retouching": return "SteelBlue";
 					case "waiting_to_confirm": return "#bf6900";
 					default: return "#494949";
 				}
@@ -1237,18 +1309,18 @@ namespace ArtPix_Dashboard.Models.Order
 				switch (_shippingType)
 				{
 					case "free_shipping": return "Free Shipping";
-					case "standard": return "Standard";
-					case "economy": return "Economy";
-					case "express": return "Express";
-					case "high_priority_express": return "High Priority Express";
-					case "local_pickup": return "Pick-Up";
-					case "amazon": return "Amazon";
-					case "amazon_standard": return "Amazon Standard";
-					case "amazon_expedited": return "Amazon Expedited";
-					case "amazon_second_day": return "Amazon Second Day";
-					case "amazon_next_day": return "Amazon Next Day";
-					case "dhl_parcel_direct": return "DHL Parcel Direct";
-					default: return "Not Found";
+					case "standard": return "Standard Shipping";
+					case "economy": return "Economy Shipping";
+					case "express": return "Express Shipping";
+					case "high_priority_express": return "High Priority Express Shipping";
+					case "local_pickup": return "Fashion Outlets Pickup";
+					case "amazon": return "Amazon Free Shipping";
+					case "amazon_standard": return "Amazon Standard Shipping";
+					case "amazon_expedited": return "Amazon Expedited Shipping";
+					case "amazon_second_day": return "Amazon Second Day Shipping";
+					case "amazon_next_day": return "Amazon Next Day Shipping";
+					case "dhl_parcel_direct": return "DHL Parcel Direct Shipping";
+					default: return _shippingType;
 				}
 			}
 			set => _shippingType = value;
@@ -1328,7 +1400,7 @@ namespace ArtPix_Dashboard.Models.Order
 						{
 							if (i > 0)
 							{
-								var newProduct = Utils.Utils.DeepCopy(product);
+								var newProduct = API.Utils.DeepCopy(product);
 								newProduct.MachineAssignItemId = item.Id;
 								newProduct.MachineId = item.machine_id;
 								newProductList.Add(newProduct);
@@ -1349,7 +1421,7 @@ namespace ArtPix_Dashboard.Models.Order
 						TotalProducts++;
 						for (int i = 0; i < product.Quantity - 1; i++)
 						{
-							var newProduct = Utils.Utils.DeepCopy(product);
+							var newProduct = API.Utils.DeepCopy(product);
 							newProductList.Add(newProduct);
 							TotalProducts++;
 						}
@@ -1379,6 +1451,14 @@ namespace ArtPix_Dashboard.Models.Order
 
 		[JsonProperty("deadline")]
 		public Deadline Deadline { get; set; }
+
+
+		private bool _isOrderLoading;
+		public bool IsOrderLoading
+		{
+			get => _isOrderLoading;
+			set => SetProperty(ref _isOrderLoading, value);
+		}
 	}
 
 	public class ShippingSlot

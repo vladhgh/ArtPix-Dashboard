@@ -550,7 +550,7 @@ namespace ArtPix_Dashboard.Models.Machine
 		{
 			get
 			{
-				var newData = Utils.Utils.DeepCopy(_data);
+				var newData = API.Utils.DeepCopy(_data);
 				foreach (var item in newData.ToArray())
 				{
 					if (item.OrderName == "434076" || item.OrderName == "412759" || item.OrderName == "310130" || item.OrderName == "309045" || item.OrderName == "292717" || item.OrderName == "286636")

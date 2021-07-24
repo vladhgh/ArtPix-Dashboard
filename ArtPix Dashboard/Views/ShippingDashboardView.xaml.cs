@@ -1,25 +1,16 @@
-﻿using System.Collections.Specialized;
-using System.Linq;
-using System.Diagnostics;
-using System.Web;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Media;
 using ArtPix_Dashboard.ViewModels;
 using System.Windows.Navigation;
 using ArtPix_Dashboard.Models;
-using ArtPix_Dashboard.Models.Machine;
-using ArtPix_Dashboard.Models.Order;
-using ArtPix_Dashboard.Properties;
 using ModernWpf.Controls;
-using ListView = ModernWpf.Controls.ListView;
-using ArtPix_Dashboard.Utils;
 using ArtPix_Dashboard.Views.Dialogs;
-using Newtonsoft.Json;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using ArtPix_Dashboard.API;
 
 namespace ArtPix_Dashboard.Views
 {
@@ -210,6 +201,7 @@ namespace ArtPix_Dashboard.Views
 		}
 		private void SearchTextBoxOnQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
 		{
+			_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Search";
 			_vm.AppState.OrderFilterGroup.status_engraving = "";
 			_vm.AppState.OrderFilterGroup.status_order = "";
 			_vm.AppState.OrderFilterGroup.status_shipping = "";
@@ -220,6 +212,7 @@ namespace ArtPix_Dashboard.Views
 
 		private void ButtonSearchOnClick(object sender, RoutedEventArgs e)
 		{
+			_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Search";
 			_vm.AppState.OrderFilterGroup.status_engraving = "";
 			_vm.AppState.OrderFilterGroup.status_order = "";
 			_vm.AppState.OrderFilterGroup.status_shipping = "";
@@ -229,27 +222,46 @@ namespace ArtPix_Dashboard.Views
 		}
 
 
-		private void Expander_OnExpanded(object sender, RoutedEventArgs e)
+
+
+
+		private async void Expander_OnExpanded(object sender, RoutedEventArgs e)
 		{
 			ScrollViewer scrollViewer = GetScrollViewer(ShippingItemsListView) as ScrollViewer;
 			var thisOrder = _vm.Orders.Data.Find(i => i.NameOrder == ((Expander)sender).Tag.ToString());
+			var expandSite = ((Expander)sender).Template.FindName("ExpandSite", ((Expander)sender)) as UIElement;
+			expandSite.Visibility = System.Windows.Visibility.Visible;
+			var sb1 = (Storyboard)((Expander)sender).FindResource("sbExpand");
+			sb1.Begin();
 			foreach (var order in _vm.Orders.Data)
 			{
 				order.IsExpanded = order.IdOrders == thisOrder.IdOrders;
 			}
 			if (_vm.Orders.Data.IndexOf(thisOrder) == 14)
 			{
-				scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + 400);
+				ScrollAnimateBehavior.AttachedBehaviors.ScrollAnimationBehavior.AnimateScroll(scrollViewer,
+					scrollViewer.VerticalOffset + 400);
 			} else
 			{
-				scrollViewer.ScrollToVerticalOffset(ShippingItemsListView.Items.IndexOf(thisOrder) * ((Expander)sender).ActualHeight);
+				ScrollAnimateBehavior.AttachedBehaviors.ScrollAnimationBehavior.AnimateScroll(scrollViewer,
+					ShippingItemsListView.Items.IndexOf(thisOrder) * ((Expander)sender).ActualHeight);
 			}
+
+			if (thisOrder.Status == "Engraving Issue")
+			{
+				foreach (var product in thisOrder.Products)
+				{
+					product.Status = product.Status == "Engraving Issue"
+						? await ArtPixAPI.GetProductionIssueReasonFromEntityLogsAsync(product.IdProducts.ToString())
+						: product.Status;
+				}
+			}
+
 		}
 		private void Expander_OnCollapsed(object sender, RoutedEventArgs e)
 		{
-			var r = ((Expander)sender).Template.FindName("ExpandSite", ((Expander)sender)) as UIElement;
-			r.Visibility = System.Windows.Visibility.Visible;
-
+			var expandSite = ((Expander)sender).Template.FindName("ExpandSite", ((Expander)sender)) as UIElement;
+			expandSite.Visibility = System.Windows.Visibility.Visible;
 			var sb1 = (Storyboard)((Expander)sender).FindResource("sbCollapse");
 			sb1.Begin();
 		}

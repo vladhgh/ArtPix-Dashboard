@@ -1,7 +1,7 @@
 ﻿using ArtPix_Dashboard.Models;
 using ArtPix_Dashboard.Models.Product;
 using ArtPix_Dashboard.Models.ProductHistory;
-using ArtPix_Dashboard.Utils;
+using ArtPix_Dashboard.API;
 using ArtPix_Dashboard.ViewModels;
 using System;
 

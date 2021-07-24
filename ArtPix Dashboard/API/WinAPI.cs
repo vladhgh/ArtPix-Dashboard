@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace ArtPix_Dashboard.Utils
+namespace ArtPix_Dashboard.API
 {
 	public class WinAPI
 	{

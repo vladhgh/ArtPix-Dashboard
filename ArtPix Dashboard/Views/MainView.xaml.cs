@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using ArtPix_Dashboard.ViewModels;
 using ModernWpf.Controls;
 using ModernWpf.Media.Animation;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using ArtPix_Dashboard.Models;
 using ArtPix_Dashboard.Properties;
 using Newtonsoft.Json;
-using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 using System.Net.NetworkInformation;
 using System.Net;
 using System.Net.Sockets;
@@ -21,7 +17,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Interop;
 using ArtPix_Dashboard.Views.Dialogs;
-using ArtPix_Dashboard.Utils;
+using ArtPix_Dashboard.API;
 using ToastNotifications.Messages;
 using Microsoft.Toolkit.Uwp.Notifications;
 
@@ -110,10 +106,9 @@ namespace ArtPix_Dashboard.Views
 		}
 		private async void MainViewOnLoaded(object sender, RoutedEventArgs e)
 		{
-			EnableBlur();
-			InitializeSettings();
 			_vm.Initialize();
-			Window.Closing += Window_Closing;
+			InitializeSettings();
+			
 			MainNavigationView.SelectionChanged += NavigateToSelectedPage;
 			var tag = String.IsNullOrEmpty(Settings.Default.LastVisitedViewTag) ? "ProductionIssuesView" : Settings.Default.LastVisitedViewTag;
 			_vm.AppState.SelectedItem = MainNavigationView.MenuItems.OfType<NavigationViewItem>().FirstOrDefault(x => x.Tag.ToString() == tag);
@@ -126,6 +121,8 @@ namespace ArtPix_Dashboard.Views
 		}
 		private void InitializeSettings()
 		{
+			EnableBlur();
+			Window.Closing += Window_Closing;
 			_vm.AppState.EmployeeName = "Supervisor";
 			_vm.AppState.Top = Settings.Default.Top;
 			_vm.AppState.Left = Settings.Default.Left;
@@ -144,6 +141,7 @@ namespace ArtPix_Dashboard.Views
 					status_engraving = filterGroup.status_engraving ?? "",
 					status_order = filterGroup.status_order ?? "processing",
 					store_name = filterGroup.store_name ?? "",
+					SelectedFilterGroup = filterGroup.SelectedFilterGroup ?? "",
 					has_shipping_package = filterGroup.has_shipping_package ?? "",
 					with_shipping_totes = filterGroup.with_shipping_totes ?? "",
 					with_production_issue = filterGroup.with_production_issue ?? "",
@@ -156,10 +154,10 @@ namespace ArtPix_Dashboard.Views
 		}
 		private void MainNavigationView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
 		{
-			if (ContentFrame.CanGoBack)
-			{
-				ContentFrame.GoBack();
-			}
+			//if (ContentFrame.CanGoBack)
+			//{
+			//	ContentFrame.GoBack();
+			//}
 		}
 		private void NavigateToSelectedPage(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
 		{
@@ -167,9 +165,6 @@ namespace ArtPix_Dashboard.Views
 
 			switch (selected.Tag)
 			{
-				case "ProductionIssuesView":
-					ContentFrame.Navigate(typeof(ProductionIssuesView), _vm.AppState, new DrillInNavigationTransitionInfo());
-					return;
 				case "UtilitiesView":
 					ContentFrame.Navigate(typeof(UtilitiesView), _vm.AppState, new DrillInNavigationTransitionInfo());
 					return;
@@ -179,13 +174,6 @@ namespace ArtPix_Dashboard.Views
 					_vm.ActiveMachinesGroupVisibility = Visibility.Collapsed;
 					_vm.AppState.StatusGroup = "Shipping";
 					ContentFrame.Navigate(typeof(ShippingDashboardView), _vm.AppState, new DrillInNavigationTransitionInfo());
-					return;
-				case "MachinesDashboardView":
-					_vm.ShippingStatusGroupVisibility = Visibility.Collapsed;
-					_vm.EngravingStatusGroupVisibility = Visibility.Visible;
-					_vm.ActiveMachinesGroupVisibility = Visibility.Collapsed;
-					_vm.AppState.StatusGroup = "Engraving";
-					ContentFrame.Navigate(typeof(MachinesDashboardView), _vm.AppState, new DrillInNavigationTransitionInfo());
 					return;
 			}
 		}
@@ -233,6 +221,7 @@ namespace ArtPix_Dashboard.Views
 
 		private void ReadyToShipButtonOnClick(object sender, RoutedEventArgs e)
 		{
+			_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Ready To Ship";
 			_vm.AppState.OrderFilterGroup.status_engraving = "engrave_done&amp;with_crystal_product_status[]=completed";
 			_vm.AppState.OrderFilterGroup.shipByToday = "False";
 			ContentFrame.Navigate(typeof(ShippingDashboardView), _vm.AppState, new SuppressNavigationTransitionInfo());
@@ -240,6 +229,7 @@ namespace ArtPix_Dashboard.Views
 
 		private void AwaitingShipmentButtonOnClick(object sender, RoutedEventArgs e)
 		{
+			_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Awaiting Shipment";
 			_vm.AppState.OrderFilterGroup.status_engraving = "";
 			_vm.AppState.OrderFilterGroup.shipByToday = "False";
 			_vm.AppState.OrderFilterGroup.status_order = "processing";
@@ -250,6 +240,7 @@ namespace ArtPix_Dashboard.Views
 
 		private void ShipByTodayButtonOnClick(object sender, RoutedEventArgs e)
 		{
+			_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Ship By Today";
 			_vm.AppState.OrderFilterGroup.status_engraving = "";
 			_vm.AppState.OrderFilterGroup.shipByToday = "True";
 			ContentFrame.Navigate(typeof(ShippingDashboardView), _vm.AppState, new SuppressNavigationTransitionInfo());
@@ -291,6 +282,7 @@ namespace ArtPix_Dashboard.Views
 
 		private void ReadyToEngraveButtonOnClick(object sender, RoutedEventArgs e)
 		{
+			_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Ready To Engrave";
 			_vm.AppState.OrderFilterGroup.status_engraving = "ready_to_engrave&amp;with_crystal_product_status[]=engrave_redo";
 			_vm.AppState.OrderFilterGroup.shipByToday = "False";
 			_vm.AppState.OrderFilterGroup.status_order = "processing";
@@ -300,6 +292,7 @@ namespace ArtPix_Dashboard.Views
 
 		private void EngravingButtonOnClick(object sender, RoutedEventArgs e)
 		{
+			_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Engraving In Progress";
 			_vm.AppState.OrderFilterGroup.status_engraving = "engrave_processing";
 			_vm.AppState.OrderFilterGroup.shipByToday = "False";
 			_vm.AppState.OrderFilterGroup.status_order = "processing";
@@ -309,6 +302,7 @@ namespace ArtPix_Dashboard.Views
 
 		private void ProductionIssuesButtonOnClick(object sender, RoutedEventArgs e)
 		{
+			_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Production Issues";
 			_vm.AppState.OrderFilterGroup.status_engraving = "engrave_issue";
 			_vm.AppState.OrderFilterGroup.shipByToday = "False";
 			_vm.AppState.OrderFilterGroup.status_order = "processing";
@@ -316,7 +310,7 @@ namespace ArtPix_Dashboard.Views
 			ContentFrame.Navigate(typeof(ShippingDashboardView), _vm.AppState, new SuppressNavigationTransitionInfo());
 		}
 
-		private void Button_Click(object sender, RoutedEventArgs e)
+		private void NavigateToMachine(object sender, RoutedEventArgs e)
 		{
 			//GetAllMacAddressesAndIppairs();
 		}
@@ -324,7 +318,7 @@ namespace ArtPix_Dashboard.Views
 		private void MenuItem_Click(object sender, RoutedEventArgs e)
 		{
 			SendWakeOnLan(PhysicalAddress.Parse(((MenuItem)sender).Tag.ToString()));
-			Utils.Utils.Notifier.ShowSuccess("Machine Turned On Succesfully!\nPlease Wait....");
+			Utils.Notifier.ShowSuccess("Machine Turned On Succesfully!\nPlease Wait....");
 
 		}
 		public void SendWakeOnLan(PhysicalAddress target)
@@ -343,7 +337,7 @@ namespace ArtPix_Dashboard.Views
 		{
 			var tag = ((MenuItem)sender).Tag.ToString();
 			System.Diagnostics.Process.Start("shutdown", $"-s -f -t 00 -m {tag}");
-			Utils.Utils.Notifier.ShowSuccess($"Machine{tag.Split('-')[0].Replace('\\', ' ')} Turned Off Succesfully!\nPlease Wait....");
+			API.Utils.Notifier.ShowSuccess($"Machine{tag.Split('-')[0].Replace('\\', ' ')} Turned Off Succesfully!\nPlease Wait....");
 		}
 
 		private async void MenuItem_Click_2(object sender, RoutedEventArgs e)

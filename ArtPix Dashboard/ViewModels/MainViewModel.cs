@@ -1,7 +1,7 @@
 ﻿using ArtPix_Dashboard.Models;
 using ArtPix_Dashboard.Models.Types;
 using ArtPix_Dashboard.Properties;
-using ArtPix_Dashboard.Utils;
+using ArtPix_Dashboard.API;
 using ArtPix_Dashboard.Views;
 using ModernWpf.Controls;
 using ModernWpf.Media.Animation;

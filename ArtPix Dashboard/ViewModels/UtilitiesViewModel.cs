@@ -13,7 +13,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using ArtPix_Dashboard.Models.Types;
-using ArtPix_Dashboard.Utils;
+using ArtPix_Dashboard.API;
 using ArtPix_Dashboard.Views.Dialogs;
 using ModernWpf.Controls;
 using ToastNotifications.Messages;
