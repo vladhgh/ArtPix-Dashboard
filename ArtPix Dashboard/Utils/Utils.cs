@@ -89,6 +89,62 @@ namespace ArtPix_Dashboard.API
 			{ "00-19-0F-37-0C-34", "33" }
 		};
 
+		public static string SelectStatusColor(string status)
+		{
+			switch (status)
+			{
+				case "photoshop": return "#bf6900";
+				case "issue": return "DarkRed";
+				case "3d_model_in_progress": return "SteelBlue";
+				case "3d_model_pending": return "#bf6900";
+				case "retoucher_in_progress": return "SteelBlue";
+				case "retoucher_pending": return "#bf6900";
+				case "waiting_to_confirm": return "#bf6900";
+				case "wait_model": return "#bf6900";
+				case "engrave_issue": return "DarkRed";
+				case "engrave_processing": return "SteelBlue";
+				case "engrave_done": return "DarkGreen";
+				case "shipping_label_printed": return "DarkGreen";
+				case "In Photoshop": return "#bf6900";
+				case "Customer Service Issue": return "DarkRed";
+				case "3D Model In Progress": return "SteelBlue";
+				case "3D Model Pending": return "#bf6900";
+				case "Retouch In Progress": return "SteelBlue";
+				case "Retouch Pending": return "#bf6900";
+				case "Awaiting Confirmation": return "#bf6900";
+				case "Awaiting Model": return "#bf6900";
+				case "Ready To Engrave": return "#494949";
+				case "Engraving Issue": return "DarkRed";
+				case "Engraving In Progress": return "SteelBlue";
+				case "Engraving Done": return "DarkGreen";
+				case "Ready To Ship": return "DarkGreen";
+				case "Shipped": return "DarkGreen";
+				default: return "#494949";
+			}
+		}
+
+		public static string SelectStatusText(string status)
+		{
+			switch (status)
+			{
+				case "photoshop": return "In Photoshop";
+				case "issue": return "Customer Service Issue";
+				case "3d_model_in_progress": return "3D Model In Progress";
+				case "3d_model_pending": return "3D Model Pending";
+				case "retoucher_in_progress": return "Retouch In Progress";
+				case "retoucher_pending": return "Retouch Pending";
+				case "waiting_to_confirm": return "Awaiting Confirmation";
+				case "wait_model": return "Awaiting Model";
+				case "ready_to_engrave": return "Ready To Engrave";
+				case "engrave_issue": return "Engraving Issue";
+				case "engrave_processing": return "Engraving In Progress";
+				case "engrave_redo": return "Ready To Engrave";
+				case "engrave_done": return "Engraving Done";
+				case "shipping_label_printed": return "Shipped";
+				default: return status;
+			}
+		}
+
 		public static List<MacIpPair> GetAllMacAddressesAndIppairs()
 		{
 			List<MacIpPair> mip = new List<MacIpPair>();

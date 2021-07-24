@@ -16,10 +16,10 @@
                   Left="{Binding AppState.Left, Mode=TwoWay}"
                   Height="{Binding AppState.Height, Mode=TwoWay}"
                   Width="{Binding AppState.Width, Mode=TwoWay}"
-                  MinWidth="1920"
-                  MaxWidth="1920"
+                
                   WindowState="{Binding AppState.WindowState, Mode=TwoWay}"
                   Loaded="MainViewOnLoaded"
+                  IsTabStop="True"
                   Background="{DynamicResource SystemControlPageBackgroundMediumAltMediumBrush}"
                   ui:WindowHelper.UseModernWindowStyle="True"
                   ui:TitleBar.ExtendViewIntoTitleBar="True"
@@ -208,16 +208,16 @@
             <TextBlock
 						Grid.Column="0"
 						Grid.ColumnSpan="5"
-						FontSize="13"
+						FontSize="12"
 						FontWeight="Bold"
-						Margin="0 5 0 0"
+						Margin="0 4 0 0"
 						HorizontalAlignment="Center"
 						VerticalAlignment="Center"
 						Text="{Binding ElementName=Window, Path=Title}" />
 
         </Grid>
 
-        <ui:ProgressRing Name="ProgressRing" Foreground="SteelBlue" Grid.Row="1" Margin="10 0 0 0" Height="50" Width="50" IsActive="{Binding AppState.IsMainViewLoading}" />
+        <ui:ProgressRing Name="ProgressRing" Foreground="SteelBlue" Grid.Row="1" Margin="0 0 0 0" Height="50" Width="50" IsActive="{Binding AppState.IsMainViewLoading}" />
         <ui:NavigationView
 											x:Name="MainNavigationView"
 											Grid.Row="1"

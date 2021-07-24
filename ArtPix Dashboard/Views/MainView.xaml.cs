@@ -110,7 +110,7 @@ namespace ArtPix_Dashboard.Views
 			InitializeSettings();
 			
 			MainNavigationView.SelectionChanged += NavigateToSelectedPage;
-			var tag = String.IsNullOrEmpty(Settings.Default.LastVisitedViewTag) ? "ProductionIssuesView" : Settings.Default.LastVisitedViewTag;
+			var tag =  "ShippingDashboardView";
 			_vm.AppState.SelectedItem = MainNavigationView.MenuItems.OfType<NavigationViewItem>().FirstOrDefault(x => x.Tag.ToString() == tag);
 			if (_vm.AppState.CurrentVersion != _vm.AppState.PreviousVersion)
 			{
@@ -221,7 +221,10 @@ namespace ArtPix_Dashboard.Views
 
 		private void ReadyToShipButtonOnClick(object sender, RoutedEventArgs e)
 		{
+			_vm.AppState.OrderFilterGroup.order_id = "";
+			_vm.AppState.OrderFilterGroup.name_order = "";
 			_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Ready To Ship";
+			_vm.AppState.OrderFilterGroup.status_order = "processing";
 			_vm.AppState.OrderFilterGroup.status_engraving = "engrave_done&amp;with_crystal_product_status[]=completed";
 			_vm.AppState.OrderFilterGroup.shipByToday = "False";
 			ContentFrame.Navigate(typeof(ShippingDashboardView), _vm.AppState, new SuppressNavigationTransitionInfo());
@@ -229,6 +232,8 @@ namespace ArtPix_Dashboard.Views
 
 		private void AwaitingShipmentButtonOnClick(object sender, RoutedEventArgs e)
 		{
+			_vm.AppState.OrderFilterGroup.name_order = "";
+			_vm.AppState.OrderFilterGroup.order_id = "";
 			_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Awaiting Shipment";
 			_vm.AppState.OrderFilterGroup.status_engraving = "";
 			_vm.AppState.OrderFilterGroup.shipByToday = "False";
@@ -240,8 +245,11 @@ namespace ArtPix_Dashboard.Views
 
 		private void ShipByTodayButtonOnClick(object sender, RoutedEventArgs e)
 		{
+			_vm.AppState.OrderFilterGroup.name_order = "";
+			_vm.AppState.OrderFilterGroup.order_id = "";
 			_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Ship By Today";
 			_vm.AppState.OrderFilterGroup.status_engraving = "";
+			_vm.AppState.OrderFilterGroup.status_order = "processing";
 			_vm.AppState.OrderFilterGroup.shipByToday = "True";
 			ContentFrame.Navigate(typeof(ShippingDashboardView), _vm.AppState, new SuppressNavigationTransitionInfo());
 		}
@@ -282,6 +290,8 @@ namespace ArtPix_Dashboard.Views
 
 		private void ReadyToEngraveButtonOnClick(object sender, RoutedEventArgs e)
 		{
+			_vm.AppState.OrderFilterGroup.name_order = "";
+			_vm.AppState.OrderFilterGroup.order_id = "";
 			_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Ready To Engrave";
 			_vm.AppState.OrderFilterGroup.status_engraving = "ready_to_engrave&amp;with_crystal_product_status[]=engrave_redo";
 			_vm.AppState.OrderFilterGroup.shipByToday = "False";
@@ -292,6 +302,8 @@ namespace ArtPix_Dashboard.Views
 
 		private void EngravingButtonOnClick(object sender, RoutedEventArgs e)
 		{
+			_vm.AppState.OrderFilterGroup.name_order = "";
+			_vm.AppState.OrderFilterGroup.order_id = "";
 			_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Engraving In Progress";
 			_vm.AppState.OrderFilterGroup.status_engraving = "engrave_processing";
 			_vm.AppState.OrderFilterGroup.shipByToday = "False";
@@ -302,6 +314,8 @@ namespace ArtPix_Dashboard.Views
 
 		private void ProductionIssuesButtonOnClick(object sender, RoutedEventArgs e)
 		{
+			_vm.AppState.OrderFilterGroup.name_order = "";
+			_vm.AppState.OrderFilterGroup.order_id = "";
 			_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Production Issues";
 			_vm.AppState.OrderFilterGroup.status_engraving = "engrave_issue";
 			_vm.AppState.OrderFilterGroup.shipByToday = "False";

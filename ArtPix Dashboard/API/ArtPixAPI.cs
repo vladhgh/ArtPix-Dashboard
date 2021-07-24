@@ -241,6 +241,7 @@ namespace ArtPix_Dashboard.API
 				if (propName == "with_crystals" && propValue.ToString() == "3") continue;
 				if (propName == "name_order" && propValue.ToString() == "0") continue;
 				if (propValue.ToString() == "") continue;
+				if (propName == "SelectedFilterGroup") continue;
 				switch (propName)
 				{
 					case "with_shipping_totes" when propValue.ToString() == "True":
@@ -519,7 +520,7 @@ namespace ArtPix_Dashboard.API
 			request.AddHeader("Accept", "application/json");
 			request.AddHeader("Content-Type", "application/json");
 			var res = await Client.GetAsync<EntityLogsModel>(request);
-			return res.Data[0].Data.Error;
+			return res.Data.Count > 0 ? res.Data[0].Data.Error : "Unknown Error";
 		}
 
 		#endregion

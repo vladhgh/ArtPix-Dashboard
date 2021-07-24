@@ -33,7 +33,7 @@
 					VerticalAlignment="Center"
 					Style="{DynamicResource SubtitleTextBlockStyle}"
 					FontWeight="Black"/>
-		<ui:SimpleStackPanel Name="FilterPanel" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center" Grid.Column="1" Grid.Row="2" Margin="0 0 0 10">
+		<ui:SimpleStackPanel Name="FilterPanel" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" Grid.Column="1" Grid.Row="2" Margin="0 0 0 10">
 			<ui:AutoSuggestBox
 						x:Name="SearchTextBox"
 						MinWidth="200"
@@ -41,10 +41,12 @@
 						CornerRadius="4"
 						HorizontalAlignment="Left"
 						QuerySubmitted="SearchTextBoxOnQuerySubmitted"
-						TextChanged="SearchTextBox_OnTextChanged"
                         ui:ControlHelper.Header="Search Orders:"
 						ui:ControlHelper.PlaceholderText="Search by order name..."/>
-			<Button Content="Search" VerticalAlignment="Bottom" Style="{DynamicResource SearchButtonStyle}" Cursor="Hand" Background="SteelBlue" Click="ButtonSearchOnClick" Margin="0 0 10 0"/>
+            <Button Height="32" Width="32" Cursor="Hand" Padding="8 2 8 2" VerticalAlignment="Bottom" Click="ButtonClearSearchOnClick" Style="{DynamicResource CustomButtonStyle}">
+                <ui:FontIcon Glyph="&#xE894;" FontSize="10"/>
+            </Button>
+            <Button Content="Search" VerticalAlignment="Bottom" Style="{DynamicResource SearchButtonStyle}" Cursor="Hand" Background="SteelBlue" Click="ButtonSearchOnClick" Margin="0 0 10 0"/>
             <ComboBox Style="{StaticResource CustomComboBoxStyle}" Name="StoreComboBox" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Store:" ui:ControlHelper.PlaceholderText="Select Store">
 				<ComboBoxItem Content="All Stores" Tag=""/>
 				<ComboBoxItem Content="Amazon Store" Tag="Amazon"/>
@@ -91,15 +93,15 @@
 			</ui:SimpleStackPanel>
 
 		</ui:SimpleStackPanel>
-		
-		<!--<ui:ProgressRing Name="ProgressRing" Foreground="SteelBlue" Grid.Column="1" Grid.Row="4" Margin="10 0 0 0" Height="50" Width="50" IsActive="{Binding IsLoading}"/>-->
 
-		<TextBlock
+        <ui:ProgressRing Name="ProgressRing" Foreground="SteelBlue" Grid.Column="1" Grid.Row="4" Margin="10 0 0 0" Height="50" Width="50" IsActive="{Binding IsLoading}"/>
+
+        <TextBlock
 					Grid.Row="3" Grid.Column="1"
 					Margin="0 0 0 10"
 					HorizontalAlignment="Left"
 					VerticalAlignment="Center"
-                    xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeInAndGrow}, Event=DataContextChanged, Duration=800}"
+                    xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1000}"
 					Style="{DynamicResource SubtitleTextBlockStyle}"
 					FontWeight="Black">
 				<Run Text="{Binding AppState.OrderFilterGroup.SelectedFilterGroup}"/>
@@ -111,7 +113,9 @@
         <ui:ListView
 					x:Name="ShippingItemsListView"
                     ItemsSource="{Binding Orders.Data}"
+					Visibility="{Binding IsLoaded}"
 					IsSelectionEnabled="False"
+					IsTabStop="True"
                     MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
                     MinWidth="550"
                     ScrollViewer.CanContentScroll="False"
@@ -164,12 +168,12 @@
 							    <ui:SimpleStackPanel Orientation="Horizontal"  Margin="40 10 0 10" Spacing="10" HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}">
                                     <Image 
                                         Source="{Binding OrderImage}"
-                                        Width="120" Height="120" VerticalAlignment="Center" Stretch="Uniform" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeInAndGrow}, Event=Loaded, Duration=600, Delay=600}" />
+                                        Width="120" Height="120" VerticalAlignment="Center" Stretch="Uniform" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=300}" />
                                     <ui:SimpleStackPanel
 											    Orientation="Vertical"
 											    VerticalAlignment="Center"
 											    Spacing="2"
-                                                xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeInAndGrow}, Event=Loaded, Duration=600, Delay=600}"
+                                                xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=400}"
 											    Margin="5 0 0 5">
 									    <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                             <TextBlock
@@ -283,14 +287,14 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <ui:SimpleStackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" Margin="50 0 50 50">
+                                    <ui:SimpleStackPanel Grid.Row="0" Grid.Column="0" xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
+                                                                  xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=400}" Orientation="Vertical" Margin="50 0 50 50">
                                     <TextBlock
 										    Margin="20 0 0 10"
 										    HorizontalAlignment="Left"
 										    VerticalAlignment="Center"
 										    Style="{DynamicResource SubtitleTextBlockStyle}"
-										    xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
-										    xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=200}"
+										    xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}"
 										    FontWeight="Black">
 									    <Run Text="Products"/>
 									    <Run Text="{Binding Path=TotalProducts, StringFormat=({0:F0}):}" />
@@ -305,12 +309,10 @@
 									    MaxHeight="425"
 									    CornerRadius="8"
 									    BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
-                                        xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
-									    xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=400}"
 									    VirtualizingPanel.ScrollUnit="Pixel">
                                         <ui:ListView.ItemTemplate>
                                             <DataTemplate DataType="order:Product">
-                                                    <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center"  Spacing="10" Margin="0">
+                                                    <ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="10" Margin="0">
                                                         <Button
                                                             Style="{StaticResource InactiveButtonStyle}"
                                                             Width="175"
@@ -450,8 +452,8 @@
                                                                     <Button
                                                                         Cursor="Hand"
                                                                         Content="Re-Engrave"
-                                                                        Command="{Binding ElementName=ProductionIssuesPage, Path=DataContext.OnRedo}"
-                                                                        CommandParameter="{Binding MachineAssignItemId}"
+                                                                        Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnRedo}"
+                                                                        CommandParameter="{Binding }"
                                                                         Opacity="0.9"
 																		Visibility="{Binding ProductionIssueButtonsVisibility}"
                                                                         Style="{StaticResource RedoButtonStyle}"/>

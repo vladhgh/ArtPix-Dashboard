@@ -88,6 +88,7 @@ namespace ArtPix_Dashboard.ViewModels
 		#endregion
 
 		#region COMMANDS
+	
 		private ICommand _onManualComplete;
 		public ICommand OnManualComplete
 		{
@@ -201,12 +202,127 @@ namespace ArtPix_Dashboard.ViewModels
 			OnOA = new DelegateCommand(Commands.OpenOrderOnOA);
 			OnCP = new DelegateCommand(Commands.OpenOrderOnCP);
 			OnPrintQR = new DelegateCommand(PrintQR);
+			OnRedo = new DelegateCommand(OpenRedoDialog);
+			OnRework = new DelegateCommand(OpenReworkDialog);
 			CopyToClipboard = new DelegateCommand(param => Commands.CopyTextToClipboard(param.ToString()));
 			OnVitromark = new DelegateCommand(param => Commands.OpenFileInVitroMark(param.ToString()));
 			OnProductHistory = new DelegateCommand(OpenProductHistoryDialog);
 			OnFindBestService = new DelegateCommand(FindBestServiceButtonOnClick);
 			OnReEngrave = new DelegateCommand(OpenReEngraveDialog);
 		}
+
+
+		private async void OpenRedoDialog(object param)
+		{
+			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Models.Order.Product)param).IdOrders);
+			var product = order.Products.SingleOrDefault(p => p.MachineAssignItemId == ((Models.Order.Product)param).MachineAssignItemId);
+			if (product != null)
+			{
+				var machines = await ArtPixAPI.GetMachines(product.IdProducts);
+				var dialog = new RedoDialog(machines.Data);
+				var result = await dialog.ShowAsync();
+				if (result != ContentDialogResult.Primary) return;
+				IsLoaded = Visibility.Hidden;
+				IsLoading = true;
+				var requestBody = new ResolveErrorRequestModel
+				{
+					//machine_assign_error_id = item.Id,
+					machine_assign_item_id = product.MachineAssignItemId,
+					id_products = product.IdProducts,
+					machine_id = Int32.Parse(product.MachineId),
+					user = "Supervisor",
+					issue_type = dialog.Combo1.SelectedValue.ToString(),
+					status_error = "redo",
+					message = "Testing"
+				};
+				await ArtPixAPI.ResolveProductionIssueAsync(requestBody);
+				Utils.Notifier.ShowSuccess("Issue Resolved Successfully!");
+				if (!string.IsNullOrEmpty(dialog.Combo2.Text))
+				{
+					var x = (Models.Machine.Machine)dialog.Combo2.SelectedItem;
+					var body = new AssignProcessingModel
+					{
+						machine = x.Name,
+						product_id = product.IdProducts,
+						order_id = product.IdOrders,
+						order_name = order.NameOrder
+					};
+					await ArtPixAPI.ProductAssignProcessing(body);
+					Utils.Notifier.ShowSuccess("Assigned To Machine Successfully!");
+				}
+				if (System.IO.Directory.Exists($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.IdProducts}"))
+				{
+					System.IO.Directory.Delete($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.IdProducts}", true);
+					Utils.Notifier.ShowSuccess($"Local Files Removed Successfully For Product {product.IdProducts}!");
+				}
+			}
+			IsLoading = false;
+			IsLoaded = Visibility.Visible;
+		}
+		private async void OpenReworkDialog(object param)
+		{
+			//var dialog = new ReworkDialog();
+			//var result = await dialog.ShowAsync();
+			//switch (result)
+			//{
+			//	case ContentDialogResult.Primary:
+			//		{
+			//			IsLoading = true;
+			//			var item = Issues.Data.SingleOrDefault(p => p.MachineAssignItemId == (int)param);
+			//			var requestBody = new ResolveErrorRequestModel
+			//			{
+			//				machine_assign_error_id = item.Id,
+			//				machine_assign_item_id = item.MachineAssignItemId,
+			//				id_products = item.ProductId,
+			//				machine_id = item.MachineId,
+			//				user = "Supervisor",
+			//				issue_type = "Retoucher Error",
+			//				status_error = "retouch",
+			//				message = dialog.MessageBox.Text
+			//			};
+			//			await ArtPixAPI.ResolveProductionIssueAsync(requestBody);
+			//			Utils.Notifier.ShowInformation(item.ProductId + " Product Sent To Retoucher Rework Successfully!");
+			//			IsLoading = false;
+			//			if (System.IO.Directory.Exists($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{item.ProductId}"))
+			//			{
+			//				System.IO.Directory.Delete($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{item.ProductId}", true);
+			//				Utils.Notifier.ShowSuccess($"Local Files Removed Successfully For Product {item.ProductId}!");
+			//			}
+			//			break;
+			//		}
+			//	case ContentDialogResult.Secondary:
+			//		{
+			//			IsLoading = true;
+			//			var item = Issues.Data.SingleOrDefault(p => p.MachineAssignItemId == (int)param);
+			//			var requestBody = new ResolveErrorRequestModel
+			//			{
+			//				machine_assign_error_id = item.Id,
+			//				machine_assign_item_id = item.MachineAssignItemId,
+			//				id_products = item.ProductId,
+			//				machine_id = item.MachineId,
+			//				user = "Supervisor",
+			//				issue_type = "Retoucher Error",
+			//				status_error = "looxis",
+			//				message = dialog.MessageBox.Text
+
+			//			};
+			//			await ArtPixAPI.ResolveProductionIssueAsync(requestBody);
+			//			Utils.Notifier.ShowInformation(item.ProductId + " Product Sent To Looxis Rework Successfully!");
+			//			IsLoading = false;
+			//			if (System.IO.Directory.Exists($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{item.ProductId}"))
+			//			{
+			//				System.IO.Directory.Delete($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{item.ProductId}", true);
+			//				Utils.Notifier.ShowSuccess($"Local Files Removed Successfully For Product {item.ProductId}!");
+			//			}
+			//			break;
+			//		}
+			//	case ContentDialogResult.None:
+			//		break;
+			//	default:
+			//		throw new ArgumentOutOfRangeException();
+			//}
+		}
+
 
 		public void PrintQR(object param)
 		{
@@ -285,6 +401,8 @@ namespace ArtPix_Dashboard.ViewModels
 			var result = await dialog.ShowAsync();
 			if (result == ContentDialogResult.Primary)
 			{
+				order.ExpanderVisibility = Visibility.Hidden;
+				order.IsOrderLoading = true;
 				if (!string.IsNullOrEmpty(dialog.Combo2.Text))
 				{
 					var x = (Models.Machine.Machine)dialog.Combo2.SelectedItem;
@@ -296,11 +414,33 @@ namespace ArtPix_Dashboard.ViewModels
 
 					};
 					await ArtPixAPI.ProductReEngrave(body);
-					API.Utils.Notifier.ShowSuccess($"Product re-engrave success!");
+					Utils.Notifier.ShowSuccess($"Product re-engrave success!");
+				} else
+				{
+					var body = new AssignProcessingModel
+					{
+						user = "Supervisor",
+						machine_assign_item_id = product.MachineAssignItemId
+
+					};
+					await ArtPixAPI.ProductReEngrave(body);
+					Utils.Notifier.ShowSuccess($"Product re-engrave success!");
 				}
-				//order = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
-				var index = Orders.Data.IndexOf(order);
-				Orders.Data[index] = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
+				var updatedOrder = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
+				order.Status = updatedOrder.Status;
+				order.StatusOrderColor = Utils.SelectStatusColor(order.Status);
+				order.UpdatedAt = updatedOrder.UpdatedAt;
+				for (var i = 0; i < order.Products.Count; i++)
+				{
+					order.Products[i].Status = updatedOrder.Products[i].Status;
+					order.Products[i].ManualCompleteButtonVisibility =
+						updatedOrder.Products[i].ManualCompleteButtonVisibility;
+					order.Products[i].UpdatedAt = updatedOrder.Products[i].UpdatedAt;
+					order.Products[i].StatusColor = Utils.SelectStatusColor(order.Products[i].Status);
+
+				}
+				order.ExpanderVisibility = Visibility.Visible;
+				order.IsOrderLoading = false;
 			}
 		}
 
@@ -352,15 +492,15 @@ namespace ArtPix_Dashboard.ViewModels
 				await ArtPixAPI.ChangeMachineAssignItemStatusAsync(newStatus);
 				var updatedOrder = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
 				order.Status = updatedOrder.Status;
-				//Debug.WriteLine("ORDER STATUS: " + order.Status);
+				order.StatusOrderColor = Utils.SelectStatusColor(order.Status);
 				order.UpdatedAt = updatedOrder.UpdatedAt;
 				for (var i = 0; i < order.Products.Count; i++)
 				{
 					order.Products[i].Status = updatedOrder.Products[i].Status;
 					order.Products[i].ManualCompleteButtonVisibility =
 						updatedOrder.Products[i].ManualCompleteButtonVisibility;
-					//Debug.WriteLine("PRODUCT STATUS: " + order.Products[i].Status); 
 					order.Products[i].UpdatedAt = updatedOrder.Products[i].UpdatedAt;
+					order.Products[i].StatusColor = Utils.SelectStatusColor(order.Products[i].Status);
 
 				}
 				order.ExpanderVisibility = Visibility.Visible;

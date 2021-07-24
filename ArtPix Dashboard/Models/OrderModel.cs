@@ -167,7 +167,7 @@ namespace ArtPix_Dashboard.Models.Order
 			get
 			{
 
-				_manualCompleteButtonVisibility = _status == "engrave_done" ? Visibility.Collapsed : Visibility.Visible;
+				_manualCompleteButtonVisibility = Status == "Engraving Done" ? Visibility.Collapsed : Visibility.Visible;
 				return _manualCompleteButtonVisibility;
 			}
 			set => SetProperty(ref _manualCompleteButtonVisibility, value);
@@ -337,51 +337,22 @@ namespace ArtPix_Dashboard.Models.Order
 		{
 			get
 			{
-				switch (_status)
-				{
-					case "photoshop": return "In Photoshop";
-					case "issue": return "Customer Service Issue";
-					case "3d_model_in_progress": return "3D Model In Progress";
-					case "3d_model_pending": return "3D Model Pending";
-					case "retoucher_in_progress": return "Retouch In Progress";
-					case "retoucher_pending": return "Retouch Pending";
-					case "waiting_to_confirm": return "Awaiting Confirmation";
-					case "wait_model": return "Awaiting Model";
-					case "ready_to_engrave": return "Ready To Engrave";
-					case "engrave_issue": return "Engraving Issue";
-					case "engrave_processing": return "Engraving In Progress";
-					case "engrave_redo": return "Ready To Engrave";
-					case "engrave_done": return "Engraving Done";
-					case "shipping_label_printed": return "Shipped";
-					default: return _status;
-				}
+				return Utils.SelectStatusText(_status);
 			}
 			set => SetProperty(ref _status, value);
 		}
 
 		public Visibility ProductStatusVisibility => CrystalType.Type == "Crystal" || CrystalType.Type == "Necklace" || CrystalType.Type == "Keychain" || CrystalType.Type == "Fingerprint" || CrystalType.Type == "Wine Stopper" ? Visibility.Visible : Visibility.Collapsed;
 
+		private string _statusColor;
+
 		public string StatusColor
 		{
 			get
 			{
-				switch (_status)
-				{
-					case "photoshop": return "#bf6900";
-					case "issue": return "DarkRed";
-					case "3d_model_in_progress": return "SteelBlue";
-					case "3d_model_pending": return "#bf6900";
-					case "retoucher_in_progress": return "SteelBlue";
-					case "retoucher_pending": return "#bf6900";
-					case "waiting_to_confirm": return "#bf6900";
-					case "wait_model": return "#bf6900";
-					case "engrave_issue": return "DarkRed";
-					case "engrave_processing": return "SteelBlue";
-					case "engrave_done": return "DarkGreen";
-					case "shipping_label_printed": return "DarkGreen";
-					default: return "#494949";
-				}
+				return Utils.SelectStatusColor(_status);
 			}
+			set => SetProperty(ref _statusColor, value);
 		}
 
 		[JsonProperty("editor_id")]
@@ -492,7 +463,7 @@ namespace ArtPix_Dashboard.Models.Order
 				}
 				return lastUpdated.AddHours(-5).ToString(CultureInfo.CurrentUICulture);
 			}
-			set => _updatedAt = value;
+			set => SetProperty(ref _updatedAt, value);
 		}
 
 		[JsonProperty("crystal_type")]
@@ -1044,6 +1015,8 @@ namespace ArtPix_Dashboard.Models.Order
 
 		[JsonProperty("status_order")]
 		public string StatusOrder { get; set; }
+
+		private string _statusOrderColor;
 		public string StatusOrderColor
 		{
 			get
@@ -1058,6 +1031,7 @@ namespace ArtPix_Dashboard.Models.Order
 					case "Ready To Engrave": return "#494949";
 					case "Engraving Issue": return "DarkRed";
 					case "Retouch Pending": return "#bf6900";
+					case "Ready To Ship": return "DarkGreen";
 					case "Retouch In Progress": return "SteelBlue";
 					case "Engraving In Progress": return "SteelBlue";
 					case "3D Model Pending": return "#bf6900";
@@ -1072,6 +1046,7 @@ namespace ArtPix_Dashboard.Models.Order
 					default: return "#494949";
 				}
 			}
+			set => SetProperty(ref _statusOrderColor, value);
 		}
 
 		[JsonProperty("status_engraving")]

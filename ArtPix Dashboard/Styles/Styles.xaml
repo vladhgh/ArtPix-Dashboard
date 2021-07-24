@@ -1632,7 +1632,7 @@
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     RenderTransformOrigin="0.5,0.5"
-                                    xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeInAndGrow}, Event=Loaded, Duration=600, Delay=600}">
+                                    xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}">
                                 <Path.RenderTransform>
                                     <RotateTransform Angle="0"/>
                                 </Path.RenderTransform>
@@ -2154,7 +2154,7 @@
                 <ControlTemplate TargetType="{x:Type ui:ListView}">
                     <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}" SnapsToDevicePixels="True">
                         <ScrollViewer
-                            utils:ScrollAnimationBehavior.IsEnabled="True"                         
+                            utils:ScrollAnimationBehavior.IsEnabled="False"                         
                             utils:ScrollAnimationBehavior.TimeDuration="00:00:00.40"
                             utils:ScrollAnimationBehavior.PointsToScroll="1"
                             x:Name="ScrollViewer" ui:ScrollViewerHelper.AutoHideScrollBars="{TemplateBinding ui:ScrollViewerHelper.AutoHideScrollBars}" Focusable="False" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" Style="{DynamicResource {x:Type ScrollViewer}}" KeyboardNavigation.TabNavigation="{TemplateBinding KeyboardNavigation.TabNavigation}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">

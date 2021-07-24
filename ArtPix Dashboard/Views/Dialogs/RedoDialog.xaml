@@ -4,23 +4,24 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.modernwpf.com/2019"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    PrimaryButtonText="Send"
+    PrimaryButtonText="Re-Engrave"
     CloseButtonText="Cancel"
-    DefaultButton="Primary">
+    DefaultButton="Primary"
+    Style="{StaticResource ContentDialogStyle}">
 
-    <ui:SimpleStackPanel Orientation="Vertical">
+    <ui:SimpleStackPanel Orientation="Vertical" HorizontalAlignment="Center">
         <TextBlock
-            Text="Are you sure you want to redo this crystal?"
+            Text="Are you sure you want to re-engrave this crystal?"
             FontWeight="Black"
             Style="{DynamicResource TitleTextBlockStyle}"
-            Margin="0 0 0 10"/>
+            Margin="0 0 0 8"/>
         <TextBlock
-										    Text="The product will be sent back to machine for re-engraving."
-										    HorizontalAlignment="Left"
+										    Text="The product will be sent back to selected machine for re-engraving."
+										    HorizontalAlignment="Center"
 										    TextTrimming="CharacterEllipsis"
 										    Width="auto"
 										    TextWrapping="NoWrap"
-                                            Margin="0,0,5,10"/>
+                                            Margin="0,0,0,8"/>
         <TextBlock
             Text="Select Reason:"
             FontSize="18"

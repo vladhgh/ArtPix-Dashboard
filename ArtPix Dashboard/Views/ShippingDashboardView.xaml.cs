@@ -43,8 +43,6 @@ namespace ArtPix_Dashboard.Views
 
 			SortByComboBox.SelectionChanged += SortByComboBoxOnSelectionChanged;
 			EngravingStatusComboBox.SelectionChanged += EngravingStatusComboBoxOnSelectionChanged;
-			ShippingStatusComboBox.SelectionChanged += ShippingStatusComboBoxOnSelectionChanged;
-			OrderStatusComboBox.SelectionChanged += OrderStatusComboBoxOnSelectionChanged;
 			StoreComboBox.SelectionChanged += StoreComboBoxOnSelectionChanged;
 			ToggleShipByToday.Click += ToggleShipByToday_Click;
 			ToggleNoPackage.Click += ToggleNoPackageOnClick;
@@ -74,7 +72,10 @@ namespace ArtPix_Dashboard.Views
 			ShippingItemsListView.ScrollIntoView(_vm.Orders.Data[0]);
 			if (search)
 			{
-				_vm.Orders.Data[0].IsExpanded = true;
+				while(_vm.Orders.Data[0].IsExpanded == false)
+				{
+					_vm.Orders.Data[0].IsExpanded = true;
+				}
 				_vm.AppState.OrderFilterGroup.name_order = _vm.Orders.Data[0].NameOrder;
 				SearchTextBox.Text = _vm.AppState.OrderFilterGroup.name_order;
 			}
@@ -109,11 +110,13 @@ namespace ArtPix_Dashboard.Views
 			if (e.Key == Key.Enter)
 			{
 				_tabPressed = false;
+				_vm.AppState.OrderFilterGroup.name_order = "";
 				_vm.AppState.OrderFilterGroup.status_engraving = "";
 				_vm.AppState.OrderFilterGroup.status_order = "";
 				_vm.AppState.OrderFilterGroup.status_shipping = "";
 				_vm.AppState.OrderFilterGroup.shipByToday = "";
 				_vm.AppState.OrderFilterGroup.order_id = _inputString.Split('-')[0];
+				_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Search:";
 				SendCombinedRequest(true);
 				_inputString = "";
 				e.Handled = true;
@@ -142,29 +145,41 @@ namespace ArtPix_Dashboard.Views
 		private void ToggleNoPackageOnClick(object sender, RoutedEventArgs e)
 		{
 			if (sender is ToggleButton btn)
+			{
 				if (btn.IsChecked != null)
+				{
 					_vm.AppState.OrderFilterGroup.has_shipping_package = (bool)btn.IsChecked ? "0" : "";
-			SendCombinedRequest();
+				}
+				SendCombinedRequest();
+			}
 		}
 
 		private void EngravingStatusComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			_vm.AppState.OrderFilterGroup.status_engraving =
-				((ComboBoxItem)EngravingStatusComboBox.SelectedItem).Tag.ToString();
-			SendCombinedRequest();
+			if (sender is ComboBox)
+			{
+				_vm.AppState.OrderFilterGroup.status_engraving =
+					((ComboBoxItem)EngravingStatusComboBox.SelectedItem).Tag.ToString();
+				SendCombinedRequest();
+			}
 		}
 
 		private void OrderStatusComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			_vm.AppState.OrderFilterGroup.status_order = ((ComboBoxItem)OrderStatusComboBox.SelectedItem).Tag.ToString();
-			SendCombinedRequest();
+			if (sender is ComboBox)
+			{
+				_vm.AppState.OrderFilterGroup.status_order = ((ComboBoxItem)OrderStatusComboBox.SelectedItem).Tag.ToString();
+				SendCombinedRequest();
+			}
 		}
 
 		private void ShippingStatusComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			_vm.AppState.OrderFilterGroup.status_shipping =
-				((ComboBoxItem)ShippingStatusComboBox.SelectedItem).Tag.ToString();
-			SendCombinedRequest();
+			if (sender is ComboBox)
+			{
+				_vm.AppState.OrderFilterGroup.status_shipping = ((ComboBoxItem)ShippingStatusComboBox.SelectedItem).Tag.ToString();
+				SendCombinedRequest();
+			}
 		}
 
 		private void StoreComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -221,9 +236,17 @@ namespace ArtPix_Dashboard.Views
 			SendCombinedRequest(true);
 		}
 
-
-
-
+		private void ButtonClearSearchOnClick(object sender, RoutedEventArgs e)
+		{
+			_vm.AppState.OrderFilterGroup.status_engraving = "";
+			_vm.AppState.OrderFilterGroup.status_shipping = "waiting";
+			_vm.AppState.OrderFilterGroup.shipByToday = "";
+			_vm.AppState.OrderFilterGroup.name_order = "";
+			_vm.AppState.OrderFilterGroup.order_id = "";
+			_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Awaiting Shipment";
+			_vm.AppState.OrderFilterGroup.status_order = "processing";
+			SendCombinedRequest();
+		}
 
 		private async void Expander_OnExpanded(object sender, RoutedEventArgs e)
 		{
@@ -258,20 +281,13 @@ namespace ArtPix_Dashboard.Views
 			}
 
 		}
+
 		private void Expander_OnCollapsed(object sender, RoutedEventArgs e)
 		{
 			var expandSite = ((Expander)sender).Template.FindName("ExpandSite", ((Expander)sender)) as UIElement;
 			expandSite.Visibility = System.Windows.Visibility.Visible;
 			var sb1 = (Storyboard)((Expander)sender).FindResource("sbCollapse");
 			sb1.Begin();
-		}
-		private void SearchTextBox_OnTextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
-		{
-			if (sender.Text != "") return;
-			_vm.AppState.OrderFilterGroup.name_order = "";
-			_vm.AppState.OrderFilterGroup.status_order = "processing";
-			SendCombinedRequest();
-
 		}
 
 		#endregion
