@@ -39,15 +39,15 @@ namespace ArtPix_Dashboard.Models
     {
 
 
-	    public OrderCombineFilterModel(string statusGroup = "", string machineId = "", string nameOrder = "")
+	    public OrderCombineFilterModel(string statusGroup = "", string machineId = "", string nameOrder = "", string orderId = "")
 	    {
 		    switch (statusGroup)
 		    {
 			    case "Search":
 			    {
 				    SelectedFilterGroup = "Search";
-				    name_order = nameOrder;
-				    order_id = "";
+				    name_order = string.IsNullOrEmpty(nameOrder) ? "" : nameOrder;
+				    order_id = string.IsNullOrEmpty(orderId) ? "" : orderId;
 				    machine = "";
 				    status_engraving = "";
 				    status_order = "";

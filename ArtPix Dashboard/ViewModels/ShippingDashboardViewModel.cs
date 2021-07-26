@@ -73,7 +73,14 @@ namespace ArtPix_Dashboard.ViewModels
 			get => _isLoaded;
 			set => SetProperty(ref _isLoaded, value);
 		}
-		private Visibility _progressRingVisibility;
+		private Visibility _noResultsTextVisibility = Visibility.Collapsed;
+		public Visibility NoResultsTextVisibility
+		{
+			get => _noResultsTextVisibility;
+			set => SetProperty(ref _noResultsTextVisibility, value);
+		}
+		
+		private Visibility _progressRingVisibility = Visibility.Collapsed;
 		public Visibility ProgressRingVisibility
 		{
 			get => _progressRingVisibility;
@@ -114,6 +121,12 @@ namespace ArtPix_Dashboard.ViewModels
 		{
 			get => _onManualComplete;
 			set => SetProperty(ref _onManualComplete, value);
+		}
+		private ICommand _onUnassignAllJobs;
+		public ICommand OnUnassignAllJobs
+		{
+			get => _onUnassignAllJobs;
+			set => SetProperty(ref _onUnassignAllJobs, value);
 		}
 		private ICommand _onUnassignMachine;
 		public ICommand OnUnassignMachine
@@ -224,6 +237,7 @@ namespace ArtPix_Dashboard.ViewModels
 			OnManualComplete = new DelegateCommand(OpenManualCompleteDialog);
 			OnAssignMachine = new DelegateCommand(OpenAssignMachineDialog);
 			OnImageClick = new DelegateCommand(OpenImage);
+			OnUnassignAllJobs = new DelegateCommand(OpenUnassignAllDialog);
 			ReloadList = new DelegateCommand(async param => await GetOrdersList());
 			OnOA = new DelegateCommand(Commands.OpenOrderOnOA);
 			OnCP = new DelegateCommand(Commands.OpenOrderOnCP);
@@ -237,6 +251,31 @@ namespace ArtPix_Dashboard.ViewModels
 			OnReEngrave = new DelegateCommand(OpenReEngraveDialog);
 		}
 
+		private async void OpenUnassignAllDialog(object param)
+		{
+			var dialog = new UnassignAllDialog();
+			var result = await dialog.ShowAsync();
+			if (result == ContentDialogResult.Primary)
+			{
+				ToggleMainProgressRingVisibility();
+				await ArtPixAPI.RemoveCurrentJobsFromMachineAsync((int)param);
+				await GetOrdersList(1, 15, true, AppState.OrderFilterGroup);
+				ToggleMainProgressRingVisibility();
+			}
+		}
+
+		private void ToggleMainProgressRingVisibility()
+		{
+			if (ProgressRingVisibility == Visibility.Collapsed || ProgressRingVisibility == Visibility.Hidden)
+			{
+				IsLoaded = Visibility.Hidden;
+				ProgressRingVisibility = Visibility.Visible;
+			} else
+			{
+				IsLoaded = Visibility.Visible;
+				ProgressRingVisibility = Visibility.Collapsed;
+			}
+		}
 
 		private async void OpenRedoDialog(object param)
 		{
@@ -248,8 +287,8 @@ namespace ArtPix_Dashboard.ViewModels
 				var dialog = new RedoDialog(machines.Data);
 				var result = await dialog.ShowAsync();
 				if (result != ContentDialogResult.Primary) return;
-				IsLoaded = Visibility.Hidden;
-				IsLoading = true;
+
+				ToggleOrderProgressRing(order.IdOrders);
 				var requestBody = new ResolveErrorRequestModel
 				{
 					machine_assign_error_id = product.MachineAssignErrorId,
@@ -281,10 +320,12 @@ namespace ArtPix_Dashboard.ViewModels
 					System.IO.Directory.Delete($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.IdProducts}", true);
 					Utils.Utils.Notifier.ShowSuccess($"Local Files Removed Successfully For Product {product.IdProducts}!");
 				}
+				await UpdateOrderInfoAsync(product.IdOrders);
+				ToggleOrderProgressRing(order.IdOrders);
 			}
-			IsLoading = false;
-			IsLoaded = Visibility.Visible;
+
 		}
+
 		private async void OpenReworkDialog(object param)
 		{
 			//var dialog = new ReworkDialog();
@@ -349,7 +390,6 @@ namespace ArtPix_Dashboard.ViewModels
 			//}
 		}
 
-
 		public void PrintQR(object param)
 		{
 			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Models.Order.Product)param).IdOrders);
@@ -367,7 +407,6 @@ namespace ArtPix_Dashboard.ViewModels
 
 			Utils.Utils.Notifier.ShowSuccess($" QR code for product {product.IdProducts} printed successfully!");
 		}
-
 
 		public void PrintPage(object o, PrintPageEventArgs e)
 		{
@@ -425,8 +464,7 @@ namespace ArtPix_Dashboard.ViewModels
 			var result = await dialog.ShowAsync();
 			if (result == ContentDialogResult.Primary)
 			{
-				order.ExpanderVisibility = Visibility.Hidden;
-				order.IsOrderLoading = true;
+				ToggleOrderProgressRing(order.IdOrders);
 				if (!string.IsNullOrEmpty(dialog.Combo2.Text))
 				{
 					var x = (Models.Machine.Machine)dialog.Combo2.SelectedItem;
@@ -445,26 +483,43 @@ namespace ArtPix_Dashboard.ViewModels
 					{
 						user = "Supervisor",
 						machine_assign_item_id = product.MachineAssignItemId
-
 					};
 					await ArtPixAPI.ProductReEngrave(body);
 					Utils.Utils.Notifier.ShowSuccess($"Product re-engrave success!");
 				}
-				var updatedOrder = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
-				order.Status = updatedOrder.Status;
-				order.StatusOrderColor = Utils.Utils.SelectStatusColor(order.Status);
-				order.UpdatedAt = updatedOrder.UpdatedAt;
-				for (var i = 0; i < order.Products.Count; i++)
-				{
-					order.Products[i].Status = updatedOrder.Products[i].Status;
-					order.Products[i].ManualCompleteButtonVisibility =
-						updatedOrder.Products[i].ManualCompleteButtonVisibility;
-					order.Products[i].UpdatedAt = updatedOrder.Products[i].UpdatedAt;
-					order.Products[i].StatusColor = Utils.Utils.SelectStatusColor(order.Products[i].Status);
+				await UpdateOrderInfoAsync(order.IdOrders);
+				ToggleOrderProgressRing(order.IdOrders);
+			}
+		}
 
-				}
+		private async Task UpdateOrderInfoAsync(int orderId)
+		{
+			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == orderId);
+			var updatedOrder = await ArtPixAPI.GetOrder(orderId.ToString());
+			order.Status = updatedOrder.Status;
+			order.StatusOrderColor = Utils.Utils.SelectStatusColor(order.Status);
+			order.UpdatedAt = updatedOrder.UpdatedAt;
+			for (var i = 0; i < order.Products.Count; i++)
+			{
+				order.Products[i].Status = updatedOrder.Products[i].Status;
+				order.Products[i].ManualCompleteButtonVisibility =
+					updatedOrder.Products[i].ManualCompleteButtonVisibility;
+				order.Products[i].UpdatedAt = updatedOrder.Products[i].UpdatedAt;
+				order.Products[i].StatusColor = Utils.Utils.SelectStatusColor(order.Products[i].Status);
+			}
+		}
+
+		private void ToggleOrderProgressRing(int orderId)
+		{
+			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == orderId);
+			if (order.IsOrderLoading)
+			{
 				order.ExpanderVisibility = Visibility.Visible;
 				order.IsOrderLoading = false;
+			} else
+			{
+				order.ExpanderVisibility = Visibility.Hidden;
+				order.IsOrderLoading = true;
 			}
 		}
 
@@ -532,6 +587,7 @@ namespace ArtPix_Dashboard.ViewModels
 				order.IsOrderLoading = false;
 			}
 		}
+		
 		private async void OpenUnassignDialog(object param)
 		{
 			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Product)param).IdOrders);
@@ -552,6 +608,7 @@ namespace ArtPix_Dashboard.ViewModels
 				//order = await ArtPixAPI.GetOrder(param.ToString());
 			}
 		}
+		
 		private async void FindBestServiceButtonOnClick(object param)
 		{
 			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == (int)param);
@@ -585,7 +642,6 @@ namespace ArtPix_Dashboard.ViewModels
 			}
 		}
 
-
 		public void Initialize(AppStateModel appState)
 		{
 			AppState = appState;
@@ -594,16 +650,15 @@ namespace ArtPix_Dashboard.ViewModels
 
 		public async Task GetOrdersList(int pageNumber = 1, int perPage = 15, bool withPages = true, OrderCombineFilterModel filterGroup = null)
 		{
-			ProgressRingVisibility = Visibility.Visible;
-			IsLoaded = Visibility.Collapsed;
+			ToggleMainProgressRingVisibility();
 			Orders = await ArtPixAPI.GetOrdersAsync(pageNumber, perPage, filterGroup);
 			if (withPages)
 			{
 				Pages = await GetPages(pageNumber, perPage, filterGroup);
 			}
-			IsLoaded = Visibility.Visible;
-			ProgressRingVisibility = Visibility.Hidden;
+			ToggleMainProgressRingVisibility();
 		}
+		
 		private async Task<ObservableCollection<PageModel>> GetPages(int currentPageNumber, int perPage = 15, OrderCombineFilterModel filterGroup = null)
 		{
 			var pages = new ObservableCollection<PageModel>();

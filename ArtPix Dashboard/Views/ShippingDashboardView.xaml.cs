@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media.Animation;
 using ArtPix_Dashboard.API;
 using ModernWpf.Controls.Primitives;
+using System.Linq.Expressions;
 
 namespace ArtPix_Dashboard.Views
 {
@@ -56,7 +57,15 @@ namespace ArtPix_Dashboard.Views
 		private void SetKeyPressEventListener()
 		{
 			ShippingDashboardPage.PreviewKeyDown += KeyPressEventListener;
+			ShippingDashboardPage.KeyDown += ShippingDashboardPage_KeyDown; ;
+			ShippingDashboardPage.PreviewKeyUp += ShippingDashboardPage_KeyDown;
+			ShippingDashboardPage.KeyUp += ShippingDashboardPage_KeyDown;
 			ShippingDashboardPage.Focus();
+		}
+
+		private void ShippingDashboardPage_KeyDown(object sender, KeyEventArgs e)
+		{
+			e.Handled = true;
 		}
 
 		protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -70,12 +79,6 @@ namespace ArtPix_Dashboard.Views
 			SendCombinedRequest();
 
 			SetEventListeners();
-
-			//FIX WILL REMOVE LATER
-			while (ProgressRingImage.Visibility == Visibility.Visible)
-			{
-				ProgressRingImage.Visibility = Visibility.Collapsed;
-			}
 
 		}
 
@@ -123,6 +126,13 @@ namespace ArtPix_Dashboard.Views
 
 		}
 
+
+		public async void ShowLoginDialog()
+		{
+			var dialog = new LoginDialog(_vm.AppState);
+			var result = await dialog.ShowAsync();
+		}
+
 		#region EVENT HANDLERS
 
 		public void KeyPressEventListener(object sender, KeyEventArgs e)
@@ -140,7 +150,16 @@ namespace ArtPix_Dashboard.Views
 					_inputString += e.Key.ToString().ToCharArray()[1];
 					e.Handled = true;
 				}
-
+				if (e.Key == Key.Space)
+				{
+					_inputString += " ";
+					e.Handled = true;
+				}
+				if ((e.Key >= Key.A) && (e.Key <= Key.Z))
+				{
+					_inputString += e.Key.ToString();
+					e.Handled = true;
+				}
 				if (e.Key == Key.OemMinus)
 				{
 					_inputString += "-";
@@ -151,14 +170,16 @@ namespace ArtPix_Dashboard.Views
 			if (e.Key == Key.Enter && _tabPressed)
 			{
 				_tabPressed = false;
-				_vm.AppState.OrderFilterGroup.name_order = "";
-				_vm.AppState.OrderFilterGroup.status_engraving = "";
-				_vm.AppState.OrderFilterGroup.status_order = "";
-				_vm.AppState.OrderFilterGroup.status_shipping = "";
-				_vm.AppState.OrderFilterGroup.shipByToday = "";
-				_vm.AppState.OrderFilterGroup.order_id = _inputString.Split('-')[0];
-				_vm.AppState.OrderFilterGroup.SelectedFilterGroup = "Search:";
-				SendCombinedRequest(true);
+				Debug.WriteLine(_inputString);
+				if (_inputString.Split('-')[0] == "LOGIN")
+				{
+					_vm.AppState.EmployeeName = _inputString.Split('-')[1];
+					ShowLoginDialog();
+				} else
+				{
+					_vm.AppState.OrderFilterGroup = new OrderCombineFilterModel("Search", "", "",  _inputString.Split('-')[0]);
+					SendCombinedRequest(true);
+				}
 				_inputString = "";
 				e.Handled = true;
 			}
@@ -295,6 +316,7 @@ namespace ArtPix_Dashboard.Views
 			{
 				var productionIssue =
 					await ArtPixAPI.GetProductionIssueByProductIDAsync(product.IdProducts.ToString());
+				product.MachineAssignErrorId = productionIssue.Data[0].Id;
 				product.Status = productionIssue.Data[0].ProductionIssueReason.Reason;
 				product.Employee = productionIssue.Data[0].User;
 			}

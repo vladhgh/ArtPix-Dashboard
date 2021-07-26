@@ -443,7 +443,19 @@ namespace ArtPix_Dashboard.API
 
 		#region LOGS
 
-		public static async Task GetEntityLogsAsync()
+		
+
+			public static async Task RemoveCurrentJobsFromMachineAsync(string machineId)
+		{
+			var request = new RestRequest($"/removeCurrentJobs?machine_id={machineId}", DataFormat.Json);
+			Debug.WriteLine("API GET: " + request.Body);
+			request.AddHeader("Accept", "application/json");
+			request.AddHeader("Content-Type", "application/json");
+			var res = await Client.GetAsync<string>(request);
+			Debug.WriteLine("API RESPONSE: " + res);
+		}
+
+			public static async Task GetEntityLogsAsync()
 		{
 			var request = new RestRequest("/entity-logs?entity_type=machine_assign_item&per_page=100", DataFormat.Json);
 			request.AddHeader("Accept", "application/json");

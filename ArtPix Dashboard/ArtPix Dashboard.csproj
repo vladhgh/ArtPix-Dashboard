@@ -134,11 +134,17 @@
     <Compile Include="Views\Dialogs\ChangeAddressDialog.xaml.cs">
       <DependentUpon>ChangeAddressDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialogs\LoginDialog.xaml.cs">
+      <DependentUpon>LoginDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\ReEngraveDialog.xaml.cs">
       <DependentUpon>ReEngraveDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialogs\ProductHistoryDialog.xaml.cs">
       <DependentUpon>ProductHistoryDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\UnassignAllDialog.xaml.cs">
+      <DependentUpon>UnassignAllDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialogs\UnassignDialog.xaml.cs">
       <DependentUpon>UnassignDialog.xaml</DependentUpon>
@@ -192,11 +198,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Dialogs\LoginDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Dialogs\ReEngraveDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\ProductHistoryDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dialogs\UnassignAllDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -439,6 +453,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\greeting_card_cupid_couple.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\plastic_light_base_small.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -18,7 +18,8 @@
                   Left="{Binding AppState.Left, Mode=TwoWay}"
                   Height="{Binding AppState.Height, Mode=TwoWay}"
                   Width="{Binding AppState.Width, Mode=TwoWay}"
-                  MaxWidth="1915"
+                  MaxWidth="1920"
+				  MaxHeight="1080"
                   WindowState="{Binding AppState.WindowState, Mode=TwoWay}"
                   Loaded="MainViewOnLoaded"
                   IsTabStop="True"
@@ -879,18 +880,18 @@
 
 			<ui:NavigationView.PaneFooter>
 				<StackPanel Orientation="Horizontal" Margin="0 0 10 0">
-					<ui:NavigationViewItem CornerRadius="4" Cursor="Hand" Tag="ShippingDashboardView" MaxWidth="60"  >
-						<ui:PersonPicture  ProfilePicture="/Assets/logo.ico" MaxHeight="24"/>
-					</ui:NavigationViewItem>
-					<ui:AppBarButton CornerRadius="4" Name="SwitchStatusPanelButton" Cursor="Hand" IsCompact="True" Click="SwitchStatusPanelButtonOnClick" MaxWidth="60" ToolTip="Switch Status Panel" Label="Settings">
-						<ui:AppBarButton.Icon>
-							<ui:FontIcon
-								Foreground="White"
-                                FontSize="44"
-                                FontFamily="Segoe MDL2 Assets" Glyph="&#xE8AB;" />
-						</ui:AppBarButton.Icon>
-					</ui:AppBarButton>
-					<ui:AppBarButton Cursor="Hand" CornerRadius="4" Icon="Setting" ToolTip="Settings" MaxWidth="60" Label="Settings" IsCompact="True" />
+					<Button Background="#1e1e1e" Cursor="Hand" ToolTip="Currently Active User" Style="{DynamicResource InactiveButtonStyle}"  VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 10 4">
+						<TextBlock
+							Text="Vlad Prokopev"
+							FontSize="12"
+							Style="{DynamicResource BaseTextBlockStyle}"/>
+					</Button>
+					<Button Background="#1e1e1e" Cursor="Hand" ToolTip="Switch Status Panel" Style="{DynamicResource InactiveButtonStyle}" Click="SwitchStatusPanelButtonOnClick" VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 10 4">
+						<ui:FontIcon FontSize="16" Glyph="&#xE8AB;" />
+					</Button>
+					<Button Background="#1e1e1e" Cursor="Hand" ToolTip="Settings" Style="{DynamicResource InactiveButtonStyle}" VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 10 4">
+						<ui:FontIcon FontSize="16" Glyph="&#xE713;" />
+					</Button>
 				</StackPanel>
 			</ui:NavigationView.PaneFooter>
 

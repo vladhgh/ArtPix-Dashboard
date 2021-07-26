@@ -135,6 +135,7 @@ namespace ArtPix_Dashboard.Models.Order
 		public string MachineId { get; set; }
 		public int MachineAssignItemId { get; set; }
 
+
 		public double ProductImageSize
 		{
 			get 
@@ -247,40 +248,18 @@ namespace ArtPix_Dashboard.Models.Order
 					case "6GSS2R3": return "greeting_card_loving_heart.png";
 					case "6GSS1P3": return "greeting_card_i_love_you.png";
 					case "6GSS5R3": return "greeting_card_cupid_couple.png";
+					case "1PBS": return "plastic_light_base_small.png";
+					case "1PBM": return "plastic_light_base_medium.png";
+					case "1LBS": return "light_base_small.png";
+					case "1LBM": return "light_base_medium.png";
+					case "1LBL": return "light_base_large.png";
+					case "1LBX": return "light_base_xl.png";
+					case "1RBS": return "rotating_base_small.png";
+					case "1RBL": return "rotating_base_large.png";
 				}
 
 				switch (Name)
 				{
-					case "Rotating Base Small":
-						return "rotating_base_small.png";
-					case "Rotating Base Large":
-						return "rotating_base_large.png";
-					case "Small Wood Base with Light":
-						return "light_base_small.png";
-					case "Small Wood Light Base":
-						return "light_base_small.png";
-					case "Light Base Small":
-						return "light_base_small.png";
-					case "Medium Wood Base with Light":
-						return "light_base_medium.png";
-					case "Medium Wood Light Base":
-						return "light_base_medium.png";
-					case "Light Base Medium":
-						return "light_base_medium.png";
-					case "Large Wood Base with Light":
-						return "light_base_large.png";
-					case "Large Wood Light Base":
-						return "light_base_large.png";
-					case "Light Base Large":
-						return "light_base_large.png"; 
-					case "XL Wood Light Base":
-						return "light_base_xl.png";
-					case "Light Base X-Large":
-						return "light_base_xl.png";
-					case "Small Rotating Light Base":
-						return "rotating_base_small.png";
-					case "Large Rotating Light Base":
-						return "rotating_base_large.png";
 					case "3D Clover Flower Set With Blue Ribbon Card":
 						return "https://artpix3d.com/wp-content/uploads/2020/12/Greeting-card-2-2.jpg";
 					case "3D Clover Flower Set With Orange Ribbon Card":
@@ -299,10 +278,6 @@ namespace ArtPix_Dashboard.Models.Order
 						return "blue_polka_dot_wrapping_paper.png";
 					case "3D Sunflower Set Card":
 						return "sunflower_greeting_card.png";
-					case "Medium Plastic Light Base":
-						return "plastic_light_base_medium.png";
-					case "Small Plastic Light Base":
-						return "plastic_light_base_medium.png";
 					default:
 						return _urlRenderImg ?? "placeholder.png";
 				}
@@ -1014,7 +989,7 @@ namespace ArtPix_Dashboard.Models.Order
 					foreach (var product in Products)
 					{
 						if (product.CrystalType.Type == "Crystal" || product.CrystalType.Type == "Necklace" ||
-						    product.CrystalType.Type == "Keychain" || product.CrystalType.Type == "Fingerprint")
+						    product.CrystalType.Type == "Keychain" || product.CrystalType.Type == "Fingerprint" || product.CrystalType.Type == "Wine Stopper")
 						{
 							if (product.Status == "3D Model Pending" || product.Status == "3D Model In Progress")
 							{
@@ -1113,6 +1088,8 @@ namespace ArtPix_Dashboard.Models.Order
 
 		[JsonProperty("total_crystal")]
 		public int TotalCrystal { get; set; }
+
+
 
 		public BitmapImage OrderImage
 		{
@@ -1302,6 +1279,8 @@ namespace ArtPix_Dashboard.Models.Order
 				
 			}
 		}
+
+		
 
 		public Visibility IsLateShipment => DateTime.Parse(EstimateProcessingMaxDate, CultureInfo.CurrentUICulture) < DateTime.Now ? Visibility.Visible : Visibility.Collapsed;
 
