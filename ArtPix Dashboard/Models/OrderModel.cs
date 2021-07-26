@@ -241,6 +241,14 @@ namespace ArtPix_Dashboard.Models.Order
 		public string UrlRenderImg {
 			get
 			{
+				switch (CrystalType.Sku)
+				{
+					case "6GFS3P3": return "greeting_card_flowers_orange_ribbon.png";
+					case "6GSS2R3": return "greeting_card_loving_heart.png";
+					case "6GSS1P3": return "greeting_card_i_love_you.png";
+					case "6GSS5R3": return "greeting_card_cupid_couple.png";
+				}
+
 				switch (Name)
 				{
 					case "Rotating Base Small":
@@ -322,12 +330,33 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("customer_font")]
 		public string CustomerFont { get; set; }
 
+		private string _customerEngraving;
+
 		[JsonProperty("customer_engraving")]
-		public string CustomerEngraving { get; set; }
+		public string CustomerEngraving
+		{
+			get => string.IsNullOrEmpty(_customerEngraving) ? null : _customerEngraving.Replace("&amp;", "&");
+			set => SetProperty(ref _customerEngraving, value);
+		}
 		public Visibility CustomerEngravingVisibility => string.IsNullOrEmpty(CustomerEngraving) ? Visibility.Collapsed : Visibility.Visible;
 
 		[JsonProperty("crystal_position")]
 		public string CrystalPosition { get; set; }
+
+		private string _employee;
+		public string Employee
+		{
+			get => _employee;
+			set => SetProperty(ref _employee, value);
+		}
+
+		private int _machineAssignErrorId;
+		public int MachineAssignErrorId
+		{
+			get => _machineAssignErrorId;
+			set => SetProperty(ref _machineAssignErrorId, value);
+		}
+		
 
 
 		private string _status;
@@ -337,7 +366,7 @@ namespace ArtPix_Dashboard.Models.Order
 		{
 			get
 			{
-				return Utils.SelectStatusText(_status);
+				return Utils.Utils.SelectStatusText(_status);
 			}
 			set => SetProperty(ref _status, value);
 		}
@@ -350,7 +379,7 @@ namespace ArtPix_Dashboard.Models.Order
 		{
 			get
 			{
-				return Utils.SelectStatusColor(_status);
+				return Utils.Utils.SelectStatusColor(_status);
 			}
 			set => SetProperty(ref _statusColor, value);
 		}
@@ -1089,7 +1118,7 @@ namespace ArtPix_Dashboard.Models.Order
 		{
 			get
 			{
-				var item = this.Products.Find(x => x.CrystalType.Type == "Crystal" || x.CrystalType.Type == "Keychain" || x.CrystalType.Type == "Necklace" || x.CrystalType.Type == "Wine Stopper" || x.CrystalType.Type.Contains("Fingerprint"));
+				var item = this.Products.Find(x => x.CrystalType.Type == "Crystal" || x.CrystalType.Type == "Keychain" || x.CrystalType.Type == "Necklace" || x.CrystalType.Type == "Wine Stopper" || x.CrystalType.Type.Contains("Fingerprint") );
 				var outPutDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
 				var logoImage = Path.Combine(outPutDirectory, "..\\..\\Assets\\multiple_item_order_preview.png");
 				var relLogo = new Uri(logoImage).LocalPath;
@@ -1107,7 +1136,11 @@ namespace ArtPix_Dashboard.Models.Order
 				else
 				{
 					var img = TotalCrystal == 1 && !string.IsNullOrEmpty(item.UrlRenderImg) ? item.UrlRenderImg : relLogo;
-
+					//if (TotalProducts == 1 && !string.IsNullOrEmpty(item.UrlRenderImg))
+					//{
+					//	var imagePath = Path.Combine(outPutDirectory, $"..\\..\\Assets\\{item.UrlRenderImg}");
+					//	var path = new Uri(imagePath).LocalPath;
+					//}
 					var bmp = new BitmapImage();
 					bmp.BeginInit();
 					bmp.CacheOption = BitmapCacheOption.OnLoad;
@@ -1375,7 +1408,7 @@ namespace ArtPix_Dashboard.Models.Order
 						{
 							if (i > 0)
 							{
-								var newProduct = API.Utils.DeepCopy(product);
+								var newProduct = Utils.Utils.DeepCopy(product);
 								newProduct.MachineAssignItemId = item.Id;
 								newProduct.MachineId = item.machine_id;
 								newProductList.Add(newProduct);
@@ -1396,7 +1429,7 @@ namespace ArtPix_Dashboard.Models.Order
 						TotalProducts++;
 						for (int i = 0; i < product.Quantity - 1; i++)
 						{
-							var newProduct = API.Utils.DeepCopy(product);
+							var newProduct = Utils.Utils.DeepCopy(product);
 							newProductList.Add(newProduct);
 							TotalProducts++;
 						}

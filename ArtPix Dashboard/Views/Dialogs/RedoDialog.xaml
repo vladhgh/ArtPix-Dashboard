@@ -7,62 +7,87 @@
     PrimaryButtonText="Re-Engrave"
     CloseButtonText="Cancel"
     DefaultButton="Primary"
-    Style="{StaticResource ContentDialogStyle}">
+    Style="{StaticResource SmallContentDialogStyle}">
 
     <ui:SimpleStackPanel Orientation="Vertical" HorizontalAlignment="Center">
         <TextBlock
-            Text="Are you sure you want to re-engrave this crystal?"
+            Text="Are you sure you want to assign a machine and re-engrave this product?"
             FontWeight="Black"
+			TextAlignment="Center"
+			HorizontalAlignment="Center"
             Style="{DynamicResource TitleTextBlockStyle}"
-            Margin="0 0 0 8"/>
-        <TextBlock
-										    Text="The product will be sent back to selected machine for re-engraving."
-										    HorizontalAlignment="Center"
-										    TextTrimming="CharacterEllipsis"
-										    Width="auto"
-										    TextWrapping="NoWrap"
-                                            Margin="0,0,0,8"/>
-        <TextBlock
-            Text="Select Reason:"
-            FontSize="18"
-            FontWeight="Bold"
-            Style="{DynamicResource BaseTextBlockStyle}"
-            Margin="0 0 0 5"/>
-            <ComboBox
-                            x:Name="Combo1"  
-                            SelectedIndex="4"
-                            ui:ControlHelper.PlaceholderText="Pick a reason"
-                            Width="200">
-            <sys:String>Bad Crystal</sys:String>
-            <sys:String>Employee Error</sys:String>
-            <sys:String>Retoucher Error</sys:String>
-            <sys:String>Machine Error</sys:String>
-            <sys:String>Technical Error</sys:String>
-        </ComboBox>
-        <TextBlock
-            Text="Assign Machine:"
-            FontSize="18"
-            FontWeight="Bold"
-            Style="{DynamicResource BaseTextBlockStyle}"
-            Margin="0 10 0 5"/>
-        <ComboBox
-            x:Name="Combo2"  
-            ui:ControlHelper.PlaceholderText="Assign Machine"
-            ItemsSource="{Binding Machines}"
-            Width="200">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Name}"/>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
-        <TextBlock
-            Text="Leave A Message:"
-            FontSize="18"
-            FontWeight="Bold"
-            Style="{DynamicResource BaseTextBlockStyle}"
-            Margin="0 10 0 5"/>
-        <ui:AutoSuggestBox x:Name="MessageBox" PlaceholderText="Your Message" Text="Life Is Good!" />
+            Margin="0 0 0 9"/>
+		<ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="2">
+			<TextBlock
+				Text="The product status will be changed to "
+				HorizontalAlignment="Center"
+				TextTrimming="CharacterEllipsis"
+				Width="auto"
+				TextWrapping="Wrap"
+				Margin="0,2,0,4"/>
+			<Button Background="#494949" Style="{DynamicResource InactiveButtonStyle}"  Height="auto" Opacity="0.9">
+				<TextBlock
+					Text="Ready To Engrave"
+					Margin="5 0 5 0"
+					FontSize="8"
+					Style="{DynamicResource BaseTextBlockStyle}"/>
+			</Button>
+		</ui:SimpleStackPanel>
+        <Border Padding="12 12 12 24" Margin="0 12 0 0" BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="1" CornerRadius="8">
+	        <ui:SimpleStackPanel Orientation="Vertical">
+				<ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center"  Spacing="12">
+			        <ui:SimpleStackPanel Orientation="Vertical" HorizontalAlignment="Center" >
+				        <TextBlock
+					        Text="Select Reason:"
+					        FontSize="18"
+					        FontWeight="Bold"
+					        Style="{DynamicResource BaseTextBlockStyle}"
+					        Margin="0 10 0 5"/>
+				        <ComboBox
+					        x:Name="Combo1"  
+					        SelectedIndex="4"
+					        ui:ControlHelper.PlaceholderText="Pick a reason"
+					        Width="205"
+					        Cursor="Hand"
+					        Style="{StaticResource AssignMachineComboBoxStyle}">
+					        <sys:String>Bad Crystal</sys:String>
+					        <sys:String>Employee Error</sys:String>
+					        <sys:String>Retoucher Error</sys:String>
+					        <sys:String>Machine Error</sys:String>
+					        <sys:String>Technical Error</sys:String>
+				        </ComboBox>
+					</ui:SimpleStackPanel>
+					<ui:SimpleStackPanel Orientation="Vertical">
+						<TextBlock
+							Text="Assign Machine:"
+							FontSize="18"
+							FontWeight="Bold"
+							Style="{DynamicResource BaseTextBlockStyle}"
+							Margin="0 10 0 5"/>
+						<ComboBox
+							x:Name="Combo2"  
+							ui:ControlHelper.PlaceholderText="Assign Machine"
+							ItemsSource="{Binding Machines}"
+							Width="205"
+							Cursor="Hand"
+							Style="{StaticResource AssignMachineComboBoxStyle}">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Name}"/>
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+					</ui:SimpleStackPanel>
+				</ui:SimpleStackPanel>
+				<TextBlock
+		            Text="Leave A Message(optional):"
+		            FontSize="18"
+		            FontWeight="Bold"
+		            Style="{DynamicResource BaseTextBlockStyle}"
+		            Margin="0 10 0 5"/>
+				<ui:AutoSuggestBox x:Name="MessageBox" CornerRadius="4" Cursor="Hand" PlaceholderText="Your Message" Text="Life Is Good!" />
+                </ui:SimpleStackPanel>
+            </Border>
     </ui:SimpleStackPanel>
 
 </ui:ContentDialog>

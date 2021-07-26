@@ -4,10 +4,6 @@ using ModernWpf.Controls;
 using System;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Input;
-using ToastNotifications;
-using ToastNotifications.Lifetime;
-using ToastNotifications.Position;
 
 namespace ArtPix_Dashboard.Models
 {
@@ -53,6 +49,15 @@ namespace ArtPix_Dashboard.Models
 			get => _orderFilterGroup;
 			set => SetProperty(ref _orderFilterGroup, value);
 		}
+
+
+		private Visibility _mainViewProgressRingVisibility = Visibility.Visible;
+		public Visibility MainViewProgressRingVisibility
+		{
+			get => _mainViewProgressRingVisibility;
+			set => SetProperty(ref _mainViewProgressRingVisibility, value);
+		}
+
 		private string _statusGroup;
 		public string StatusGroup
 		{
@@ -78,13 +83,7 @@ namespace ArtPix_Dashboard.Models
 			set => SetProperty(ref _employeeName, value);
 		}
 
-		private bool _isMainViewLoading = true;
-		public bool IsMainViewLoading
-		{
-			get => _isMainViewLoading;
-			set => SetProperty(ref _isMainViewLoading, value);
-		}
-		private Visibility _mainNavigationViewVisibility;
+		private Visibility _mainNavigationViewVisibility = Visibility.Hidden;
 		public Visibility MainNavigationViewVisibility
 		{
 			get => _mainNavigationViewVisibility;

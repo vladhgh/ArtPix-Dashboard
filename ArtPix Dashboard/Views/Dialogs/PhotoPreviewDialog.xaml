@@ -44,7 +44,7 @@
 
                 </ui:SimpleStackPanel>
 
-                <ui:TitleBarButton
+                <!--<ui:TitleBarButton
                     x:Name="BackButton"
                     Cursor="Hand"
                     Grid.Column="0"
@@ -52,7 +52,7 @@
                     Margin="20 0 20 0"
                     Content="&#xE72B;"
                     Template="{DynamicResource TitleBarButtonControlTemplate1}"
-                    ContentTemplate="{x:Null}" />
+                    ContentTemplate="{x:Null}" />-->
             
                 <Image
                     x:Name="ProductImage"
@@ -70,7 +70,7 @@
                     <xctk:Magnifier Radius="80" ZoomFactor=".6" />
                 </xctk:MagnifierManager.Magnifier>
             </Image>
-            <ui:TitleBarButton
+            <!--<ui:TitleBarButton
                 x:Name="ForwardButton"
                 Cursor="Hand"
                 Grid.Row="1"
@@ -78,7 +78,7 @@
                 Margin="20 0 20 0"
                 Content="&#xE72A;"
                 Template="{DynamicResource TitleBarButtonControlTemplate1}"
-                ContentTemplate="{x:Null}" />
+                ContentTemplate="{x:Null}" />-->
                 <ui:SimpleStackPanel
                     Grid.Row="2"
                     Grid.Column="0"

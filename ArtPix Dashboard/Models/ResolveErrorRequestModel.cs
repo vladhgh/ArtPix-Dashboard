@@ -1,4 +1,5 @@
-﻿using ArtPix_Dashboard.ViewModels;
+﻿using System.Windows;
+using ArtPix_Dashboard.ViewModels;
 using Newtonsoft.Json;
 
 namespace ArtPix_Dashboard.Models
@@ -37,12 +38,213 @@ namespace ArtPix_Dashboard.Models
     public class OrderCombineFilterModel : PropertyChangedListener
     {
 
-	    private string _selectedFilterGroup;
+
+	    public OrderCombineFilterModel(string statusGroup = "", string machineId = "", string nameOrder = "")
+	    {
+		    switch (statusGroup)
+		    {
+			    case "Search":
+			    {
+				    SelectedFilterGroup = "Search";
+				    name_order = nameOrder;
+				    order_id = "";
+				    machine = "";
+				    status_engraving = "";
+				    status_order = "";
+				    status_shipping = "";
+					with_crystals = "3";
+					has_shipping_package = "";
+					with_shipping_totes = "False";
+					shipByToday = "False";
+					sort_by = "estimate_processing_max_date";
+					store_name = "";
+					IsFilterGroupEnabled = false;
+					return;
+				}
+
+			    case "Production Issues":
+			    {
+				    SelectedFilterGroup = "Production Issues";
+				    name_order = "";
+				    order_id = "";
+				    machine = "";
+				    status_engraving = "engrave_issue";
+				    status_shipping = "waiting";
+				    status_order = "processing";
+				    with_crystals = "3";
+				    has_shipping_package = "";
+				    with_shipping_totes = "False";
+				    shipByToday = "False";
+				    sort_by = "estimate_processing_max_date";
+				    store_name = "";
+				    IsFilterGroupEnabled = false;
+
+					return;
+				}
+
+			    case "Engraving":
+			    {
+
+					SelectedFilterGroup = "Engraving In Progress";
+					name_order = "";
+					order_id = "";
+					machine = "";
+					status_engraving = "engrave_processing";
+					status_shipping = "waiting";
+					status_order = "processing";
+					with_crystals = "3";
+					has_shipping_package = "";
+					with_shipping_totes = "False";
+					shipByToday = "False";
+					sort_by = "estimate_processing_max_date";
+					store_name = "";
+					MachineComboBoxVisibility = Visibility.Visible;
+					return;
+				}
+
+			    case "Ready To Engrave":
+			    {
+				    SelectedFilterGroup = "Ready To Engrave";
+				    name_order = "";
+				    order_id = "";
+				    machine = "";
+				    status_engraving = "ready_to_engrave&amp;with_crystal_product_status[]=engrave_redo";
+					status_shipping = "waiting";
+					status_order = "processing";
+					with_crystals = "3";
+					has_shipping_package = "";
+					with_shipping_totes = "False";
+					shipByToday = "False";
+					sort_by = "estimate_processing_max_date";
+					store_name = "";
+					MachineComboBoxVisibility = Visibility.Visible;
+					return;
+				}
+
+
+			    case "Machine":
+			    {
+				    SelectedFilterGroup = "Machine " + machineId;
+				    machine = machineId;
+				    name_order = "";
+				    order_id = "";
+				    status_engraving = "";
+				    status_shipping = "waiting";
+				    status_order = "processing";
+				    with_crystals = "3";
+				    has_shipping_package = "";
+				    with_shipping_totes = "False";
+				    shipByToday = "False";
+				    sort_by = "estimate_processing_max_date";
+				    store_name = "";
+				    IsFilterGroupEnabled = false;
+				    UnAssignJobsFromMachineButtonVisibility = Visibility.Visible;
+					return;
+			    }
+			    case "Ready To Ship":
+			    {
+				    SelectedFilterGroup = "Ready To Ship";
+				    machine = "";
+				    name_order = "";
+				    order_id = "";
+				    status_engraving = "engrave_done&amp;with_crystal_product_status[]=completed";
+				    status_shipping = "waiting";
+				    status_order = "processing";
+				    with_crystals = "3";
+				    has_shipping_package = "";
+				    with_shipping_totes = "False";
+				    shipByToday = "False";
+				    sort_by = "estimate_processing_max_date";
+				    store_name = "";
+				    CreateManifestButtonVisibility = Visibility.Visible;
+				    return;
+			    }
+			    case "Awaiting Shipment":
+			    {
+				    SelectedFilterGroup = "Awaiting Shipment";
+				    machine = "";
+				    name_order = "";
+				    order_id = "";
+				    status_engraving = "";
+					status_shipping = "waiting";
+					status_order = "processing";
+					with_crystals = "3";
+					has_shipping_package = "";
+					with_shipping_totes = "False";
+					shipByToday = "False";
+					sort_by = "estimate_processing_max_date";
+					store_name = "";
+					CreateManifestButtonVisibility = Visibility.Visible;
+					return;
+				}
+			    case "Ship By Today":
+			    {
+				    
+				    SelectedFilterGroup = "Ship By Today";
+					machine = "";
+					name_order = "";
+					order_id = "";
+					status_engraving = "";
+					status_shipping = "waiting";
+					status_order = "processing";
+					with_crystals = "3";
+					has_shipping_package = "";
+					with_shipping_totes = "False";
+					shipByToday = "True";
+					sort_by = "estimate_processing_max_date";
+					store_name = "";
+					CreateManifestButtonVisibility = Visibility.Visible;
+					return;
+				}
+
+		    }
+	    }
+
+	    
+	    private Visibility _unAssignJobsFromMachineButtonVisibility = Visibility.Collapsed;
+
+	    public Visibility UnAssignJobsFromMachineButtonVisibility
+		{
+		    get => _unAssignJobsFromMachineButtonVisibility;
+		    set => SetProperty(ref _unAssignJobsFromMachineButtonVisibility, value);
+	    }
+	    private Visibility _machineComboBoxVisibility = Visibility.Collapsed;
+
+	    public Visibility MachineComboBoxVisibility
+		{
+		    get => _machineComboBoxVisibility;
+		    set => SetProperty(ref _machineComboBoxVisibility, value);
+	    }
+	    private Visibility _createManifestButtonVisibility = Visibility.Collapsed;
+
+	    public Visibility CreateManifestButtonVisibility
+		{
+		    get => _createManifestButtonVisibility;
+		    set => SetProperty(ref _createManifestButtonVisibility, value);
+	    }
+		
+
+		private bool _isFilterGroupEnabled = true;
+
+	    public bool IsFilterGroupEnabled
+		{
+		    get => _isFilterGroupEnabled;
+		    set => SetProperty(ref _isFilterGroupEnabled, value);
+	    }
+		private string _selectedFilterGroup;
 
 	    public string SelectedFilterGroup
 	    {
 		    get => _selectedFilterGroup;
 		    set => SetProperty(ref _selectedFilterGroup, value);
+	    }
+
+	    private string _machine;
+
+	    public string machine
+		{
+		    get => _machine;
+		    set => SetProperty(ref _machine, value);
 	    }
 
 		private string _order_id;
@@ -100,13 +302,6 @@ namespace ArtPix_Dashboard.Models
 	    {
 		    get => _with_shipping_totes;
 		    set => SetProperty(ref _with_shipping_totes, value);
-	    }
-
-	    private string _with_production_issue;
-	    public string with_production_issue
-	    {
-		    get => _with_production_issue;
-		    set => SetProperty(ref _with_production_issue, value);
 	    }
 
 	    private string _sort_by;

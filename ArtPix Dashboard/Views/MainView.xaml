@@ -7,8 +7,10 @@
                   xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
                   xmlns:viewmodels="clr-namespace:ArtPix_Dashboard.ViewModels"
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
-                  xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:visibilityAnimation="clr-namespace:ArtPix_Dashboard.VisibilityAnimation"
+                  xmlns:gif="http://wpfanimatedgif.codeplex.com"
+                  mc:Ignorable="d"
                   d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
                   Icon="../Assets/logo.ico"
                   Title="{Binding AppState.CurrentVersion, StringFormat=ArtPix Dashboard {0:N}}"
@@ -16,7 +18,7 @@
                   Left="{Binding AppState.Left, Mode=TwoWay}"
                   Height="{Binding AppState.Height, Mode=TwoWay}"
                   Width="{Binding AppState.Width, Mode=TwoWay}"
-                
+                  MaxWidth="1915"
                   WindowState="{Binding AppState.WindowState, Mode=TwoWay}"
                   Loaded="MainViewOnLoaded"
                   IsTabStop="True"
@@ -27,185 +29,515 @@
                   ui:TitleBar.Style="{DynamicResource AppTitleBarStyle}"
                   ui:TitleBar.ButtonStyle="{DynamicResource AppTitleBarButtonStyle}"
                   >
-    <Window.Resources>
-        <local:PixelsToGridLengthConverter x:Key="PixelsToGridLength" />
+	<Window.Resources>
+		<local:PixelsToGridLengthConverter x:Key="PixelsToGridLength" />
 
-        <Style x:Key="AppTitleBarStyle" TargetType="ui:TitleBarControl">
-            <Setter Property="ui:ThemeManager.RequestedTheme" Value="Dark" />
-        </Style>
+		<Style x:Key="AppTitleBarStyle" TargetType="ui:TitleBarControl">
+			<Setter Property="ui:ThemeManager.RequestedTheme" Value="Dark" />
+		</Style>
 
-        <Style x:Key="ToggleButtonStyle1" TargetType="{x:Type ToggleButton}">
-            <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="Background" Value="{DynamicResource ToggleButtonBackground}"/>
-            <Setter Property="Foreground" Value="{DynamicResource ToggleButtonForeground}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource ToggleButtonBorderBrush}"/>
-            <Setter Property="BorderThickness" Value="{DynamicResource ToggleButtonBorderThemeThickness}"/>
-            <Setter Property="Padding" Value="{DynamicResource ButtonPadding}"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="FontFamily" Value="{DynamicResource ContentControlThemeFontFamily}"/>
-            <Setter Property="FontWeight" Value="Normal"/>
-            <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}"/>
-            <Setter Property="ui:ControlHelper.CornerRadius" Value="{DynamicResource ControlCornerRadius}"/>
-            <Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}"/>
-            <Setter Property="ui:FocusVisualHelper.UseSystemFocusVisuals" Value="{DynamicResource UseSystemFocusVisuals}"/>
-            <Setter Property="ui:FocusVisualHelper.FocusVisualMargin" Value="-3"/>
-            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ToggleButton}">
-                        <Border x:Name="Background" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding ui:ControlHelper.CornerRadius}" SnapsToDevicePixels="True">
-                            <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding ui:ControlHelper.CornerRadius}" Padding="{TemplateBinding Padding}">
-                                <ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                            </Border>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsChecked" Value="False"/>
-                                    <Condition Property="IsMouseOver" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
-                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
-                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundPointerOver}"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsChecked" Value="False"/>
-                                    <Condition Property="IsPressed" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundPressed}"/>
-                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushPressed}"/>
-                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundPressed}"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsChecked" Value="False"/>
-                                    <Condition Property="IsEnabled" Value="False"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundDisabled}"/>
-                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundDisabled}"/>
-                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushDisabled}"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsChecked" Value="True"/>
-                                    <Condition Property="IsMouseOver" Value="False"/>
-                                    <Condition Property="IsPressed" Value="False"/>
-                                    <Condition Property="IsEnabled" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
-                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundChecked}"/>
-                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsChecked" Value="True"/>
-                                    <Condition Property="IsMouseOver" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
-                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
-                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundCheckedPointerOver}"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsChecked" Value="True"/>
-                                    <Condition Property="IsPressed" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundCheckedPressed}"/>
-                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundCheckedPressed}"/>
-                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushCheckedPressed}"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsChecked" Value="True"/>
-                                    <Condition Property="IsEnabled" Value="False"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundCheckedDisabled}"/>
-                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundCheckedDisabled}"/>
-                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushCheckedDisabled}"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsChecked" Value="{x:Null}"/>
-                                    <Condition Property="IsMouseOver" Value="False"/>
-                                    <Condition Property="IsPressed" Value="False"/>
-                                    <Condition Property="IsEnabled" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminate}"/>
-                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminate}"/>
-                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminate}"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsChecked" Value="{x:Null}"/>
-                                    <Condition Property="IsMouseOver" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminatePointerOver}"/>
-                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminatePointerOver}"/>
-                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminatePointerOver}"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsChecked" Value="{x:Null}"/>
-                                    <Condition Property="IsPressed" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminatePressed}"/>
-                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminatePressed}"/>
-                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminatePressed}"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsChecked" Value="{x:Null}"/>
-                                    <Condition Property="IsEnabled" Value="False"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminateDisabled}"/>
-                                <Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminateDisabled}"/>
-                                <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminateDisabled}"/>
-                            </MultiTrigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    
-    </Window.Resources>
+		<Style x:Key="ToggleButtonStyle1" TargetType="{x:Type ToggleButton}">
+			<Setter Property="OverridesDefaultStyle" Value="True"/>
+			<Setter Property="Background" Value="{DynamicResource ToggleButtonBackground}"/>
+			<Setter Property="Foreground" Value="{DynamicResource ToggleButtonForeground}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource ToggleButtonBorderBrush}"/>
+			<Setter Property="BorderThickness" Value="{DynamicResource ToggleButtonBorderThemeThickness}"/>
+			<Setter Property="Padding" Value="10 4 10 6"/>
+			<Setter Property="HorizontalAlignment" Value="Left"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="FontFamily" Value="{DynamicResource ContentControlThemeFontFamily}"/>
+			<Setter Property="FontWeight" Value="Normal"/>
+			<Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}"/>
+			<Setter Property="ui:ControlHelper.CornerRadius" Value="{DynamicResource ControlCornerRadius}"/>
+			<Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}"/>
+			<Setter Property="ui:FocusVisualHelper.UseSystemFocusVisuals" Value="{DynamicResource UseSystemFocusVisuals}"/>
+			<Setter Property="ui:FocusVisualHelper.FocusVisualMargin" Value="-3"/>
+			<Setter Property="Stylus.IsPressAndHoldEnabled" Value="False"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ToggleButton}">
+						<Border x:Name="Background" Background="{TemplateBinding Background}" CornerRadius="6" SnapsToDevicePixels="True">
+							<Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+								<ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+							</Border>
+						</Border>
+						<ControlTemplate.Triggers>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="False"/>
+									<Condition Property="IsMouseOver" Value="True"/>
+								</MultiTrigger.Conditions>
+								<Setter Property="Background" TargetName="Background" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
+								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
+								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundPointerOver}"/>
+							</MultiTrigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="False"/>
+									<Condition Property="IsPressed" Value="True"/>
+								</MultiTrigger.Conditions>
+								<Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundPressed}"/>
+								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushPressed}"/>
+								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundPressed}"/>
+							</MultiTrigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="False"/>
+									<Condition Property="IsEnabled" Value="False"/>
+									
+								</MultiTrigger.Conditions>
+								<Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundDisabled}"/>
+								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundDisabled}"/>
+								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushDisabled}"/>
+							</MultiTrigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="True"/>
+									<Condition Property="IsMouseOver" Value="False"/>
+									<Condition Property="IsPressed" Value="False"/>
+									<Condition Property="IsEnabled" Value="True"/>
+								</MultiTrigger.Conditions>
+								<Setter Property="Background" TargetName="Background" Value="#565656"/>
+								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundChecked}"/>
+								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
+							</MultiTrigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="True"/>
+									<Condition Property="IsMouseOver" Value="True"/>
+								</MultiTrigger.Conditions>
+								<Setter Property="Background" TargetName="Background" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
+								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
+								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundCheckedPointerOver}"/>
+							</MultiTrigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="True"/>
+									<Condition Property="IsPressed" Value="True"/>
+								</MultiTrigger.Conditions>
+								<Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundCheckedPressed}"/>
+								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundCheckedPressed}"/>
+								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushCheckedPressed}"/>
+							</MultiTrigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="True"/>
+									<Condition Property="IsEnabled" Value="False"/>
+								</MultiTrigger.Conditions>
+								<Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundCheckedDisabled}"/>
+								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundCheckedDisabled}"/>
+								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushCheckedDisabled}"/>
+							</MultiTrigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="{x:Null}"/>
+									<Condition Property="IsMouseOver" Value="False"/>
+									<Condition Property="IsPressed" Value="False"/>
+									<Condition Property="IsEnabled" Value="True"/>
+								</MultiTrigger.Conditions>
+								<Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminate}"/>
+								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminate}"/>
+								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminate}"/>
+							</MultiTrigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="{x:Null}"/>
+									<Condition Property="IsMouseOver" Value="True"/>
+								</MultiTrigger.Conditions>
+								<Setter Property="Background" TargetName="Background" Value="#565656"/>
+								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminatePointerOver}"/>
+								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminatePointerOver}"/>
+							</MultiTrigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="{x:Null}"/>
+									<Condition Property="IsPressed" Value="True"/>
+								</MultiTrigger.Conditions>
+								<Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminatePressed}"/>
+								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminatePressed}"/>
+								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminatePressed}"/>
+							</MultiTrigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="{x:Null}"/>
+									<Condition Property="IsEnabled" Value="False"/>
+								</MultiTrigger.Conditions>
+								<Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminateDisabled}"/>
+								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminateDisabled}"/>
+								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminateDisabled}"/>
+							</MultiTrigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="NavigationViewItemStyle1" TargetType="{x:Type ui:NavigationViewItem}">
+			<Setter Property="Foreground" Value="{DynamicResource NavigationViewItemForeground}"/>
+			<Setter Property="Background" Value="{DynamicResource NavigationViewItemBackground}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource NavigationViewItemBorderBrush}"/>
+			<Setter Property="BorderThickness" Value="{DynamicResource NavigationViewItemBorderThickness}"/>
+			<Setter Property="FontFamily" Value="{DynamicResource ContentControlThemeFontFamily}"/>
+			<Setter Property="FontWeight" Value="Normal"/>
+			<Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}"/>
+			<Setter Property="Margin" Value="{DynamicResource NavigationViewItemMargin}"/>
+			<Setter Property="UseSystemFocusVisuals" Value="False"/>
+			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+			<Setter Property="KeyboardNavigation.TabNavigation" Value="Once"/>
+			<Setter Property="CornerRadius" Value="4"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ui:NavigationViewItem}">
+						<Grid x:Name="NVIRootGrid">
+							<ui:FlyoutBase.AttachedFlyout>
+								<ui:Flyout Placement="RightEdgeAlignedTop">
+									<ui:Flyout.FlyoutPresenterStyle>
+										<Style TargetType="{x:Type ui:FlyoutPresenter}">
+											<Setter Property="Padding" Value="{DynamicResource TopNavigationViewOverflowMenuPadding}"/>
+										</Style>
+									</ui:Flyout.FlyoutPresenterStyle>
+									<Grid x:Name="FlyoutRootGrid">
+										<Grid x:Name="FlyoutContentGrid"/>
+									</Grid>
+								</ui:Flyout>
+							</ui:FlyoutBase.AttachedFlyout>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="*"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup x:Name="ItemOnNavigationViewListPositionStates">
+									<ui:VisualStateGroupListener.Listener>
+										<ui:VisualStateGroupListener x:Name="ItemOnNavigationViewListPositionStatesListener"/>
+									</ui:VisualStateGroupListener.Listener>
+									<VisualState x:Name="OnLeftNavigation"/>
+									<VisualState x:Name="OnTopNavigationPrimary">
+										<Storyboard>
+											
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="OnTopNavigationOverflow"/>
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
+							<ui:NavigationViewItemPresenter x:Name="NavigationViewItemPresenter" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" CornerRadius="4" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsTabStop="False" Icon="{TemplateBinding Icon}" ui:FocusVisualHelper.IsTemplateFocusTarget="True" Margin="{TemplateBinding Margin}" Padding="{TemplateBinding Padding}" UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}" VerticalAlignment="{TemplateBinding VerticalAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+							<ui:ItemsRepeater x:Name="NavigationViewItemMenuItemsHost" Grid.Row="1" Visibility="Collapsed">
+								<ui:ItemsRepeater.Layout>
+									<ui:StackLayout LayoutId="StackLayout" Orientation="Vertical"/>
+								</ui:ItemsRepeater.Layout>
+							</ui:ItemsRepeater>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="CurrentStateName" SourceName="ItemOnNavigationViewListPositionStatesListener" Value="OnTopNavigationPrimary">
+								<Setter Property="Margin" TargetName="NavigationViewItemPresenter" Value="{DynamicResource TopNavigationViewItemMargin}"/>
+								<Setter Property="Style" TargetName="NavigationViewItemPresenter">
+									<Setter.Value>
+										<Style TargetType="{x:Type ui:NavigationViewItemPresenter}">
+											<Setter Property="Foreground" Value="{DynamicResource TopNavigationViewItemForeground}"/>
+											<Setter Property="Template">
+												<Setter.Value>
+													<ControlTemplate TargetType="{x:Type ui:NavigationViewItemPresenter}">
+														<Grid x:Name="LayoutRoot" Background="{TemplateBinding Background}">
+															<Grid.Resources>
+																<Storyboard x:Key="ExpandCollapseRotateExpandedStoryboard">
+																	<DoubleAnimation Duration="0:0:0.1" From="0" To="180" Storyboard.TargetProperty="Angle" Storyboard.TargetName="ExpandCollapseChevronRotateTransform"/>
+																</Storyboard>
+																<Storyboard x:Key="ExpandCollapseRotateCollapsedStoryboard">
+																	<DoubleAnimation Duration="0:0:0.1" From="180" To="0" Storyboard.TargetProperty="Angle" Storyboard.TargetName="ExpandCollapseChevronRotateTransform"/>
+																</Storyboard>
+															</Grid.Resources>
+															<VisualStateManager.VisualStateGroups>
+																<VisualStateGroup x:Name="PointerStates">
+																	<ui:VisualStateGroupListener.Listener>
+																		<ui:VisualStateGroupListener x:Name="PointerStatesListener"/>
+																	</ui:VisualStateGroupListener.Listener>
+																	<VisualState x:Name="Normal"/>
+																	<VisualState x:Name="PointerOver"/>
+																	<VisualState x:Name="Pressed"/>
+																	<VisualState x:Name="Selected"/>
+																	<VisualState x:Name="PointerOverSelected"/>
+																	<VisualState x:Name="PressedSelected"/>
+																</VisualStateGroup>
+																<VisualStateGroup x:Name="DisabledStates">
+																	<ui:VisualStateGroupListener.Listener>
+																		<ui:VisualStateGroupListener x:Name="DisabledStatesListener"/>
+																	</ui:VisualStateGroupListener.Listener>
+																	<VisualState x:Name="Enabled"/>
+																	<VisualState x:Name="Disabled"/>
+																</VisualStateGroup>
+																<VisualStateGroup x:Name="NavigationViewIconPositionStates">
+																	<ui:VisualStateGroupListener.Listener>
+																		<ui:VisualStateGroupListener x:Name="NavigationViewIconPositionStatesListener"/>
+																	</ui:VisualStateGroupListener.Listener>
+																	<VisualState x:Name="IconOnLeft"/>
+																	<VisualState x:Name="IconOnly"/>
+																	<VisualState x:Name="ContentOnly"/>
+																</VisualStateGroup>
+																<VisualStateGroup x:Name="ChevronStates">
+																	<VisualState x:Name="ChevronHidden"/>
+																	<VisualState x:Name="ChevronVisibleOpen">
+																		<Storyboard>
+																			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="ExpandCollapseChevron">
+																				<DiscreteObjectKeyFrame KeyTime="0">
+																					<DiscreteObjectKeyFrame.Value>
+																						<Visibility>Visible</Visibility>
+																					</DiscreteObjectKeyFrame.Value>
+																				</DiscreteObjectKeyFrame>
+																			</ObjectAnimationUsingKeyFrames>
+																		</Storyboard>
+																	</VisualState>
+																	<VisualState x:Name="ChevronVisibleClosed">
+																		<Storyboard>
+																			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="ExpandCollapseChevron">
+																				<DiscreteObjectKeyFrame KeyTime="0">
+																					<DiscreteObjectKeyFrame.Value>
+																						<Visibility>Visible</Visibility>
+																					</DiscreteObjectKeyFrame.Value>
+																				</DiscreteObjectKeyFrame>
+																			</ObjectAnimationUsingKeyFrames>
+																		</Storyboard>
+																	</VisualState>
+																</VisualStateGroup>
+															</VisualStateManager.VisualStateGroups>
+															<Rectangle x:Name="PointerRectangle" RadiusX="4" RadiusY="4" Fill="Transparent" Visibility="Collapsed"/>
+															<Border x:Name="RevealBorder" CornerRadius="4" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"/>
+															<Grid x:Name="ContentGrid">
+																<Grid.ColumnDefinitions>
+																	<ColumnDefinition Width="Auto"/>
+																	<ColumnDefinition Width="*"/>
+																	<ColumnDefinition Width="Auto"/>
+																</Grid.ColumnDefinitions>
+																<Viewbox x:Name="IconBox" HorizontalAlignment="Center" Height="16" Margin="16,0,0,0" VerticalAlignment="Center" Width="16">
+																	<ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" TextElement.Foreground="{TemplateBinding Foreground}"/>
+																</Viewbox>
+																<ui:ContentPresenterEx x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="1" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{DynamicResource TopNavigationViewItemContentPresenterMargin}" TextWrapping="NoWrap" VerticalAlignment="Center"/>
+																<Grid x:Name="ExpandCollapseChevron" Background="Transparent" Grid.Column="2" HorizontalAlignment="Right" Margin="{DynamicResource TopNavigationViewItemExpandChevronMargin}" Visibility="Collapsed" Width="40">
+																	<ui:FontIconFallback Data="{DynamicResource NavigationViewItemExpandedPath}" Foreground="{DynamicResource NavigationViewItemForeground}" FontSize="{DynamicResource NavigationViewItemExpandedGlyphFontSize}" FontFamily="{DynamicResource SymbolThemeFontFamily}" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Center">
+																		<ui:FontIconFallback.RenderTransform>
+																			<RotateTransform/>
+																		</ui:FontIconFallback.RenderTransform>
+																	</ui:FontIconFallback>
+																</Grid>
+															</Grid>
+															<Grid x:Name="SelectionIndicatorGrid" Margin="16,0,16,4" VerticalAlignment="Bottom">
+																<Rectangle x:Name="SelectionIndicator" Fill="{DynamicResource NavigationViewSelectionIndicatorForeground}" Height="2" Opacity="0">
+																	<Rectangle.RadiusY>
+																		<Binding Path="CornerRadius" RelativeSource="{RelativeSource TemplatedParent}">
+																			<Binding.Converter>
+																				<ui:CornerRadiusFilterConverter Filter="BottomRightValue" Scale="1"/>
+																			</Binding.Converter>
+																		</Binding>
+																	</Rectangle.RadiusY>
+																	<Rectangle.RadiusX>
+																		<Binding Path="CornerRadius" RelativeSource="{RelativeSource TemplatedParent}">
+																			<Binding.Converter>
+																				<ui:CornerRadiusFilterConverter Filter="TopLeftValue" Scale="1"/>
+																			</Binding.Converter>
+																		</Binding>
+																	</Rectangle.RadiusX>
+																</Rectangle>
+															</Grid>
+														</Grid>
+														<ControlTemplate.Triggers>
+															
+															<Trigger Property="CurrentStateName" SourceName="DisabledStatesListener" Value="Disabled">
+																<Setter Property="TextElement.Foreground" TargetName="Icon" Value="{DynamicResource TopNavigationViewItemForegroundDisabled}"/>
+																<Setter Property="Foreground" TargetName="ContentPresenter" Value="{DynamicResource TopNavigationViewItemForegroundDisabled}"/>
+																<Setter Property="BorderBrush" TargetName="RevealBorder" Value="{DynamicResource NavigationViewItemBorderBrushCheckedDisabled}"/>
+															</Trigger>
+															<Trigger Property="CurrentStateName" SourceName="NavigationViewIconPositionStatesListener" Value="IconOnly">
+																<Setter Property="Visibility" TargetName="PointerRectangle" Value="Visible"/>
+																<Setter Property="MinWidth" TargetName="LayoutRoot" Value="48"/>
+																<Setter Property="Visibility" TargetName="ContentPresenter" Value="Collapsed"/>
+																<Setter Property="Margin" TargetName="SelectionIndicatorGrid" Value="4,0,4,4"/>
+																<Setter Property="Margin" TargetName="ExpandCollapseChevron" Value="{DynamicResource TopNavigationViewItemIconOnlyExpandChevronMargin}"/>
+															</Trigger>
+															<Trigger Property="CurrentStateName" SourceName="NavigationViewIconPositionStatesListener" Value="ContentOnly">
+																<Setter Property="Visibility" TargetName="IconBox" Value="Collapsed"/>
+																<Setter Property="Margin" TargetName="ContentPresenter" Value="{DynamicResource TopNavigationViewItemContentOnlyContentPresenterMargin}"/>
+																<Setter Property="Margin" TargetName="SelectionIndicatorGrid" Value="12,0,12,4"/>
+																<Setter Property="Margin" TargetName="ExpandCollapseChevron" Value="{DynamicResource TopNavigationViewItemContentOnlyExpandChevronMargin}"/>
+															</Trigger>
+														</ControlTemplate.Triggers>
+													</ControlTemplate>
+												</Setter.Value>
+											</Setter>
+										</Style>
+									</Setter.Value>
+								</Setter>
+							</Trigger>
+							<Trigger Property="CurrentStateName" SourceName="ItemOnNavigationViewListPositionStatesListener" Value="OnTopNavigationOverflow">
+								<Setter Property="Style" TargetName="NavigationViewItemPresenter">
+									<Setter.Value>
+										<Style TargetType="{x:Type ui:NavigationViewItemPresenter}">
+											<Setter Property="Foreground" Value="{DynamicResource TopNavigationViewItemForeground}"/>
+											<Setter Property="Template">
+												<Setter.Value>
+													<ControlTemplate TargetType="{x:Type ui:NavigationViewItemPresenter}">
+														<Border Margin="20" BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="1" CornerRadius="4">
+														<Grid x:Name="LayoutRoot" Background="{TemplateBinding Background}" Height="40">
+															<Grid.Resources>
+																<Storyboard x:Key="ExpandCollapseRotateExpandedStoryboard">
+																	<DoubleAnimation Duration="0:0:0.1" From="0" To="180" Storyboard.TargetProperty="Angle" Storyboard.TargetName="ExpandCollapseChevronRotateTransform"/>
+																</Storyboard>
+																<Storyboard x:Key="ExpandCollapseRotateCollapsedStoryboard">
+																	<DoubleAnimation Duration="0:0:0.1" From="180" To="0" Storyboard.TargetProperty="Angle" Storyboard.TargetName="ExpandCollapseChevronRotateTransform"/>
+																</Storyboard>
+															</Grid.Resources>
+															<VisualStateManager.VisualStateGroups>
+																<VisualStateGroup x:Name="PointerStates">
+																	<ui:VisualStateGroupListener.Listener>
+																		<ui:VisualStateGroupListener x:Name="PointerStatesListener"/>
+																	</ui:VisualStateGroupListener.Listener>
+																	<VisualState x:Name="Normal"/>
+																	<VisualState x:Name="PointerOver"/>
+																	<VisualState x:Name="Pressed"/>
+																	<VisualState x:Name="Selected"/>
+																	<VisualState x:Name="PointerOverSelected"/>
+																	<VisualState x:Name="PressedSelected"/>
+																</VisualStateGroup>
+																<VisualStateGroup x:Name="DisabledStates">
+																	<ui:VisualStateGroupListener.Listener>
+																		<ui:VisualStateGroupListener x:Name="DisabledStatesListener"/>
+																	</ui:VisualStateGroupListener.Listener>
+																	<VisualState x:Name="Enabled"/>
+																	<VisualState x:Name="Disabled"/>
+																</VisualStateGroup>
+																<VisualStateGroup x:Name="NavigationViewIconPositionStates">
+																	<ui:VisualStateGroupListener.Listener>
+																		<ui:VisualStateGroupListener x:Name="NavigationViewIconPositionStatesListener"/>
+																	</ui:VisualStateGroupListener.Listener>
+																	<VisualState x:Name="IconOnLeft"/>
+																	<VisualState x:Name="IconOnly"/>
+																	<VisualState x:Name="ContentOnly"/>
+																</VisualStateGroup>
+																<VisualStateGroup x:Name="ChevronStates">
+																	<VisualState x:Name="ChevronHidden"/>
+																	<VisualState x:Name="ChevronVisibleOpen">
+																		<Storyboard>
+																			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="ExpandCollapseChevron">
+																				<DiscreteObjectKeyFrame KeyTime="0">
+																					<DiscreteObjectKeyFrame.Value>
+																						<Visibility>Visible</Visibility>
+																					</DiscreteObjectKeyFrame.Value>
+																				</DiscreteObjectKeyFrame>
+																			</ObjectAnimationUsingKeyFrames>
+																		</Storyboard>
+																	</VisualState>
+																	<VisualState x:Name="ChevronVisibleClosed">
+																		<Storyboard>
+																			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="ExpandCollapseChevron">
+																				<DiscreteObjectKeyFrame KeyTime="0">
+																					<DiscreteObjectKeyFrame.Value>
+																						<Visibility>Visible</Visibility>
+																					</DiscreteObjectKeyFrame.Value>
+																				</DiscreteObjectKeyFrame>
+																			</ObjectAnimationUsingKeyFrames>
+																		</Storyboard>
+																	</VisualState>
+																</VisualStateGroup>
+															</VisualStateManager.VisualStateGroups>
+															<Grid x:Name="PresenterContentRootGrid">
+																<Grid HorizontalAlignment="Left" Margin="4,0,0,0" VerticalAlignment="Center">
+																	<Rectangle x:Name="SelectionIndicator" Fill="{DynamicResource NavigationViewSelectionIndicatorForeground}" Height="24" Opacity="0" Width="2">
+																		<Rectangle.RadiusY>
+																			<Binding Path="CornerRadius" RelativeSource="{RelativeSource TemplatedParent}">
+																				<Binding.Converter>
+																					<ui:CornerRadiusFilterConverter Filter="BottomRightValue" Scale="1"/>
+																				</Binding.Converter>
+																			</Binding>
+																		</Rectangle.RadiusY>
+																		<Rectangle.RadiusX>
+																			<Binding Path="CornerRadius" RelativeSource="{RelativeSource TemplatedParent}">
+																				<Binding.Converter>
+																					<ui:CornerRadiusFilterConverter Filter="TopLeftValue" Scale="1"/>
+																				</Binding.Converter>
+																			</Binding>
+																		</Rectangle.RadiusX>
+																	</Rectangle>
+																</Grid>
+																<Grid x:Name="ContentGrid">
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition Width="Auto"/>
+																		<ColumnDefinition Width="*"/>
+																		<ColumnDefinition Width="Auto"/>
+																	</Grid.ColumnDefinitions>
+																	<Viewbox x:Name="IconBox" HorizontalAlignment="Center" Height="16" Margin="16,0,0,0" VerticalAlignment="Center" Width="16">
+																		<ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" TextElement.Foreground="{TemplateBinding Foreground}"/>
+																	</Viewbox>
+																	<ui:ContentPresenterEx x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="1" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{DynamicResource TopNavigationViewItemOnOverflowContentPresenterMargin}" TextWrapping="NoWrap" VerticalAlignment="Center"/>
+																	<Grid x:Name="ExpandCollapseChevron" Background="Transparent" Grid.Column="2" HorizontalAlignment="Right" Margin="{DynamicResource TopNavigationViewItemOnOverflowExpandChevronMargin}" Visibility="Collapsed" Width="40">
+																		<Border Padding="{DynamicResource TopNavigationViewItemOnOverflowExpandChevronPadding}">
+																			<ui:FontIconFallback Data="{DynamicResource NavigationViewItemExpandedPath}" Foreground="{DynamicResource NavigationViewItemForeground}" FontSize="{DynamicResource NavigationViewItemExpandedGlyphFontSize}" FontFamily="{DynamicResource SymbolThemeFontFamily}" HorizontalAlignment="Center" Height="12" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Center" Width="12">
+																				<ui:FontIconFallback.RenderTransform>
+																					<RotateTransform/>
+																				</ui:FontIconFallback.RenderTransform>
+																			</ui:FontIconFallback>
+																		</Border>
+																	</Grid>
+																</Grid>
+															</Grid>
+														</Grid>
+															</Border>
+														<ControlTemplate.Triggers>
+															
+															<Trigger Property="CurrentStateName" SourceName="DisabledStatesListener" Value="Disabled">
+																<Setter Property="TextElement.Foreground" TargetName="Icon" Value="{DynamicResource TopNavigationViewItemForegroundDisabled}"/>
+																<Setter Property="Foreground" TargetName="ContentPresenter" Value="{DynamicResource TopNavigationViewItemForegroundDisabled}"/>
+															</Trigger>
+															<Trigger Property="CurrentStateName" SourceName="NavigationViewIconPositionStatesListener" Value="ContentOnly">
+																<Setter Property="Visibility" TargetName="IconBox" Value="Collapsed"/>
+																<Setter Property="Margin" TargetName="ContentPresenter" Value="{DynamicResource TopNavigationViewItemOnOverflowNoIconContentPresenterMargin}"/>
+															</Trigger>
+														</ControlTemplate.Triggers>
+													</ControlTemplate>
+												</Setter.Value>
+											</Setter>
+										</Style>
+									</Setter.Value>
+								</Setter>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+	</Window.Resources>
 
 
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
 
-        <Grid
+		<Grid
 				x:Name="AppTitleBar"
                 Background="{DynamicResource SystemControlPageBackgroundMediumAltMediumBrush}"
 				Height="{Binding ElementName=Window, Path=(ui:TitleBar.Height)}">
 
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsActive, ElementName=Window}" Value="False">
-                            <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlDisabledBaseMediumLowBrush}" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="{Binding ElementName=Window, Path=(ui:TitleBar.SystemOverlayLeftInset), Converter={StaticResource PixelsToGridLength}}" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="{Binding ElementName=Window, Path=(ui:TitleBar.SystemOverlayRightInset), Converter={StaticResource PixelsToGridLength}}" />
-            </Grid.ColumnDefinitions>
+			<Grid.Style>
+				<Style TargetType="Grid">
+					<Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding IsActive, ElementName=Window}" Value="False">
+							<Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlDisabledBaseMediumLowBrush}" />
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</Grid.Style>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="{Binding ElementName=Window, Path=(ui:TitleBar.SystemOverlayLeftInset), Converter={StaticResource PixelsToGridLength}}" />
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="{Binding ElementName=Window, Path=(ui:TitleBar.SystemOverlayRightInset), Converter={StaticResource PixelsToGridLength}}" />
+			</Grid.ColumnDefinitions>
 
-            <Image Source="/Assets/ap3dlogo2.png" MaxHeight="20" Margin="10 10 0 5" Grid.Column="1"/>
-            <TextBlock
+			<Image Source="/Assets/ap3dlogo2.png" MaxHeight="20" Margin="10 10 0 5" Grid.Column="1"/>
+			<TextBlock
 						Grid.Column="0"
 						Grid.ColumnSpan="5"
 						FontSize="12"
@@ -215,10 +547,15 @@
 						VerticalAlignment="Center"
 						Text="{Binding ElementName=Window, Path=Title}" />
 
-        </Grid>
+		</Grid>
 
-        <ui:ProgressRing Name="ProgressRing" Foreground="SteelBlue" Grid.Row="1" Margin="0 0 0 0" Height="50" Width="50" IsActive="{Binding AppState.IsMainViewLoading}" />
-        <ui:NavigationView
+		<Image
+			Grid.Row="1"
+			visibilityAnimation:VisibilityAnimation.IsActive="True"
+			Visibility="{Binding AppState.MainViewProgressRingVisibility, Mode=TwoWay}"
+			gif:ImageBehavior.RepeatBehavior="0x"
+			gif:ImageBehavior.AnimatedSource="../Assets/Spinner2.gif" Width="70" Height="70"/>
+		<ui:NavigationView
 											x:Name="MainNavigationView"
 											Grid.Row="1"
                                             Visibility="{Binding AppState.MainNavigationViewVisibility}"
@@ -227,291 +564,341 @@
                                             Background="#99000000"
 											SelectionFollowsFocus="Disabled"
 											IsBackButtonVisible="Collapsed"
-											IsBackEnabled="False"
+											IsBackEnabled="True"
 											BackRequested="MainNavigationView_BackRequested"
 											IsSettingsVisible="False"
 											xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility}"
 											SelectedItem="{Binding AppState.SelectedItem, Mode=TwoWay}" HorizontalAlignment="Right" Width="1912">
 
-            <ui:NavigationView.Resources>
-                <SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="#99000000" />
-                <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="#99000000" />
-            </ui:NavigationView.Resources>
+			<ui:NavigationView.Resources>
+				<SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="#99000000" />
+				<SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="#99000000" />
+			</ui:NavigationView.Resources>
 
-            <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="Production Dashboard" FontWeight="Bold" Tag="ShippingDashboardView" Cursor="Hand" ToolTip="Production Dashboard" />
-            </ui:NavigationView.MenuItems>
+			<ui:NavigationView.MenuItems >
+				<ui:NavigationViewItem Style="{DynamicResource NavigationViewItemStyle1}" Margin="0 10 0 0">
+					<ui:TitleBarButton
+						x:Name="BackButton"
+						Cursor="Hand"
+						VerticalAlignment="Center"
+						VerticalContentAlignment="Center"
+						Height="27"
+						Margin="0 0 4 0"
+						Content="&#xE72B;"
+						IsEnabled="{Binding PaginationBackButtonVisibility}"
+						Template="{DynamicResource TitleBarButtonControlTemplate1}"
+						ContentTemplate="{x:Null}" />
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Style="{DynamicResource NavigationViewItemStyle1}" Margin="0 10 0 0">
+					<Button Background="#1e1e1e" Cursor="Hand" ToolTip="Production Dashboard" Style="{DynamicResource InactiveButtonStyle}" Padding="10 2 10 4" Height="auto" Opacity="0.9" Margin="-20 0 10 0">
+						<TextBlock
+							Text="Production Dashboard"
+							FontSize="14"
+							Style="{DynamicResource BaseTextBlockStyle}"/>
+					</Button>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Style="{DynamicResource NavigationViewItemStyle1}" Margin="0 10 0 0">
+					<Button Background="Transparent" Cursor="Hand" ToolTip="Utilities" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Margin="-20 0 10 0">
+						<TextBlock
+							Text="Utilities"
+							FontSize="14"
+							Style="{DynamicResource BaseTextBlockStyle}"/>
+					</Button>
+				</ui:NavigationViewItem>
+			</ui:NavigationView.MenuItems>
 
 
+			<ui:NavigationView.Header>
+				<ui:SimpleStackPanel Orientation="Vertical">
 
+					<Separator BorderThickness="5" BorderBrush="#333" Margin="-10 0 0 0"/>
+					<ui:SimpleStackPanel Margin="0 10 0 0" Orientation="Vertical"  MinWidth="{Binding AppState.Width, Mode=OneWay}" >
+						
+						<Grid Height="60"  Name="EngravingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Margin="0 0 30 0" Visibility="{Binding EngravingStatusGroupVisibility}" >
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<Button
+								Grid.Column="0"
+								Height="auto"
+								Cursor="Hand"
+								VerticalAlignment="Center"
+								Style="{StaticResource HeaderButtonStyle}">
+								<TextBlock
+									Text="{Binding EngravingStats.EngravedTodayCount, StringFormat=Awaiting Model: {0:F0}, Mode=OneWay}"
+									FontWeight="Black"
+									Style="{DynamicResource SubtitleTextBlockStyle}" />
+								<Button.Effect>
+									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+								</Button.Effect>
+							</Button>
+							<Button
+	                            Grid.Column="3"
+	                            Height="auto"
+								Cursor="Hand"
+	                            HorizontalAlignment="Center"
+	                            Margin="35 0 0 0"
+	                            Style="{StaticResource HeaderButtonStyle}">
+								<TextBlock
+	                                Text="{Binding EngravingStats.EngravedTodayCount, StringFormat=Engraved Today: {0:F0}, Mode=OneWay}"
+	                                FontWeight="Black"
+	                                Style="{DynamicResource SubtitleTextBlockStyle}" />
+								<Button.Effect>
+									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+								</Button.Effect>
+							</Button>
+							<Button
+	                            Grid.Column="1"
+	                            Cursor="Hand"
+	                            Height="auto"
+	                            HorizontalAlignment="Center"
+								Margin="-35 0 0 0"
+	                            Click="ReadyToEngraveButtonOnClick"
+	                            Style="{StaticResource HeaderButtonStyle}">
+								<TextBlock
+	                                Text="{Binding EngravingStats.ReadyToEngraveCount, StringFormat=Ready To Engrave: {0:F0}, Mode=OneWay}"
+	                                FontWeight="Black"
+	                                Style="{DynamicResource SubtitleTextBlockStyle}" />
+								<Button.Effect>
+									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+								</Button.Effect>
+							</Button>
+							<Button
+	                            Grid.Column="2"
+	                            Cursor="Hand"
+	                            Height="auto"
+	                            Click="EngravingButtonOnClick"
+	                            HorizontalAlignment="Center"
+	                            Style="{StaticResource HeaderButtonStyle}">
+								<TextBlock
+	                                Text="{Binding EngravingStats.ProcessingCount, StringFormat=Engraving: {0:F0}, Mode=OneWay}"
+	                                FontWeight="Black"
+	                                Style="{DynamicResource SubtitleTextBlockStyle}"/>
+								<Button.Effect>
+									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+								</Button.Effect>
+							</Button>
+							<Button
+	                            Grid.Column="4"
+	                            Cursor="Hand"
+	                            Height="auto"
+	                            HorizontalAlignment="Right"
+	                            Click="ProductionIssuesButtonOnClick"
+	                            Style="{StaticResource HeaderButtonStyle}">
+								<TextBlock
+	                                Text="{Binding EngravingStats.IssueCount, StringFormat=Production Issues: {0:F0}, Mode=OneWay}"
+	                                FontWeight="Black"
+	                                Style="{DynamicResource SubtitleTextBlockStyle}"/>
+								<Button.Effect>
+									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+								</Button.Effect>
+							</Button>
+						</Grid>
+						<Grid Height="60" Name="ShippingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding ShippingStatusGroupVisibility}" Margin="0 0 30 0" >
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<Button
+	                            Grid.Column="0"
+	                            Cursor="Hand"
+	                            Height="auto"
+	                            Click="AwaitingShipmentButtonOnClick"
+	                            Style="{StaticResource HeaderButtonStyle}">
+								<TextBlock
+	                                Text="{Binding ShippingStats.AwaitingShipment, StringFormat=Awaiting Shipment: {0:F0}, Mode=OneWay}"
+	                                FontWeight="Black"
+	                                Style="{DynamicResource SubtitleTextBlockStyle}" />
+								<Button.Effect>
+									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+								</Button.Effect>
+							</Button>
+							<Button
+	                            Grid.Column="1"
+	                            HorizontalAlignment="Center"
+	                            Cursor="Hand"
+	                            Height="auto"
+	                            Click="ShipByTodayButtonOnClick"
+								Margin="-90 0 0 0"
+	                            Style="{StaticResource HeaderButtonStyle}">
+								<TextBlock
+	                                Text="{Binding ShippingStats.ShipByToday, StringFormat=Ship By Today: {0:F0}, Mode=OneWay}"
+	                                FontWeight="Black"
+									Opacity="1"
+	                                Style="{DynamicResource SubtitleTextBlockStyle}" />
+								<Button.Effect>
+									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+								</Button.Effect>
+							</Button>
+							<Button
+	                            Grid.Column="2"
+	                            HorizontalAlignment="Center"
+	                            Cursor="Hand"
+	                            Height="auto"
+	                            Margin="90 0 0 0"
+	                            Click="ReadyToShipButtonOnClick"
+	                            Style="{StaticResource HeaderButtonStyle}">
+								<TextBlock
+	                                Text="{Binding ShippingStats.ReadyToShip, StringFormat=Ready To Ship: {0:F0}, Mode=OneWay}"
+	                                FontWeight="Black"
+	                                Style="{DynamicResource SubtitleTextBlockStyle}" />
+								<Button.Effect>
+									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+								</Button.Effect>
+							</Button>
 
-            <ui:NavigationView.Header>
-                <ui:SimpleStackPanel Orientation="Vertical"  MinWidth="{Binding AppState.Width, Mode=OneWay}" >
-                    <Grid Height="60"  Name="EngravingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Margin="0 0 30 0" Visibility="{Binding EngravingStatusGroupVisibility}" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Button
-                            Grid.Column="2"
-                            Background="Transparent"
-                            Height="auto"
-                            HorizontalAlignment="Center"
-                            Style="{StaticResource InactiveButtonStyle}">
-                            <TextBlock
-                                Text="{Binding EngravingStats.EngravedTodayCount, StringFormat=Engraved Today: {0:F0}, Mode=OneWay}"
-                                FontWeight="Black"
-                                Style="{DynamicResource TitleTextBlockStyle}" />
-                        </Button>
-                        <Button
-                            Grid.Column="0"
-                            Background="Transparent"
-                            Cursor="Hand"
-                            Height="auto"
-                            Click="ReadyToEngraveButtonOnClick"
-                            Style="{StaticResource InactiveButtonStyle}">
-                            <TextBlock
-                                Text="{Binding EngravingStats.ReadyToEngraveCount, StringFormat=Ready To Engrave: {0:F0}, Mode=OneWay}"
-                                FontWeight="Black"
-                                Style="{DynamicResource TitleTextBlockStyle}" />
-                        </Button>
-                        <Button
-                            Grid.Column="1"
-                            Background="Transparent"
-                            Cursor="Hand"
-                            Height="auto"
-                            Click="EngravingButtonOnClick"
-                            HorizontalAlignment="Center"
-                            Style="{StaticResource InactiveButtonStyle}">
-                            <TextBlock
-                                Text="{Binding EngravingStats.ProcessingCount, StringFormat=Engraving: {0:F0}, Mode=OneWay}"
-                                FontWeight="Black"
-                                Style="{DynamicResource TitleTextBlockStyle}"/>
-                        </Button>
-                        <Button
-                            Grid.Column="3"
-                            Background="Transparent"
-                            Cursor="Hand"
-                            Height="auto"
-                            HorizontalAlignment="Right"
-                            Click="ProductionIssuesButtonOnClick"
-                            Style="{StaticResource InactiveButtonStyle}">
-                            <TextBlock
-                                Text="{Binding EngravingStats.IssueCount, StringFormat=Production Issues: {0:F0}, Mode=OneWay}"
-                                FontWeight="Black"
-                                Style="{DynamicResource TitleTextBlockStyle}"/>
-                        </Button>
-                    </Grid>
-                    <Grid Height="60" Name="ShippingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding ShippingStatusGroupVisibility}" Margin="0 0 30 0" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Button
-                            Grid.Column="0"
-                            Background="Transparent"
-                            HorizontalAlignment="Left"
-                            Cursor="Hand"
-                            Height="auto"
-                            Click="AwaitingShipmentButtonOnClick"
-                            Style="{StaticResource InactiveButtonStyle}">
-                            <TextBlock
-                                Text="{Binding ShippingStats.AwaitingShipment, StringFormat=Awaiting Shipment: {0:F0}, Mode=OneWay}"
-                                FontWeight="Black"
-                                Style="{DynamicResource TitleTextBlockStyle}" />
-                        </Button>
-                        <Button
-                            Grid.Column="1"
-                            Background="Transparent"
-                            HorizontalAlignment="Center"
-                            Cursor="Hand"
-                            Height="auto"
-                            Click="ShipByTodayButtonOnClick"
-                            Style="{StaticResource InactiveButtonStyle}">
-                            <TextBlock
-                                Text="{Binding ShippingStats.ShipByToday, StringFormat=Ship By Today: {0:F0}, Mode=OneWay}"
-                                FontWeight="Black"
-                                Style="{DynamicResource TitleTextBlockStyle}" />
-                        </Button>
-                        <Button
-                            Grid.Column="2"
-                            Background="Transparent"
-                            HorizontalAlignment="Center"
-                            Cursor="Hand"
-                            Height="auto"
-                            Click="ReadyToShipButtonOnClick"
-                            Style="{StaticResource InactiveButtonStyle}">
-                            <TextBlock
-                                Text="{Binding ShippingStats.ReadyToShip, StringFormat=Ready To Ship: {0:F0}, Mode=OneWay}"
-                                FontWeight="Black"
-                                Style="{DynamicResource TitleTextBlockStyle}" />
-                        </Button>
+							<Button
+	                            Grid.Column="3"
+	                            HorizontalAlignment="Right"
+	                            Cursor="Hand"
+	                            Height="auto"
+	                            ToolTip="{Binding ShippingStats.OrdersShipped}"
+	                            Style="{StaticResource HeaderButtonStyle}">
+								<TextBlock
+	                                Text="{Binding ShippingStats.ShippedToday, StringFormat=Shipped Today: {0:F0}, Mode=OneWay}"
+	                                FontWeight="Black"
+	                                Style="{DynamicResource SubtitleTextBlockStyle}"/>
+								<Button.Effect>
+									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+								</Button.Effect>
+							</Button>
+						</Grid>
+						<ui:SimpleStackPanel Name="WorkstationsGroup" Height="60" HorizontalAlignment="Left" Margin="0 0 0 0" Visibility="{Binding ActiveMachinesGroupVisibility }" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}">
+							<ItemsControl VerticalAlignment="Center" HorizontalAlignment="Center"  ItemsSource="{Binding Workstations.Data}" >
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<ui:SimpleStackPanel Orientation="Horizontal">
+											<ToggleButton  IsChecked="{Binding IsChecked}" Tag="{Binding Id}" Background="#1e1e1e" Opacity="0.8"  Click="WorkstationButtonOnClick" Cursor="Hand"  Style="{DynamicResource ToggleButtonStyle1}" >
+												<ui:SimpleStackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical" Spacing="2">
+													<TextBlock
+	                                                    HorizontalAlignment="Center"
+	                                                    FontWeight="Bold"
+	                                                    FontSize="16"
+	                                                    Text="{Binding Id, StringFormat=Workstation {0:F0}}"
+	                                                    Style="{DynamicResource SubtitleTextBlockStyle}" />
+													<Button Background="{Binding JobsCountColor}" Visibility="{Binding JobsCountVisibility}" Tag="{Binding Id}" Height="20" Width="35" Style="{StaticResource InactiveButtonStyle}" HorizontalAlignment="Center" Opacity="0.9">
+														<TextBlock
+	                                                        HorizontalAlignment="Center"
+	                                                        VerticalAlignment="Center"
+	                                                        FontWeight="SemiBold"
+	                                                        Text="{Binding JobsCount}"
+	                                                        FontSize="11"
+	                                                        Style="{DynamicResource SubtitleTextBlockStyle}" />
+													</Button>
+													<TextBlock
+	                                                    HorizontalAlignment="Center"
+	                                                    VerticalAlignment="Center"
+	                                                    FontWeight="SemiBold"
+	                                                    Visibility="{Binding OfflineTextVisibility}"
+	                                                    Foreground="#E5E81123"
+	                                                    Text="Offline"
+	                                                    FontSize="14"
+	                                                    Style="{DynamicResource SubtitleTextBlockStyle}" />
+													<TextBlock
+	                                                    HorizontalAlignment="Center"
+	                                                    VerticalAlignment="Center"
+	                                                    FontWeight="SemiBold"
+	                                                    Visibility="{Binding OnlineTextVisibility}"
+	                                                    Foreground="DarkGreen"
+	                                                    Text="Online"
+	                                                    FontSize="14"
+	                                                    Style="{DynamicResource SubtitleTextBlockStyle}" />
+												</ui:SimpleStackPanel>
+												<ToggleButton.Effect>
+													<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+												</ToggleButton.Effect>
+											</ToggleButton>
+											<ItemsControl ItemsSource="{Binding Machines}" Background="Transparent" Padding="10 5" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding MachinesGroupVisibility}">
+												<ItemsControl.ItemTemplate>
+													<DataTemplate>
+														<Button Background="#333" Style="{StaticResource InactiveButtonStyle}" Height="auto" Cursor="Hand" Tag="{Binding IdMachines}" Click="NavigateToMachine">
+															<ui:SimpleStackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Vertical"  Spacing="2">
+																<TextBlock
+	                                                                HorizontalAlignment="Center"
+	                                                                FontWeight="Bold"
+	                                                                FontSize="12"
+	                                                                Text="{Binding Name, StringFormat=Machine {0:F0}}"
+	                                                                Style="{DynamicResource SubtitleTextBlockStyle}" />
+																<Button Visibility="{Binding JobsCountVisibility}" Background="{Binding JobsCountColor}"  Cursor="Hand" Tag="{Binding Name}" Height="15" Width="30" Padding="0 0 0 2" Style="{StaticResource InactiveButtonStyle}" HorizontalAlignment="Center" Opacity="0.9">
+																	<TextBlock
+	                                                                    HorizontalAlignment="Center"
+	                                                                    VerticalAlignment="Center"
+	                                                                    FontWeight="SemiBold"
+	                                                                    Text="{Binding JobsCount}"
+	                                                                    FontSize="10"
+	                                                                    Style="{DynamicResource SubtitleTextBlockStyle}" />
+																</Button>
+																<TextBlock
+	                                                                HorizontalAlignment="Center"
+	                                                                VerticalAlignment="Center"
+	                                                                FontWeight="SemiBold"
+	                                                                Visibility="{Binding OfflineTextVisibility}"
+	                                                                Foreground="Red"
+	                                                                Text="Offline"
+	                                                                FontSize="10"
+	                                                                Style="{DynamicResource SubtitleTextBlockStyle}" />
+																<TextBlock
+	                                                                HorizontalAlignment="Center"
+	                                                                VerticalAlignment="Center"
+	                                                                FontWeight="SemiBold"
+	                                                                Visibility="{Binding OnlineTextVisibility}"
+	                                                                Foreground="DarkGreen"
+	                                                                Text="Online"
+	                                                                FontSize="10"
+	                                                                Style="{DynamicResource SubtitleTextBlockStyle}" />
+															</ui:SimpleStackPanel>
+														</Button>
+													</DataTemplate>
+												</ItemsControl.ItemTemplate>
+												<ItemsControl.ItemsPanel>
+													<ItemsPanelTemplate>
+														<ui:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10"/>
+													</ItemsPanelTemplate>
+												</ItemsControl.ItemsPanel>
+											</ItemsControl>
+										</ui:SimpleStackPanel>
 
-                        <Button
-                            Grid.Column="3"
-                            Background="Transparent"
-                            HorizontalAlignment="Right"
-                            Cursor="Hand"
-                            Height="auto"
-                            ToolTip="{Binding ShippingStats.OrdersShipped}"
-                            Style="{StaticResource InactiveButtonStyle}">
-                            <TextBlock
-                                Text="{Binding ShippingStats.ShippedToday, StringFormat=Shipped Today: {0:F0}, Mode=OneWay}"
-                                FontWeight="Black"
-                                Style="{DynamicResource TitleTextBlockStyle}"/>
-                        </Button>
-                    </Grid>
-                    <ui:SimpleStackPanel Name="WorkstationsGroup" Height="60" HorizontalAlignment="Left" Margin="0 0 0 0" Visibility="{Binding ActiveMachinesGroupVisibility }" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}">
-                        <ItemsControl VerticalAlignment="Center" HorizontalAlignment="Center"  ItemsSource="{Binding Workstations.Data}" >
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <ui:SimpleStackPanel Orientation="Horizontal">
-                                        <ToggleButton Margin="0 0 0 0" IsChecked="{Binding IsChecked}" Tag="{Binding Id}" Background="Transparent"  Click="WorkstationButtonOnClick" Cursor="Hand"  Style="{DynamicResource ToggleButtonStyle1}" >
-                                            <ui:SimpleStackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical" Spacing="2">
-                                                <TextBlock
-                                                    HorizontalAlignment="Center"
-                                                    FontWeight="Bold"
-                                                    FontSize="16"
-                                                    Text="{Binding Id, StringFormat=Workstation {0:F0}}"
-                                                    Style="{DynamicResource SubtitleTextBlockStyle}" />
-                                                <Button Background="{Binding JobsCountColor}" Visibility="{Binding JobsCountVisibility}" Tag="{Binding Id}" Height="20" Width="35" Style="{StaticResource InactiveButtonStyle}" HorizontalAlignment="Center" Opacity="0.9">
-                                                    <TextBlock
-                                                        HorizontalAlignment="Center"
-                                                        VerticalAlignment="Center"
-                                                        FontWeight="SemiBold"
-                                                        Text="{Binding JobsCount}"
-                                                        FontSize="11"
-                                                        Style="{DynamicResource SubtitleTextBlockStyle}" />
-                                                </Button>
-                                                <TextBlock
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    FontWeight="SemiBold"
-                                                    Visibility="{Binding OfflineTextVisibility}"
-                                                    Foreground="DarkRed"
-                                                    Text="Offline"
-                                                    FontSize="14"
-                                                    Style="{DynamicResource SubtitleTextBlockStyle}" />
-                                                <TextBlock
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    FontWeight="SemiBold"
-                                                    Visibility="{Binding OnlineTextVisibility}"
-                                                    Foreground="DarkGreen"
-                                                    Text="Online"
-                                                    FontSize="14"
-                                                    Style="{DynamicResource SubtitleTextBlockStyle}" />
-                                            </ui:SimpleStackPanel>
-                                        </ToggleButton>
-                                        <ItemsControl ItemsSource="{Binding Machines}" Background="Transparent" Padding="10 5" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding MachinesGroupVisibility}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Button Background="Transparent" Height="auto" Cursor="Hand" Click="NavigateToMachine">
-                                                        <ui:SimpleStackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Vertical"  Spacing="2">
-                                                            <TextBlock
-                                                                HorizontalAlignment="Center"
-                                                                FontWeight="Bold"
-                                                                FontSize="12"
-                                                                Text="{Binding Name, StringFormat=Machine {0:F0}}"
-                                                                Style="{DynamicResource SubtitleTextBlockStyle}" />
-                                                            <Button Visibility="{Binding JobsCountVisibility}" Background="{Binding JobsCountColor}"  Cursor="Hand" Tag="{Binding Name}" Height="15" Width="30" Padding="0 0 0 2" Style="{StaticResource InactiveButtonStyle}" HorizontalAlignment="Center" Opacity="0.9">
-                                                                <TextBlock
-                                                                    HorizontalAlignment="Center"
-                                                                    VerticalAlignment="Center"
-                                                                    FontWeight="SemiBold"
-                                                                    Text="{Binding JobsCount}"
-                                                                    FontSize="10"
-                                                                    Style="{DynamicResource SubtitleTextBlockStyle}" />
-                                                            </Button>
-                                                            <TextBlock
-                                                                HorizontalAlignment="Center"
-                                                                VerticalAlignment="Center"
-                                                                FontWeight="SemiBold"
-                                                                Visibility="{Binding OfflineTextVisibility}"
-                                                                Foreground="DarkRed"
-                                                                Text="Offline"
-                                                                FontSize="10"
-                                                                Style="{DynamicResource SubtitleTextBlockStyle}" />
-                                                            <TextBlock
-                                                                HorizontalAlignment="Center"
-                                                                VerticalAlignment="Center"
-                                                                FontWeight="SemiBold"
-                                                                Visibility="{Binding OnlineTextVisibility}"
-                                                                Foreground="DarkGreen"
-                                                                Text="Online"
-                                                                FontSize="10"
-                                                                Style="{DynamicResource SubtitleTextBlockStyle}" />
-                                                        </ui:SimpleStackPanel>
-                                                        <ui:FlyoutService.Flyout>
-                                                            <ui:MenuFlyout Placement="BottomEdgeAlignedLeft">
-                                                                <MenuItem Header="Turn PC On" Cursor="Hand" Tag="{Binding MacAddress}" Click="MenuItem_Click">
-                                                                    <MenuItem.Icon>
-                                                                        <ui:FontIcon Glyph="&#xE895;" />
-                                                                    </MenuItem.Icon>
-                                                                </MenuItem>
-                                                                <MenuItem Header="Turn PC Off" Cursor="Hand" Click="MenuItem_Click_1" Tag="{Binding NetworkPath}">
-                                                                    <MenuItem.Icon>
-                                                                        <ui:FontIcon Glyph="&#xE894;" />
-                                                                    </MenuItem.Icon>
-                                                                </MenuItem>
-                                                                <Separator />
-                                                                <MenuItem Header="Unassign Jobs" Tag="{Binding IdMachines}" Click="MenuItem_Click_2" Cursor="Hand">
-                                                                    <MenuItem.Icon>
-                                                                        <ui:FontIcon Glyph="&#xE894;" />
-                                                                    </MenuItem.Icon>
-                                                                </MenuItem>
-                                                            </ui:MenuFlyout>
-                                                        </ui:FlyoutService.Flyout>
-                                                    </Button>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <ui:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10"/>
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-                                        </ItemsControl>
-                                    </ui:SimpleStackPanel>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<ui:SimpleStackPanel x:Name="WorkstationsPanel" Orientation="Horizontal" Spacing="{Binding Workstations.PanelSpacing}"/>
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+							</ItemsControl>
+						</ui:SimpleStackPanel>
+					</ui:SimpleStackPanel>
+				</ui:SimpleStackPanel>
+			</ui:NavigationView.Header>
 
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <ui:SimpleStackPanel x:Name="WorkstationsPanel" Orientation="Horizontal" Spacing="{Binding Workstations.PanelSpacing}"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
-                    </ui:SimpleStackPanel>
-                </ui:SimpleStackPanel>
-
-            </ui:NavigationView.Header>
-
-            <ui:NavigationView.PaneFooter>
-                <StackPanel Orientation="Horizontal">
-                    <ui:NavigationViewItem Cursor="Hand" Tag="ShippingDashboardView" MaxWidth="60"  >
-                        <ui:PersonPicture ProfilePicture="/Assets/logo.ico" MaxHeight="24"/>
-                    </ui:NavigationViewItem>
-                    <ui:AppBarButton Name="SwitchStatusPanelButton" Cursor="Hand" IsCompact="True" Click="SwitchStatusPanelButtonOnClick" MaxWidth="60" ToolTip="Switch Status Panel" Label="Settings">
-                        <ui:AppBarButton.Icon>
-                            <ui:FontIcon
+			<ui:NavigationView.PaneFooter>
+				<StackPanel Orientation="Horizontal" Margin="0 0 10 0">
+					<ui:NavigationViewItem CornerRadius="4" Cursor="Hand" Tag="ShippingDashboardView" MaxWidth="60"  >
+						<ui:PersonPicture  ProfilePicture="/Assets/logo.ico" MaxHeight="24"/>
+					</ui:NavigationViewItem>
+					<ui:AppBarButton CornerRadius="4" Name="SwitchStatusPanelButton" Cursor="Hand" IsCompact="True" Click="SwitchStatusPanelButtonOnClick" MaxWidth="60" ToolTip="Switch Status Panel" Label="Settings">
+						<ui:AppBarButton.Icon>
+							<ui:FontIcon
 								Foreground="White"
                                 FontSize="44"
                                 FontFamily="Segoe MDL2 Assets" Glyph="&#xE8AB;" />
-                        </ui:AppBarButton.Icon>
-                    </ui:AppBarButton>
-                    <ui:AppBarButton Cursor="Hand" Icon="Setting" ToolTip="Settings" MaxWidth="60" Label="Settings" IsCompact="True" />
-                </StackPanel>
-            </ui:NavigationView.PaneFooter>
+						</ui:AppBarButton.Icon>
+					</ui:AppBarButton>
+					<ui:AppBarButton Cursor="Hand" CornerRadius="4" Icon="Setting" ToolTip="Settings" MaxWidth="60" Label="Settings" IsCompact="True" />
+				</StackPanel>
+			</ui:NavigationView.PaneFooter>
 
-            <ui:Frame x:Name="ContentFrame"/>
-
-
-        </ui:NavigationView>
+			<ui:Frame x:Name="ContentFrame"/>
 
 
-    </Grid>
+		</ui:NavigationView>
+
+
+	</Grid>
 </Window>

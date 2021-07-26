@@ -51,7 +51,7 @@ namespace ArtPix_Dashboard.Models.Workstation
 		{
             get
 			{
-                if (API.Utils.MachineAddresses.FirstOrDefault(x => x.Value == Name).Key is string value)
+                if (Utils.Utils.MachineAddresses.FirstOrDefault(x => x.Value == Name).Key is string value)
 				{
                     Debug.WriteLine("MAC FOUND: " + value);
                     return value;
@@ -269,7 +269,7 @@ namespace ArtPix_Dashboard.Models.Workstation
 		    set => SetProperty(ref _data, value);
 	    }
 
-	    private Double _panelSpacing = 51;
+	    private Double _panelSpacing = 45;
 
         public Double PanelSpacing
         {

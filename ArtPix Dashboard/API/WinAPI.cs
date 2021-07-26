@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using ArtPix_Dashboard.Utils;
+using ArtPix_Dashboard.Views;
 
 namespace ArtPix_Dashboard.API
 {
@@ -13,5 +15,7 @@ namespace ArtPix_Dashboard.API
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		public static extern string SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+		[DllImport("user32.dll")]
+		internal static extern int SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);
 	}
 }

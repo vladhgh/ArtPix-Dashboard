@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
@@ -14,14 +15,49 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Interop;
 using System.Windows.Media;
+using ArtPix_Dashboard.API;
+using ArtPix_Dashboard.Views;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Position;
 using ListView = ModernWpf.Controls.ListView;
 
-namespace ArtPix_Dashboard.API
+namespace ArtPix_Dashboard.Utils
 {
+
+	internal enum AccentState
+	{
+		ACCENT_DISABLED = 0,
+		ACCENT_ENABLE_GRADIENT = 1,
+		ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
+		ACCENT_ENABLE_BLURBEHIND = 3,
+		ACCENT_ENABLE_ACRYLICBLURBEHIND = 4,
+		ACCENT_INVALID_STATE = 5
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	internal struct AccentPolicy
+	{
+		public AccentState AccentState;
+		public uint AccentFlags;
+		public uint GradientColor;
+		public uint AnimationId;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	internal struct WindowCompositionAttributeData
+	{
+		public WindowCompositionAttribute Attribute;
+		public IntPtr Data;
+		public int SizeOfData;
+	}
+
+	internal enum WindowCompositionAttribute
+	{
+		WCA_ACCENT_POLICY = 19
+	}
 
 	public class MultiplyConverter : IMultiValueConverter
 	{
@@ -45,6 +81,10 @@ namespace ArtPix_Dashboard.API
 
 	public static class Utils
 	{
+
+		private static readonly uint _blurBackgroundColor = 0x990000;
+
+		private static uint _blurOpacity;
 
 		public struct MacIpPair
 		{
@@ -199,23 +239,59 @@ namespace ArtPix_Dashboard.API
 			return null;
 		}
 
-		public static void EnableTouchScrollForListView(ListView listView)
+
+		public static DependencyObject GetScrollViewer(DependencyObject o)
 		{
-			ScrollViewer scrollViewer = GetChildOfType<ScrollViewer>(listView);
-			//Debug.WriteLine("LOOKING FOR SCROLLVIEWER");
-			if (scrollViewer != null)
+			// Return the DependencyObject if it is a ScrollViewer
+			if (o is ScrollViewer)
+			{ return o; }
+
+			for (var i = 0; i < VisualTreeHelper.GetChildrenCount(o); i++)
 			{
-				//Debug.WriteLine("SCROLLVIEWER FOUND");
-				scrollViewer.CanContentScroll = false;
-				scrollViewer.PanningDeceleration = 2;
-				scrollViewer.PanningRatio = 0.75;
-				scrollViewer.PanningMode = PanningMode.VerticalOnly;
+				var child = VisualTreeHelper.GetChild(o, i);
+
+				var result = GetScrollViewer(child);
+				if (result == null)
+				{
+					continue;
+				}
+				else
+				{
+					return result;
+				}
 			}
-			else
-			{
-				//Debug.WriteLine("SCROLLVIEWER IS NULL");
-			}
+			return null;
 		}
+
+
+		public static void EnableBlur(MainView view)
+		{
+			var windowHelper = new WindowInteropHelper(view);
+
+			var accent = new AccentPolicy
+			{
+				AccentState = AccentState.ACCENT_ENABLE_ACRYLICBLURBEHIND,
+				GradientColor = (_blurOpacity << 24) | (_blurBackgroundColor & 0xFFFFFF)
+			};
+
+			var accentStructSize = Marshal.SizeOf(accent);
+
+			var accentPtr = Marshal.AllocHGlobal(accentStructSize);
+			Marshal.StructureToPtr(accent, accentPtr, false);
+
+			var data = new WindowCompositionAttributeData
+			{
+				Attribute = WindowCompositionAttribute.WCA_ACCENT_POLICY,
+				SizeOfData = accentStructSize,
+				Data = accentPtr
+			};
+
+			WinAPI.SetWindowCompositionAttribute(windowHelper.Handle, ref data);
+
+			Marshal.FreeHGlobal(accentPtr);
+		}
+
+
 		#region NOTIFIER
 		public static Notifier Notifier = new Notifier(cfg =>
 		{

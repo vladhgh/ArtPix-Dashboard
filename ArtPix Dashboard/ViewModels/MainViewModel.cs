@@ -40,6 +40,8 @@ namespace ArtPix_Dashboard.ViewModels
 			get => _shippingStatusGroupVisibility;
 			set => SetProperty(ref _shippingStatusGroupVisibility, value);
 		}
+
+		
 		private Visibility _engravingStatusGroupVisibility = Visibility.Collapsed;
 		public Visibility EngravingStatusGroupVisibility
 		{
@@ -79,8 +81,8 @@ namespace ArtPix_Dashboard.ViewModels
 
 		public async void Initialize()
 		{
-			AppState.IsMainViewLoading = true;
 			AppState.MainNavigationViewVisibility = Visibility.Hidden;
+			AppState.MainViewProgressRingVisibility = Visibility.Visible;
 			try
 			{
 				EngravingStats = await ArtPixAPI.GetAllStatsAsync();
@@ -92,7 +94,7 @@ namespace ArtPix_Dashboard.ViewModels
 				Debug.WriteLine("MAIN VIEW MODEL\nLINE 92\nEXCEPTION UNHANDLED: " + e.Message);
 			}
 			AppState.MainNavigationViewVisibility = Visibility.Visible;
-			AppState.IsMainViewLoading = false;
+			AppState.MainViewProgressRingVisibility = Visibility.Hidden;
 			var engravingStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
 			engravingStatsTimer.Subscribe(async tick => EngravingStats = await ArtPixAPI.GetAllStatsAsync());
 			var shippingStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));

@@ -73,6 +73,26 @@ namespace ArtPix_Dashboard.ViewModels
 			get => _isLoaded;
 			set => SetProperty(ref _isLoaded, value);
 		}
+		private Visibility _progressRingVisibility;
+		public Visibility ProgressRingVisibility
+		{
+			get => _progressRingVisibility;
+			set => SetProperty(ref _progressRingVisibility, value);
+		}
+		private bool _paginationBackButtonVisibility;
+		public bool PaginationBackButtonVisibility
+		{
+			get => _paginationBackButtonVisibility;
+			set => SetProperty(ref _paginationBackButtonVisibility, value);
+		}
+		private bool _paginationForwardButtonVisibility;
+		public bool PaginationForwardButtonVisibility
+		{
+			get => _paginationForwardButtonVisibility;
+			set => SetProperty(ref _paginationForwardButtonVisibility, value);
+		}
+
+
 		private ObservableCollection<PageModel> _pages = new ObservableCollection<PageModel>();
 		public ObservableCollection<PageModel> Pages
 		{
@@ -112,6 +132,12 @@ namespace ArtPix_Dashboard.ViewModels
 		{
 			get => _onAssignMachine;
 			set => SetProperty(ref _onAssignMachine, value);
+		}
+		private ICommand _onAddIssue;
+		public ICommand OnAddIssue
+		{
+			get => _onAddIssue;
+			set => SetProperty(ref _onAddIssue, value);
 		}
 		
 		private ICommand _onImageClick;
@@ -226,7 +252,7 @@ namespace ArtPix_Dashboard.ViewModels
 				IsLoading = true;
 				var requestBody = new ResolveErrorRequestModel
 				{
-					//machine_assign_error_id = item.Id,
+					machine_assign_error_id = product.MachineAssignErrorId,
 					machine_assign_item_id = product.MachineAssignItemId,
 					id_products = product.IdProducts,
 					machine_id = Int32.Parse(product.MachineId),
@@ -236,7 +262,7 @@ namespace ArtPix_Dashboard.ViewModels
 					message = "Testing"
 				};
 				await ArtPixAPI.ResolveProductionIssueAsync(requestBody);
-				Utils.Notifier.ShowSuccess("Issue Resolved Successfully!");
+				Utils.Utils.Notifier.ShowSuccess("Issue Resolved Successfully!");
 				if (!string.IsNullOrEmpty(dialog.Combo2.Text))
 				{
 					var x = (Models.Machine.Machine)dialog.Combo2.SelectedItem;
@@ -248,12 +274,12 @@ namespace ArtPix_Dashboard.ViewModels
 						order_name = order.NameOrder
 					};
 					await ArtPixAPI.ProductAssignProcessing(body);
-					Utils.Notifier.ShowSuccess("Assigned To Machine Successfully!");
+					Utils.Utils.Notifier.ShowSuccess("Assigned To Machine Successfully!");
 				}
 				if (System.IO.Directory.Exists($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.IdProducts}"))
 				{
 					System.IO.Directory.Delete($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.IdProducts}", true);
-					Utils.Notifier.ShowSuccess($"Local Files Removed Successfully For Product {product.IdProducts}!");
+					Utils.Utils.Notifier.ShowSuccess($"Local Files Removed Successfully For Product {product.IdProducts}!");
 				}
 			}
 			IsLoading = false;
@@ -339,7 +365,7 @@ namespace ArtPix_Dashboard.ViewModels
 				pd.Print();
 			}
 
-			API.Utils.Notifier.ShowSuccess($" QR code for product {product.IdProducts} printed successfully!");
+			Utils.Utils.Notifier.ShowSuccess($" QR code for product {product.IdProducts} printed successfully!");
 		}
 
 
@@ -355,8 +381,6 @@ namespace ArtPix_Dashboard.ViewModels
 			System.Drawing.Point loc = new System.Drawing.Point(0, 0);
 			Rectangle rect = new Rectangle(2, 2, 225, 88);
 			e.Graphics.DrawImage(img, loc);
-			Pen blackPen = new Pen(Color.Black, 3);
-			//e.Graphics.DrawRectangle(blackPen, rect);
 			if (SelectedOrder.NameOrder.Length > 6)
 			{
 				e.Graphics.DrawString($"{SelectedOrder.NameOrder}", new Font("Consolas", 9), new SolidBrush(Color.Black), 95, 45);
@@ -414,7 +438,7 @@ namespace ArtPix_Dashboard.ViewModels
 
 					};
 					await ArtPixAPI.ProductReEngrave(body);
-					Utils.Notifier.ShowSuccess($"Product re-engrave success!");
+					Utils.Utils.Notifier.ShowSuccess($"Product re-engrave success!");
 				} else
 				{
 					var body = new AssignProcessingModel
@@ -424,11 +448,11 @@ namespace ArtPix_Dashboard.ViewModels
 
 					};
 					await ArtPixAPI.ProductReEngrave(body);
-					Utils.Notifier.ShowSuccess($"Product re-engrave success!");
+					Utils.Utils.Notifier.ShowSuccess($"Product re-engrave success!");
 				}
 				var updatedOrder = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
 				order.Status = updatedOrder.Status;
-				order.StatusOrderColor = Utils.SelectStatusColor(order.Status);
+				order.StatusOrderColor = Utils.Utils.SelectStatusColor(order.Status);
 				order.UpdatedAt = updatedOrder.UpdatedAt;
 				for (var i = 0; i < order.Products.Count; i++)
 				{
@@ -436,7 +460,7 @@ namespace ArtPix_Dashboard.ViewModels
 					order.Products[i].ManualCompleteButtonVisibility =
 						updatedOrder.Products[i].ManualCompleteButtonVisibility;
 					order.Products[i].UpdatedAt = updatedOrder.Products[i].UpdatedAt;
-					order.Products[i].StatusColor = Utils.SelectStatusColor(order.Products[i].Status);
+					order.Products[i].StatusColor = Utils.Utils.SelectStatusColor(order.Products[i].Status);
 
 				}
 				order.ExpanderVisibility = Visibility.Visible;
@@ -464,7 +488,7 @@ namespace ArtPix_Dashboard.ViewModels
 						order_name = order.NameOrder
 					};
 					await ArtPixAPI.ProductAssignProcessing(body);
-					API.Utils.Notifier.ShowSuccess($"Assigned To Machine {body.machine} Successfully!");
+					Utils.Utils.Notifier.ShowSuccess($"Assigned To Machine {body.machine} Successfully!");
 				}
 				var index = Orders.Data.IndexOf(order);
 				Orders.Data[index] = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
@@ -491,8 +515,9 @@ namespace ArtPix_Dashboard.ViewModels
 				};
 				await ArtPixAPI.ChangeMachineAssignItemStatusAsync(newStatus);
 				var updatedOrder = await ArtPixAPI.GetOrder(((Product)param).IdOrders.ToString());
+				//order = updatedOrder;
 				order.Status = updatedOrder.Status;
-				order.StatusOrderColor = Utils.SelectStatusColor(order.Status);
+				order.StatusOrderColor = Utils.Utils.SelectStatusColor(order.Status);
 				order.UpdatedAt = updatedOrder.UpdatedAt;
 				for (var i = 0; i < order.Products.Count; i++)
 				{
@@ -500,7 +525,7 @@ namespace ArtPix_Dashboard.ViewModels
 					order.Products[i].ManualCompleteButtonVisibility =
 						updatedOrder.Products[i].ManualCompleteButtonVisibility;
 					order.Products[i].UpdatedAt = updatedOrder.Products[i].UpdatedAt;
-					order.Products[i].StatusColor = Utils.SelectStatusColor(order.Products[i].Status);
+					order.Products[i].StatusColor = Utils.Utils.SelectStatusColor(order.Products[i].Status);
 
 				}
 				order.ExpanderVisibility = Visibility.Visible;
@@ -552,7 +577,7 @@ namespace ArtPix_Dashboard.ViewModels
 		public async void OpenImage(object param)
 		{
 			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Product)param).IdOrders);
-			var product = order?.Products.SingleOrDefault(p => p.IdProducts == ((Product) param).IdProducts);
+			var product = order?.Products.SingleOrDefault(p => p.MachineAssignItemId == ((Product) param).MachineAssignItemId);
 			if (product != null)
 			{
 				var dialog = new PhotoPreviewDialog(product);
@@ -561,50 +586,53 @@ namespace ArtPix_Dashboard.ViewModels
 		}
 
 
-		public void Initialize()
+		public void Initialize(AppStateModel appState)
 		{
+			AppState = appState;
 			InitializeCommands();
 		}
 
 		public async Task GetOrdersList(int pageNumber = 1, int perPage = 15, bool withPages = true, OrderCombineFilterModel filterGroup = null)
 		{
-			IsLoading = true;
+			ProgressRingVisibility = Visibility.Visible;
 			IsLoaded = Visibility.Collapsed;
 			Orders = await ArtPixAPI.GetOrdersAsync(pageNumber, perPage, filterGroup);
-			foreach (var page in Pages)
+			if (withPages)
 			{
-				page.IsSelected = page.PageNumber == pageNumber;
+				Pages = await GetPages(pageNumber, perPage, filterGroup);
 			}
-			Pages = withPages ? GetPages(pageNumber, perPage, filterGroup) : new ObservableCollection<PageModel>(Pages);
-			IsLoading = false;
 			IsLoaded = Visibility.Visible;
+			ProgressRingVisibility = Visibility.Hidden;
 		}
-		private ObservableCollection<PageModel> GetPages(int currentPageNumber, int perPage = 15, OrderCombineFilterModel filterGroup = null)
+		private async Task<ObservableCollection<PageModel>> GetPages(int currentPageNumber, int perPage = 15, OrderCombineFilterModel filterGroup = null)
 		{
 			var pages = new ObservableCollection<PageModel>();
-			for (var i = Orders.Meta.CurrentPage; i <= Orders.Meta.LastPage; i++)
+			await Task.Run(() =>
 			{
-				if (i > Orders.Meta.CurrentPage + 5 && i < Orders.Meta.LastPage)
+				for (var i = Orders.Meta.CurrentPage; i <= Orders.Meta.LastPage; i++)
 				{
-					var page = new PageModel(i + 5, "...", Orders.Meta.Path + "?page=" + (i + 5))
+					if (i > Orders.Meta.CurrentPage + 5 && i < Orders.Meta.LastPage)
 					{
-						IsSelected = i == Orders.Meta.CurrentPage,
-						NavigateToSelectedPage = new DelegateCommand(async param => await GetOrdersList((currentPageNumber + 5),
-							perPage, true, filterGroup))
-					};
-					pages.Add(page);
-				}
-				else
-				{
-					var page = new PageModel(i, i.ToString(), Orders.Meta.Path + "?page=" + i)
+						var page = new PageModel(i + 5, "...", Orders.Meta.Path + "?page=" + (i + 5))
+						{
+							IsSelected = i == Orders.Meta.CurrentPage,
+							NavigateToSelectedPage = new DelegateCommand(async param => await GetOrdersList((currentPageNumber + 6),
+								perPage, true, filterGroup))
+						};
+						pages.Add(page);
+					}
+					else
 					{
-						IsSelected = i == Orders.Meta.CurrentPage,
-						NavigateToSelectedPage = new DelegateCommand(async param => await GetOrdersList((int) param, perPage, false, filterGroup))
-					};
-					pages.Add(page);
+						var page = new PageModel(i, i.ToString(), Orders.Meta.Path + "?page=" + i)
+						{
+							IsSelected = i == Orders.Meta.CurrentPage,
+							NavigateToSelectedPage = new DelegateCommand(async param => await GetOrdersList((int)param, perPage, false, filterGroup))
+						};
+						pages.Add(page);
+					}
 				}
-			}
-			pages = new ObservableCollection<PageModel>(pages.GroupBy(x => x.PageName).Select(g => g.First()).ToList());
+				pages = new ObservableCollection<PageModel>(pages.GroupBy(x => x.PageName).Select(g => g.First()).ToList());
+			});
 			return pages;
 		}
 	}
