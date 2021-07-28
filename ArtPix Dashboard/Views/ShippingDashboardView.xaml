@@ -8,7 +8,6 @@
 	xmlns:order="clr-namespace:ArtPix_Dashboard.Models.Order"
 	xmlns:types="clr-namespace:ArtPix_Dashboard.Models.Types"
 	xmlns:gif="http://wpfanimatedgif.codeplex.com"
-	xmlns:utils="clr-namespace:ArtPix_Dashboard.VisibilityAnimation"
 	Background="Transparent"
     Focusable="True"
 	Title="Shipping Dashboard">
@@ -138,24 +137,21 @@
 			x:Name="ProgressRingImage"
 			Grid.Column="1"
 			Grid.Row="4"
-			utils:VisibilityAnimation.IsActive="True"
-			Visibility="{Binding ProgressRingVisibility, Mode=TwoWay}"
 			gif:ImageBehavior.RepeatBehavior="0x"
 			gif:ImageBehavior.AnimatedSource="../Assets/Spinner2.gif" Width="70" Height="70"/>
 	
-			<TextBlock
-						Text="No Results :)"
-						Grid.Column="1"
-						Grid.Row="4"
-						Margin="0 0 0 0"
-						Opacity="0.7"
-						Visibility="Collapsed"
-						utils:VisibilityAnimation.IsActive="True"
-						TextAlignment="Center"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center"
-						Style="{DynamicResource TitleTextBlockStyle}"
-						FontWeight="Black"/>
+	    <TextBlock
+			x:Name="NoResultsText"
+			Text="No Results :)"
+			Grid.Column="1"
+			Grid.Row="4"
+			Margin="0 0 0 0"
+			Opacity="0"
+			TextAlignment="Center"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
+			Style="{DynamicResource TitleTextBlockStyle}"
+			FontWeight="Black"/>
 
 		<ui:SimpleStackPanel Grid.Row="3" Grid.Column="1" Margin="0 0 0 10" Orientation="Horizontal">
 	        <TextBlock
@@ -168,35 +164,86 @@
 				<Run Text="{Binding AppState.OrderFilterGroup.SelectedFilterGroup}"/>
 				<Run Text="{Binding Orders.Meta.Total, StringFormat=({0:F0}):}" />
 			</TextBlock>
-			<TextBlock
-				HorizontalAlignment="Left"
-				VerticalAlignment="Center"
-				Margin="0 0 8 0"
-				xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1000}"
-				Style="{DynamicResource SubtitleTextBlockStyle}"
-				FontWeight="Black"
-				Text="Actions: "/>
+			<ui:SimpleStackPanel Width="445" Orientation="Horizontal">
+				<TextBlock
+					x:Name="ActionsText"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					Margin="0 0 4 0"
+					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1000}"
+					Style="{DynamicResource SubtitleTextBlockStyle}"
+					FontWeight="Black"
+					Text="Actions: "/>
 				<Button
 					Cursor="Hand"
 					Content="Create DHL Manifest"
 					FontSize="10"
+					Margin="0 4 8 0"
 					Padding="8 2 8 4"
-					VerticalAlignment="Bottom"
 					Visibility="{Binding AppState.OrderFilterGroup.CreateManifestButtonVisibility}"
 					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
-					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnUnassignMachine}"
+					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnCreateDHLManifest}"
+					CommandParameter="{Binding }"
+					Opacity="0.9"
+					Style="{StaticResource ManualCompleteButtonStyle}"/>
+
+				<Button
+					Cursor="Hand"
+					Content="Assign Jobs"
+					FontSize="10"
+					Margin="0 4 8 0"
+					Padding="8 2 8 4"
+					Visibility="{Binding AppState.OrderFilterGroup.UnAssignJobsFromMachineButtonVisibility}"
+					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
+					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnAssignJobs}"
+					Opacity="0.9"
+					Style="{StaticResource ManualCompleteButtonStyle}"/>
+				
+				<Button
+					Cursor="Hand"
+					Content="Unassign All Jobs"
+					FontSize="10"
+					Margin="0 4 8 0"
+					Padding="8 2 8 4"
+					Visibility="{Binding AppState.OrderFilterGroup.UnAssignJobsFromMachineButtonVisibility}"
+					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
+					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnUnassignAllJobs}"
+					CommandParameter="{Binding AppState.OrderFilterGroup.machine}"
+					Opacity="0.9"
+					Style="{StaticResource UnassignButtonStyle}"/>
+
+			</ui:SimpleStackPanel>
+			<TextBlock
+				HorizontalAlignment="Left"
+				VerticalAlignment="Center"
+				Margin="40 0 4 0"
+				Visibility="{Binding AppState.OrderFilterGroup.PcPowerButtonsVisibility}"
+				xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1000}"
+				Style="{DynamicResource SubtitleTextBlockStyle}"
+				FontWeight="Black"
+				Text="Machine Control: "/>
+
+				<Button
+					Cursor="Hand"
+					Content="Turn PC On"
+					FontSize="10"
+					Margin="0 4 8 0"
+					Padding="8 2 8 4"
+					Visibility="{Binding AppState.OrderFilterGroup.PcPowerButtonsVisibility}"
+					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
+					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnPcPowerOn}"
 					CommandParameter="{Binding }"
 					Opacity="0.9"
 					Style="{StaticResource ManualCompleteButtonStyle}"/>
 				<Button
 					Cursor="Hand"
-					Content="Unassign All Jobs"
+					Content="Turn PC Off"
 					FontSize="10"
+					Margin="0 4 8 0"
 					Padding="8 2 8 4"
-					VerticalAlignment="Bottom"
-					Visibility="{Binding AppState.OrderFilterGroup.UnAssignJobsFromMachineButtonVisibility}"
+					Visibility="{Binding AppState.OrderFilterGroup.PcPowerButtonsVisibility}"
 					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
-					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnUnassignAllJobs}"
+					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnPcPowerOff}"
 					CommandParameter="{Binding AppState.OrderFilterGroup.machine}"
 					Opacity="0.9"
 					Style="{StaticResource UnassignButtonStyle}"/>
@@ -206,19 +253,22 @@
 			<ui:ListView
 						x:Name="ShippingItemsListView"
 						ItemsSource="{Binding Orders.Data}"
-						Visibility="{Binding IsLoaded, Mode=TwoWay}"
 						IsSelectionEnabled="False"
 						IsTabStop="True"
 						MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
 						MinWidth="550"
 						ScrollViewer.CanContentScroll="False"
-						utils:VisibilityAnimation.IsActive="True"
 						VirtualizingPanel.ScrollUnit="Pixel"
 						Style="{DynamicResource CustomListViewStyle}">
 				<ui:ListView.ItemTemplate>
 					<DataTemplate DataType="order:Datum">
 						<Grid>
-							<ui:ProgressRing Name="ProgressRing" Foreground="SteelBlue"  Margin="10 0 0 0" Height="50" Width="50" IsActive="{Binding IsOrderLoading}"/>
+							<Image
+								x:Name="OrderProgressRingImage"
+								Tag="{Binding NameOrder}"
+								Opacity="0"
+								gif:ImageBehavior.RepeatBehavior="0x"
+								gif:ImageBehavior.AnimatedSource="../Assets/Spinner2.gif" Width="70" Height="70"/>
 							<Expander
 									x:Name="expander"
 									Cursor="Hand"
@@ -325,9 +375,9 @@
 														</DataTemplate>
 													</ItemsControl.ItemTemplate>
 												</ItemsControl>
-												<Button Background="{Binding UpdatedAtAgeColor}" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Margin="0 0 10 0">
+												<Button Background="{Binding UpdatedAtAgeColor, Mode=OneWay}" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Margin="0 0 10 0">
 													<TextBlock
-															Text="{Binding UpdatedAtAge, StringFormat=Updated: {0:0} ago}"
+															Text="{Binding UpdatedAtAge, Mode=OneWay, StringFormat=Updated: {0:0}}"
 															FontSize="10"
 															Style="{DynamicResource BaseTextBlockStyle}"/>
 												</Button>
@@ -454,7 +504,7 @@
 																		Margin="0,0,10,0" />
 																	<Button Background="{Binding UpdatedAtAgeColor}" Visibility="{Binding ProductStatusVisibility}" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Margin="0 5 10 0">
 																		<TextBlock
-																		Text="{Binding UpdatedAtAge, StringFormat=Updated: {0:0} ago}"
+																		Text="{Binding UpdatedAtAge, StringFormat=Updated: {0:0}}"
 																		FontSize="10"
 																		Style="{DynamicResource BaseTextBlockStyle}"/>
 																	</Button>
@@ -535,20 +585,20 @@
 																			HorizontalAlignment="Left"
 																			VerticalAlignment="Center"
 																			Foreground="LightGray"
-																			Visibility="{Binding ProductionIssueButtonsVisibility}"
+																			Visibility="{Binding ProductionIssueButtonsVisibility, Mode=OneWay}"
 																			Style="{DynamicResource BaseTextBlockStyle}"/>
 																		<TextBlock
 																			Text="{Binding Retouch.Filename}"
 																			HorizontalAlignment="Left"
 																			VerticalAlignment="Center"
-																			Visibility="{Binding ProductionIssueButtonsVisibility}"
+																			Visibility="{Binding ProductionIssueButtonsVisibility, Mode=OneWay}"
 																			Style="{DynamicResource BaseTextBlockStyle}"
 																			Foreground="LightGray"/>
 																	</ui:SimpleStackPanel>
 																	<ui:SimpleStackPanel Orientation="Horizontal" Margin="0 5 0 0" Spacing="8">
 																		<Button 
 																			Cursor="Hand"
-																			Visibility="{Binding VitroMarkButtonVisibility}"
+																			Visibility="{Binding VitroMarkButtonVisibility, Mode=OneWay}"
 																			IsEnabled="{Binding ElementName=ShippingDashboardPage, Path=DataContext.AppState.IsVitroMarkRunning}"
 																			Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnVitromark}"
 																			CommandParameter="{Binding Retouch.Filename}"
@@ -558,7 +608,7 @@
 																		<Button
 																			Cursor="Hand"
 																			Content="Assign Machine"
-																			Visibility="{Binding AssignMachineButtonVisibility}"
+																			Visibility="{Binding AssignMachineButtonVisibility, Mode=OneWay}"
 																			Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnAssignMachine}"
 																			CommandParameter="{Binding }"
 																			Opacity="0.9"
@@ -566,7 +616,7 @@
 																		<Button
 																			Cursor="Hand"
 																			Content="Unassign"
-																			Visibility="{Binding UnAssignMachineButtonVisibility}"
+																			Visibility="{Binding UnAssignMachineButtonVisibility, Mode=OneWay}"
 																			Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnUnassignMachine}"
 																			CommandParameter="{Binding }"
 																			Opacity="0.9"
@@ -577,7 +627,7 @@
 																			Content="Add Issue"
 																			Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnAddIssue}"
 																			CommandParameter="{Binding }"
-																			Visibility="{Binding CrystalIssueButtonVisibility}"
+																			Visibility="{Binding CrystalIssueButtonVisibility, Mode=OneWay}"
 																			Opacity="0.9"
 																			Style="{StaticResource AddCrystalIssueButtonStyle}"/>
 																		<Button
@@ -586,7 +636,7 @@
 																			Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnRedo}"
 																			CommandParameter="{Binding }"
 																			Opacity="0.9"
-																			Visibility="{Binding ProductionIssueButtonsVisibility}"
+																			Visibility="{Binding ProductionIssueButtonsVisibility, Mode=OneWay}"
 																			Style="{StaticResource RedoButtonStyle}"/>
 																		<Button
 																			Cursor="Hand"
@@ -594,12 +644,12 @@
 																			Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnRework}"
 																			CommandParameter="{Binding MachineAssignItemId}"
 																			Opacity="0.9"
-																			Visibility="{Binding ProductionIssueButtonsVisibility}"
+																			Visibility="{Binding ProductionIssueButtonsVisibility, Mode=OneWay}"
 																			Style="{StaticResource ReworkButtonStyle}"/>
 																		<Button
 																			Cursor="Hand"
 																			Content="Re-Engrave"
-																			Visibility="{Binding ReEngraveButtonVisibility}"
+																			Visibility="{Binding ReEngraveButtonVisibility, Mode=OneWay}"
 																			Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnReEngrave}"
 																			CommandParameter="{Binding }"
 																			Opacity="0.9"
@@ -607,7 +657,7 @@
 																		<Button
 																			Cursor="Hand"
 																			Content="Manual Complete"
-																			Visibility="{Binding ManualCompleteButtonVisibility}"
+																			Visibility="{Binding ManualCompleteButtonVisibility, Mode=OneWay}"
 																			Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnManualComplete}"
 																			CommandParameter="{Binding}"
 																			Opacity="0.9"

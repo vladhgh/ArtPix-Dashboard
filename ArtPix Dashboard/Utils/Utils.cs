@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -59,6 +62,9 @@ namespace ArtPix_Dashboard.Utils
 		WCA_ACCENT_POLICY = 19
 	}
 
+
+
+
 	public class MultiplyConverter : IMultiValueConverter
 	{
 		public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
@@ -82,9 +88,52 @@ namespace ArtPix_Dashboard.Utils
 	public static class Utils
 	{
 
-		private static readonly uint _blurBackgroundColor = 0x990000;
+		#region NOTIFIER
+		public static Notifier Notifier = new(cfg =>
+		{
+			cfg.PositionProvider = new WindowPositionProvider(
+				parentWindow: Application.Current.MainWindow,
+				corner: Corner.BottomRight,
+				offsetX: 12,
+				offsetY: 55);
 
-		private static uint _blurOpacity;
+			cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+				notificationLifetime: TimeSpan.FromSeconds(3),
+				maximumNotificationCount: MaximumNotificationCount.FromCount(5));
+
+			cfg.DisplayOptions.Width = 250; // set the notifications width
+			cfg.Dispatcher = Application.Current.Dispatcher;
+		});
+		#endregion
+
+
+		public static Bitmap ResizeImage(System.Drawing.Image image, int width, int height)
+		{
+			var destRect = new Rectangle(0, 0, width, height);
+			var destImage = new Bitmap(width, height);
+
+			destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+			using (var graphics = Graphics.FromImage(destImage))
+			{
+				graphics.CompositingMode = CompositingMode.SourceCopy;
+				graphics.CompositingQuality = CompositingQuality.HighQuality;
+				graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+				graphics.SmoothingMode = SmoothingMode.HighQuality;
+				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+				using (var wrapMode = new ImageAttributes())
+				{
+					wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+					graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+				}
+			}
+
+			return destImage;
+		}
+
+
+		
 
 		public struct MacIpPair
 		{
@@ -92,7 +141,7 @@ namespace ArtPix_Dashboard.Utils
 			public string IpAddress;
 		}
 
-		public static Dictionary<string, string> MachineAddresses = new Dictionary<string, string>()
+		public static Dictionary<string, string>MachineAddresses = new()
 		{
 			{ "94-DE-80-FC-3A-FB", "1" },
 			{ "B4-2E-99-5D-61-5C", "2" },
@@ -144,8 +193,12 @@ namespace ArtPix_Dashboard.Utils
 				case "engrave_issue": return "DarkRed";
 				case "engrave_processing": return "SteelBlue";
 				case "engrave_done": return "DarkGreen";
+				case "error": return "DarkRed";
 				case "shipping_label_printed": return "DarkGreen";
 				case "In Photoshop": return "#bf6900";
+				case "success": return "DarkGreen";
+				case "success_manually": return "DarkGreen";
+				case "Completed Manually": return "DarkGreen";
 				case "Customer Service Issue": return "DarkRed";
 				case "3D Model In Progress": return "SteelBlue";
 				case "3D Model Pending": return "#bf6900";
@@ -176,7 +229,12 @@ namespace ArtPix_Dashboard.Utils
 				case "waiting_to_confirm": return "Awaiting Confirmation";
 				case "wait_model": return "Awaiting Model";
 				case "ready_to_engrave": return "Ready To Engrave";
+				case "success": return "Engraving Done";
+				case "success_manually": return "Completed Manually";
 				case "engrave_issue": return "Engraving Issue";
+				case "error": return "Engraving Issue";
+				case "processing": return "Engraving In Progress";
+				case "engraved": return "Engraving In Progress";
 				case "engrave_processing": return "Engraving In Progress";
 				case "engrave_redo": return "Ready To Engrave";
 				case "engrave_done": return "Engraving Done";
@@ -210,7 +268,22 @@ namespace ArtPix_Dashboard.Utils
 
 			return mip;
 		}
-		
+
+		public static List<FrameworkElement> GetChildren(DependencyObject parent)
+		{
+			List<FrameworkElement> controls = new List<FrameworkElement>();
+
+			for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); ++i)
+			{
+				var child = VisualTreeHelper.GetChild(parent, i);
+				if (child is FrameworkElement)
+				{
+					controls.Add(child as FrameworkElement);
+				}
+				controls.AddRange(GetChildren(child));
+			}
+			return controls;
+		}
 
 		public static T DeepCopy<T>(T other)
 		{
@@ -239,7 +312,6 @@ namespace ArtPix_Dashboard.Utils
 			return null;
 		}
 
-
 		public static DependencyObject GetScrollViewer(DependencyObject o)
 		{
 			// Return the DependencyObject if it is a ScrollViewer
@@ -263,6 +335,11 @@ namespace ArtPix_Dashboard.Utils
 			return null;
 		}
 
+		#region ACRYLIC BACKGROUND FOR WINDOW - FROM GITHUB
+
+		private static readonly uint _blurBackgroundColor = 0x990000;
+
+		private static uint _blurOpacity;
 
 		public static void EnableBlur(MainView view)
 		{
@@ -291,24 +368,8 @@ namespace ArtPix_Dashboard.Utils
 			Marshal.FreeHGlobal(accentPtr);
 		}
 
-
-		#region NOTIFIER
-		public static Notifier Notifier = new Notifier(cfg =>
-		{
-			cfg.PositionProvider = new WindowPositionProvider(
-				parentWindow: Application.Current.MainWindow,
-				corner: Corner.BottomRight,
-				offsetX: 10,
-				offsetY: 50);
-
-			cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
-				notificationLifetime: TimeSpan.FromSeconds(3),
-				maximumNotificationCount: MaximumNotificationCount.FromCount(5));
-
-			cfg.DisplayOptions.Width = 250; // set the notifications width
-			cfg.Dispatcher = Application.Current.Dispatcher;
-		});
 		#endregion
+
 	}
 
 }

@@ -11,8 +11,6 @@
 			<ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/Animations.xaml" />
                 <ResourceDictionary Source="Styles/Styles.xaml" />
-                <ResourceDictionary Source="Styles/ExpanderStyle.xaml" />
-                <ResourceDictionary Source="Styles/ProgressRing.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
                 <ui:ThemeResources />
                 <ui:XamlControlsResources />

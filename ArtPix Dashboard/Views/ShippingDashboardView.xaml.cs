@@ -13,11 +13,16 @@ using ArtPix_Dashboard.Views.Dialogs;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using ArtPix_Dashboard.API;
+using ArtPix_Dashboard.Utils;
 using ModernWpf.Controls.Primitives;
 using System.Linq.Expressions;
 
 namespace ArtPix_Dashboard.Views
 {
+
+
+
+
 
 	public partial class ShippingDashboardView
 	{
@@ -45,6 +50,7 @@ namespace ArtPix_Dashboard.Views
 			ToggleNoCrystal.Click += ToggleNoCrystal_Click;
 		}
 
+
 		private void CheckForUserSettings()
 		{
 			if (_vm.AppState.OrderFilterGroup == null)
@@ -70,7 +76,7 @@ namespace ArtPix_Dashboard.Views
 
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			_vm.Initialize((AppStateModel)e.ExtraData);
+			_vm.Initialize((AppStateModel)e.ExtraData, this);
 
 			SetKeyPressEventListener();
 
@@ -94,6 +100,7 @@ namespace ArtPix_Dashboard.Views
 			ShippingStatusComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.status_shipping;
 			OrderStatusComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.status_order;
 			StoreComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.store_name;
+			MachineComboBox.SelectedValue = _vm.AppState.OrderFilterGroup.machine;
 			ToggleShipByToday.IsChecked = _vm.AppState.OrderFilterGroup.shipByToday == "True";
 			ToggleNoPackage.IsChecked = _vm.AppState.OrderFilterGroup.has_shipping_package == "0";
 			ToggleInTotes.IsChecked = _vm.AppState.OrderFilterGroup.with_shipping_totes == "True";
@@ -101,15 +108,30 @@ namespace ArtPix_Dashboard.Views
 			SearchTextBox.Text = _vm.AppState.OrderFilterGroup.name_order;
 		}
 
+		
+
 		private async void SendCombinedRequest(bool search = false)
 		{
+
+			
+			Animation.FadeOut(ShippingItemsListView);
+			Animation.FadeIn(ProgressRingImage);
+
+
+
 			UpdateControls();
 
 			await _vm.GetOrdersList(1, 15, true, _vm.AppState.OrderFilterGroup);
 
 			if (_vm.Orders.Data == null) return;
-			if (_vm.Orders.Data.Count <= 0) return;
-			ShippingItemsListView.ScrollIntoView(_vm.Orders.Data[0]);
+			if (_vm.Orders.Data.Count <= 0)
+			{
+				Animation.FadeOut(ProgressRingImage);
+				Animation.FadeOut(ActionsText);
+				Animation.FadeIn(NoResultsText);
+				return;
+			}
+			
 			if (search)
 			{
 				while(_vm.Orders.Data[0].IsExpanded == false)
@@ -123,6 +145,8 @@ namespace ArtPix_Dashboard.Views
 			_vm.PaginationForwardButtonVisibility = (_vm.Pages.Count > 1) && (_vm.Pages.Count > selectedPage.PageNumber);
 			_vm.PaginationBackButtonVisibility = selectedPage.PageNumber > 1;
 
+			Animation.FadeOut(ProgressRingImage);
+			Animation.FadeIn(ShippingItemsListView);
 
 		}
 
@@ -262,11 +286,13 @@ namespace ArtPix_Dashboard.Views
 				page.IsSelected = false;
 			}
 			_vm.Pages[(int)btn.Tag - 1].IsSelected = true;
+
 			if (_vm.Orders.Data.Count > 0)
 			{
 				var scrollViewer = Utils.Utils.GetScrollViewer(ShippingItemsListView) as ScrollViewer;
-				ScrollAnimateBehavior.AttachedBehaviors.ScrollAnimationBehavior.AnimateScroll(scrollViewer,
-					0);
+				scrollViewer.ScrollToVerticalOffset(0);
+				ScrollAnimationBehavior.AnimateScroll(scrollViewer, 0);
+				ScrollAnimationBehavior.intendedLocation = 0;
 			}
 
 			_vm.PaginationBackButtonVisibility = (int) btn.Tag > 1 ;
@@ -303,19 +329,44 @@ namespace ArtPix_Dashboard.Views
 			}
 			if (_vm.Orders.Data.IndexOf(thisOrder) == 14)
 			{
-				ScrollAnimateBehavior.AttachedBehaviors.ScrollAnimationBehavior.AnimateScroll(scrollViewer,
+				Utils.ScrollAnimationBehavior.AnimateScroll(scrollViewer,
 					scrollViewer.VerticalOffset + 400);
 			} else
 			{
-				ScrollAnimateBehavior.AttachedBehaviors.ScrollAnimationBehavior.AnimateScroll(scrollViewer,
+				Utils.ScrollAnimationBehavior.AnimateScroll(scrollViewer,
 					ShippingItemsListView.Items.IndexOf(thisOrder) * ((Expander)sender).ActualHeight);
 			}
+
+			if (thisOrder.Status == "Customer Service Issue")
+			{
+				foreach (var product in thisOrder.Products.Where(product => product.Status == "Customer Service Issue"))
+				{
+					var x = await ArtPixAPI.GetProductHistoryAsync(product.IdProducts);
+					foreach (var comment in x.Data)
+					{
+						if (comment.Message.Contains("Added issues:"))
+						{
+							if (comment.Message.Contains("USABLE MANUAL ISSUE"))
+							{
+								product.Status = comment.Message.Remove(0, 32);
+								continue;
+							}
+							if (comment.Message.Contains("USABLE AUTO ISSUE"))
+							{
+								product.Status = comment.Message.Remove(0, 30);
+							}
+						}
+						
+					}
+				}
+			}
+
 
 			if (thisOrder.Status != "Engraving Issue") return;
 			foreach (var product in thisOrder.Products.Where(product => product.Status == "Engraving Issue"))
 			{
 				var productionIssue =
-					await ArtPixAPI.GetProductionIssueByProductIDAsync(product.IdProducts.ToString());
+					await ArtPixAPI.GetProductionIssueAsync(product.MachineAssignItemId.ToString());
 				product.MachineAssignErrorId = productionIssue.Data[0].Id;
 				product.Status = productionIssue.Data[0].ProductionIssueReason.Reason;
 				product.Employee = productionIssue.Data[0].User;
@@ -361,7 +412,7 @@ namespace ArtPix_Dashboard.Views
 			if (_vm.Orders.Data.Count > 0)
 			{
 				ScrollViewer scrollViewer = Utils.Utils.GetScrollViewer(ShippingItemsListView) as ScrollViewer;
-				ScrollAnimateBehavior.AttachedBehaviors.ScrollAnimationBehavior.AnimateScroll(scrollViewer,
+				Utils.ScrollAnimationBehavior.AnimateScroll(scrollViewer,
 					0);
 			}
 			_vm.PaginationForwardButtonVisibility = _vm.Pages.Count > 1 ;
@@ -384,7 +435,7 @@ namespace ArtPix_Dashboard.Views
 			if (_vm.Orders.Data.Count > 0)
 			{
 				ScrollViewer scrollViewer = Utils.Utils.GetScrollViewer(ShippingItemsListView) as ScrollViewer;
-				ScrollAnimateBehavior.AttachedBehaviors.ScrollAnimationBehavior.AnimateScroll(scrollViewer,
+				Utils.ScrollAnimationBehavior.AnimateScroll(scrollViewer,
 					0);
 			}
 			_vm.PaginationBackButtonVisibility = selectedPage > 1 ;

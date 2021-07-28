@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
-namespace ScrollAnimateBehavior.AttachedBehaviors
+namespace ArtPix_Dashboard.Utils
 {
     public static class ScrollAnimationBehavior
     {
@@ -358,4 +354,34 @@ namespace ScrollAnimateBehavior.AttachedBehaviors
 
         #endregion
     }
+
+    public static class Animation
+    {
+	    public static Storyboard storyboard = new Storyboard();
+
+	    public static DoubleAnimation fadeInAnimation = new DoubleAnimation()
+		    { From = 0.0, To = 1.0, Duration = new Duration(TimeSpan.FromMilliseconds(400)) };
+
+	    public static DoubleAnimation fadeOutAnimation = new DoubleAnimation()
+		    { From = 1.0, To = 0.0, Duration = new Duration(TimeSpan.FromMilliseconds(400)) };
+
+	    public static void FadeIn(FrameworkElement el)
+	    {
+		    storyboard = new Storyboard();
+            Storyboard.SetTargetName(fadeInAnimation, el.Name);
+		    Storyboard.SetTargetProperty(fadeInAnimation, new PropertyPath("Opacity", 1));
+		    storyboard.Children.Add(fadeInAnimation);
+		    storyboard.Begin(el);
+	    }
+	    public static void FadeOut(FrameworkElement el)
+	    {
+		    storyboard = new Storyboard();
+            Storyboard.SetTargetName(fadeOutAnimation, el.Name);
+		    Storyboard.SetTargetProperty(fadeOutAnimation, new PropertyPath("Opacity", 0));
+		    storyboard.Children.Add(fadeOutAnimation);
+		    storyboard.Begin(el);
+        }
+
+    }
+
 }

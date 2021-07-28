@@ -243,10 +243,5 @@ namespace ArtPix_Dashboard.Views
 				$"Machine{tag.Split('-')[0].Replace('\\', ' ')} Turned Off Succesfully!\nPlease Wait....");
 		}
 
-		private async void MenuItem_Click_2(object sender, RoutedEventArgs e)
-		{
-			var tag = ((MenuItem) sender).Tag;
-			if (tag != null) await ArtPixAPI.RemoveCurrentJobsFromMachineAsync((int) tag);
-		}
 	}
 }

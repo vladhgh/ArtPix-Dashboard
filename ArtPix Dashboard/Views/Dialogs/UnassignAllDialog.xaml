@@ -10,7 +10,7 @@
 
 	<ui:SimpleStackPanel Orientation="Vertical">
 		<TextBlock
-		    Text="Are you sure you want to us-assign all product from this machine?"
+		    Text="Are you sure you want to us-assign all jobs from this machine?"
 		    FontWeight="Black"
 		    HorizontalAlignment="Center"
 			TextAlignment="Center"
@@ -34,7 +34,7 @@
 				<ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center"  Spacing="12">
 					<ui:SimpleStackPanel Orientation="Vertical">
 						<TextBlock
-							Text="Assign Machine(optional):"
+							Text="Assign New Machine(does not work yet):"
 							FontSize="18"
 							FontWeight="Bold"
 							Style="{DynamicResource BaseTextBlockStyle}"

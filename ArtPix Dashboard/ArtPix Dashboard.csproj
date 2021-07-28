@@ -47,6 +47,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -57,6 +58,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>9EA838B6F5A48FA0A0C9688EC12401896AC854A7</ManifestCertificateThumbprint>
@@ -105,7 +107,9 @@
     <Compile Include="Models\MachineModel.cs" />
     <Compile Include="Models\NewStatusModel.cs" />
     <Compile Include="Models\OrderAssignModel.cs" />
-    <Compile Include="Models\OrderModel.cs" />
+    <Compile Include="Models\Order\OrderModel.cs" />
+    <Compile Include="Models\Order\Datum.cs" />
+    <Compile Include="Models\Order\Product.cs" />
     <Compile Include="Models\PageModel.cs" />
     <Compile Include="Models\ProductHistoryModel.cs" />
     <Compile Include="Models\ProductionIssueModel.cs" />
@@ -113,16 +117,14 @@
     <Compile Include="Models\StatsModel.cs" />
     <Compile Include="API\ArtPixAPI.cs" />
     <Compile Include="Models\Workstation\WorkstationsModel.cs" />
-    <Compile Include="Utils\Converters.cs" />
+    <Compile Include="Utils\Animation.cs" />
     <Compile Include="Utils\PixelsToGridLengthConverter.cs" />
-    <Compile Include="Utils\ScrollAnimationBehavior.cs" />
     <Compile Include="Utils\Utils.cs" />
     <Compile Include="API\WinAPI.cs" />
-    <Compile Include="Utils\VisibilityAnimation.cs" />
     <Compile Include="ViewModels\Commands.cs" />
-    <Compile Include="Utils\DelegateCommand.cs" />
+    <Compile Include="ViewModels\DelegateCommand.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="Utils\PropertyChangedListener.cs" />
+    <Compile Include="ViewModels\PropertyChangedListener.cs" />
     <Compile Include="ViewModels\ShippingDashboardViewModel.cs" />
     <Compile Include="ViewModels\UtilitiesViewModel.cs" />
     <Compile Include="Views\Dialogs\CancelIssueDialog - Copy.xaml.cs">
@@ -136,6 +138,12 @@
     </Compile>
     <Compile Include="Views\Dialogs\LoginDialog.xaml.cs">
       <DependentUpon>LoginDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\AddIssueDialog.xaml.cs">
+      <DependentUpon>AddIssueDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\AssignJobsDialog.xaml.cs">
+      <DependentUpon>AssignJobsDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialogs\ReEngraveDialog.xaml.cs">
       <DependentUpon>ReEngraveDialog.xaml</DependentUpon>
@@ -174,14 +182,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\ExpanderStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\ProgressRing.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Styles\Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -199,6 +199,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\LoginDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dialogs\AddIssueDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dialogs\AssignJobsDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -457,5 +465,6 @@
   <ItemGroup>
     <Resource Include="Assets\plastic_light_base_small.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

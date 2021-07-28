@@ -558,6 +558,7 @@ namespace ArtPix_Dashboard.Models.Machine
 						newData.Remove(item);
 						Meta.Total--;
 					}
+
 				}
 				return newData;
 			}

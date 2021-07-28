@@ -17,7 +17,18 @@ namespace ArtPix_Dashboard.Models
 
     }
 
-    public class AssignProcessingModel
+    public class AddIssueRequestModel
+    {
+	    public int machine_assign_item_id { get; set; }
+	    public string user { get; set; }
+	    public string error { get; set; }
+	    public string source { get; set; }
+	    public string issue_title { get; set; }
+	    public int production_issue_reason_id { get; set; }
+
+	}
+
+	public class AssignProcessingModel
     {
 	    public int product_id { get; set; }
 
@@ -139,6 +150,7 @@ namespace ArtPix_Dashboard.Models
 				    store_name = "";
 				    IsFilterGroupEnabled = false;
 				    UnAssignJobsFromMachineButtonVisibility = Visibility.Visible;
+				    PcPowerButtonsVisibility = Visibility.Visible;
 					return;
 			    }
 			    case "Ready To Ship":
@@ -222,7 +234,15 @@ namespace ArtPix_Dashboard.Models
 		    get => _createManifestButtonVisibility;
 		    set => SetProperty(ref _createManifestButtonVisibility, value);
 	    }
-		
+
+	    private Visibility _pcPowerButtonsVisibility = Visibility.Collapsed;
+
+	    public Visibility PcPowerButtonsVisibility
+	    {
+		    get => _pcPowerButtonsVisibility;
+		    set => SetProperty(ref _pcPowerButtonsVisibility, value);
+	    }
+
 
 		private bool _isFilterGroupEnabled = true;
 

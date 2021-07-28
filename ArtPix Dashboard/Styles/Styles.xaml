@@ -4,7 +4,6 @@
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:local="clr-namespace:ArtPix_Dashboard.API"
                     xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
-                    xmlns:utils="clr-namespace:ScrollAnimateBehavior.AttachedBehaviors"
                     xmlns:utils1="clr-namespace:ArtPix_Dashboard.Utils">
     <utils1:MultiplyConverter x:Key="multiplyConverter" />
 
@@ -2203,10 +2202,10 @@
                 <ControlTemplate TargetType="{x:Type ui:ListView}">
                     <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}" SnapsToDevicePixels="True">
                         <ScrollViewer
-                            utils:ScrollAnimationBehavior.IsEnabled="False"                         
-                            utils:ScrollAnimationBehavior.TimeDuration="00:00:00.40"
-                            utils:ScrollAnimationBehavior.PointsToScroll="1"
-                            x:Name="ScrollViewer" ui:ScrollViewerHelper.AutoHideScrollBars="{TemplateBinding ui:ScrollViewerHelper.AutoHideScrollBars}" Focusable="False" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" Style="{DynamicResource {x:Type ScrollViewer}}" KeyboardNavigation.TabNavigation="{TemplateBinding KeyboardNavigation.TabNavigation}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
+	                        utils1:ScrollAnimationBehavior.IsEnabled="True"                         
+	                        utils1:ScrollAnimationBehavior.TimeDuration="00:00:00.20"
+	                        utils1:ScrollAnimationBehavior.PointsToScroll="16"
+	                        x:Name="ScrollViewer" ui:ScrollViewerHelper.AutoHideScrollBars="{TemplateBinding ui:ScrollViewerHelper.AutoHideScrollBars}" Focusable="False" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" Style="{DynamicResource {x:Type ScrollViewer}}" KeyboardNavigation.TabNavigation="{TemplateBinding KeyboardNavigation.TabNavigation}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
                             <ItemsPresenter Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                         </ScrollViewer>
                     </Border>
