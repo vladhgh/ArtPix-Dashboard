@@ -88,7 +88,7 @@
                     Orientation="Horizontal"
                     Spacing="8">
                     <ToggleButton x:Name="Toggle2Dto3DPic" Content="2D To 3D" Cursor="Hand"  Style="{DynamicResource CustomToggleButtonStyle}" Click="Toggle2Dto3DPic_OnClick"/>
-                    <ToggleButton x:Name="ToggleOptimizedPic" Content="Optimized" Cursor="Hand"  Style="{DynamicResource CustomToggleButtonStyle}" Click="ToggleOptimizedPic_OnClick"/>
+					<ToggleButton x:Name="ToggleOptimizedPic" Visibility="{Binding Product.OptimizedButtonVisibility}" Content="Optimized" Cursor="Hand"  Style="{DynamicResource CustomToggleButtonStyle}" Click="ToggleOptimizedPic_OnClick"/>
                     <ToggleButton x:Name="ToggleOriginalPic" Content="Original" Cursor="Hand"  Style="{DynamicResource CustomToggleButtonStyle}" Click="ToggleOriginalPic_OnClick"/>
                     <ToggleButton x:Name="ToggleRenderPic" IsChecked="True"  Content="Render" Cursor="Hand"  Style="{DynamicResource CustomToggleButtonStyle}" Click="ToggleRenderPic_OnClick"/>
                     <ToggleButton x:Name="ToggleOUploadPic" Visibility="{Binding Product.OUploadButtonVisibility}" Content="Original Upload" Cursor="Hand"  Style="{DynamicResource CustomToggleButtonStyle}" Click="ToggleOUploadPic_OnClick"/>

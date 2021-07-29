@@ -120,6 +120,8 @@ namespace ArtPix_Dashboard.Models.Order
 
 		public Visibility OUploadButtonVisibility => string.IsNullOrEmpty(UrlOriginalOriginal) ? Visibility.Collapsed : Visibility.Visible;
 
+		public Visibility OptimizedButtonVisibility => string.IsNullOrEmpty(UrlOptimizeImg) ? Visibility.Collapsed : Visibility.Visible;
+
 		public Visibility ORenderButtonVisibility => string.IsNullOrEmpty(UrlOriginalRender) ? Visibility.Collapsed : Visibility.Visible;
 
 		#endregion

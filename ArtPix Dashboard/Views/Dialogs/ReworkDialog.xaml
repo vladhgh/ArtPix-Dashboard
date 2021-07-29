@@ -5,7 +5,7 @@
     xmlns:ui="http://schemas.modernwpf.com/2019"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     PrimaryButtonText="Submit To Retoucher"
-    SecondaryButtonText="Submit To 3D Designer"
+    SecondaryButtonText="Submit To Looxis"
     CloseButtonText="Cancel"
     DefaultButton="Primary"
    Style="{StaticResource SmallContentDialogStyle}">

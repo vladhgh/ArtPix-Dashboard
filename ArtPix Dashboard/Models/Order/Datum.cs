@@ -355,7 +355,11 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("estimate_processing_max_date")]
 		public string EstimateProcessingMaxDate
 		{
-			get => DateTime.Parse(_estimateProcessingMaxDate, CultureInfo.CurrentUICulture).AddHours(-5).ToString(CultureInfo.CurrentUICulture).Split(' ')[0];
+			get 
+			{
+				_estimateProcessingMaxDate = String.IsNullOrEmpty(_estimateProcessingMaxDate) ? DateTime.Parse(ShipBy, CultureInfo.CurrentUICulture).AddHours(-5).ToString(CultureInfo.CurrentUICulture).Split(' ')[0] : DateTime.Parse(_estimateProcessingMaxDate, CultureInfo.CurrentUICulture).AddHours(-5).ToString(CultureInfo.CurrentUICulture).Split(' ')[0];
+				return _estimateProcessingMaxDate;
+			}
 			set => _estimateProcessingMaxDate = value;
 		}
 
@@ -367,7 +371,7 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("estimate_delivery_max_date")]
 		public string EstimateDeliveryMaxDate
 		{
-			get => DateTime.Parse(_estimatedDeliveryMaxDate, CultureInfo.CurrentUICulture).AddHours(-5).ToString(CultureInfo.CurrentUICulture).Split(' ')[0];
+			get => String.IsNullOrEmpty(_estimatedDeliveryMaxDate) ? DateTime.Parse(ShipBy, CultureInfo.CurrentUICulture).AddDays(3).ToString(CultureInfo.CurrentUICulture).Split(' ')[0] : DateTime.Parse(_estimatedDeliveryMaxDate, CultureInfo.CurrentUICulture).AddHours(-5).ToString(CultureInfo.CurrentUICulture).Split(' ')[0];
 			set => _estimatedDeliveryMaxDate = value;
 		}
 

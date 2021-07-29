@@ -141,6 +141,18 @@ namespace ArtPix_Dashboard.Utils
 			public string IpAddress;
 		}
 
+		public static void SendWakeOnLan(PhysicalAddress target)
+		{
+			var header = Enumerable.Repeat(byte.MaxValue, 6);
+			var data = Enumerable.Repeat(target.GetAddressBytes(), 16).SelectMany(mac => mac);
+
+			var magicPacket = header.Concat(data).ToArray();
+
+			var client = new UdpClient();
+
+			client.Send(magicPacket, magicPacket.Length, new IPEndPoint(IPAddress.Broadcast, 9));
+		}
+
 		public static Dictionary<string, string>MachineAddresses = new()
 		{
 			{ "94-DE-80-FC-3A-FB", "1" },
@@ -177,7 +189,64 @@ namespace ArtPix_Dashboard.Utils
 			{ "00-D8-61-7F-A0-AC", "32" },
 			{ "00-19-0F-37-0C-34", "33" }
 		};
-
+		public static string GetLocalMachineAddress(string machineId)
+		{
+			switch (machineId)
+			{
+				case "1":
+					return "\\\\1-AB1-LL";
+				case "2":
+					return "\\\\2-AB1-LL";
+				case "3":
+					return "\\\\3-AB1-LL";
+				case "4":
+					return "\\\\4-AB1-LL";
+				case "5":
+					return "\\\\5-AB1-LL";
+				case "6":
+					return "\\\\6-AB1-LL";
+				case "7":
+					return "\\\\7-AB1-LL";
+				case "8":
+					return "\\\\8-AB1-LL";
+				case "9":
+					return "\\\\9-AB1-LL";
+				case "10":
+					return "\\\\10-AB1-LL";
+				case "11":
+					return "\\\\11-AB1-LL";
+				case "12":
+					return "\\\\12-AB1-LL";
+				case "13":
+					return "\\\\13-AB2-SL";
+				case "14":
+					return "\\\\14-AB2-SL";
+				case "15":
+					return "\\\\15-AB2-SL";
+				case "16":
+					return "\\\\16-AB3-SL";
+				case "17":
+					return "\\\\17-AB4-SL";
+				case "18":
+					return "\\\\18-AB2-SL";
+				case "19":
+					return "\\\\19-AB2-SL";
+				case "20":
+					return "\\\\20-AB1-LL";
+				case "21":
+					return "\\\\21-AB1-LL";
+				case "22":
+					return "\\\\22-AB1-LL";
+				case "23":
+					return "\\\\23-AB1-LL";
+				case "24":
+					return "\\\\24-AB1-LL";
+				case "25":
+					return "\\\\25-AB1-LL";
+				default:
+					return "none";
+			}
+		}
 		public static string SelectStatusColor(string status)
 		{
 			switch (status)

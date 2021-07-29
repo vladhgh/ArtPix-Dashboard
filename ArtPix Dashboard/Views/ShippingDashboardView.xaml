@@ -48,7 +48,7 @@
                 <ui:FontIcon Glyph="&#xE894;" FontSize="10"/>
             </Button>
 			<Button IsTabStop="True" Content="Search" VerticalAlignment="Bottom" Style="{DynamicResource SearchButtonStyle}" Cursor="Hand" Click="ButtonSearchOnClick" Margin="0 0 10 0"/>
-			<ComboBox IsTabStop="True" Style="{StaticResource CustomComboBoxStyle}" IsEnabled="{Binding AppState.OrderFilterGroup.IsFilterGroupEnabled}" Cursor="Hand" Name="StoreComboBox" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Store:" ui:ControlHelper.PlaceholderText="Select Store">
+			<ComboBox IsTabStop="True" Visibility="{Binding AppState.OrderFilterGroup.StoreComboBoxVisibility, Mode=OneWay}" Style="{StaticResource CustomComboBoxStyle}" IsEnabled="{Binding AppState.OrderFilterGroup.IsFilterGroupEnabled}" Cursor="Hand" Name="StoreComboBox" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Store:" ui:ControlHelper.PlaceholderText="Select Store">
 				<ComboBoxItem Content="All Stores" Tag=""/>
 				<ComboBoxItem Content="Amazon Store" Tag="Amazon"/>
 				<ComboBoxItem Content="WordPress Store" Tag="WordPress"/>
@@ -60,7 +60,7 @@
 				<ComboBoxItem Content="Processing" Tag="processing"/>
 				<ComboBoxItem Content="Completed" Tag="completed"/>
 			</ComboBox>
-			<ComboBox IsTabStop="True" Style="{StaticResource CustomComboBoxStyle}" IsEnabled="{Binding AppState.OrderFilterGroup.IsFilterGroupEnabled}" Cursor="Hand" Name="EngravingStatusComboBox" SelectedValuePath="Tag" VerticalAlignment="Center" Width="150" ui:ControlHelper.Header="Order Status:" ui:ControlHelper.PlaceholderText="Select Order Status">
+			<ComboBox IsTabStop="True" Style="{StaticResource CustomComboBoxStyle}" Visibility="Collapsed" IsEnabled="{Binding AppState.OrderFilterGroup.IsFilterGroupEnabled}" Cursor="Hand" Name="EngravingStatusComboBox" SelectedValuePath="Tag" VerticalAlignment="Center" Width="150" ui:ControlHelper.Header="Order Status:" ui:ControlHelper.PlaceholderText="Select Order Status">
 				<ComboBoxItem Content="All Statuses" Tag=""/>
 				<ComboBoxItem Content="Waiting To Confirm" Tag="waiting_to_confirm&amp;with_crystal_product_status[]=photoshop"/>
 				<ComboBoxItem Content="Awaiting Model" Tag="3d_model_in_progress&amp;with_crystal_product_status[]=3d_model_pending&amp;with_crystal_product_status[]=3d_model_rework&amp;with_crystal_product_status[]=retoucher_in_progress&amp;with_crystal_product_status[]=retoucher_pending&amp;with_crystal_product_status[]=retoucher_rework"/>
@@ -75,8 +75,8 @@
                 <ComboBoxItem Content="Processing" Tag="processing"/>
                 <ComboBoxItem Content="Shipped" Tag="done"/>
             </ComboBox>
-			<ComboBox IsTabStop="True" Name="MachineComboBox" Visibility="{Binding AppState.OrderFilterGroup.MachineComboBoxVisibility}" Cursor="Hand" Style="{StaticResource CustomComboBoxStyle}" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Machine:" ui:ControlHelper.PlaceholderText="Select Engraving Machine">
-				<ComboBoxItem Content="All Machines" Tag="All"/>
+			<ComboBox IsTabStop="True" SelectedIndex="0" Name="MachineComboBox" Visibility="{Binding AppState.OrderFilterGroup.MachineComboBoxVisibility}" Cursor="Hand" Style="{StaticResource CustomComboBoxStyle}" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Machine:" ui:ControlHelper.PlaceholderText="Select Engraving Machine">
+				<ComboBoxItem Content="All Machines" Tag=""/>
 				<ComboBoxItem Content="Machine 1" Tag="1"/>
 				<ComboBoxItem Content="Machine 2" Tag="2"/>
 				<ComboBoxItem Content="Machine 3" Tag="3"/>
@@ -180,7 +180,6 @@
 					FontSize="10"
 					Margin="0 4 8 0"
 					Padding="8 2 8 4"
-					Visibility="{Binding AppState.OrderFilterGroup.CreateManifestButtonVisibility}"
 					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
 					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnCreateDHLManifest}"
 					CommandParameter="{Binding }"
@@ -231,8 +230,8 @@
 					Padding="8 2 8 4"
 					Visibility="{Binding AppState.OrderFilterGroup.PcPowerButtonsVisibility}"
 					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
-					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnPcPowerOn}"
-					CommandParameter="{Binding }"
+					Click="PowerMachineButton"
+					Tag="PowerOn"
 					Opacity="0.9"
 					Style="{StaticResource ManualCompleteButtonStyle}"/>
 				<Button
@@ -243,8 +242,8 @@
 					Padding="8 2 8 4"
 					Visibility="{Binding AppState.OrderFilterGroup.PcPowerButtonsVisibility}"
 					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
-					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnPcPowerOff}"
-					CommandParameter="{Binding AppState.OrderFilterGroup.machine}"
+					Click="PowerMachineButton"
+					Tag="PowerOff"
 					Opacity="0.9"
 					Style="{StaticResource UnassignButtonStyle}"/>
 		</ui:SimpleStackPanel>
@@ -642,7 +641,7 @@
 																			Cursor="Hand"
 																			Content="Rework" 
 																			Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnRework}"
-																			CommandParameter="{Binding MachineAssignItemId}"
+																			CommandParameter="{Binding }"
 																			Opacity="0.9"
 																			Visibility="{Binding ProductionIssueButtonsVisibility, Mode=OneWay}"
 																			Style="{StaticResource ReworkButtonStyle}"/>

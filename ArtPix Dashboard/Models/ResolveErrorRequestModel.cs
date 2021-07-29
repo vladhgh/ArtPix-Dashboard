@@ -169,7 +169,9 @@ namespace ArtPix_Dashboard.Models
 				    sort_by = "estimate_processing_max_date";
 				    store_name = "";
 				    CreateManifestButtonVisibility = Visibility.Visible;
-				    return;
+					StoreComboBoxVisibility = Visibility.Visible;
+
+					return;
 			    }
 			    case "Awaiting Shipment":
 			    {
@@ -187,6 +189,7 @@ namespace ArtPix_Dashboard.Models
 					sort_by = "estimate_processing_max_date";
 					store_name = "";
 					CreateManifestButtonVisibility = Visibility.Visible;
+					StoreComboBoxVisibility = Visibility.Visible;
 					return;
 				}
 			    case "Ship By Today":
@@ -206,14 +209,22 @@ namespace ArtPix_Dashboard.Models
 					sort_by = "estimate_processing_max_date";
 					store_name = "";
 					CreateManifestButtonVisibility = Visibility.Visible;
+					StoreComboBoxVisibility = Visibility.Visible;
 					return;
 				}
 
 		    }
 	    }
+		
+		private Visibility _storeComboBoxVisibility = Visibility.Collapsed;
 
-	    
-	    private Visibility _unAssignJobsFromMachineButtonVisibility = Visibility.Collapsed;
+		public Visibility StoreComboBoxVisibility
+
+		{
+			get => _storeComboBoxVisibility;
+			set => SetProperty(ref _storeComboBoxVisibility, value);
+		}
+		private Visibility _unAssignJobsFromMachineButtonVisibility = Visibility.Collapsed;
 
 	    public Visibility UnAssignJobsFromMachineButtonVisibility
 		{

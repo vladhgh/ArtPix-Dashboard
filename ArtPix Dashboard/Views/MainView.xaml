@@ -64,34 +64,52 @@
 							</Border>
 						</Border>
 						<ControlTemplate.Triggers>
+
+							<EventTrigger RoutedEvent="ToggleButton.Click">
+								<BeginStoryboard>
+									<Storyboard>
+										<ColorAnimation From="SteelBlue" To="#61B5FA" Duration="0:0:0.25" Storyboard.TargetName="Background" Storyboard.TargetProperty="Background.Color"/>
+									</Storyboard>
+								</BeginStoryboard>
+							</EventTrigger>
+
 							<MultiTrigger>
 								<MultiTrigger.Conditions>
 									<Condition Property="IsChecked" Value="False"/>
 									<Condition Property="IsMouseOver" Value="True"/>
 								</MultiTrigger.Conditions>
-								<Setter Property="Background" TargetName="Background" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
-								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
-								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundPointerOver}"/>
+								<MultiTrigger.EnterActions>
+									<BeginStoryboard>
+										<Storyboard>
+											<ColorAnimation From="#1e1e1e" To="SteelBlue" Duration="0:0:0.2" Storyboard.TargetName="Background" Storyboard.TargetProperty="Background.Color"/>
+										</Storyboard>
+									</BeginStoryboard>
+								</MultiTrigger.EnterActions>
+								<MultiTrigger.ExitActions>
+									<BeginStoryboard>
+										<Storyboard>
+											<ColorAnimation From="SteelBlue" To="#1e1e1e" Duration="0:0:0.2" Storyboard.TargetName="Background" Storyboard.TargetProperty="Background.Color"/>
+										</Storyboard>
+									</BeginStoryboard>
+								</MultiTrigger.ExitActions>
 							</MultiTrigger>
+
+
 							<MultiTrigger>
 								<MultiTrigger.Conditions>
 									<Condition Property="IsChecked" Value="False"/>
 									<Condition Property="IsPressed" Value="True"/>
 								</MultiTrigger.Conditions>
-								<Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundPressed}"/>
-								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushPressed}"/>
-								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundPressed}"/>
+								<MultiTrigger.EnterActions>
+									<BeginStoryboard>
+										<Storyboard>
+											<ColorAnimation From="SteelBlue" To="#61B5FA" Duration="0:0:0.1" Storyboard.TargetName="Background" Storyboard.TargetProperty="Background.Color"/>
+										</Storyboard>
+									</BeginStoryboard>
+								</MultiTrigger.EnterActions>
+
 							</MultiTrigger>
-							<MultiTrigger>
-								<MultiTrigger.Conditions>
-									<Condition Property="IsChecked" Value="False"/>
-									<Condition Property="IsEnabled" Value="False"/>
-									
-								</MultiTrigger.Conditions>
-								<Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundDisabled}"/>
-								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundDisabled}"/>
-								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushDisabled}"/>
-							</MultiTrigger>
+
 							<MultiTrigger>
 								<MultiTrigger.Conditions>
 									<Condition Property="IsChecked" Value="True"/>
@@ -99,74 +117,57 @@
 									<Condition Property="IsPressed" Value="False"/>
 									<Condition Property="IsEnabled" Value="True"/>
 								</MultiTrigger.Conditions>
-								<Setter Property="Background" TargetName="Background" Value="#565656"/>
+								<Setter Property="Background" TargetName="Background" Value="SteelBlue"/>
 								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundChecked}"/>
-								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
+								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushChecked}"/>
 							</MultiTrigger>
+
+
 							<MultiTrigger>
 								<MultiTrigger.Conditions>
 									<Condition Property="IsChecked" Value="True"/>
 									<Condition Property="IsMouseOver" Value="True"/>
 								</MultiTrigger.Conditions>
-								<Setter Property="Background" TargetName="Background" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
-								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource SystemChromeMediumLowColorBrush}"/>
-								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundCheckedPointerOver}"/>
+								<MultiTrigger.EnterActions>
+									<BeginStoryboard>
+										<Storyboard>
+											<ColorAnimation From="SteelBlue" To="#61B5FA" Duration="0:0:0.1" Storyboard.TargetName="Background" Storyboard.TargetProperty="Background.Color"/>
+										</Storyboard>
+									</BeginStoryboard>
+								</MultiTrigger.EnterActions>
+								<MultiTrigger.ExitActions>
+									<BeginStoryboard>
+										<Storyboard>
+											<ColorAnimation From="#61B5FA" To="SteelBlue" Duration="0:0:0.1" Storyboard.TargetName="Background" Storyboard.TargetProperty="Background.Color"/>
+										</Storyboard>
+									</BeginStoryboard>
+								</MultiTrigger.ExitActions>
 							</MultiTrigger>
 							<MultiTrigger>
 								<MultiTrigger.Conditions>
 									<Condition Property="IsChecked" Value="True"/>
 									<Condition Property="IsPressed" Value="True"/>
 								</MultiTrigger.Conditions>
-								<Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundCheckedPressed}"/>
-								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundCheckedPressed}"/>
-								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushCheckedPressed}"/>
+								<MultiTrigger.EnterActions>
+									<BeginStoryboard>
+										<Storyboard>
+											<ColorAnimation From="SteelBlue" To="#61B5FA" Duration="0:0:0.1" Storyboard.TargetName="Background" Storyboard.TargetProperty="Background.Color"/>
+										</Storyboard>
+									</BeginStoryboard>
+								</MultiTrigger.EnterActions>
+
 							</MultiTrigger>
+
 							<MultiTrigger>
 								<MultiTrigger.Conditions>
-									<Condition Property="IsChecked" Value="True"/>
-									<Condition Property="IsEnabled" Value="False"/>
-								</MultiTrigger.Conditions>
-								<Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundCheckedDisabled}"/>
-								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundCheckedDisabled}"/>
-								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushCheckedDisabled}"/>
-							</MultiTrigger>
-							<MultiTrigger>
-								<MultiTrigger.Conditions>
-									<Condition Property="IsChecked" Value="{x:Null}"/>
+									<Condition Property="IsChecked" Value="False"/>
 									<Condition Property="IsMouseOver" Value="False"/>
 									<Condition Property="IsPressed" Value="False"/>
 									<Condition Property="IsEnabled" Value="True"/>
 								</MultiTrigger.Conditions>
-								<Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminate}"/>
+								<Setter Property="Background" TargetName="Background" Value="#1e1e1e"/>
 								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminate}"/>
 								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminate}"/>
-							</MultiTrigger>
-							<MultiTrigger>
-								<MultiTrigger.Conditions>
-									<Condition Property="IsChecked" Value="{x:Null}"/>
-									<Condition Property="IsMouseOver" Value="True"/>
-								</MultiTrigger.Conditions>
-								<Setter Property="Background" TargetName="Background" Value="#565656"/>
-								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminatePointerOver}"/>
-								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminatePointerOver}"/>
-							</MultiTrigger>
-							<MultiTrigger>
-								<MultiTrigger.Conditions>
-									<Condition Property="IsChecked" Value="{x:Null}"/>
-									<Condition Property="IsPressed" Value="True"/>
-								</MultiTrigger.Conditions>
-								<Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminatePressed}"/>
-								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminatePressed}"/>
-								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminatePressed}"/>
-							</MultiTrigger>
-							<MultiTrigger>
-								<MultiTrigger.Conditions>
-									<Condition Property="IsChecked" Value="{x:Null}"/>
-									<Condition Property="IsEnabled" Value="False"/>
-								</MultiTrigger.Conditions>
-								<Setter Property="Background" TargetName="Background" Value="{DynamicResource ToggleButtonBackgroundIndeterminateDisabled}"/>
-								<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminateDisabled}"/>
-								<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminateDisabled}"/>
 							</MultiTrigger>
 						</ControlTemplate.Triggers>
 					</ControlTemplate>
@@ -621,7 +622,8 @@
 								<ColumnDefinition Width="*"/>
 								<ColumnDefinition Width="*"/>
 							</Grid.ColumnDefinitions>
-							<Button
+							<ToggleButton
+								x:Name="AwaitingModelButton"
 								Grid.Column="0"
 								Height="auto"
 								Cursor="Hand"
@@ -631,11 +633,12 @@
 									Text="{Binding EngravingStats.EngravedTodayCount, StringFormat=Awaiting Model: {0:F0}, Mode=OneWay}"
 									FontWeight="Black"
 									Style="{DynamicResource SubtitleTextBlockStyle}" />
-								<Button.Effect>
+								<ToggleButton.Effect>
 									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
-								</Button.Effect>
-							</Button>
-							<Button
+								</ToggleButton.Effect>
+							</ToggleButton>
+							<ToggleButton
+								x:Name="EngravedTodayButton"
 	                            Grid.Column="3"
 	                            Height="auto"
 								Cursor="Hand"
@@ -646,11 +649,12 @@
 	                                Text="{Binding EngravingStats.EngravedTodayCount, StringFormat=Engraved Today: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
 	                                Style="{DynamicResource SubtitleTextBlockStyle}" />
-								<Button.Effect>
+								<ToggleButton.Effect>
 									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
-								</Button.Effect>
-							</Button>
-							<Button
+								</ToggleButton.Effect>
+							</ToggleButton>
+							<ToggleButton
+								x:Name="ReadyToEngraveButton"
 	                            Grid.Column="1"
 	                            Cursor="Hand"
 	                            Height="auto"
@@ -662,11 +666,12 @@
 	                                Text="{Binding EngravingStats.ReadyToEngraveCount, StringFormat=Ready To Engrave: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
 	                                Style="{DynamicResource SubtitleTextBlockStyle}" />
-								<Button.Effect>
+								<ToggleButton.Effect>
 									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
-								</Button.Effect>
-							</Button>
-							<Button
+								</ToggleButton.Effect>
+							</ToggleButton>
+							<ToggleButton
+								x:Name="EngravingButton"
 	                            Grid.Column="2"
 	                            Cursor="Hand"
 	                            Height="auto"
@@ -677,14 +682,15 @@
 	                                Text="{Binding EngravingStats.ProcessingCount, StringFormat=Engraving: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
 	                                Style="{DynamicResource SubtitleTextBlockStyle}"/>
-								<Button.Effect>
+								<ToggleButton.Effect>
 									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
-								</Button.Effect>
-							</Button>
-							<Button
+								</ToggleButton.Effect>
+							</ToggleButton>
+							<ToggleButton
 	                            Grid.Column="4"
 	                            Cursor="Hand"
 	                            Height="auto"
+								x:Name="ProductionIssuesButton"
 	                            HorizontalAlignment="Right"
 	                            Click="ProductionIssuesButtonOnClick"
 	                            Style="{StaticResource HeaderButtonStyle}">
@@ -692,10 +698,10 @@
 	                                Text="{Binding EngravingStats.IssueCount, StringFormat=Production Issues: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
 	                                Style="{DynamicResource SubtitleTextBlockStyle}"/>
-								<Button.Effect>
+								<ToggleButton.Effect>
 									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
-								</Button.Effect>
-							</Button>
+								</ToggleButton.Effect>
+							</ToggleButton>
 						</Grid>
 						<Grid Height="60" Name="ShippingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding ShippingStatusGroupVisibility}" Margin="0 0 30 0" >
 							<Grid.ColumnDefinitions>
@@ -704,7 +710,8 @@
 								<ColumnDefinition Width="*"/>
 								<ColumnDefinition Width="*"/>
 							</Grid.ColumnDefinitions>
-							<Button
+							<ToggleButton
+								x:Name="AwaitingShipmentButton"
 	                            Grid.Column="0"
 	                            Cursor="Hand"
 	                            Height="auto"
@@ -714,11 +721,12 @@
 	                                Text="{Binding ShippingStats.AwaitingShipment, StringFormat=Awaiting Shipment: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
 	                                Style="{DynamicResource SubtitleTextBlockStyle}" />
-								<Button.Effect>
+								<ToggleButton.Effect>
 									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
-								</Button.Effect>
-							</Button>
-							<Button
+								</ToggleButton.Effect>
+							</ToggleButton>
+							<ToggleButton
+								x:Name="ShipByTodayButton"
 	                            Grid.Column="1"
 	                            HorizontalAlignment="Center"
 	                            Cursor="Hand"
@@ -731,11 +739,12 @@
 	                                FontWeight="Black"
 									Opacity="1"
 	                                Style="{DynamicResource SubtitleTextBlockStyle}" />
-								<Button.Effect>
+								<ToggleButton.Effect>
 									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
-								</Button.Effect>
-							</Button>
-							<Button
+								</ToggleButton.Effect>
+							</ToggleButton>
+							<ToggleButton
+								x:Name="ReadyToShipButton"
 	                            Grid.Column="2"
 	                            HorizontalAlignment="Center"
 	                            Cursor="Hand"
@@ -747,12 +756,13 @@
 	                                Text="{Binding ShippingStats.ReadyToShip, StringFormat=Ready To Ship: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
 	                                Style="{DynamicResource SubtitleTextBlockStyle}" />
-								<Button.Effect>
+								<ToggleButton.Effect>
 									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
-								</Button.Effect>
-							</Button>
+								</ToggleButton.Effect>
+							</ToggleButton>
 
-							<Button
+							<ToggleButton
+								x:Name="ShippedTodayButton"
 	                            Grid.Column="3"
 	                            HorizontalAlignment="Right"
 	                            Cursor="Hand"
@@ -763,13 +773,13 @@
 	                                Text="{Binding ShippingStats.ShippedToday, StringFormat=Shipped Today: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
 	                                Style="{DynamicResource SubtitleTextBlockStyle}"/>
-								<Button.Effect>
+								<ToggleButton.Effect>
 									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
-								</Button.Effect>
-							</Button>
+								</ToggleButton.Effect>
+							</ToggleButton>
 						</Grid>
 						<ui:SimpleStackPanel Name="WorkstationsGroup" Height="60" HorizontalAlignment="Left" Margin="0 0 0 0" Visibility="{Binding ActiveMachinesGroupVisibility }" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}">
-							<ItemsControl VerticalAlignment="Center" HorizontalAlignment="Center"  ItemsSource="{Binding Workstations.Data}" >
+							<ItemsControl x:Name="WorkstationsItemsControl" VerticalAlignment="Center" HorizontalAlignment="Center"  ItemsSource="{Binding Workstations.Data}" >
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
 										<ui:SimpleStackPanel Orientation="Horizontal">
@@ -878,6 +888,18 @@
 
 			<ui:NavigationView.PaneFooter>
 				<StackPanel Orientation="Horizontal" Margin="0 0 10 0">
+					<Button Cursor="Hand" Tag="PowerOn" ToolTip="Power All PC On" Click="PowerAllMachinesButtonClick" Style="{DynamicResource ManualCompleteButtonStyle}"  VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 10 4">
+						<TextBlock
+							Text="Power All PC On"
+							FontSize="12"
+							Style="{DynamicResource BaseTextBlockStyle}"/>
+					</Button>
+					<Button Cursor="Hand" Tag="PowerOff" ToolTip="Power All PC Off" Click="PowerAllMachinesButtonClick" Style="{DynamicResource UnassignButtonStyle}"  VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 10 4">
+						<TextBlock
+							Text="Power All PC Off"
+							FontSize="12"
+							Style="{DynamicResource BaseTextBlockStyle}"/>
+					</Button>
 					<Button Background="#1e1e1e" Cursor="Hand" ToolTip="Currently Active User" Style="{DynamicResource InactiveButtonStyle}"  VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 10 4">
 						<TextBlock
 							Text="Vlad Prokopev"

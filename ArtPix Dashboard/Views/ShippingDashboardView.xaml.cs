@@ -16,6 +16,8 @@ using ArtPix_Dashboard.API;
 using ArtPix_Dashboard.Utils;
 using ModernWpf.Controls.Primitives;
 using System.Linq.Expressions;
+using System.Net.NetworkInformation;
+using ToastNotifications.Messages;
 
 namespace ArtPix_Dashboard.Views
 {
@@ -106,6 +108,7 @@ namespace ArtPix_Dashboard.Views
 			ToggleInTotes.IsChecked = _vm.AppState.OrderFilterGroup.with_shipping_totes == "True";
 			ToggleNoCrystal.IsChecked = _vm.AppState.OrderFilterGroup.with_crystals == "0";
 			SearchTextBox.Text = _vm.AppState.OrderFilterGroup.name_order;
+			
 		}
 
 		
@@ -127,9 +130,12 @@ namespace ArtPix_Dashboard.Views
 			if (_vm.Orders.Data.Count <= 0)
 			{
 				Animation.FadeOut(ProgressRingImage);
-				Animation.FadeOut(ActionsText);
 				Animation.FadeIn(NoResultsText);
 				return;
+			}
+			if (_vm.Orders.Data.Count > 0 && NoResultsText.Opacity == 1)
+			{
+				Animation.FadeOut(NoResultsText);
 			}
 			
 			if (search)
@@ -223,10 +229,7 @@ namespace ArtPix_Dashboard.Views
 			SendCombinedRequest();
 		}
 
-		private void ButtonReloadOnClick(object sender, RoutedEventArgs e)
-		{
-			SendCombinedRequest();
-		}
+		private void ButtonReloadOnClick(object sender, RoutedEventArgs e) => SendCombinedRequest();
 
 		private void ToggleNoPackageOnClick(object sender, RoutedEventArgs e)
 		{
@@ -320,7 +323,7 @@ namespace ArtPix_Dashboard.Views
 			var scrollViewer = Utils.Utils.GetScrollViewer(ShippingItemsListView) as ScrollViewer;
 			var thisOrder = _vm.Orders.Data.FirstOrDefault(i => i.NameOrder == ((Expander)sender).Tag.ToString());
 			var expandSite = ((Expander)sender).Template.FindName("ExpandSite", ((Expander)sender)) as UIElement;
-			expandSite.Visibility = System.Windows.Visibility.Visible;
+			expandSite.Visibility = Visibility.Visible;
 			var sb1 = (Storyboard)((Expander)sender).FindResource("sbExpand");
 			sb1.Begin();
 			foreach (var order in _vm.Orders.Data)
@@ -329,12 +332,14 @@ namespace ArtPix_Dashboard.Views
 			}
 			if (_vm.Orders.Data.IndexOf(thisOrder) == 14)
 			{
-				Utils.ScrollAnimationBehavior.AnimateScroll(scrollViewer,
+				ScrollAnimationBehavior.AnimateScroll(scrollViewer,
 					scrollViewer.VerticalOffset + 400);
+				ScrollAnimationBehavior.intendedLocation = scrollViewer.VerticalOffset + 400;
 			} else
 			{
-				Utils.ScrollAnimationBehavior.AnimateScroll(scrollViewer,
+				ScrollAnimationBehavior.AnimateScroll(scrollViewer,
 					ShippingItemsListView.Items.IndexOf(thisOrder) * ((Expander)sender).ActualHeight);
+				ScrollAnimationBehavior.intendedLocation = ShippingItemsListView.Items.IndexOf(thisOrder) * ((Expander)sender).ActualHeight;
 			}
 
 			if (thisOrder.Status == "Customer Service Issue")
@@ -443,11 +448,28 @@ namespace ArtPix_Dashboard.Views
 
 		}
 
+
+
+
+
 		#endregion
 
-
-
-		
-
+		private void PowerMachineButton(object sender, RoutedEventArgs e)
+		{
+			var kind = ((Button)sender).Tag.ToString();
+			if (kind == "PowerOn")
+			{
+				var x = Utils.Utils.MachineAddresses.FirstOrDefault((y) => y.Value == _vm.AppState.OrderFilterGroup.machine);
+				Utils.Utils.SendWakeOnLan(PhysicalAddress.Parse(x.Key));
+				Utils.Utils.Notifier.ShowSuccess("Machine Power On Request Sent Succesfully!\nPlease Wait....");
+			}
+			if (kind == "PowerOff")
+			{
+				var networkPath = Utils.Utils.GetLocalMachineAddress(_vm.AppState.OrderFilterGroup.machine);
+				Process.Start("shutdown", $"-s -f -t 00 -m {networkPath}");
+				Utils.Utils.Notifier.ShowSuccess("Machine Power Off Request Sent Succesfully!\nPlease Wait....");
+			}
+			
+		}
 	}
 }

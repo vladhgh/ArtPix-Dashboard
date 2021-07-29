@@ -145,6 +145,9 @@
     <Compile Include="Views\Dialogs\AssignJobsDialog.xaml.cs">
       <DependentUpon>AssignJobsDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialogs\MachinePowerDialog.xaml.cs">
+      <DependentUpon>MachinePowerDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\ReEngraveDialog.xaml.cs">
       <DependentUpon>ReEngraveDialog.xaml</DependentUpon>
     </Compile>
@@ -185,6 +188,10 @@
     <Page Include="Styles\Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\MachinePowerDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\PhotoPreviewDialog.xaml">
       <Generator>MSBuild:Compile</Generator>

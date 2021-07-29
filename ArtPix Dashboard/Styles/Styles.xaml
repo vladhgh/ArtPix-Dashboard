@@ -892,7 +892,7 @@
     </Style>
 
 
-	<Style x:Key="HeaderButtonStyle" TargetType="Button">
+	<Style x:Key="HeaderButtonStyle" TargetType="ToggleButton">
 		<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
 		<Setter Property="BorderThickness" Value="{DynamicResource ButtonBorderThemeThickness}" />
@@ -911,7 +911,7 @@
 		<Setter Property="Padding" Value="18 9 18 11" />
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="Button">
+				<ControlTemplate TargetType="ToggleButton">
 					<Border
                         x:Name="Background"
                         Background="{TemplateBinding Background}"
@@ -933,6 +933,113 @@
                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
 						</Border>
 					</Border>
+					<ControlTemplate.Triggers>
+				
+						<EventTrigger RoutedEvent="ToggleButton.Click">
+							<BeginStoryboard>
+								<Storyboard>
+									<ColorAnimation From="SteelBlue" To="#61B5FA" Duration="0:0:0.25" Storyboard.TargetName="Background" Storyboard.TargetProperty="Background.Color"/>
+								</Storyboard>
+							</BeginStoryboard>
+						</EventTrigger>
+						
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsChecked" Value="False"/>
+								<Condition Property="IsMouseOver" Value="True"/>
+							</MultiTrigger.Conditions>
+							<MultiTrigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<ColorAnimation From="#1e1e1e" To="SteelBlue" Duration="0:0:0.2" Storyboard.TargetName="Background" Storyboard.TargetProperty="Background.Color"/>
+									</Storyboard>
+								</BeginStoryboard>
+							</MultiTrigger.EnterActions>
+							<MultiTrigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<ColorAnimation From="SteelBlue" To="#1e1e1e" Duration="0:0:0.2" Storyboard.TargetName="Background" Storyboard.TargetProperty="Background.Color"/>
+									</Storyboard>
+								</BeginStoryboard>
+							</MultiTrigger.ExitActions>
+						</MultiTrigger>
+						
+						
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsChecked" Value="False"/>
+								<Condition Property="IsPressed" Value="True"/>
+							</MultiTrigger.Conditions>
+							<MultiTrigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<ColorAnimation From="SteelBlue" To="#61B5FA" Duration="0:0:0.1" Storyboard.TargetName="Background" Storyboard.TargetProperty="Background.Color"/>
+									</Storyboard>
+								</BeginStoryboard>
+							</MultiTrigger.EnterActions>
+				
+						</MultiTrigger>
+						
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsChecked" Value="True"/>
+								<Condition Property="IsMouseOver" Value="False"/>
+								<Condition Property="IsPressed" Value="False"/>
+								<Condition Property="IsEnabled" Value="True"/>
+							</MultiTrigger.Conditions>
+							<Setter Property="Background" TargetName="Background" Value="SteelBlue"/>
+							<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundChecked}"/>
+							<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushChecked}"/>
+						</MultiTrigger>
+						
+						
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsChecked" Value="True"/>
+								<Condition Property="IsMouseOver" Value="True"/>
+							</MultiTrigger.Conditions>
+							<MultiTrigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<ColorAnimation From="SteelBlue" To="#61B5FA" Duration="0:0:0.1" Storyboard.TargetName="Background" Storyboard.TargetProperty="Background.Color"/>
+									</Storyboard>
+								</BeginStoryboard>
+							</MultiTrigger.EnterActions>
+							<MultiTrigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<ColorAnimation From="#61B5FA" To="SteelBlue" Duration="0:0:0.1" Storyboard.TargetName="Background" Storyboard.TargetProperty="Background.Color"/>
+									</Storyboard>
+								</BeginStoryboard>
+							</MultiTrigger.ExitActions>
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsChecked" Value="True"/>
+								<Condition Property="IsPressed" Value="True"/>
+							</MultiTrigger.Conditions>
+							<MultiTrigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<ColorAnimation From="SteelBlue" To="#61B5FA" Duration="0:0:0.1" Storyboard.TargetName="Background" Storyboard.TargetProperty="Background.Color"/>
+									</Storyboard>
+								</BeginStoryboard>
+							</MultiTrigger.EnterActions>
+		
+						</MultiTrigger>
+
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsChecked" Value="False"/>
+								<Condition Property="IsMouseOver" Value="False"/>
+								<Condition Property="IsPressed" Value="False"/>
+								<Condition Property="IsEnabled" Value="True"/>
+							</MultiTrigger.Conditions>
+							<Setter Property="Background" TargetName="Background" Value="#1e1e1e"/>
+							<Setter Property="TextElement.Foreground" TargetName="ContentPresenter" Value="{DynamicResource ToggleButtonForegroundIndeterminate}"/>
+							<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource ToggleButtonBorderBrushIndeterminate}"/>
+						</MultiTrigger>
+					</ControlTemplate.Triggers>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -3287,8 +3394,8 @@
 													<ColumnDefinition/>
 												</Grid.ColumnDefinitions>
 												<Button x:Name="PrimaryButton" Cursor="Hand" Content="{TemplateBinding PrimaryButtonText}" Grid.Column="0" HorizontalAlignment="Stretch" IsEnabled="{TemplateBinding IsPrimaryButtonEnabled}" Margin="0,0,8,0" Style="{StaticResource SearchButtonStyle}" VerticalAlignment="Stretch"/>
-												<Button x:Name="SecondaryButton" Grid.ColumnSpan="2" Content="{TemplateBinding SecondaryButtonText}" Grid.Column="1" HorizontalAlignment="Stretch" IsEnabled="{TemplateBinding IsSecondaryButtonEnabled}" Margin="0,0" Style="{StaticResource SearchButtonStyle}" VerticalAlignment="Stretch"/>
-												<Button x:Name="CloseButton" Cursor="Hand" Content="{TemplateBinding CloseButtonText}" Grid.Column="3" HorizontalAlignment="Stretch" Margin="2,0,0,0" Style="{StaticResource CustomButtonStyle}" VerticalAlignment="Stretch"/>
+												<Button x:Name="SecondaryButton" Cursor="Hand" Grid.ColumnSpan="2" Content="{TemplateBinding SecondaryButtonText}" Grid.Column="1" HorizontalAlignment="Stretch" IsEnabled="{TemplateBinding IsSecondaryButtonEnabled}" Margin="0,0, 8, 0" Style="{StaticResource SearchButtonStyle}" VerticalAlignment="Stretch"/>
+												<Button x:Name="CloseButton" Cursor="Hand" Content="{TemplateBinding CloseButtonText}" Grid.Column="3" HorizontalAlignment="Stretch" Margin="0,0,0,0" Style="{StaticResource CustomButtonStyle}" VerticalAlignment="Stretch"/>
 											</Grid>
 										</Grid>
 									</Border>
