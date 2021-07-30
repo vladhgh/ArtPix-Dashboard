@@ -4,8 +4,9 @@
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:local="clr-namespace:ArtPix_Dashboard.API"
                     xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
-                    xmlns:utils1="clr-namespace:ArtPix_Dashboard.Utils">
-    <utils1:MultiplyConverter x:Key="multiplyConverter" />
+                    xmlns:utils1="clr-namespace:ArtPix_Dashboard.Utils"
+                    xmlns:converters="clr-namespace:ArtPix_Dashboard.Utils.Converters">
+    <converters:MultiplyConverter x:Key="multiplyConverter" />
 
 
     <Style x:Key="CustomComboBoxStyle" TargetType="{x:Type ComboBox}">
@@ -2630,19 +2631,19 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <Grid x:Name="LayoutRoot" Background="{DynamicResource SystemControlPageBackgroundMediumAltMediumBrush}" SnapsToDevicePixels="True" Visibility="Collapsed">
-                            <Grid x:Name="BackgroundElement" FlowDirection="{TemplateBinding FlowDirection}" HorizontalAlignment="Center" MaxWidth="760" MaxHeight="760" MinWidth="760" MinHeight="760" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Center">
+                            <Grid x:Name="BackgroundElement" FlowDirection="{TemplateBinding FlowDirection}" HorizontalAlignment="Center" MaxWidth="700" MaxHeight="740" MinWidth="700" MinHeight="740" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Center">
                                 <Grid.RenderTransform>
                                     <ScaleTransform/>
                                 </Grid.RenderTransform>
                                 <ui:ThemeShadowChrome x:Name="Shdw" CornerRadius="{TemplateBinding CornerRadius}" IsShadowEnabled="{TemplateBinding IsShadowEnabled}" Margin="{DynamicResource ContentDialogBorderWidth}"/>
                                 <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
-                                    <Border x:Name="DialogSpace" Padding="{DynamicResource ContentDialogPadding}">
+                                    <Border x:Name="DialogSpace" Padding="10 0 10 0">
                                         <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="*"/>
                                                 <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
-                                            <ScrollViewer x:Name="ContentScrollViewer" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" IsTabStop="False" Margin="{DynamicResource ContentDialogContentScrollViewerMargin}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
+                                            <ScrollViewer x:Name="ContentScrollViewer" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" IsTabStop="False" Margin="0" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
                                                 <Grid>
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto"/>

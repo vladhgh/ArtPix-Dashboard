@@ -1,8 +1,4 @@
-﻿using ArtPix_Dashboard.Models.Types;
-using ArtPix_Dashboard.Models.Machine;
-using ArtPix_Dashboard.Models.Order;
-using ArtPix_Dashboard.Models.Product;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -11,26 +7,42 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using ArtPix_Dashboard.Models;
+using ArtPix_Dashboard.Models.AppState;
+using ArtPix_Dashboard.Models.EntityLogs;
+using ArtPix_Dashboard.Models.FindBestService;
+using ArtPix_Dashboard.Models.IssueReasons;
+using ArtPix_Dashboard.Models.MachineAssignedItem;
+using ArtPix_Dashboard.Models.Order;
+using ArtPix_Dashboard.Models.OrderAssignedLogs;
 using ArtPix_Dashboard.Models.ProductHistory;
-using ArtPix_Dashboard.Models.Shipping;
+using ArtPix_Dashboard.Models.ProductionIssue;
+using ArtPix_Dashboard.Models.Requests;
 using ArtPix_Dashboard.Models.Workstation;
 using ToastNotifications.Messages;
 using ArtPix_Dashboard.Properties;
-using ArtPix_Dashboard.Models.Logs;
 using Microsoft.Toolkit.Uwp.Notifications;
 using DataFormat = RestSharp.DataFormat;
 
 namespace ArtPix_Dashboard.API
 {
+
+	//EMOJIS: ✅❎
+
 	public class ArtPixAPI
 	{
-		public static string bearerToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyIiwianRpIjoiZGZkMWFjZWIyN2EyOGU2ODliMjE2ZThjOGMyZTU1YTkxODgzODM5MDAwNGM2OWM1ZDE2OWU5NDQzMzRjZWRjZmRlOGJiNTljOGJjN2Y2OWUiLCJpYXQiOjE2MDAzMTg4OTksIm5iZiI6MTYwMDMxODg5OSwiZXhwIjoxNjMxODU0ODk5LCJzdWIiOiIxNiIsInNjb3BlcyI6W119.QWBy29NAIWiYQzU6QI4XLFYaZTZnxVj_Jw0z3uzv7WSapgLJTi1pa3sy57d9DEqnOG_H2bfLjrJv3yP48Ix86Q_CwkW5YME40ZlafbJzT1203Rf4fB46dFUzhtbSmVMrQfc6bYP77naN6Ev06TGjiLIZ2SYrM94scCFLdN1tJEdZdqYI3EEbABWaGIr2g1jok5G_3T9VHnrWOWYOdffaOH7w7kpl6_QTGaX5e3Z3XDYynKJAgub4xTaHptLxbNq1EpCjNvOcw1vjTV22MKj-1p3IWOWjXNtVelIOkNx1VE1w--7hAlaIaOHYoSbslqXYla1aSfCLQ6P4EPMYqvsKTArYBpnVG6LM_XQhQK-iNKmYoJa1ZIVTlSc9fQwE7z9hnmOZCcjqgc-kbN6f6DShboe0sjaAA12o-lxjbmIjPdobruDBKMIFsQ5boCrURWR2kaKIe2uATJFTImuE54C_8H2vfu2mOcH_UUPU9u3B6dLQCCk2cjLuPPj6ZOLy4DKrwafk14cvVFtMxRxu2u6ICVz0pztRzxBHo9zZTMKeW7JsZsZvhYeI4A16-7jtzhDF5lhQAHXQ_oOHsvXjLND_XDfGkTAue3Z4GS1O_7GmkvdV2URbHoD0wfNHFDvxl2ecph3u18A40jntJbgFd3ey4hHtq-IwXJaj0RM6AV_nVZ8";
 
-		private static readonly RestClient Client = new RestClient("https://order-archive.artpix3d.com/api/v1");
-		private static readonly RestClient ClientCp = new RestClient("https://confirmation.artpix3d.com/api");
+		#region CLIENTS AND TOKENS
 
-		#region CP
+		public static string BearerToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyIiwianRpIjoiZGZkMWFjZWIyN2EyOGU2ODliMjE2ZThjOGMyZTU1YTkxODgzODM5MDAwNGM2OWM1ZDE2OWU5NDQzMzRjZWRjZmRlOGJiNTljOGJjN2Y2OWUiLCJpYXQiOjE2MDAzMTg4OTksIm5iZiI6MTYwMDMxODg5OSwiZXhwIjoxNjMxODU0ODk5LCJzdWIiOiIxNiIsInNjb3BlcyI6W119.QWBy29NAIWiYQzU6QI4XLFYaZTZnxVj_Jw0z3uzv7WSapgLJTi1pa3sy57d9DEqnOG_H2bfLjrJv3yP48Ix86Q_CwkW5YME40ZlafbJzT1203Rf4fB46dFUzhtbSmVMrQfc6bYP77naN6Ev06TGjiLIZ2SYrM94scCFLdN1tJEdZdqYI3EEbABWaGIr2g1jok5G_3T9VHnrWOWYOdffaOH7w7kpl6_QTGaX5e3Z3XDYynKJAgub4xTaHptLxbNq1EpCjNvOcw1vjTV22MKj-1p3IWOWjXNtVelIOkNx1VE1w--7hAlaIaOHYoSbslqXYla1aSfCLQ6P4EPMYqvsKTArYBpnVG6LM_XQhQK-iNKmYoJa1ZIVTlSc9fQwE7z9hnmOZCcjqgc-kbN6f6DShboe0sjaAA12o-lxjbmIjPdobruDBKMIFsQ5boCrURWR2kaKIe2uATJFTImuE54C_8H2vfu2mOcH_UUPU9u3B6dLQCCk2cjLuPPj6ZOLy4DKrwafk14cvVFtMxRxu2u6ICVz0pztRzxBHo9zZTMKeW7JsZsZvhYeI4A16-7jtzhDF5lhQAHXQ_oOHsvXjLND_XDfGkTAue3Z4GS1O_7GmkvdV2URbHoD0wfNHFDvxl2ecph3u18A40jntJbgFd3ey4hHtq-IwXJaj0RM6AV_nVZ8";
+
+		private static readonly RestClient Client = new ("https://order-archive.artpix3d.com/api/v1");
+
+		private static readonly RestClient ClientCp = new ("https://confirmation.artpix3d.com/api");
+
+		#endregion
+
+		#region GET: PRODUCT HISTORY - DONE - ✅
+
 		public static async Task<ProductHistoryModel> GetProductHistoryAsync(int productId)
 		{
 			var req = new RestRequest("/order-item-history/" + productId.ToString());
@@ -39,55 +51,68 @@ namespace ArtPix_Dashboard.API
 			var res = await ClientCp.GetAsync<ProductHistoryModel>(req);
 			return res;
 		}
+
 		#endregion
 
+		#region GET: ENGRAVING STATS - DONE - ✅
 
-
-		public static async Task<StatsModel> GetAllStatsAsync()
+		public static async Task<EngravingStatsModel> GetEngravingStatsAsync()
 		{
-			var machineAssignItems = await Task.WhenAll(GetMachineAssignItemsAsync("ready_to_engrave", "All" ,"1", "1"), GetMachineAssignItemsAsync("processing", "All", "1", "1"), GetMachineAssignItemsAsync("engraved", "All", "1", "1"), GetEngravedTodayItemsAsync("All", "1", "1"));
+			var machineAssignItems = await Task.WhenAll(
+				GetOrdersAsync(new CombinedFilterModel("Ready To Engrave"){perPage = 1}),
+				GetOrdersAsync(new CombinedFilterModel("Engraving"){perPage = 1}),
+				GetOrdersAsync(new CombinedFilterModel("Awaiting Model"){perPage = 1}));
 			var productionIssues = await GetProductionIssuesAsync("1", "1");
-			var stats = new StatsModel
+			var engravedToday = await GetEngravedTodayItemsAsync("All", "1", "1");
+			var stats = new EngravingStatsModel
 			{
-				ReadyToEngraveCount = machineAssignItems[0].Meta.Total - 5,
-				ProcessingCount = machineAssignItems[1].Meta.Total - 1,
-				EngravedCount = machineAssignItems[2].Meta.Total,
-				EngravedTodayCount = machineAssignItems[3].Meta.Total,
+				ReadyToEngraveCount = machineAssignItems[0].Meta.Total,
+				ProcessingCount = machineAssignItems[1].Meta.Total,
+				AwaitingModelCount = machineAssignItems[2].Meta.Total,
+				EngravedTodayCount = engravedToday.Meta.Total,
 				IssueCount = productionIssues.Meta.Total
 			};
 			return stats;
 		}
-		public static async Task<StatsModel> GetShippingStatsAsync()
+
+		#endregion
+
+		#region GET: SHIPPING  STATS - DONE - ✅
+
+		public static async Task<ShippingStatsModel> GetShippingStatsAsync()
 		{
-			var awaitingShipmentModel = new OrderCombineFilterModel
+			var awaitingShipmentModel = new CombinedFilterModel
 			{
+				perPage = 1,
 				status_order = "processing",
 				status_shipping = "waiting"
 			};
-			var shipByTodayModel = new OrderCombineFilterModel
+			var shipByTodayModel = new CombinedFilterModel
 			{
+				perPage = 1,
 				status_order = "processing",
 				status_shipping = "waiting",
 				shipByToday = "True"
 			};
-			var readyToShip = new OrderCombineFilterModel
+			var readyToShip = new CombinedFilterModel
 			{
+				perPage = 1,
 				status_order = "processing",
 				status_shipping = "waiting",
 				status_engraving = "engrave_done&amp;with_crystal_product_status[]=completed"
 			};
-			var orders = await Task.WhenAll(GetOrdersAsync(1, 1, awaitingShipmentModel), GetOrdersAsync(1, 1, shipByTodayModel), GetOrdersAsync(1, 1, readyToShip));
+			var orders = await Task.WhenAll(GetOrdersAsync(awaitingShipmentModel), GetOrdersAsync(shipByTodayModel), GetOrdersAsync(readyToShip));
 			var shippedOrders = await GetShippedTodayOrders();
 
-			var result = shippedOrders.GroupBy(l => l.User).Select(g => new Models.Shipping.Datum
+			var result = shippedOrders.GroupBy(l => l.User).Select(g => new Models.OrderAssignedLogs.Datum
 			{
 				User = g.Key,
 				ShippedOrdersCount = g.Select(l => l.User).Count()
 			});
-			var sort = new List<Models.Shipping.Datum>(result);
+			var sort = new List<Models.OrderAssignedLogs.Datum>(result);
 			var ordersShippedByUser = sort.Aggregate("", (current, item) => current + $"USER: {item.User}, ORDERS SHIPPED: {item.ShippedOrdersCount}\n");
 
-			var stats = new StatsModel
+			var stats = new ShippingStatsModel
 			{
 				AwaitingShipment = orders[0].Meta.Total,
 				ShipByToday = orders[1].Meta.Total,
@@ -98,18 +123,24 @@ namespace ArtPix_Dashboard.API
 			return stats;
 		}
 
-		public static async Task<List<Models.Workstation.Machine>> GetActiveMachines()
+		#endregion
+
+		#region GET: ACTIVE MACHINES - NOT DONE - ❎
+
+		//TODO: CHANGE ENDPOINT TO /ORDER
+
+		public static async Task<List<Machine>> GetActiveMachines()
 		{
 			var items = await GetMachineAssignItemsAsync("processing", "All", "1" , "100");
-			var machinesList = items.Data.Select(item => new Models.Workstation.Machine { Name = item.MachineId}).ToList();
+			var machinesList = items.Data.Select(item => new Machine { Name = item.MachineId}).ToList();
 			var i = 1;
 			while (items.Meta.LastPage > i)
 			{
 				i++;
 				items = await GetMachineAssignItemsAsync("processing", "All", i.ToString(), "100");
-				machinesList.AddRange(items.Data.Select(item => new Models.Workstation.Machine {Name = item.MachineId}));
+				machinesList.AddRange(items.Data.Select(item => new Machine {Name = item.MachineId}));
 			}
-			var res = machinesList.GroupBy(l => l.Name).Select(g => new Models.Workstation.Machine
+			var res = machinesList.GroupBy(l => l.Name).Select(g => new Machine
 			{
 				Name = g.Key,
 				IdMachines = Int32.Parse(g.Key),
@@ -119,7 +150,14 @@ namespace ArtPix_Dashboard.API
 			return res.ToList();
 		}
 
-		public static async Task<WorkstationsModel> GetWorkstations()
+
+		#endregion
+
+		#region GET: WORKSTATIONS - NOT DONE - ❎
+
+		//TODO: GET CURRENTLY ENGRAVING ORDERS FROM GET /ORDER ENDPOINT AND ENSURE PROPER FUNCTIONING
+
+		public static async Task<WorkstationsModel> GetWorkstationStats()
 		{
 			var req = new RestRequest("/work-stations");
 			Debug.WriteLine($"API GET: /work-stations");
@@ -138,7 +176,7 @@ namespace ArtPix_Dashboard.API
 				if (online.TryGetValue(machine.IdMachines, out bool val))
 				{
 					machine.NetworkStatus = val ? "Online" : "Offline";
-					Debug.WriteLine("Fetched value: {0}", val);
+					//Debug.WriteLine("Fetched value: {0}", val);
 				}
 				else
 				{
@@ -217,36 +255,41 @@ namespace ArtPix_Dashboard.API
 			return workstations;
 		}
 
+		#endregion
 
-		#region ORDER
+		#region GET: ORDER - DONE - ✅
+
 		public static async Task<Models.Order.Datum> GetOrder(string orderId = "", string orderName = "")
 		{
 			var request = $"/order?per_page=1{(orderId == "" ? $"&name_order={orderName}" : $"&order_id={orderId}")}";
 			var req = new RestRequest(request + orderName);
 			req.AddHeader("Accept", "application/json");
-			req.AddHeader("Authorization", "Bearer " + bearerToken);
+			req.AddHeader("Authorization", "Bearer " + BearerToken);
 			req.AlwaysMultipartFormData = true;
 			Debug.WriteLine($"API GET: {request}");
 			var res = await Client.GetAsync<OrderModel>(req);
 			return res.Data.Count > 0 ? res.Data[0] : null;
 		}
 
+		#endregion
 
-		public static async Task<OrderModel> GetOrdersAsync(int page, int perPage, OrderCombineFilterModel filterGroup)
+		#region GET: ORDERS - DONE - ✅
+
+		public static async Task<OrderModel> GetOrdersAsync(CombinedFilterModel combinedFilter)
 		{
 			var today = DateTime.Now.Date.ToString("yyyy-MM-dd");
-			var request = $"/order?page={page}&per_page={perPage}";
-			foreach (var propertyInfo in filterGroup.GetType().GetProperties())
+			var request = $"/order?page={combinedFilter.pageNumber}&per_page={combinedFilter.perPage}";
+			foreach (var propertyInfo in combinedFilter.GetType().GetProperties())
 			{
 				var propName = propertyInfo.Name;
-				var propValue = propertyInfo.GetValue(filterGroup, null);
+				var propValue = propertyInfo.GetValue(combinedFilter, null);
 				if (propValue == null) continue;
 				if (propertyInfo.PropertyType == typeof(Visibility)) continue;
 				if (propertyInfo.PropertyType == typeof(bool)) continue;
 				if (propName == "with_crystals" && propValue.ToString() == "3") continue;
 				if (propName == "name_order" && propValue.ToString() == "0") continue;
 				if (propValue.ToString() == "") continue;
-				if (propName == "SelectedFilterGroup") continue;
+				if (propName == "SelectedFilterGroup" || propName == "pageNumber" || propName == "perPage") continue;
 				switch (propName)
 				{
 					case "with_shipping_totes" when propValue.ToString() == "True":
@@ -273,22 +316,25 @@ namespace ArtPix_Dashboard.API
 			Debug.WriteLine($"API GET: {request}");
 			var req = new RestRequest(request);
 			req.AddHeader("Accept", "application/json");
-			req.AddHeader("Authorization", "Bearer " + bearerToken);
+			req.AddHeader("Authorization", "Bearer " + BearerToken);
 			req.AlwaysMultipartFormData = true;
 			return await Client.GetAsync<OrderModel>(req);
 		}
 
 		#endregion
 
-		#region MACHINE
+		#region GET: MACHINES - DONE - ✅
 
-		public static async Task<MachineModel> GetMachines(int productId)
+		public static async Task<List<Machine>> GetMachines(int productId)
 		{
 			var req = new RestRequest("/machines?product_id=" + productId);
 			req.AddHeader("Accept", "application/json");
-			Debug.WriteLine($"API GET: " + "/machines?product_id=" + productId);
-			return await Client.GetAsync<MachineModel>(req);
+			return await Client.GetAsync<List<Machine>>(req);
 		}
+
+		#endregion
+
+		#region GET: NEXT ORDERS - DONE - ✅
 
 		public static async Task GetNextOrderAsync(string machineId, string count)
 		{
@@ -298,8 +344,10 @@ namespace ArtPix_Dashboard.API
 			var res = await Client.GetAsync<string>(req);
 			Debug.WriteLine(res);
 		}
-		
-		
+
+		#endregion
+
+		#region GET: MACHINE ASSIGNED ITEMS - DONE - ✅
 
 		public static async Task<MachineAssignItemModel> GetMachineAssignItemsAsync(string status, string machineId, string page = "1", string perPage = "15")
 		{
@@ -309,23 +357,38 @@ namespace ArtPix_Dashboard.API
 			return res;
 		}
 
+		#endregion
+
+		#region GET: ENGRAVED TODAY ITEMS - DONE  - ✅
+
 		public static async Task<MachineAssignItemModel> GetEngravedTodayItemsAsync(string machineId, string page = "1", string perPage = "15")
 		{
 			var today = DateTime.Now.Date.ToString("yyyy/MM/dd");
-			var request = machineId == "All" ? new RestRequest("/machine/assign-item?page=" + page + "&per_page=" + perPage + "&status=success&ended_after=" + today + " 12:00:00&sort_by=ended_at_desc", DataFormat.Json) : new RestRequest("/machine/assign-item?page=" + page + "&per_page=" + perPage + "&status=success&ended_after=" + today + " 12:00:00&machine_id=" + machineId + "&sort_by=ended_at_desc", DataFormat.Json);
+			var request = machineId == "All" ? ("/machine/assign-item?page=" + page + "&per_page=" + perPage + "&status=success&ended_after=" + today + " 12:00:00&sort_by=ended_at_desc")
+				: ("/machine/assign-item?page=" + page + "&per_page=" + perPage + "&status=success&ended_after=" + today + " 12:00:00&machine_id=" + machineId + "&sort_by=ended_at_desc");
 			Debug.WriteLine($"API GET: {request}");
-			var res = await Client.GetAsync<MachineAssignItemModel>(request);
+			var req = new RestRequest(request, DataFormat.Json);
+			var res = await Client.GetAsync<MachineAssignItemModel>(req);
 			return res;
 		}
 
-		public static async Task ResolveProductionIssueAsync(ResolveErrorRequestModel requestBody)
+		#endregion
+
+		#region POST: RESOLVE PRODUCTION ISSUE - DONE - ✅
+
+		public static async Task ResolveProductionIssueAsync(ResolveProductionIssueRequest request)
 		{
-			var request = new RestRequest("/resolveError").AddJsonBody(requestBody).AddHeader("Accept", "application/json");
+			var apiRequest = new RestRequest("/resolveError").AddJsonBody(request).AddHeader("Accept", "application/json");
 			Debug.WriteLine($"API POST: /resolveError");
-			var res = await Client.PostAsync<string>(request);
-			Debug.WriteLine($"API RESPONSE: {res}");
+			var response = await Client.PostAsync<string>(apiRequest);
+			Debug.WriteLine($"API RESPONSE: {response}");
 
 		}
+
+		#endregion
+
+		#region GET: REMOVE CURRENT JOBS FROM MACHINE - DONE - ✅
+
 		public static async Task RemoveCurrentJobsFromMachineAsync(string machineId)
 		{
 			var request = new RestRequest($"/removeCurrentJobs?machine_id={machineId}", Method.GET).AddHeader("Accept", "application/json");
@@ -338,35 +401,47 @@ namespace ArtPix_Dashboard.API
 			{
 				Utils.Utils.Notifier.ShowSuccess($"{res.Content} jobs were removed from machine {machineId} successfully!");
 			}
-
 		}
 
-		public static async Task ChangeMachineAssignItemStatusAsync(NewStatusModel requestBody)
+		#endregion
+
+		#region POST: CHANGE MACHINE ASSIGNED ITEM STATUS - DONE - ✅
+
+		public static async Task ChangeMachineAssignItemStatusAsync(ChangeMachineAssignItemStatusRequest request)
 		{
-			var request = new RestRequest("/machine/assign-item/status").AddJsonBody(requestBody).AddHeader("Accept", "application/json");
+			var apiRequest = new RestRequest("/machine/assign-item/status").AddJsonBody(request).AddHeader("Accept", "application/json");
 			Debug.WriteLine($"API POST: /machine/assign-item/status");
-			var res = await Client.PostAsync<string>(request);
+			var response = await Client.PostAsync<string>(apiRequest);
+			Debug.WriteLine($"API RESPONSE: {response}");
+		}
+
+		#endregion
+
+		#region DELETE: UNASSIGN MACHINE ASSIGNED ITEM - DONE - ✅
+
+		public static async Task UnassignMachineAssignItemAsync(ChangeMachineAssignItemStatusRequest requestBody)
+		{
+			var request = new RestRequest("/product/machine/unassign").AddJsonBody(requestBody).AddHeader("Accept", "application/json");
+			Debug.WriteLine($"API DELETE: {request}");
+			request.AddHeader("Authorization", "Bearer " + BearerToken);
+			var res = await Client.DeleteAsync<string>(request);
 			Debug.WriteLine($"API RESPONSE: {res}");
 		}
 
 		#endregion
 
-		#region PRODUCTS
+		#region POST: CANCEL PRODUCTION ISSUE - DONE  - ✅ - NOT USED
 
-		public static async Task UnassignMachineAssignItemAsync(AssignProcessingModel requestBody)
+		public static async Task CancelProductionIssueAsync(ResolveProductionIssueRequest requestBody)
 		{
-			var request = new RestRequest("/product/machine/unassign").AddJsonBody(requestBody).AddHeader("Accept", "application/json");
-			Debug.WriteLine($"API DELETE: {request}");
-			request.AddHeader("Authorization", "Bearer " + bearerToken);
-			var res = await Client.DeleteAsync<string>(request);
-			Debug.WriteLine($"API RESPONSE: {res}");
+			var request = new RestRequest("/product/production-issue/" + requestBody.machine_assign_error_id + "/cancel").AddJsonBody(requestBody).AddHeader("Accept", "application/json");
+			var res = await Client.PostAsync<string>(request);
 		}
 
-		//public static async Task CancelProductionIssueAsync(ResolveErrorRequestModel requestBody)
-		//{
-		//	var request = new RestRequest("/product/production-issue/" + requestBody.machine_assign_error_id + "/cancel").AddJsonBody(requestBody).AddHeader("Accept", "application/json");
-		//	var res = await Client.PostAsync<string>(request);
-		//}
+		#endregion
+
+		#region GET: PRODUCTION ISSUES - DONE - ✅
+
 		public static async Task<ProductionIssueModel> GetProductionIssuesAsync(string page = "1", string perPage = "15", string orderId = "All", string sortBy = "")
 		{
 			var request = orderId == "All"
@@ -378,44 +453,60 @@ namespace ArtPix_Dashboard.API
 			var res = await Client.GetAsync<ProductionIssueModel>(request);
 			return res;
 		}
-		public static async Task AddProductionIssueAsync(AddIssueRequestModel body)
+
+		#endregion
+
+		#region POST: ADD PRODUCTION ISSUE - DONE - ✅
+
+		public static async Task AddProductionIssueAsync(AddProductionIssueRequest request)
 		{
-			var request = new RestRequest("/product/production-issue", DataFormat.Json);
-			request.AddJsonBody(body);
-			request.AddHeader("Cache-Control", "no-cache");
-			request.AddHeader("Content-Type", "application/json");
-			Debug.WriteLine("API POST: /product/production-issue");
-			var res = await Client.PostAsync<string>(request);
-			Debug.WriteLine($"API RESPONSE: {res}");
+			var apiRequest = new RestRequest("/product/production-issue", DataFormat.Json).AddJsonBody(request).AddHeader("Cache-Control", "no-cache").AddHeader("Content-Type", "application/json");
+			await Client.PostAsync<string>(apiRequest);
+
 		}
+
+		#endregion
+
+		#region GET: ISSUE REASONS - DONE - ✅
+
 		public static async Task<IssueReasonsModel> GetIssueReasonsAsync()
 		{
 			var request = new RestRequest("/production-issues/reasons", DataFormat.Json);
 			var res = await Client.GetAsync<IssueReasonsModel>(request);
 			return res;
 		}
-		public static async Task ProductAssignProcessing(AssignProcessingModel requestBody)
+
+		#endregion
+
+		#region POST: ASSIGN MACHINE - DONE - ✅
+
+		public static async Task ProductAssignProcessing(ChangeMachineAssignItemStatusRequest requestBody)
 		{
 			var request = new RestRequest("/product/machine/assign-processing").AddJsonBody(requestBody).AddHeader("Accept", "application/json");
-			request.AddHeader("Authorization", "Bearer " + bearerToken);
+			request.AddHeader("Authorization", "Bearer " + BearerToken);
 			Debug.WriteLine($"API POST: /product/machine/assign-processing");
 			var res = await Client.PostAsync<string>(request);
 			Debug.WriteLine($"API RESPONSE: {res}");
-
 		}
-		public static async Task ProductReEngrave(AssignProcessingModel requestBody)
+
+		#endregion
+
+		#region POST: RE-ENGRAVE PRODUCT - DONE - ✅
+
+		public static async Task ProductReEngrave(ChangeMachineAssignItemStatusRequest requestBody)
 		{
 			var request = new RestRequest("/machine/assign-item/re-engrave").AddJsonBody(requestBody).AddHeader("Accept", "application/json");
-			request.AddHeader("Authorization", "Bearer " + bearerToken);
+			request.AddHeader("Authorization", "Bearer " + BearerToken);
 			Debug.WriteLine($"API POST: /machine/assign-item/re-engrave");
 			var res = await Client.PostAsync<string>(request);
 			Debug.WriteLine($"API RESPONSE: {res}");
-
 		}
+
 		#endregion
 
-		#region SHIPPING
-		public static async Task<FindBestServiceModel> FindBestServiceAsync(FindBestServiceRequestModel requestBody)
+		#region POST: FIND BEST SERVICE - DONE - ✅
+
+		public static async Task<FindBestServiceModel> FindBestServiceAsync(FindBestServiceRequest requestBody)
 		{
 			var request = new RestRequest("/shipping/findBestService", Method.POST);
 			request.AddJsonBody(requestBody);
@@ -426,14 +517,19 @@ namespace ArtPix_Dashboard.API
 			return JsonConvert.DeserializeObject<FindBestServiceModel>(response.Content);
 			//Debug.WriteLine(res.Success);
 		}
-		public static async Task<List<Models.Shipping.Datum>> GetShippedTodayOrders()
+
+		#endregion
+
+		#region GET: SHIPPED TODAY ORDERS - DONE - ✅
+
+		public static async Task<List<Models.OrderAssignedLogs.Datum>> GetShippedTodayOrders()
 		{
 			var today = DateTime.Now.Date.ToString("yyyy-MM-dd");
-			var orderList = new List<Models.Shipping.Datum>();
+			var orderList = new List<Models.OrderAssignedLogs.Datum>();
 			var req = new RestRequest("/shipping/order-assign?per_page=100");
 			//while last element in the list check updated at date and if it's earlier then 7AM of today's date then stop API calls
 			req.AddHeader("Accept", "application/json");
-			req.AddHeader("Authorization", "Bearer " + bearerToken);
+			req.AddHeader("Authorization", "Bearer " + BearerToken);
 			req.AlwaysMultipartFormData = true;
 			var res = await Client.GetAsync<OrderAssignModel>(req);
 			foreach (var order in res.Data)
@@ -459,12 +555,12 @@ namespace ArtPix_Dashboard.API
 			}
 			return orderList;
 		}
+
 		#endregion
 
-		#region LOGS
+		#region GET: ENTITY LOGS - NOT DONE - ❎
 
-
-			public static async Task GetEntityLogsAsync()
+		public static async Task GetEntityLogsAsync()
 		{
 			var request = new RestRequest("/entity-logs?entity_type=machine_assign_item&per_page=100", DataFormat.Json);
 			request.AddHeader("Accept", "application/json");
@@ -473,21 +569,20 @@ namespace ArtPix_Dashboard.API
 			DateTime startEngravingTime = new DateTime();
 			DateTime endEngravingTime = new DateTime(); ;
 			TimeSpan engravingGap = new TimeSpan();
-			var previousLog = new Models.Logs.Datum();
-			var lastIssueLog = new Models.Logs.Datum();
+			var previousLog = new Models.EntityLogs.Datum();
+			var lastIssueLog = new Models.EntityLogs.Datum();
 
 			foreach (var issueLog in res.Data.ToList())
 			{
 				if (issueLog.Type == "machine_issue" && Settings.Default.LastIssueEntityLogId < issueLog.Id)
 				{
 					new ToastContentBuilder()
-						.AddArgument("action", "viewConversation")
-						.AddArgument("conversationId", 9813)
+						.AddArgument("action", "openIssue")
+						.AddArgument("orderId", issueLog.Data.OrderIds[0])
 						.AddText($"Machine {issueLog.Data.Machine}: Issue Created")
 						.AddText($"Issue: {issueLog.Data.Error}\nEmployee: {issueLog.Data.User}")
 						.AddButton(new ToastButton()
 							.SetContent("Show Details")
-							.AddArgument("action", "like")
 							.SetBackgroundActivation())
 						.Show();
 					Settings.Default.LastIssueEntityLogId = issueLog.Id;
@@ -551,7 +646,9 @@ namespace ArtPix_Dashboard.API
 
 		}
 
+		#endregion
 
+		#region GET: PRODUCTION ISSUE - DONE - ✅
 
 		public static async Task<ProductionIssueModel> GetProductionIssueAsync(string machineAssignItemId)
 		{
@@ -565,5 +662,6 @@ namespace ArtPix_Dashboard.API
 		}
 
 		#endregion
+
 	}
 }

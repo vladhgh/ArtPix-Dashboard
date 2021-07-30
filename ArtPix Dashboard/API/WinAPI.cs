@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using ArtPix_Dashboard.Utils;
-using ArtPix_Dashboard.Views;
 
 namespace ArtPix_Dashboard.API
 {

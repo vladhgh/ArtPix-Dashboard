@@ -187,5 +187,17 @@ namespace ArtPix_Dashboard.Properties {
                 this["LastIssueEntityLogId"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AppState {
+            get {
+                return ((string)(this["AppState"]));
+            }
+            set {
+                this["AppState"] = value;
+            }
+        }
     }
 }

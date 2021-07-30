@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using ArtPix_Dashboard.Utils.Helpers;
 using ArtPix_Dashboard.ViewModels;
 using Newtonsoft.Json;
 
@@ -191,7 +192,7 @@ namespace ArtPix_Dashboard.Models.Order
 			get
 			{
 				var outPutDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-				var productImagePath = Path.Combine(outPutDirectory, $"..\\..\\Assets\\{UrlRenderImg}");
+				var productImagePath = Path.Combine(outPutDirectory, $"..\\..\\Assets\\Images\\{UrlRenderImg}");
 				var productImageLocalPath = new Uri(productImagePath).LocalPath;
 
 				if (String.IsNullOrEmpty(_urlRenderImg))
@@ -217,6 +218,8 @@ namespace ArtPix_Dashboard.Models.Order
 			}
 		}
 
+		public Visibility EngravedAgeVisibility => Visibility.Collapsed;
+
 		[JsonProperty("url_render_img")]
 		public string UrlRenderImg
 		{
@@ -224,42 +227,37 @@ namespace ArtPix_Dashboard.Models.Order
 			{
 				switch (CrystalType.Sku)
 				{
-					case "6GFS3P3": return "greeting_card_flowers_orange_ribbon.png";
-					case "6GSS2R3": return "greeting_card_loving_heart.png";
-					case "6GSS1P3": return "greeting_card_i_love_you.png";
-					case "6GSS5R3": return "greeting_card_cupid_couple.png";
-					case "1PBS": return "plastic_light_base_small.png";
-					case "1PBM": return "plastic_light_base_medium.png";
-					case "1LBS": return "light_base_small.png";
-					case "1LBM": return "light_base_medium.png";
-					case "1LBL": return "light_base_large.png";
-					case "1LBX": return "light_base_xl.png";
-					case "1RBS": return "rotating_base_small.png";
-					case "1RBL": return "rotating_base_large.png";
+					case "6GFS3P3": return "\\GreetingCards\\greeting_card_flowers_orange_ribbon.png";
+					case "6GSS2R3": return "\\GreetingCards\\greeting_card_loving_heart.png";
+					case "6GSS1P3": return "\\GreetingCards\\greeting_card_i_love_you.png";
+					case "6GSS5R3": return "\\GreetingCards\\greeting_card_cupid_couple.png";
+					case "6GSS4R3": return "\\GreetingCards\\greeting_card_sweatheart_couple.png"; 
+					case "1PBS": return "\\LightBases\\plastic_light_base_small.png";
+					case "1PBM": return "\\LightBases\\plastic_light_base_medium.png";
+					case "1LBS": return "\\LightBases\\light_base_small.png";
+					case "1LBM": return "\\LightBases\\light_base_medium.png";
+					case "1LBL": return "\\LightBases\\light_base_large.png";
+					case "1LBX": return "\\LightBases\\light_base_xl.png";
+					case "1RBS": return "\\LightBases\\rotating_base_small.png";
+					case "1RBL": return "\\LightBases\\rotating_base_large.png";
 				}
 
 				switch (Name)
 				{
-					case "3D Clover Flower Set With Blue Ribbon Card":
-						return "https://artpix3d.com/wp-content/uploads/2020/12/Greeting-card-2-2.jpg";
-					case "3D Clover Flower Set With Orange Ribbon Card":
-						return "https://artpix3d.com/wp-content/uploads/2020/12/Greeting-card-3-2.jpg";
 					case "Cleaning Kit":
 						return "cleaning_kit.png";
 					case "Sunshine Wrapping Paper":
-						return "sunshine_wrapping_paper.png";
+						return "\\WrappingPaper\\sunshine_wrapping_paper.png";
 					case "Balloon Wrapping Paper":
-						return "baloon_wrapping_paper.png";
+						return "\\WrappingPaper\\baloon_wrapping_paper.png";
 					case "Red Star Wrapping Paper":
-						return "red_star_wrapping_paper.png";
+						return "\\WrappingPaper\\red_star_wrapping_paper.png";
 					case "Golden Star Wrapping Paper":
-						return "golden_star_wrapping_paper.png";
+						return "\\WrappingPaper\\golden_star_wrapping_paper.png";
 					case "Blue Polka Dot Wrapping Paper":
-						return "blue_polka_dot_wrapping_paper.png";
-					case "3D Sunflower Set Card":
-						return "sunflower_greeting_card.png";
+						return "\\WrappingPaper\\blue_polka_dot_wrapping_paper.png";
 					default:
-						return _urlRenderImg ?? "placeholder.png";
+						return _urlRenderImg ?? "multiple_item_order_preview.png";
 				}
 			}
 			set => _urlRenderImg = value;

@@ -1,109 +1,105 @@
-﻿using ArtPix_Dashboard.Models;
-using ArtPix_Dashboard.Models.Types;
-using ArtPix_Dashboard.Properties;
-using ArtPix_Dashboard.API;
-using ArtPix_Dashboard.Views;
-using ModernWpf.Controls;
-using ModernWpf.Media.Animation;
+﻿using ArtPix_Dashboard.API;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 using System.Windows;
+using ArtPix_Dashboard.Models.AppState;
 using ArtPix_Dashboard.Models.Workstation;
-using Microsoft.Toolkit.Uwp.Notifications;
-using Datum = ArtPix_Dashboard.Models.Workstation.Datum;
-using Machine = ArtPix_Dashboard.Models.Machine.Machine;
+using ArtPix_Dashboard.Utils.Helpers;
 
 namespace ArtPix_Dashboard.ViewModels
 {
-    public class MainViewModel : PropertyChangedListener
+
+	public class MainViewModel : PropertyChangedListener
     {
-	    #region PROPS
-	    private StatsModel _engravingStats = new StatsModel();
-	    public StatsModel EngravingStats
+
+	    #region PROPERTIES
+
+	    private EngravingStatsModel _engravingStats = new ();
+
+	    public EngravingStatsModel EngravingStats
 		{
 			get => _engravingStats;
 			set => SetProperty(ref _engravingStats, value);
 		}
-	    private StatsModel _shippingStats = new StatsModel();
-	    public StatsModel ShippingStats
+	    private ShippingStatsModel _shippingStats = new ();
+
+	    public ShippingStatsModel ShippingStats
 	    {
 		    get => _shippingStats;
 		    set => SetProperty(ref _shippingStats, value);
 	    }
-		private Visibility _shippingStatusGroupVisibility = Visibility.Collapsed;
-		public Visibility ShippingStatusGroupVisibility
+
+		private WorkstationsModel _workstationStats = new ();
+
+		public WorkstationsModel WorkstationStats
 		{
-			get => _shippingStatusGroupVisibility;
-			set => SetProperty(ref _shippingStatusGroupVisibility, value);
+			get => _workstationStats;
+			set => SetProperty(ref _workstationStats, value);
 		}
 
-		
-		private Visibility _engravingStatusGroupVisibility = Visibility.Collapsed;
-		public Visibility EngravingStatusGroupVisibility
-		{
-			get => _engravingStatusGroupVisibility;
-			set => SetProperty(ref _engravingStatusGroupVisibility, value);
-		}
+		private AppStateModel _appState = new ();
 
-
-		private AppStateModel _appState = new AppStateModel();
 		public AppStateModel AppState
 		{
 			get => _appState;
 			set => SetProperty(ref _appState, value);
 		}
 
-		private List<Models.Workstation.Machine> _activeMachinesList = new List<Models.Workstation.Machine>();
-		public List<Models.Workstation.Machine> ActiveMachinesList
-		{
-			get => _activeMachinesList;
-			set => SetProperty(ref _activeMachinesList, value);
-		}
-		private WorkstationsModel _workstations = new WorkstationsModel();
-		public WorkstationsModel Workstations
-		{
-			get => _workstations;
-			set => SetProperty(ref _workstations, value);
-		}
+		#endregion
 
-		private Visibility _activeMachinesGroupVisibility = Visibility.Collapsed;
-		public Visibility ActiveMachinesGroupVisibility
+		#region INITIALIZER
+
+		public async void Initialize()
 		{
-			get => _activeMachinesGroupVisibility;
-			set => SetProperty(ref _activeMachinesGroupVisibility, value);
+			ToggleLoadingAnimation(1);
+
+			EngravingStats = await ArtPixAPI.GetEngravingStatsAsync();
+			ShippingStats = await ArtPixAPI.GetShippingStatsAsync();
+			WorkstationStats = await ArtPixAPI.GetWorkstationStats();
+			await ArtPixAPI.GetEntityLogsAsync();
+
+			SetTimers();
+
+			ToggleLoadingAnimation(0);
+
+		}
+		
+		#endregion
+
+		#region TOGGLE LOADING ANIMATION - DONE - ✅
+
+		private void ToggleLoadingAnimation(int kind)
+		{
+			if (kind == 0)
+			{
+				AppState.CurrentSession.MainNavigationViewVisibility = Visibility.Visible;
+				AppState.CurrentSession.MainViewProgressRingVisibility = Visibility.Hidden;
+			}
+
+			if (kind == 1)
+			{
+				AppState.CurrentSession.MainNavigationViewVisibility = Visibility.Hidden;
+				AppState.CurrentSession.MainViewProgressRingVisibility = Visibility.Visible;
+			}
 		}
 
 		#endregion
 
-		public async void Initialize()
+		#region SET STATS UPDATE TIMERS - DONE - ✅
+
+		private void SetTimers()
 		{
-			AppState.MainNavigationViewVisibility = Visibility.Hidden;
-			AppState.MainViewProgressRingVisibility = Visibility.Visible;
-			try
-			{
-				EngravingStats = await ArtPixAPI.GetAllStatsAsync();
-				ShippingStats = await ArtPixAPI.GetShippingStatsAsync();
-				Workstations = await ArtPixAPI.GetWorkstations();
-				await ArtPixAPI.GetEntityLogsAsync();
-			} catch (Exception e)
-			{
-				Debug.WriteLine("MAIN VIEW MODEL\nLINE 92\nEXCEPTION UNHANDLED: " + e.Message);
-			}
-			AppState.MainNavigationViewVisibility = Visibility.Visible;
-			AppState.MainViewProgressRingVisibility = Visibility.Hidden;
 			var engravingStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
-			engravingStatsTimer.Subscribe(async tick => EngravingStats = await ArtPixAPI.GetAllStatsAsync());
+			engravingStatsTimer.Subscribe(async tick => EngravingStats = await ArtPixAPI.GetEngravingStatsAsync());
 			var shippingStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
 			shippingStatsTimer.Subscribe(async tick => ShippingStats = await ArtPixAPI.GetShippingStatsAsync());
 			var workstationsStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
-			workstationsStatsTimer.Subscribe(async tick => Workstations = await ArtPixAPI.GetWorkstations());
+			workstationsStatsTimer.Subscribe(async tick => WorkstationStats = await ArtPixAPI.GetWorkstationStats());
 			var entityLogsTimer = Observable.Interval(TimeSpan.FromSeconds(15));
 			entityLogsTimer.Subscribe(async tick => await ArtPixAPI.GetEntityLogsAsync());
-
 		}
+
+		#endregion
+
 	}
 }

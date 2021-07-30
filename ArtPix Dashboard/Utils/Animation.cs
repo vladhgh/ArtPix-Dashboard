@@ -9,6 +9,7 @@ namespace ArtPix_Dashboard.Utils
 {
     public static class ScrollAnimationBehavior
     {
+
         public static double intendedLocation = 0;
 
         #region Private ScrollViewer for ListBox
@@ -353,6 +354,7 @@ namespace ArtPix_Dashboard.Utils
         }
 
         #endregion
+
     }
 
     public static class Animation

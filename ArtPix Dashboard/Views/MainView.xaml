@@ -4,22 +4,22 @@
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:ui="http://schemas.modernwpf.com/2019"
                   xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
-                  xmlns:viewmodels="clr-namespace:ArtPix_Dashboard.ViewModels"
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                   xmlns:gif="http://wpfanimatedgif.codeplex.com"
-                  xmlns:utils="clr-namespace:ArtPix_Dashboard.Utils"
+                  xmlns:converters="clr-namespace:ArtPix_Dashboard.Utils.Converters"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                   mc:Ignorable="d"
+                  xmlns:viewmodels="clr-namespace:ArtPix_Dashboard.ViewModels"
                   d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
                   Icon="../Assets/logo.ico"
-                  Title="{Binding AppState.CurrentVersion, StringFormat=ArtPix Dashboard {0:N}}"
-                  Top="{Binding AppState.Top, Mode=TwoWay}"
-                  Left="{Binding AppState.Left, Mode=TwoWay}"
-                  Height="{Binding AppState.Height, Mode=TwoWay}"
-                  Width="{Binding AppState.Width, Mode=TwoWay}"
+                  Title="{Binding AppState.CurrentSession.CurrentVersion, StringFormat=ArtPix Dashboard {0:N}}"
+                  Top="{Binding AppState.WindowProperties.Top, Mode=TwoWay}"
+                  Left="{Binding AppState.WindowProperties.Left, Mode=TwoWay}"
+                  Height="{Binding AppState.WindowProperties.Height, Mode=TwoWay}"
+                  Width="{Binding AppState.WindowProperties.Width, Mode=TwoWay}"
                   MaxWidth="1920"
 				  MaxHeight="1080"
-                  WindowState="{Binding AppState.WindowState, Mode=TwoWay}"
+                  WindowState="{Binding AppState.WindowProperties.WindowState, Mode=TwoWay}"
                   Loaded="MainViewOnLoaded"
                   IsTabStop="True"
                   Background="{DynamicResource SystemControlPageBackgroundMediumAltMediumBrush}"
@@ -30,7 +30,7 @@
                   ui:TitleBar.ButtonStyle="{DynamicResource AppTitleBarButtonStyle}"
                   >
 	<Window.Resources>
-		<utils:PixelsToGridLengthConverter x:Key="PixelsToGridLength" />
+		<converters:PixelsToGridLengthConverter x:Key="PixelsToGridLength" />
 
 		<Style x:Key="AppTitleBarStyle" TargetType="ui:TitleBarControl">
 			<Setter Property="ui:ThemeManager.RequestedTheme" Value="Dark" />
@@ -537,7 +537,7 @@
 				<ColumnDefinition Width="{Binding ElementName=Window, Path=(ui:TitleBar.SystemOverlayRightInset), Converter={StaticResource PixelsToGridLength}}" />
 			</Grid.ColumnDefinitions>
 
-			<Image Source="/Assets/ap3dlogo2.png" MaxHeight="20" Margin="10 10 0 5" Grid.Column="1"/>
+			<Image Source="/Assets/ap3dlogo.png" MaxHeight="20" Margin="10 10 0 5" Grid.Column="1"/>
 			<TextBlock
 						Grid.Column="0"
 						Grid.ColumnSpan="5"
@@ -552,23 +552,22 @@
 
 		<Image
 			Grid.Row="1"
-			Visibility="{Binding AppState.MainViewProgressRingVisibility, Mode=TwoWay}"
+			Visibility="{Binding AppState.CurrentSession.MainViewProgressRingVisibility, Mode=TwoWay}"
 			gif:ImageBehavior.RepeatBehavior="0x"
 			gif:ImageBehavior.AnimatedSource="../Assets/Spinner2.gif" Width="70" Height="70"/>
 		<ui:NavigationView
 											x:Name="MainNavigationView"
 											Grid.Row="1"
-                                            Visibility="{Binding AppState.MainNavigationViewVisibility}"
+                                            Visibility="{Binding AppState.CurrentSession.MainNavigationViewVisibility}"
 											PaneDisplayMode="Top" 
 											IsTabStop="True"
                                             Background="#99000000"
 											SelectionFollowsFocus="Disabled"
-											IsBackButtonVisible="Collapsed"
-											IsBackEnabled="True"
-											BackRequested="MainNavigationView_BackRequested"
 											IsSettingsVisible="False"
+											IsBackEnabled="False"
+											IsBackButtonVisible="Collapsed"
 											xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility}"
-											SelectedItem="{Binding AppState.SelectedItem, Mode=TwoWay}" HorizontalAlignment="Right" Width="1912">
+											HorizontalAlignment="Right" Width="1912">
 
 			<ui:NavigationView.Resources>
 				<SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="#99000000" />
@@ -585,7 +584,8 @@
 						Height="27"
 						Margin="0 0 4 0"
 						Content="&#xE72B;"
-						IsEnabled="{Binding PaginationBackButtonVisibility}"
+						Click="BackButtonOnClick"
+						IsEnabled="{Binding IsBackButtonActive}"
 						Template="{DynamicResource TitleBarButtonControlTemplate1}"
 						ContentTemplate="{x:Null}" />
 				</ui:NavigationViewItem>
@@ -612,9 +612,9 @@
 				<ui:SimpleStackPanel Orientation="Vertical">
 
 					<Separator BorderThickness="5" BorderBrush="#333" Margin="-10 0 0 0"/>
-					<ui:SimpleStackPanel Margin="0 10 0 0" Orientation="Vertical"  MinWidth="{Binding AppState.Width, Mode=OneWay}" >
+					<ui:SimpleStackPanel Margin="0 10 0 0" Orientation="Vertical"  MinWidth="{Binding AppState.WindowProperties.Width, Mode=OneWay}" >
 						
-						<Grid Height="60"  Name="EngravingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Margin="0 0 30 0" Visibility="{Binding EngravingStatusGroupVisibility}" >
+						<Grid Height="60"  Name="EngravingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Margin="0 0 30 0" Visibility="{Binding AppState.CurrentSession.EngravingStatusGroupVisibility}" >
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*"/>
 								<ColumnDefinition Width="*"/>
@@ -627,10 +627,11 @@
 								Grid.Column="0"
 								Height="auto"
 								Cursor="Hand"
-								VerticalAlignment="Center"
+								Tag="Awaiting Model"
+								Click="AwaitingModelButtonOnClick"
 								Style="{StaticResource HeaderButtonStyle}">
 								<TextBlock
-									Text="{Binding EngravingStats.EngravedTodayCount, StringFormat=Awaiting Model: {0:F0}, Mode=OneWay}"
+									Text="{Binding EngravingStats.AwaitingModelCount, StringFormat=Awaiting Model: {0:F0}, Mode=OneWay}"
 									FontWeight="Black"
 									Style="{DynamicResource SubtitleTextBlockStyle}" />
 								<ToggleButton.Effect>
@@ -642,8 +643,10 @@
 	                            Grid.Column="3"
 	                            Height="auto"
 								Cursor="Hand"
+								Tag="Engraved Today"
 	                            HorizontalAlignment="Center"
 	                            Margin="35 0 0 0"
+								Click="EngravedTodayButtonOnClick"
 	                            Style="{StaticResource HeaderButtonStyle}">
 								<TextBlock
 	                                Text="{Binding EngravingStats.EngravedTodayCount, StringFormat=Engraved Today: {0:F0}, Mode=OneWay}"
@@ -658,6 +661,7 @@
 	                            Grid.Column="1"
 	                            Cursor="Hand"
 	                            Height="auto"
+								Tag="Ready To Engrave"
 	                            HorizontalAlignment="Center"
 								Margin="-35 0 0 0"
 	                            Click="ReadyToEngraveButtonOnClick"
@@ -675,6 +679,7 @@
 	                            Grid.Column="2"
 	                            Cursor="Hand"
 	                            Height="auto"
+								Tag="Engraving"
 	                            Click="EngravingButtonOnClick"
 	                            HorizontalAlignment="Center"
 	                            Style="{StaticResource HeaderButtonStyle}">
@@ -690,7 +695,8 @@
 	                            Grid.Column="4"
 	                            Cursor="Hand"
 	                            Height="auto"
-								x:Name="ProductionIssuesButton"
+	                            Tag="Production Issues"
+	                            x:Name="ProductionIssuesButton"
 	                            HorizontalAlignment="Right"
 	                            Click="ProductionIssuesButtonOnClick"
 	                            Style="{StaticResource HeaderButtonStyle}">
@@ -703,7 +709,7 @@
 								</ToggleButton.Effect>
 							</ToggleButton>
 						</Grid>
-						<Grid Height="60" Name="ShippingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding ShippingStatusGroupVisibility}" Margin="0 0 30 0" >
+						<Grid Height="60" Name="ShippingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding AppState.CurrentSession.ShippingStatusGroupVisibility}" Margin="0 0 30 0" >
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*"/>
 								<ColumnDefinition Width="*"/>
@@ -715,7 +721,8 @@
 	                            Grid.Column="0"
 	                            Cursor="Hand"
 	                            Height="auto"
-	                            Click="AwaitingShipmentButtonOnClick"
+								Tag="Awaiting Shipment"
+								Click="AwaitingShipmentButtonOnClick"
 	                            Style="{StaticResource HeaderButtonStyle}">
 								<TextBlock
 	                                Text="{Binding ShippingStats.AwaitingShipment, StringFormat=Awaiting Shipment: {0:F0}, Mode=OneWay}"
@@ -731,6 +738,7 @@
 	                            HorizontalAlignment="Center"
 	                            Cursor="Hand"
 	                            Height="auto"
+								Tag="Ship By Today"
 	                            Click="ShipByTodayButtonOnClick"
 								Margin="-90 0 0 0"
 	                            Style="{StaticResource HeaderButtonStyle}">
@@ -748,7 +756,8 @@
 	                            Grid.Column="2"
 	                            HorizontalAlignment="Center"
 	                            Cursor="Hand"
-	                            Height="auto"
+								Tag="Ready To Ship"
+								Height="auto"
 	                            Margin="90 0 0 0"
 	                            Click="ReadyToShipButtonOnClick"
 	                            Style="{StaticResource HeaderButtonStyle}">
@@ -766,7 +775,8 @@
 	                            Grid.Column="3"
 	                            HorizontalAlignment="Right"
 	                            Cursor="Hand"
-	                            Height="auto"
+								Tag="Shipped Today"
+								Height="auto"
 	                            ToolTip="{Binding ShippingStats.OrdersShipped}"
 	                            Style="{StaticResource HeaderButtonStyle}">
 								<TextBlock
@@ -778,8 +788,8 @@
 								</ToggleButton.Effect>
 							</ToggleButton>
 						</Grid>
-						<ui:SimpleStackPanel Name="WorkstationsGroup" Height="60" HorizontalAlignment="Left" Margin="0 0 0 0" Visibility="{Binding ActiveMachinesGroupVisibility }" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}">
-							<ItemsControl x:Name="WorkstationsItemsControl" VerticalAlignment="Center" HorizontalAlignment="Center"  ItemsSource="{Binding Workstations.Data}" >
+						<ui:SimpleStackPanel Name="WorkstationsGroup" Height="60" HorizontalAlignment="Left" Margin="0 0 0 0" Visibility="{Binding AppState.CurrentSession.ActiveMachinesGroupVisibility }" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}">
+							<ItemsControl x:Name="WorkstationsItemsControl" VerticalAlignment="Center" HorizontalAlignment="Center"  ItemsSource="{Binding WorkstationStats.Data}" >
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
 										<ui:SimpleStackPanel Orientation="Horizontal">
@@ -877,7 +887,7 @@
 								</ItemsControl.ItemTemplate>
 								<ItemsControl.ItemsPanel>
 									<ItemsPanelTemplate>
-										<ui:SimpleStackPanel x:Name="WorkstationsPanel" Orientation="Horizontal" Spacing="{Binding Workstations.PanelSpacing}"/>
+										<ui:SimpleStackPanel x:Name="WorkstationsPanel" Orientation="Horizontal" Spacing="{Binding WorkstationStats.PanelSpacing}"/>
 									</ItemsPanelTemplate>
 								</ItemsControl.ItemsPanel>
 							</ItemsControl>

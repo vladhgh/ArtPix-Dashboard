@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -14,21 +13,21 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media;
 using ArtPix_Dashboard.API;
+using ArtPix_Dashboard.Models.Order;
 using ArtPix_Dashboard.Views;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Position;
-using ListView = ModernWpf.Controls.ListView;
 
 namespace ArtPix_Dashboard.Utils
 {
+
+	#region ACRYLIC BACKGROUND PROPERTIES
 
 	internal enum AccentState
 	{
@@ -62,28 +61,7 @@ namespace ArtPix_Dashboard.Utils
 		WCA_ACCENT_POLICY = 19
 	}
 
-
-
-
-	public class MultiplyConverter : IMultiValueConverter
-	{
-		public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-		{
-			double result = 1.0;
-			for (int i = 0; i < values.Length; i++)
-			{
-				if (values[i] is double)
-					result *= (double)values[i];
-			}
-
-			return result;
-		}
-
-		public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-		{
-			throw new Exception("Not implemented");
-		}
-	}
+	#endregion
 
 	public static class Utils
 	{
@@ -106,53 +84,14 @@ namespace ArtPix_Dashboard.Utils
 		});
 		#endregion
 
-
-		public static Bitmap ResizeImage(System.Drawing.Image image, int width, int height)
-		{
-			var destRect = new Rectangle(0, 0, width, height);
-			var destImage = new Bitmap(width, height);
-
-			destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-			using (var graphics = Graphics.FromImage(destImage))
-			{
-				graphics.CompositingMode = CompositingMode.SourceCopy;
-				graphics.CompositingQuality = CompositingQuality.HighQuality;
-				graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-				graphics.SmoothingMode = SmoothingMode.HighQuality;
-				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-				using (var wrapMode = new ImageAttributes())
-				{
-					wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-					graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-				}
-			}
-
-			return destImage;
-		}
-
-
+		#region LOCAL MACHINE ADDRESS PROPERTIES
 		
-
 		public struct MacIpPair
 		{
 			public string MacAddress;
 			public string IpAddress;
 		}
-
-		public static void SendWakeOnLan(PhysicalAddress target)
-		{
-			var header = Enumerable.Repeat(byte.MaxValue, 6);
-			var data = Enumerable.Repeat(target.GetAddressBytes(), 16).SelectMany(mac => mac);
-
-			var magicPacket = header.Concat(data).ToArray();
-
-			var client = new UdpClient();
-
-			client.Send(magicPacket, magicPacket.Length, new IPEndPoint(IPAddress.Broadcast, 9));
-		}
-
+		
 		public static Dictionary<string, string>MachineAddresses = new()
 		{
 			{ "94-DE-80-FC-3A-FB", "1" },
@@ -189,6 +128,91 @@ namespace ArtPix_Dashboard.Utils
 			{ "00-D8-61-7F-A0-AC", "32" },
 			{ "00-19-0F-37-0C-34", "33" }
 		};
+
+		#endregion
+
+		#region ENABLE ACRYLIC BACKGROUND - DONE - ✅
+
+		private static readonly uint BlurBackgroundColor = 0x990000;
+
+		private static readonly uint BlurOpacity = 0;
+
+		public static void EnableBlur(MainView view)
+		{
+			var windowHelper = new WindowInteropHelper(view);
+
+			var accent = new AccentPolicy
+			{
+				AccentState = AccentState.ACCENT_ENABLE_ACRYLICBLURBEHIND,
+				GradientColor = (BlurOpacity << 24) | (BlurBackgroundColor & 0xFFFFFF)
+			};
+
+			var accentStructSize = Marshal.SizeOf(accent);
+
+			var accentPtr = Marshal.AllocHGlobal(accentStructSize);
+			Marshal.StructureToPtr(accent, accentPtr, false);
+
+			var data = new WindowCompositionAttributeData
+			{
+				Attribute = WindowCompositionAttribute.WCA_ACCENT_POLICY,
+				SizeOfData = accentStructSize,
+				Data = accentPtr
+			};
+
+			WinAPI.SetWindowCompositionAttribute(windowHelper.Handle, ref data);
+
+			Marshal.FreeHGlobal(accentPtr);
+		}
+
+		#endregion
+
+		#region RESIZE IMAGE - DONE - ✅
+
+		public static Bitmap ResizeImage(System.Drawing.Image image, int width, int height)
+		{
+			var destRect = new Rectangle(0, 0, width, height);
+			var destImage = new Bitmap(width, height);
+
+			destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+			using (var graphics = Graphics.FromImage(destImage))
+			{
+				graphics.CompositingMode = CompositingMode.SourceCopy;
+				graphics.CompositingQuality = CompositingQuality.HighQuality;
+				graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+				graphics.SmoothingMode = SmoothingMode.HighQuality;
+				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+				using (var wrapMode = new ImageAttributes())
+				{
+					wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+					graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+				}
+			}
+
+			return destImage;
+		}
+
+		#endregion
+
+		#region SEND WAKE ON LAN - DONE - ✅
+
+		public static void SendWakeOnLan(PhysicalAddress target)
+		{
+			var header = Enumerable.Repeat(byte.MaxValue, 6);
+			var data = Enumerable.Repeat(target.GetAddressBytes(), 16).SelectMany(mac => mac);
+
+			var magicPacket = header.Concat(data).ToArray();
+
+			var client = new UdpClient();
+
+			client.Send(magicPacket, magicPacket.Length, new IPEndPoint(IPAddress.Broadcast, 9));
+		}
+
+		#endregion
+
+		#region GET LOCAL MACHINE ADDRESS - DONE - ✅
+
 		public static string GetLocalMachineAddress(string machineId)
 		{
 			switch (machineId)
@@ -247,6 +271,11 @@ namespace ArtPix_Dashboard.Utils
 					return "none";
 			}
 		}
+
+		#endregion
+
+		#region SELECT STATUS COLOR - DONE - ✅
+
 		public static string SelectStatusColor(string status)
 		{
 			switch (status)
@@ -277,6 +306,7 @@ namespace ArtPix_Dashboard.Utils
 				case "Awaiting Model": return "#bf6900";
 				case "Ready To Engrave": return "#494949";
 				case "Engraving Issue": return "DarkRed";
+				case "retoucher_issue": return "DarkRed";
 				case "Engraving In Progress": return "SteelBlue";
 				case "Engraving Done": return "DarkGreen";
 				case "Ready To Ship": return "DarkGreen";
@@ -284,6 +314,10 @@ namespace ArtPix_Dashboard.Utils
 				default: return "#494949";
 			}
 		}
+
+		#endregion
+
+		#region SELECT STATUS TEXT - DONE - ✅
 
 		public static string SelectStatusText(string status)
 		{
@@ -302,6 +336,7 @@ namespace ArtPix_Dashboard.Utils
 				case "success_manually": return "Completed Manually";
 				case "engrave_issue": return "Engraving Issue";
 				case "error": return "Engraving Issue";
+				case "retoucher_issue": return "Retouch Issue";
 				case "processing": return "Engraving In Progress";
 				case "engraved": return "Engraving In Progress";
 				case "engrave_processing": return "Engraving In Progress";
@@ -311,6 +346,20 @@ namespace ArtPix_Dashboard.Utils
 				default: return status;
 			}
 		}
+
+		#endregion
+
+		#region CHECK IS CRYSTAL - DONE - ✅
+
+		public static bool IsCrystal(Product product) => product.CrystalType.Type == "Crystal" ||
+		                                                 product.CrystalType.Type == "Keychain" ||
+		                                                 product.CrystalType.Type == "Necklace" ||
+		                                                 product.CrystalType.Type == "Wine Stopper" ||
+		                                                 product.CrystalType.Type.Contains("Fingerprint");
+
+		#endregion
+
+		#region GET ALL MAC AND IP ADDRESS PAIRS - DONE - ✅
 
 		public static List<MacIpPair> GetAllMacAddressesAndIppairs()
 		{
@@ -338,6 +387,10 @@ namespace ArtPix_Dashboard.Utils
 			return mip;
 		}
 
+		#endregion
+
+		#region GET LIST OF CHILDREN - DONE - ✅
+
 		public static List<FrameworkElement> GetChildren(DependencyObject parent)
 		{
 			List<FrameworkElement> controls = new List<FrameworkElement>();
@@ -354,6 +407,10 @@ namespace ArtPix_Dashboard.Utils
 			return controls;
 		}
 
+		#endregion
+
+		#region CREATE DEEP COPY - DONE - ✅
+
 		public static T DeepCopy<T>(T other)
 		{
 			using (MemoryStream ms = new MemoryStream())
@@ -366,6 +423,10 @@ namespace ArtPix_Dashboard.Utils
 			}
 		}
 
+		#endregion
+
+		#region GET CHILD OF TYPE - DONE - ✅
+		
 		public static T GetChildOfType<T>(this DependencyObject depObj)
 			where T : DependencyObject
 		{
@@ -380,6 +441,10 @@ namespace ArtPix_Dashboard.Utils
 			}
 			return null;
 		}
+
+		#endregion
+
+		#region GET SCROLL VIEWER - DONE - ✅
 
 		public static DependencyObject GetScrollViewer(DependencyObject o)
 		{
@@ -402,39 +467,6 @@ namespace ArtPix_Dashboard.Utils
 				}
 			}
 			return null;
-		}
-
-		#region ACRYLIC BACKGROUND FOR WINDOW - FROM GITHUB
-
-		private static readonly uint _blurBackgroundColor = 0x990000;
-
-		private static uint _blurOpacity;
-
-		public static void EnableBlur(MainView view)
-		{
-			var windowHelper = new WindowInteropHelper(view);
-
-			var accent = new AccentPolicy
-			{
-				AccentState = AccentState.ACCENT_ENABLE_ACRYLICBLURBEHIND,
-				GradientColor = (_blurOpacity << 24) | (_blurBackgroundColor & 0xFFFFFF)
-			};
-
-			var accentStructSize = Marshal.SizeOf(accent);
-
-			var accentPtr = Marshal.AllocHGlobal(accentStructSize);
-			Marshal.StructureToPtr(accent, accentPtr, false);
-
-			var data = new WindowCompositionAttributeData
-			{
-				Attribute = WindowCompositionAttribute.WCA_ACCENT_POLICY,
-				SizeOfData = accentStructSize,
-				Data = accentPtr
-			};
-
-			WinAPI.SetWindowCompositionAttribute(windowHelper.Handle, ref data);
-
-			Marshal.FreeHGlobal(accentPtr);
 		}
 
 		#endregion

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using ArtPix_Dashboard.Utils.Helpers;
 using ArtPix_Dashboard.ViewModels;
 using Newtonsoft.Json;
 
@@ -18,10 +19,10 @@ namespace ArtPix_Dashboard.Models.Order
 		#region VISIBILITY
 
 		public Visibility IsLateShipment => DateTime.Parse(EstimateProcessingMaxDate, CultureInfo.CurrentUICulture).AddHours(19) < DateTime.Now ? Visibility.Visible : Visibility.Collapsed;
+		public Visibility IssueResolved => HasIssueResolved ? Visibility.Visible : Visibility.Collapsed;
 
 		private Visibility _expanderVisibility = Visibility.Visible;
 
-		public Visibility IssueResolved => HasIssueResolved ? Visibility.Visible : Visibility.Collapsed;
 
 		public Visibility ExpanderVisibility
 		{
@@ -169,7 +170,7 @@ namespace ArtPix_Dashboard.Models.Order
 				}
 
 
-				if (_status == "engraving" || _status == "3d_conversion" || _status == "retouching")
+				if (_status == "engraving" || _status == "3d_conversion" || _status == "retouching" || _status == "waiting_to_confirm")
 				{
 					var newStatus = "";
 					foreach (var product in Products)
@@ -183,6 +184,10 @@ namespace ArtPix_Dashboard.Models.Order
 								return product.Status;
 							}
 							if (product.Status == "Engraving Issue")
+							{
+								return product.Status;
+							}
+							if (product.Status == "Retouch Issue")
 							{
 								return product.Status;
 							}
@@ -235,6 +240,7 @@ namespace ArtPix_Dashboard.Models.Order
 					case "Awaiting Model": return "#bf6900";
 					case "Ready To Engrave": return "#494949";
 					case "Engraving Issue": return "DarkRed";
+					case "Retouch Issue": return "DarkRed";
 					case "Retouch Pending": return "#bf6900";
 					case "Ready To Ship": return "DarkGreen";
 					case "Retouch In Progress": return "SteelBlue";
@@ -287,13 +293,17 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("total_crystal")]
 		public int TotalCrystal { get; set; }
 
+		public Visibility EngravedAgeVisibility => Visibility.Collapsed;
+
+		public Visibility ProductStatusVisibility => Visibility.Visible;
+
 		public BitmapImage OrderImage
 		{
 			get
 			{
-				var item = this.Products.Find(x => x.CrystalType.Type == "Crystal" || x.CrystalType.Type == "Keychain" || x.CrystalType.Type == "Necklace" || x.CrystalType.Type == "Wine Stopper" || x.CrystalType.Type.Contains("Fingerprint"));
+				var item = Products.Find(product => Utils.Utils.IsCrystal(product));
 				var outPutDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-				var logoImage = Path.Combine(outPutDirectory, "..\\..\\Assets\\multiple_item_order_preview.png");
+				var logoImage = Path.Combine(outPutDirectory, "..\\..\\Assets\\Images\\multiple_item_order_preview.png");
 				var relLogo = new Uri(logoImage).LocalPath;
 
 				if (item == null)
@@ -534,6 +544,8 @@ namespace ArtPix_Dashboard.Models.Order
 			}
 		}
 
+		public bool IsExpanderEnabled => true;
+
 		[JsonProperty("is_redo")]
 		public bool IsRedo { get; set; }
 
@@ -583,6 +595,13 @@ namespace ArtPix_Dashboard.Models.Order
 								var newProduct = Utils.Utils.DeepCopy(product);
 								newProduct.MachineAssignItemId = item.Id;
 								newProduct.MachineId = item.machine_id;
+								if (item.Status == "wait_model")
+								{
+									newProductList.Add(newProduct);
+									TotalProducts++;
+									i++;
+									continue;
+								}
 								newProduct.Status = Utils.Utils.SelectStatusText(item.Status);
 								newProductList.Add(newProduct);
 							}
@@ -590,6 +609,12 @@ namespace ArtPix_Dashboard.Models.Order
 							{
 								product.MachineAssignItemId = item.Id;
 								product.MachineId = item.machine_id;
+								if (item.Status == "wait_model")
+								{
+									TotalProducts++;
+									i++;
+									continue;
+								}
 								product.Status = Utils.Utils.SelectStatusText(item.Status);
 
 							}

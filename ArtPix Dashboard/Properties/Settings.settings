@@ -44,5 +44,8 @@
     <Setting Name="LastIssueEntityLogId" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">245316</Value>
     </Setting>
+    <Setting Name="AppState" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

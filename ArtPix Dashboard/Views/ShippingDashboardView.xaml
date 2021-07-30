@@ -6,8 +6,13 @@
 	xmlns:ui="http://schemas.modernwpf.com/2019"
 	xmlns:xamlFlair="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
 	xmlns:order="clr-namespace:ArtPix_Dashboard.Models.Order"
-	xmlns:types="clr-namespace:ArtPix_Dashboard.Models.Types"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:gif="http://wpfanimatedgif.codeplex.com"
+	xmlns:viewmodels="clr-namespace:ArtPix_Dashboard.ViewModels"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DataContext="{d:DesignInstance Type=viewmodels:ShippingDashboardViewModel}"
+	KeepAlive="True"
 	Background="Transparent"
     Focusable="True"
 	Title="Shipping Dashboard">
@@ -34,6 +39,8 @@
 					VerticalAlignment="Center"
 					Style="{DynamicResource SubtitleTextBlockStyle}"
 					FontWeight="Black"/>
+
+
 		<ui:SimpleStackPanel Name="FilterPanel" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" Grid.Column="1" Grid.Row="2" Margin="0 0 0 12">
 			<ui:AutoSuggestBox
 						x:Name="SearchTextBox"
@@ -48,19 +55,19 @@
                 <ui:FontIcon Glyph="&#xE894;" FontSize="10"/>
             </Button>
 			<Button IsTabStop="True" Content="Search" VerticalAlignment="Bottom" Style="{DynamicResource SearchButtonStyle}" Cursor="Hand" Click="ButtonSearchOnClick" Margin="0 0 10 0"/>
-			<ComboBox IsTabStop="True" Visibility="{Binding AppState.OrderFilterGroup.StoreComboBoxVisibility, Mode=OneWay}" Style="{StaticResource CustomComboBoxStyle}" IsEnabled="{Binding AppState.OrderFilterGroup.IsFilterGroupEnabled}" Cursor="Hand" Name="StoreComboBox" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Store:" ui:ControlHelper.PlaceholderText="Select Store">
+			<ComboBox IsTabStop="True" Visibility="{Binding AppState.CombinedFilter.StoreComboBoxVisibility, Mode=OneWay}" Style="{StaticResource CustomComboBoxStyle}" IsEnabled="{Binding AppState.CombinedFilter.IsFilterGroupEnabled}" Cursor="Hand" Name="StoreComboBox" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Store:" ui:ControlHelper.PlaceholderText="Select Store">
 				<ComboBoxItem Content="All Stores" Tag=""/>
 				<ComboBoxItem Content="Amazon Store" Tag="Amazon"/>
 				<ComboBoxItem Content="WordPress Store" Tag="WordPress"/>
 				<ComboBoxItem Content="Offline Store" Tag="OfflineStore"/>
 			</ComboBox>
-			<ComboBox IsTabStop="True" Name="OrderStatusComboBox" Visibility="Collapsed" IsEnabled="{Binding AppState.OrderFilterGroup.IsFilterGroupEnabled}" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Order Status:" ui:ControlHelper.PlaceholderText="Select Order Status">
+			<ComboBox IsTabStop="True" Name="OrderStatusComboBox" Visibility="Collapsed" IsEnabled="{Binding AppState.CombinedFilter.IsFilterGroupEnabled}" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Order Status:" ui:ControlHelper.PlaceholderText="Select Order Status">
                 <ComboBoxItem Content="All Statuses" Tag=""/>
 				<ComboBoxItem Content="On Hold" Tag="on-hold"/>
 				<ComboBoxItem Content="Processing" Tag="processing"/>
 				<ComboBoxItem Content="Completed" Tag="completed"/>
 			</ComboBox>
-			<ComboBox IsTabStop="True" Style="{StaticResource CustomComboBoxStyle}" Visibility="Collapsed" IsEnabled="{Binding AppState.OrderFilterGroup.IsFilterGroupEnabled}" Cursor="Hand" Name="EngravingStatusComboBox" SelectedValuePath="Tag" VerticalAlignment="Center" Width="150" ui:ControlHelper.Header="Order Status:" ui:ControlHelper.PlaceholderText="Select Order Status">
+			<ComboBox IsTabStop="True" Style="{StaticResource CustomComboBoxStyle}" Visibility="Collapsed" IsEnabled="{Binding AppState.CombinedFilter.IsFilterGroupEnabled}" Cursor="Hand" Name="EngravingStatusComboBox" SelectedValuePath="Tag" VerticalAlignment="Center" Width="150" ui:ControlHelper.Header="Order Status:" ui:ControlHelper.PlaceholderText="Select Order Status">
 				<ComboBoxItem Content="All Statuses" Tag=""/>
 				<ComboBoxItem Content="Waiting To Confirm" Tag="waiting_to_confirm&amp;with_crystal_product_status[]=photoshop"/>
 				<ComboBoxItem Content="Awaiting Model" Tag="3d_model_in_progress&amp;with_crystal_product_status[]=3d_model_pending&amp;with_crystal_product_status[]=3d_model_rework&amp;with_crystal_product_status[]=retoucher_in_progress&amp;with_crystal_product_status[]=retoucher_pending&amp;with_crystal_product_status[]=retoucher_rework"/>
@@ -75,7 +82,7 @@
                 <ComboBoxItem Content="Processing" Tag="processing"/>
                 <ComboBoxItem Content="Shipped" Tag="done"/>
             </ComboBox>
-			<ComboBox IsTabStop="True" SelectedIndex="0" Name="MachineComboBox" Visibility="{Binding AppState.OrderFilterGroup.MachineComboBoxVisibility}" Cursor="Hand" Style="{StaticResource CustomComboBoxStyle}" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Machine:" ui:ControlHelper.PlaceholderText="Select Engraving Machine">
+			<ComboBox IsTabStop="True" SelectedIndex="0" Name="MachineComboBox" Visibility="{Binding AppState.CombinedFilter.MachineComboBoxVisibility}" Cursor="Hand" Style="{StaticResource CustomComboBoxStyle}" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Machine:" ui:ControlHelper.PlaceholderText="Select Engraving Machine">
 				<ComboBoxItem Content="All Machines" Tag=""/>
 				<ComboBoxItem Content="Machine 1" Tag="1"/>
 				<ComboBoxItem Content="Machine 2" Tag="2"/>
@@ -112,7 +119,7 @@
 				<ComboBoxItem Content="Machine 33" Tag="33"/>
 				<ComboBoxItem Content="Machine 34" Tag="34"/>
 			</ComboBox>
-			<ComboBox IsTabStop="True" Style="{StaticResource CustomComboBoxStyle}" IsEnabled="{Binding AppState.OrderFilterGroup.IsFilterGroupEnabled}" Cursor="Hand" Name="SortByComboBox" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Sort By:" ui:ControlHelper.PlaceholderText="Select Sorting">
+			<ComboBox IsTabStop="True" Style="{StaticResource CustomComboBoxStyle}" IsEnabled="{Binding AppState.CombinedFilter.IsFilterGroupEnabled}" Cursor="Hand" Name="SortByComboBox" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Sort By:" ui:ControlHelper.PlaceholderText="Select Sorting">
 				<ComboBoxItem Content="Priority" Tag="priority"/>
 				<ComboBoxItem Content="Estimated Processing Max Date" Tag="estimate_processing_max_date"/>
 				<ComboBoxItem Content="Ship By Min" Tag="ship_by_min"/>
@@ -121,10 +128,10 @@
             <ui:SimpleStackPanel  Name="AdditionalControls" Orientation="Vertical" Margin="10 0 0 0">
 				<TextBlock Text="Additional Controls:" Margin="0 0 0 5"/>
 				<ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
-					<ToggleButton IsTabStop="True" x:Name="ToggleShipByToday" IsEnabled="{Binding AppState.OrderFilterGroup.IsFilterGroupEnabled}" IsChecked="True"  Content="Ship By Today" Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
-					<ToggleButton IsTabStop="True" x:Name="ToggleNoCrystal" IsEnabled="{Binding AppState.OrderFilterGroup.IsFilterGroupEnabled}" Content="No Crystal"  Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
-					<ToggleButton IsTabStop="True" x:Name="ToggleInTotes" IsEnabled="{Binding AppState.OrderFilterGroup.IsFilterGroupEnabled}" Content="In Totes"  Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
-					<ToggleButton IsTabStop="True" x:Name="ToggleNoPackage" IsEnabled="{Binding AppState.OrderFilterGroup.IsFilterGroupEnabled}" Content="No Package"  Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
+					<ToggleButton IsTabStop="True" x:Name="ToggleShipByToday" IsEnabled="{Binding AppState.CombinedFilter.IsFilterGroupEnabled}" IsChecked="True"  Content="Ship By Today" Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
+					<ToggleButton IsTabStop="True" x:Name="ToggleNoCrystal" IsEnabled="{Binding AppState.CombinedFilter.IsFilterGroupEnabled}" Content="No Crystal"  Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
+					<ToggleButton IsTabStop="True" x:Name="ToggleInTotes" IsEnabled="{Binding AppState.CombinedFilter.IsFilterGroupEnabled}" Content="In Totes"  Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
+					<ToggleButton IsTabStop="True" x:Name="ToggleNoPackage" IsEnabled="{Binding AppState.CombinedFilter.IsFilterGroupEnabled}" Content="No Package"  Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
 					<Button IsTabStop="True" Height="32" Width="32" Cursor="Hand" Padding="8 2 8 2" VerticalAlignment="Bottom" Click="ButtonReloadOnClick" Style="{DynamicResource CustomButtonStyle}">
                         <ui:FontIcon Glyph="&#xE895;" FontSize="14"/>
                     </Button>
@@ -133,14 +140,15 @@
 
 		</ui:SimpleStackPanel>
 
+
 		<Image
 			x:Name="ProgressRingImage"
 			Grid.Column="1"
 			Grid.Row="4"
 			gif:ImageBehavior.RepeatBehavior="0x"
 			gif:ImageBehavior.AnimatedSource="../Assets/Spinner2.gif" Width="70" Height="70"/>
-	
-	    <TextBlock
+
+		<TextBlock
 			x:Name="NoResultsText"
 			Text="No Results :)"
 			Grid.Column="1"
@@ -161,7 +169,7 @@
                 xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1000}"
 				Style="{DynamicResource SubtitleTextBlockStyle}"
 				FontWeight="Black">
-				<Run Text="{Binding AppState.OrderFilterGroup.SelectedFilterGroup}"/>
+				<Run Text="{Binding AppState.CombinedFilter.SelectedFilterGroup}"/>
 				<Run Text="{Binding Orders.Meta.Total, StringFormat=({0:F0}):}" />
 			</TextBlock>
 			<ui:SimpleStackPanel Width="445" Orientation="Horizontal">
@@ -192,7 +200,7 @@
 					FontSize="10"
 					Margin="0 4 8 0"
 					Padding="8 2 8 4"
-					Visibility="{Binding AppState.OrderFilterGroup.UnAssignJobsFromMachineButtonVisibility}"
+					Visibility="{Binding AppState.CombinedFilter.UnAssignJobsFromMachineButtonVisibility}"
 					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
 					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnAssignJobs}"
 					Opacity="0.9"
@@ -204,10 +212,10 @@
 					FontSize="10"
 					Margin="0 4 8 0"
 					Padding="8 2 8 4"
-					Visibility="{Binding AppState.OrderFilterGroup.UnAssignJobsFromMachineButtonVisibility}"
+					Visibility="{Binding AppState.CombinedFilter.UnAssignJobsFromMachineButtonVisibility}"
 					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
 					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnUnassignAllJobs}"
-					CommandParameter="{Binding AppState.OrderFilterGroup.machine}"
+					CommandParameter="{Binding AppState.CombinedFilter.machine}"
 					Opacity="0.9"
 					Style="{StaticResource UnassignButtonStyle}"/>
 
@@ -216,7 +224,7 @@
 				HorizontalAlignment="Left"
 				VerticalAlignment="Center"
 				Margin="40 0 4 0"
-				Visibility="{Binding AppState.OrderFilterGroup.PcPowerButtonsVisibility}"
+				Visibility="{Binding AppState.CombinedFilter.PcPowerButtonsVisibility}"
 				xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1000}"
 				Style="{DynamicResource SubtitleTextBlockStyle}"
 				FontWeight="Black"
@@ -228,7 +236,7 @@
 					FontSize="10"
 					Margin="0 4 8 0"
 					Padding="8 2 8 4"
-					Visibility="{Binding AppState.OrderFilterGroup.PcPowerButtonsVisibility}"
+					Visibility="{Binding AppState.CombinedFilter.PcPowerButtonsVisibility}"
 					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
 					Click="PowerMachineButton"
 					Tag="PowerOn"
@@ -240,7 +248,7 @@
 					FontSize="10"
 					Margin="0 4 8 0"
 					Padding="8 2 8 4"
-					Visibility="{Binding AppState.OrderFilterGroup.PcPowerButtonsVisibility}"
+					Visibility="{Binding AppState.CombinedFilter.PcPowerButtonsVisibility}"
 					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
 					Click="PowerMachineButton"
 					Tag="PowerOff"
@@ -272,10 +280,11 @@
 									x:Name="expander"
 									Cursor="Hand"
 									ExpandDirection="Up"
-									Visibility="{Binding ExpanderVisibility}"
+									Loaded="Expander_OnLoaded"
 									IsExpanded="{Binding IsExpanded}"
 									xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800}"
 									Expanded="Expander_OnExpanded"
+									IsEnabled="{Binding IsExpanderEnabled}"
 									Collapsed="Expander_OnCollapsed"
 									Margin="10 0 0 0"
 									Tag="{Binding NameOrder}"
@@ -308,9 +317,16 @@
 														 Storyboard.TargetProperty="Opacity"/>
 									</Storyboard>
 								</Expander.Resources>
+
 								<Expander.Header>
-									<ui:SimpleStackPanel Orientation="Horizontal"  Margin="40 10 0 10" Spacing="10" HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}">
+									<ui:SimpleStackPanel
+										Orientation="Horizontal"
+										Margin="40 10 0 10"
+										Spacing="10"
+										HorizontalAlignment="Stretch"
+										MinWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}">
 										<Image 
+											x:Name="OrderImage"
 											Source="{Binding OrderImage}"
 											Width="120" Height="120" VerticalAlignment="Center" Stretch="Uniform" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=300}" />
 										<ui:SimpleStackPanel
@@ -374,11 +390,17 @@
 														</DataTemplate>
 													</ItemsControl.ItemTemplate>
 												</ItemsControl>
-												<Button Background="{Binding UpdatedAtAgeColor, Mode=OneWay}" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Margin="0 0 10 0">
+												<Button Background="{Binding UpdatedAtAgeColor, Mode=OneWay}" Visibility="{Binding ProductStatusVisibility}" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Margin="0 0 10 0">
 													<TextBlock
 															Text="{Binding UpdatedAtAge, Mode=OneWay, StringFormat=Updated: {0:0}}"
 															FontSize="10"
 															Style="{DynamicResource BaseTextBlockStyle}"/>
+												</Button>
+												<Button Background="{Binding UpdatedAtAgeColor}" Visibility="{Binding EngravedAgeVisibility}" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Margin="0 5 10 0">
+													<TextBlock
+														Text="{Binding UpdatedAtAge, StringFormat=Engraved: {0:0} ago}"
+														FontSize="10"
+														Style="{DynamicResource BaseTextBlockStyle}"/>
 												</Button>
 												<Button Background="DarkRed" Visibility="{Binding IsLateShipment}" Style="{DynamicResource LateShipmentButtonStyle}" Height="auto" Opacity="0.9" Margin="0 0 10 0">
 													<TextBlock
@@ -407,14 +429,9 @@
 													TextTrimming="CharacterEllipsis"
 													TextWrapping="NoWrap"/>
 											</ui:SimpleStackPanel>
-											<ui:SimpleStackPanel Orientation="Vertical" >
+											<ui:SimpleStackPanel Orientation="Vertical"  >
 												<TextBlock
 														Text="{Binding Path=EstimateProcessingMaxDate, Mode=OneTime, StringFormat=Ship By: {0:0}}"
-														Style="{DynamicResource BaseTextBlockStyle}"
-														Foreground="LightGray"
-														HorizontalAlignment="Left" VerticalAlignment="Center" />
-												<TextBlock
-														Text="{Binding Path=EstimateDeliveryMaxDate, Mode=OneTime, StringFormat=Deliver By: {0:0}}"
 														Style="{DynamicResource BaseTextBlockStyle}"
 														Foreground="LightGray"
 														HorizontalAlignment="Left" VerticalAlignment="Center" />
@@ -431,8 +448,13 @@
 									<Grid.RowDefinitions>
 										<RowDefinition Height="*"/>
 									</Grid.RowDefinitions>
-										<ui:SimpleStackPanel Grid.Row="0" Grid.Column="0" xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
-																	  xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=400}" Orientation="Vertical" Margin="50 0 50 50">
+										<ui:SimpleStackPanel
+											Grid.Row="0"
+											Grid.Column="0"
+											xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
+											xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=400}"
+											Orientation="Vertical"
+											Margin="50 0 50 50">
 										<TextBlock
 												Margin="20 0 0 10"
 												HorizontalAlignment="Left"
@@ -450,8 +472,10 @@
 											ItemsSource="{Binding Products}"
 											IsSelectionEnabled="False"
 											BorderThickness="1"
-											MaxHeight="425"
+											MaxHeight="520"
 											CornerRadius="8"
+											ScrollViewer.CanContentScroll="False"
+											
 											BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
 											VirtualizingPanel.ScrollUnit="Pixel">
 											<ui:ListView.ItemTemplate>
@@ -507,7 +531,13 @@
 																		FontSize="10"
 																		Style="{DynamicResource BaseTextBlockStyle}"/>
 																	</Button>
-																</ui:SimpleStackPanel>
+																	<Button Background="{Binding UpdatedAtAgeColor}" Visibility="{Binding EngravedAgeVisibility}" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Margin="0 5 10 0">
+																		<TextBlock
+																			Text="{Binding UpdatedAtAge, StringFormat=Engraved: {0:0} ago}"
+																			FontSize="10"
+																			Style="{DynamicResource BaseTextBlockStyle}"/>
+																	</Button>
+															</ui:SimpleStackPanel>
 																<ui:SimpleStackPanel Orientation="Vertical" Margin="0 0 0 10" Spacing="2" VerticalAlignment="Center" Visibility="{Binding ProductStatusVisibility}">
 																	<ui:SimpleStackPanel Orientation="Horizontal" Spacing="8" Margin="0 0 0 5" VerticalAlignment="Center">
 																		<Button Background="{Binding StatusColor}" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9">
@@ -924,6 +954,7 @@
 										</ui:SimpleStackPanel>
 									</ui:SimpleStackPanel>
 								</Grid>
+
 							</Expander>
 						</Grid>
 					</DataTemplate>

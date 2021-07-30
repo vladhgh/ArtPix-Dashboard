@@ -19,16 +19,11 @@ namespace ArtPix_Dashboard.Views
 
 	public partial class UtilitiesView
 	{
-		private readonly UtilitiesViewModel _vm = new UtilitiesViewModel();
 		public UtilitiesView()
 		{
 			InitializeComponent();
-			DataContext = _vm;
+			DataContext = this;
 		}
 
-		private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

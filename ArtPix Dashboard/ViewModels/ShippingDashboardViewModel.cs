@@ -1,5 +1,4 @@
 ﻿using ArtPix_Dashboard.Models.Order;
-using ArtPix_Dashboard.Models.Types;
 using ArtPix_Dashboard.API;
 using System;
 using System.Collections.Generic;
@@ -14,19 +13,19 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using QRCoder;
-using ArtPix_Dashboard.Views.Dialogs;
 using ModernWpf.Controls;
-using ArtPix_Dashboard.Models;
 using ToastNotifications.Messages;
 using Product = ArtPix_Dashboard.Models.Order.Product;
-using System.Drawing.Imaging;
 using System.Globalization;
-using System.Windows.Controls;
-using System.Windows.Media;
+using ArtPix_Dashboard.Dialogs;
+using ArtPix_Dashboard.Models.AppState;
+using ArtPix_Dashboard.Models.Common;
+using ArtPix_Dashboard.Models.MachineAssignedItem;
+using ArtPix_Dashboard.Models.Requests;
 using ArtPix_Dashboard.Utils;
+using ArtPix_Dashboard.Utils.Helpers;
 using ArtPix_Dashboard.Views;
 using Color = System.Drawing.Color;
-using Datum = ArtPix_Dashboard.Models.Types.Datum;
 using Image = System.Drawing.Image;
 
 namespace ArtPix_Dashboard.ViewModels
@@ -127,16 +126,29 @@ namespace ArtPix_Dashboard.ViewModels
 			get => _orders;
 			set => SetProperty(ref _orders, value);
 		}
+		private MachineAssignItemModel _engravedTodayItems = new();
+		public MachineAssignItemModel EngravedTodayItems
+		{
+			get => _engravedTodayItems;
+			set => SetProperty(ref _engravedTodayItems, value);
+		}
 		#endregion
 
 		#region COMMANDS
-	
+
 		private ICommand _onManualComplete;
 		public ICommand OnManualComplete
 		{
 			get => _onManualComplete;
 			set => SetProperty(ref _onManualComplete, value);
 		}
+		private ICommand _onCreateDHLManifest;
+		public ICommand OnCreateDHLManifest
+		{
+			get => _onCreateDHLManifest;
+			set => SetProperty(ref _onCreateDHLManifest, value);
+		}
+		
 		private ICommand _onAssignJobs;
 		public ICommand OnAssignJobs
 		{
@@ -264,9 +276,10 @@ namespace ArtPix_Dashboard.ViewModels
 			OnAddIssue = new DelegateCommand(OpenAddIssueDialog);
 			OnAssignJobs = new DelegateCommand(OpenAssignJobsDialog);
 			OnUnassignAllJobs = new DelegateCommand(OpenUnassignAllDialog);
-			ReloadList = new DelegateCommand(async param => await GetOrdersList());
+			ReloadList = new DelegateCommand(async param => await GetOrdersList(AppState.CombinedFilter));
 			OnOA = new DelegateCommand(Commands.OpenOrderOnOA);
 			OnCP = new DelegateCommand(Commands.OpenOrderOnCP);
+			OnCreateDHLManifest = new DelegateCommand(OpenDhlManifestDialog);
 			OnPrintQR = new DelegateCommand(PrintQR);
 			OnRedo = new DelegateCommand(OpenRedoDialog);
 			OnRework = new DelegateCommand(OpenReworkDialog);
@@ -286,6 +299,26 @@ namespace ArtPix_Dashboard.ViewModels
 
 		#endregion
 
+		#region DHL MANIFEST DIALOG - NOT DONE - ❎
+
+		private async void OpenDhlManifestDialog(object param)
+		{
+			var dialog = new DhlManifestDialog();
+			var result = await dialog.ShowAsync();
+			if (result != ContentDialogResult.Primary) return;
+			if (string.IsNullOrEmpty(dialog.Combo1.Text))
+			{
+				Utils.Utils.Notifier.ShowError("Jobs count has to be selected!\nPlease try again!");
+				return;
+			}
+			//ToggleMainLoadingAnimation(1);
+			//await ArtPixAPI.GetNextOrderAsync(AppState.OrderFilterGroup.machine, dialog.Combo1.Text);
+			//await GetOrdersList(1, 15, true, AppState.OrderFilterGroup);
+			//ToggleMainLoadingAnimation(0);
+		}
+
+		#endregion
+
 		#region ASSIGN JOBS DIALOG - DONE - ✅
 
 		private async void OpenAssignJobsDialog(object param)
@@ -299,8 +332,8 @@ namespace ArtPix_Dashboard.ViewModels
 				return;
 			}
 			ToggleMainLoadingAnimation(1);
-			await ArtPixAPI.GetNextOrderAsync(AppState.OrderFilterGroup.machine, dialog.Combo1.Text);
-			await GetOrdersList(1, 15, true, AppState.OrderFilterGroup);
+			await ArtPixAPI.GetNextOrderAsync(AppState.CombinedFilter.machine, dialog.Combo1.Text);
+			await GetOrdersList(AppState.CombinedFilter);
 			ToggleMainLoadingAnimation(0);
 		}
 
@@ -308,55 +341,58 @@ namespace ArtPix_Dashboard.ViewModels
 
 		#region ORDERS LIST INITIALIZATION - DONE - ✅
 
-		public async Task GetOrdersList(int pageNumber = 1, int perPage = 15, bool withPages = true, OrderCombineFilterModel filterGroup = null)
+		public async Task GetOrdersList(CombinedFilterModel combinedFilter)
 		{
-			Orders = await ArtPixAPI.GetOrdersAsync(pageNumber, perPage, filterGroup);
-			if (withPages)
+
+			if (AppState.CombinedFilter.SelectedFilterGroup == "Engraved Today")
 			{
-				Pages = await GetPages(pageNumber, perPage, filterGroup);
+				EngravedTodayItems = await ArtPixAPI.GetEngravedTodayItemsAsync("All", combinedFilter.pageNumber.ToString(), combinedFilter.perPage.ToString());
+				Orders.Meta = EngravedTodayItems.Meta;
+				Orders.Data = new List<Models.Order.Datum>();
+				View.ShippingItemsListView.ItemsSource = EngravedTodayItems.Data;
+				foreach (var item in EngravedTodayItems.Data)
+				{
+					Orders.Data.Add(new Models.Order.Datum());
+				}
+				if (combinedFilter.withPages)
+				{
+					Pages = await GetPages(combinedFilter);
+				}
+				return;
+			}
+			Orders = await ArtPixAPI.GetOrdersAsync(combinedFilter);
+			if (combinedFilter.withPages)
+			{
+				Pages = await GetPages(combinedFilter);
 			}
 		}
 
 		#endregion
 
-		#region PAGE LIST INITIALIZATION - DONE - ✅
+		#region ORDERS PAGE LIST INITIALIZATION - DONE - ✅
 
-		private async Task<ObservableCollection<PageModel>> GetPages(int currentPageNumber, int perPage = 15, OrderCombineFilterModel filterGroup = null)
+		private async Task<ObservableCollection<PageModel>> GetPages(CombinedFilterModel combinedFilter)
 		{
 			var pages = new ObservableCollection<PageModel>();
 			await Task.Run(() =>
 			{
+				
 				for (var i = Orders.Meta.CurrentPage; i <= Orders.Meta.LastPage; i++)
 				{
-					if (i > Orders.Meta.CurrentPage + 5 && i < Orders.Meta.LastPage)
+					var newFilter = combinedFilter;
+					newFilter.withPages = false;
+					newFilter.pageNumber = i;
+					var page = new PageModel(i, i.ToString(), Orders.Meta.Path + "?page=" + i)
 					{
-						var page = new PageModel(i + 5, "...", Orders.Meta.Path + "?page=" + (i + 5))
+						IsSelected = i == Orders.Meta.CurrentPage,
+						NavigateToSelectedPage = new DelegateCommand(async param =>
 						{
-							IsSelected = i == Orders.Meta.CurrentPage,
-							NavigateToSelectedPage = new DelegateCommand(async param =>
-							{
-								ToggleMainLoadingAnimation(1);
-								await GetOrdersList((currentPageNumber + 6),
-									perPage, true, filterGroup);
-								ToggleMainLoadingAnimation(0);
-							})
-						};
-						pages.Add(page);
-					}
-					else
-					{
-						var page = new PageModel(i, i.ToString(), Orders.Meta.Path + "?page=" + i)
-						{
-							IsSelected = i == Orders.Meta.CurrentPage,
-							NavigateToSelectedPage = new DelegateCommand(async param =>
-							{
-								ToggleMainLoadingAnimation(1);
-								await GetOrdersList((int)param, perPage, false, filterGroup);
-								ToggleMainLoadingAnimation(0);
-							})
-						};
-						pages.Add(page);
-					}
+							ToggleMainLoadingAnimation(1);
+							await GetOrdersList(newFilter);
+							ToggleMainLoadingAnimation(0);
+						})
+					};
+					pages.Add(page);
 				}
 				pages = new ObservableCollection<PageModel>(pages.GroupBy(x => x.PageName).Select(g => g.First()).ToList());
 			});
@@ -374,7 +410,7 @@ namespace ArtPix_Dashboard.ViewModels
 			if (result != ContentDialogResult.Primary) return;
 			ToggleMainLoadingAnimation(1);
 			await ArtPixAPI.RemoveCurrentJobsFromMachineAsync(param.ToString());
-			await GetOrdersList(1, 15, true, AppState.OrderFilterGroup);
+			await GetOrdersList(AppState.CombinedFilter);
 			ToggleMainLoadingAnimation(0);
 			Animation.FadeIn(View.NoResultsText);
 		}
@@ -392,14 +428,14 @@ namespace ArtPix_Dashboard.ViewModels
 			if (result != ContentDialogResult.Primary) return;
 			if (String.IsNullOrEmpty(dialog.Combo1.Text)) return;
 			ToggleOrderLoadingAnimation(1, order.NameOrder);
-			var body = new AddIssueRequestModel
+			var body = new AddProductionIssueRequest()
 			{
 				machine_assign_item_id = product.MachineAssignItemId,
 				user = "Supervisor",
 				error = dialog.MessageBox.Text,
 				source = "packing_station",
 				issue_title = dialog.Combo1.Text,
-				production_issue_reason_id = ((Datum)dialog.Combo1.SelectedItem).Id
+				production_issue_reason_id = ((Models.IssueReasons.Datum)dialog.Combo1.SelectedItem).Id
 			};
 			await ArtPixAPI.AddProductionIssueAsync(body);
 			await UpdateOrderInfoAsync(product.IdOrders);
@@ -415,11 +451,11 @@ namespace ArtPix_Dashboard.ViewModels
 			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Models.Order.Product)param).IdOrders);
 			var product = order.Products.SingleOrDefault(p => p.MachineAssignItemId == ((Models.Order.Product)param).MachineAssignItemId);
 			var machines = await ArtPixAPI.GetMachines(product.IdProducts);
-			var dialog = new RedoDialog(machines.Data);
+			var dialog = new RedoDialog(machines);
 			var result = await dialog.ShowAsync();
 			if (result != ContentDialogResult.Primary) return;
 			ToggleOrderLoadingAnimation(1, order.NameOrder);
-			var requestBody = new ResolveErrorRequestModel
+			var requestBody = new ResolveProductionIssueRequest()
 			{
 				machine_assign_error_id = product.MachineAssignErrorId,
 				machine_assign_item_id = product.MachineAssignItemId,
@@ -434,8 +470,8 @@ namespace ArtPix_Dashboard.ViewModels
 			Utils.Utils.Notifier.ShowSuccess("Issue Resolved Successfully!");
 			if (!string.IsNullOrEmpty(dialog.Combo2.Text))
 			{
-				var x = (Models.Machine.Machine)dialog.Combo2.SelectedItem;
-				var body = new AssignProcessingModel
+				var x = (Models.Workstation.Machine)dialog.Combo2.SelectedItem;
+				var body = new ChangeMachineAssignItemStatusRequest()
 				{
 					machine = x.Name,
 					product_id = product.IdProducts,
@@ -468,7 +504,7 @@ namespace ArtPix_Dashboard.ViewModels
 				case ContentDialogResult.Primary:
 					{
 						ToggleOrderLoadingAnimation(1, order.NameOrder);
-						var requestBody = new ResolveErrorRequestModel
+						var requestBody = new ResolveProductionIssueRequest()
 						{
 							machine_assign_error_id = product.MachineAssignErrorId,
 							machine_assign_item_id = product.MachineAssignItemId,
@@ -493,7 +529,7 @@ namespace ArtPix_Dashboard.ViewModels
 				case ContentDialogResult.Secondary:
 					{
 						ToggleOrderLoadingAnimation(1, order.NameOrder);
-						var requestBody = new ResolveErrorRequestModel
+						var requestBody = new ResolveProductionIssueRequest()
 						{
 							machine_assign_error_id = product.MachineAssignErrorId,
 							machine_assign_item_id = product.MachineAssignItemId,
@@ -575,19 +611,19 @@ namespace ArtPix_Dashboard.ViewModels
 			var product = (Product)param;
 			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == product.IdOrders);
 			var machines = await ArtPixAPI.GetMachines(product.IdProducts);
-			var body = new AssignProcessingModel();
-			var dialog = new ReEngraveDialog(machines.Data);
+			var body = new ChangeMachineAssignItemStatusRequest();
+			var dialog = new ReEngraveDialog(machines);
 			var result = await dialog.ShowAsync();
 			if (result != ContentDialogResult.Primary) return;
 			ToggleOrderLoadingAnimation(1, order.NameOrder);
 			body = !string.IsNullOrEmpty(dialog.Combo2.Text)
-				? new AssignProcessingModel
+				? new ChangeMachineAssignItemStatusRequest()
 				{
-					machine = ((Models.Machine.Machine) dialog.Combo2.SelectedItem).Name,
+					machine = ((Models.Workstation.Machine) dialog.Combo2.SelectedItem).Name,
 					user = "Supervisor",
 					machine_assign_item_id = product.MachineAssignItemId
 				}
-				: new AssignProcessingModel
+				: new ChangeMachineAssignItemStatusRequest()
 				{
 					user = "Supervisor",
 					machine_assign_item_id = product.MachineAssignItemId
@@ -651,7 +687,7 @@ namespace ArtPix_Dashboard.ViewModels
 			var product = (Product)param;
 			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == product.IdOrders);
 			var machines = await ArtPixAPI.GetMachines(product.IdProducts);
-			var dialog = new AssignMachineDialog(machines.Data);
+			var dialog = new AssignMachineDialog(machines);
 			var result = await dialog.ShowAsync();
 			if (result != ContentDialogResult.Primary) return;
 			if (string.IsNullOrEmpty(dialog.Combo2.Text))
@@ -660,8 +696,8 @@ namespace ArtPix_Dashboard.ViewModels
 				return;
 			}
 			ToggleOrderLoadingAnimation(1, order.NameOrder);
-			var x = (Models.Machine.Machine)dialog.Combo2.SelectedItem;
-			var body = new AssignProcessingModel
+			var x = (Models.Workstation.Machine)dialog.Combo2.SelectedItem;
+			var body = new ChangeMachineAssignItemStatusRequest()
 			{
 				machine = x.Name,
 				product_id = product.IdProducts,
@@ -686,7 +722,7 @@ namespace ArtPix_Dashboard.ViewModels
 			var result = await dialog.ShowAsync();
 			if (result != ContentDialogResult.Primary) return;
 			ToggleOrderLoadingAnimation(1, order.NameOrder);
-			var newStatus = new NewStatusModel
+			var newStatus = new ChangeMachineAssignItemStatusRequest()
 			{
 				machine_assign_item_id = item.MachineAssignItemId,
 				new_status = "success_manually",
@@ -708,11 +744,11 @@ namespace ArtPix_Dashboard.ViewModels
 			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Product)param).IdOrders);
 			var item = order.Products.SingleOrDefault(p => p.MachineAssignItemId == ((Product)param).MachineAssignItemId);
 			var machines = await ArtPixAPI.GetMachines(item.IdProducts);
-			var dialog = new UnassignDialog(machines.Data);
+			var dialog = new UnassignDialog(machines);
 			var result = await dialog.ShowAsync();
 			if (result != ContentDialogResult.Primary) return;
 			ToggleOrderLoadingAnimation(1, order.NameOrder);
-			var body = new AssignProcessingModel
+			var body = new ChangeMachineAssignItemStatusRequest()
 			{
 				order_id = item.IdOrders,
 				order_name = order.NameOrder,
@@ -721,8 +757,8 @@ namespace ArtPix_Dashboard.ViewModels
 			await ArtPixAPI.UnassignMachineAssignItemAsync(body);
 			if (!string.IsNullOrEmpty(dialog.Combo2.Text))
 			{
-				var x = (Models.Machine.Machine)dialog.Combo2.SelectedItem;
-				var body2 = new AssignProcessingModel
+				var x = (Models.Workstation.Machine)dialog.Combo2.SelectedItem;
+				var body2 = new ChangeMachineAssignItemStatusRequest()
 				{
 					machine = x.Name,
 					product_id = item.IdProducts,
@@ -804,7 +840,7 @@ namespace ArtPix_Dashboard.ViewModels
 			if (order != null)
 			{
 				order.IsShippingInformationLoading = true;
-				var res = await ArtPixAPI.FindBestServiceAsync(new FindBestServiceRequestModel
+				var res = await ArtPixAPI.FindBestServiceAsync(new FindBestServiceRequest()
 					{order_id = param.ToString()});
 				order.ShippingOrderInfo = (await ArtPixAPI.GetOrder(param.ToString())).ShippingOrderInfo;
 				order.IsShippingInformationLoading = false;
@@ -832,6 +868,7 @@ namespace ArtPix_Dashboard.ViewModels
 		{
 			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Product)param).IdOrders);
 			var product = order?.Products.SingleOrDefault(p => p.MachineAssignItemId == ((Product) param).MachineAssignItemId);
+			if (!Utils.Utils.IsCrystal(product)) return;
 			if (product == null) return;
 			var dialog = new PhotoPreviewDialog(product);
 			var result = await dialog.ShowAsync();

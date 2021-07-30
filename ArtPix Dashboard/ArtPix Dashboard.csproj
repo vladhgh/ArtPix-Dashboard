@@ -99,81 +99,120 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\AppStateModel.cs" />
-    <Compile Include="Models\EntityLogsModel.cs" />
-    <Compile Include="Models\FindBestServiceModel.cs" />
-    <Compile Include="Models\IssueReasonsModel.cs" />
-    <Compile Include="Models\MachineAssignItemModel.cs" />
-    <Compile Include="Models\MachineModel.cs" />
-    <Compile Include="Models\NewStatusModel.cs" />
-    <Compile Include="Models\OrderAssignModel.cs" />
+    <Compile Include="Models\AppState\AppStateModel.cs" />
+    <Compile Include="Models\AppState\CombinedFilterModel.cs" />
+    <Compile Include="Models\AppState\CurrentSessionModel.cs" />
+    <Compile Include="Models\AppState\EngravingStatsModel.cs" />
+    <Compile Include="Models\AppState\ShippingStatsModel.cs" />
+    <Compile Include="Models\AppState\WindowPropertiesModel.cs" />
+    <Compile Include="Models\Common\Links.cs" />
+    <Compile Include="Models\Common\Meta.cs" />
+    <Compile Include="Models\EntityLogs\Data.cs" />
+    <Compile Include="Models\EntityLogs\Datum.cs" />
+    <Compile Include="Models\EntityLogs\EntityLogsModel.cs" />
+    <Compile Include="Models\FindBestService\Data.cs" />
+    <Compile Include="Models\FindBestService\FindBestServiceModel.cs" />
+    <Compile Include="Models\FindBestService\Package.cs" />
+    <Compile Include="Models\FindBestService\Shipment.cs" />
+    <Compile Include="Models\IssueReasons\Datum.cs" />
+    <Compile Include="Models\IssueReasons\IssueReasonsModel.cs" />
+    <Compile Include="Models\MachineAssignedItem\Datum.cs" />
+    <Compile Include="Models\MachineAssignedItem\MachineAssignItemModel.cs" />
+    <Compile Include="Models\MachineAssignedItem\Order.cs" />
+    <Compile Include="Models\MachineAssignedItem\Product.cs" />
+    <Compile Include="Models\OrderAssignedLogs\Datum.cs" />
+    <Compile Include="Models\OrderAssignedLogs\Order.cs" />
+    <Compile Include="Models\ProductionIssue\Datum.cs" />
+    <Compile Include="Models\ProductionIssue\Order.cs" />
+    <Compile Include="Models\ProductionIssue\Product.cs" />
+    <Compile Include="Models\Requests\AddProductionIssueRequest.cs" />
+    <Compile Include="Models\Requests\ChangeMachineAssignItemStatusRequest.cs" />
+    <Compile Include="Models\OrderAssignedLogs\OrderAssignModel.cs" />
+    <Compile Include="Models\Order\BillingAddress.cs" />
+    <Compile Include="Models\Order\Box.cs" />
+    <Compile Include="Models\Order\Comment.cs" />
+    <Compile Include="Models\Order\CrystalType.cs" />
+    <Compile Include="Models\Order\Customers.cs" />
+    <Compile Include="Models\Order\Deadline.cs" />
+    <Compile Include="Models\Order\MachineAssignItem.cs" />
     <Compile Include="Models\Order\OrderModel.cs" />
     <Compile Include="Models\Order\Datum.cs" />
+    <Compile Include="Models\Order\Payment.cs" />
     <Compile Include="Models\Order\Product.cs" />
-    <Compile Include="Models\PageModel.cs" />
-    <Compile Include="Models\ProductHistoryModel.cs" />
-    <Compile Include="Models\ProductionIssueModel.cs" />
-    <Compile Include="Models\ResolveErrorRequestModel.cs" />
-    <Compile Include="Models\StatsModel.cs" />
+    <Compile Include="Models\Order\Retouch.cs" />
+    <Compile Include="Models\Order\ShippingAddress.cs" />
+    <Compile Include="Models\Order\ShippingOrderInfo.cs" />
+    <Compile Include="Models\Order\ShippingPackage.cs" />
+    <Compile Include="Models\Order\ShippingSlot.cs" />
+    <Compile Include="Models\Order\ShippingTote.cs" />
+    <Compile Include="Models\Order\ShipstationOrder.cs" />
+    <Compile Include="Models\Order\WrappingPaper.cs" />
+    <Compile Include="Models\Common\PageModel.cs" />
+    <Compile Include="Models\ProductHistory\Datum.cs" />
+    <Compile Include="Models\ProductHistory\ProductHistoryModel.cs" />
+    <Compile Include="Models\ProductHistory\User.cs" />
+    <Compile Include="Models\ProductionIssue\ProductionIssueModel.cs" />
+    <Compile Include="Models\Requests\FindBestServiceRequest.cs" />
+    <Compile Include="Models\Requests\ResolveProductionIssueRequest.cs" />
     <Compile Include="API\ArtPixAPI.cs" />
+    <Compile Include="Models\Workstation\Datum.cs" />
+    <Compile Include="Models\Workstation\Machine.cs" />
     <Compile Include="Models\Workstation\WorkstationsModel.cs" />
     <Compile Include="Utils\Animation.cs" />
-    <Compile Include="Utils\PixelsToGridLengthConverter.cs" />
+    <Compile Include="Utils\Converters\MultiplyConverter.cs" />
+    <Compile Include="Utils\Converters\PixelsToGridLengthConverter.cs" />
     <Compile Include="Utils\Utils.cs" />
     <Compile Include="API\WinAPI.cs" />
-    <Compile Include="ViewModels\Commands.cs" />
-    <Compile Include="ViewModels\DelegateCommand.cs" />
+    <Compile Include="Utils\Commands.cs" />
+    <Compile Include="Utils\Helpers\DelegateCommand.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\PropertyChangedListener.cs" />
+    <Compile Include="Utils\Helpers\PropertyChangedListener.cs" />
     <Compile Include="ViewModels\ShippingDashboardViewModel.cs" />
-    <Compile Include="ViewModels\UtilitiesViewModel.cs" />
-    <Compile Include="Views\Dialogs\CancelIssueDialog - Copy.xaml.cs">
-      <DependentUpon>PhotoPreviewDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\ChangeLogsDialog.xaml.cs">
-      <DependentUpon>ChangeLogsDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\ChangeAddressDialog.xaml.cs">
-      <DependentUpon>ChangeAddressDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\LoginDialog.xaml.cs">
-      <DependentUpon>LoginDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\AddIssueDialog.xaml.cs">
+    <Compile Include="Dialogs\AddIssueDialog.xaml.cs">
       <DependentUpon>AddIssueDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Dialogs\AssignJobsDialog.xaml.cs">
+    <Compile Include="Dialogs\AssignJobsDialog.xaml.cs">
       <DependentUpon>AssignJobsDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Dialogs\MachinePowerDialog.xaml.cs">
-      <DependentUpon>MachinePowerDialog.xaml</DependentUpon>
+    <Compile Include="Dialogs\DhlManifestDialog.xaml.cs">
+      <DependentUpon>DhlManifestDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Dialogs\ReEngraveDialog.xaml.cs">
-      <DependentUpon>ReEngraveDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\ProductHistoryDialog.xaml.cs">
-      <DependentUpon>ProductHistoryDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\UnassignAllDialog.xaml.cs">
-      <DependentUpon>UnassignAllDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\UnassignDialog.xaml.cs">
-      <DependentUpon>UnassignDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\ManualCompleteDialog.xaml.cs">
-      <DependentUpon>ManualCompleteDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\CancelIssueDialog.xaml.cs">
-      <DependentUpon>CancelIssueDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\AssignMachineDialog.xaml.cs">
+    <Compile Include="Dialogs\AssignMachineDialog.xaml.cs">
       <DependentUpon>AssignMachineDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Dialogs\RedoDialog.xaml.cs">
+    <Compile Include="Dialogs\PhotoPreviewDialog.cs" />
+    <Compile Include="Dialogs\ChangeAddressDialog.xaml.cs">
+      <DependentUpon>ChangeAddressDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ChangeLogsDialog.xaml.cs">
+      <DependentUpon>ChangeLogsDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\LoginDialog.xaml.cs">
+      <DependentUpon>LoginDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\MachinePowerDialog.xaml.cs">
+      <DependentUpon>MachinePowerDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ManualCompleteDialog.xaml.cs">
+      <DependentUpon>ManualCompleteDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ProductHistoryDialog.xaml.cs">
+      <DependentUpon>ProductHistoryDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\RedoDialog.xaml.cs">
       <DependentUpon>RedoDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Dialogs\ReworkDialog.xaml.cs">
+    <Compile Include="Dialogs\ReEngraveDialog.xaml.cs">
+      <DependentUpon>ReEngraveDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ReworkDialog.xaml.cs">
       <DependentUpon>ReworkDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\UnassignAllDialog.xaml.cs">
+      <DependentUpon>UnassignAllDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\UnassignDialog.xaml.cs">
+      <DependentUpon>UnassignDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ShippingDashboardView.xaml.cs">
       <DependentUpon>ShippingDashboardView.xaml</DependentUpon>
@@ -189,73 +228,69 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Dialogs\MachinePowerDialog.xaml">
+    <Page Include="Dialogs\AddIssueDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\PhotoPreviewDialog.xaml">
+    <Page Include="Dialogs\AssignJobsDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\ChangeLogsDialog.xaml">
+    <Page Include="Dialogs\DhlManifestDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\ChangeAddressDialog.xaml">
+    <Page Include="Dialogs\AssignMachineDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\LoginDialog.xaml">
+    <Page Include="Dialogs\ChangeAddressDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\AddIssueDialog.xaml">
+    <Page Include="Dialogs\ChangeLogsDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\AssignJobsDialog.xaml">
+    <Page Include="Dialogs\LoginDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\ReEngraveDialog.xaml">
+    <Page Include="Dialogs\MachinePowerDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\ProductHistoryDialog.xaml">
+    <Page Include="Dialogs\ManualCompleteDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\UnassignAllDialog.xaml">
+    <Page Include="Dialogs\PhotoPreviewDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\UnassignDialog.xaml">
+    <Page Include="Dialogs\ProductHistoryDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\ManualCompleteDialog.xaml">
+    <Page Include="Dialogs\RedoDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\CancelIssueDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Dialogs\AssignMachineDialog.xaml">
+    <Page Include="Dialogs\ReEngraveDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\RedoDialog.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Dialogs\ReworkDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\ReworkDialog.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Dialogs\UnassignAllDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\ScanDialog.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Dialogs\UnassignDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -264,9 +299,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Views\Dialogs\ScanDialog.xaml.cs">
-      <DependentUpon>ScanDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
@@ -307,9 +339,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\placeholder.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\logo.ico" />
@@ -368,27 +397,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\test.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\profile.jpeg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\profile.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\profile.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\test.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Slices2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\ap3dlogo.png" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.8 %28x86 and x64%29</ProductName>
@@ -401,76 +409,76 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\multiple_item_order_preview.png" />
+    <Resource Include="Assets\Images\multiple_item_order_preview.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\rotating_base_small.png" />
+    <Resource Include="Assets\Images\LightBases\rotating_base_small.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\light_base_small.png" />
+    <Resource Include="Assets\Images\LightBases\light_base_small.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\cleaning_kit.png" />
+    <Resource Include="Assets\Images\cleaning_kit.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\rotating_base_large.png" />
+    <Resource Include="Assets\Images\LightBases\rotating_base_large.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\light_base_medium.png" />
+    <Resource Include="Assets\Images\LightBases\light_base_medium.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\light_base_large.png" />
+    <Resource Include="Assets\Images\LightBases\light_base_large.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\light_base_xl.png" />
+    <Resource Include="Assets\Images\LightBases\light_base_xl.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\sunshine_wrapping_paper.png" />
+    <Resource Include="Assets\Images\WrappingPaper\sunshine_wrapping_paper.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\sunflower_greeting_card.png" />
+    <Resource Include="Assets\Images\GreetingCards\sunflower_greeting_card.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="logo.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\blue_polka_dot_wrapping_paper.png" />
+    <Resource Include="Assets\Images\WrappingPaper\blue_polka_dot_wrapping_paper.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\baloon_wrapping_paper.png" />
+    <Resource Include="Assets\Images\WrappingPaper\baloon_wrapping_paper.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\red_star_wrapping_paper.png" />
+    <Resource Include="Assets\Images\WrappingPaper\red_star_wrapping_paper.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\golden_star_wrapping_paper.png" />
+    <Resource Include="Assets\Images\WrappingPaper\golden_star_wrapping_paper.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\ap3dlogo2.png" />
+    <Resource Include="Assets\ap3dlogo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\plastic_light_base_medium.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Spinner.gif" />
+    <Resource Include="Assets\Images\LightBases\plastic_light_base_medium.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Spinner2.gif" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\greeting_card_flowers_orange_ribbon.png" />
+    <Resource Include="Assets\Images\GreetingCards\greeting_card_flowers_orange_ribbon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\greeting_card_loving_heart.png" />
+    <Resource Include="Assets\Images\GreetingCards\greeting_card_loving_heart.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\greeting_card_i_love_you.png" />
+    <Resource Include="Assets\Images\GreetingCards\greeting_card_i_love_you.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\greeting_card_cupid_couple.png" />
+    <Resource Include="Assets\Images\GreetingCards\greeting_card_cupid_couple.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\plastic_light_base_small.png" />
+    <Resource Include="Assets\Images\LightBases\plastic_light_base_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Images\GreetingCards\greeting_card_sweatheart_couple.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
