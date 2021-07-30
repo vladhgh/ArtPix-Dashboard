@@ -983,9 +983,7 @@
 								FontSize="14"
 								Tag="{Binding PageNumber}"
 								IsActive="{Binding IsSelected, Mode=OneWay}"
-								Command="{Binding NavigateToSelectedPage}"
-								Click="ButtonBase_OnClick"
-								CommandParameter="{Binding PageNumber}"
+								Click="PageButtonOnClick"
 								Content="{Binding PageName, StringFormat={}{0:N}}" Template="{DynamicResource TitleBarButtonControlTemplate1}" />
 						</DataTemplate>
 					</ui:ItemsRepeater.ItemTemplate>

@@ -130,6 +130,7 @@ namespace ArtPix_Dashboard.Views
 
 		private void UpdatePaginationButtons()
 		{
+			if (_vm.Pages.Count == 0) return;
 			var selectedPage = _vm.Pages.First(p => p.IsSelected);
 			_vm.PaginationForwardButtonVisibility = (_vm.Pages.Count > 1) && (_vm.Pages.Count > selectedPage.PageNumber);
 			_vm.PaginationBackButtonVisibility = selectedPage.PageNumber > 1;
@@ -145,6 +146,7 @@ namespace ArtPix_Dashboard.Views
 			ToggleLoadingAnimation(1);
 
 			_vm.AppState.CombinedFilter = orderFilterGroup;
+			_vm.AppState.CombinedFilter.withPages = true;
 
 			UpdateControls();
 
@@ -411,10 +413,11 @@ namespace ArtPix_Dashboard.Views
 
 		#endregion
 
-		#region PAGINATION EVENT HANDLERS - DONE - ✅
+		#region PAGES NAVIGATION
 
-		private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+		private async void PageButtonOnClick(object sender, RoutedEventArgs e)
 		{
+			ToggleLoadingAnimation(1);
 			var btn = (TitleBarButton)sender;
 			foreach (var page in _vm.Pages)
 			{
@@ -430,7 +433,11 @@ namespace ArtPix_Dashboard.Views
 				ScrollAnimationBehavior.intendedLocation = 0;
 			}
 
+			_vm.AppState.CombinedFilter.pageNumber = (int)btn.Tag;
+			_vm.AppState.CombinedFilter.withPages = false;
+			await _vm.GetOrdersList(_vm.AppState.CombinedFilter);
 			_vm.PaginationBackButtonVisibility = (int)btn.Tag > 1;
+			ToggleLoadingAnimation(0);
 		}
 
 		private async void BackButton_OnClick(object sender, RoutedEventArgs e)

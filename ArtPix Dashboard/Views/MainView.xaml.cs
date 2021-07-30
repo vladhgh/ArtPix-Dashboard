@@ -46,7 +46,7 @@ namespace ArtPix_Dashboard.Views
 		
 		#endregion
 
-		#region SHOW CHANGES DIALOG - DONE
+		#region SHOW CHANGES DIALOG
 
 		private async void ShowChangesDialog()
 		{
@@ -55,20 +55,28 @@ namespace ArtPix_Dashboard.Views
 			var result = await dialog.ShowAsync();
 			ViewModel.AppState.CurrentSession.PreviousVersion = ViewModel.AppState.CurrentSession.CurrentVersion;
 		}
-		
+
 		#endregion
 
+		#region INITIALIZE USER SETTINGS
 
 		private void InitializeSettings()
 		{
 			Utils.Utils.EnableBlur(this);
-			Window.Closing += Window_Closing;
 			var x = JsonConvert.DeserializeObject<AppStateModel>(Settings.Default.AppState);
-			if (x != null) ViewModel.AppState = x;
+			if (x != null)
+			{
+				x.CurrentSession = new();
+				ViewModel.AppState = x;
+			}
 			SwitchStatusPaneGroupToType(ViewModel.AppState.CurrentSession.StatusGroup);
 			SelectHeaderButton();
 			ContentFrame.Navigate(typeof(ShippingDashboardView), ViewModel.AppState, new SuppressNavigationTransitionInfo());
 		}
+
+		#endregion
+
+
 
 		private void SelectHeaderButton()
 		{

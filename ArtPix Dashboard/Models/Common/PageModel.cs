@@ -5,12 +5,6 @@ namespace ArtPix_Dashboard.Models.Common
 {
 	public class PageModel : PropertyChangedListener
 	{
-		public PageModel(int pageNumber, string pageName, string pageUrl)
-		{
-			PageName = pageName;
-			PageNumber = pageNumber;
-			PageUrl = pageUrl;
-		}
 		public string PageName { get; set; }
 		public int PageNumber { get; set; }
 

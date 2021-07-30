@@ -114,8 +114,8 @@ namespace ArtPix_Dashboard.ViewModels
 		}
 
 
-		private ObservableCollection<PageModel> _pages = new ObservableCollection<PageModel>();
-		public ObservableCollection<PageModel> Pages
+		private List<PageModel> _pages = new ();
+		public List<PageModel> Pages
 		{
 			get => _pages;
 			set => SetProperty(ref _pages, value);
@@ -369,32 +369,24 @@ namespace ArtPix_Dashboard.ViewModels
 
 		#endregion
 
-		#region ORDERS PAGE LIST INITIALIZATION - DONE - ✅
+		#region PAGES LIST INITIALIZATION
 
-		private async Task<ObservableCollection<PageModel>> GetPages(CombinedFilterModel combinedFilter)
+		private async Task<List<PageModel>> GetPages(CombinedFilterModel combinedFilter)
 		{
-			var pages = new ObservableCollection<PageModel>();
+			var pages = new List<PageModel>();
 			await Task.Run(() =>
 			{
-				
 				for (var i = Orders.Meta.CurrentPage; i <= Orders.Meta.LastPage; i++)
 				{
-					var newFilter = combinedFilter;
-					newFilter.withPages = false;
-					newFilter.pageNumber = i;
-					var page = new PageModel(i, i.ToString(), Orders.Meta.Path + "?page=" + i)
+					var page = new PageModel()
 					{
+						PageName = i.ToString(),
+						PageNumber = i,
+						PageUrl = Orders.Meta.Path + "?page=" + i,
 						IsSelected = i == Orders.Meta.CurrentPage,
-						NavigateToSelectedPage = new DelegateCommand(async param =>
-						{
-							ToggleMainLoadingAnimation(1);
-							await GetOrdersList(newFilter);
-							ToggleMainLoadingAnimation(0);
-						})
 					};
 					pages.Add(page);
 				}
-				pages = new ObservableCollection<PageModel>(pages.GroupBy(x => x.PageName).Select(g => g.First()).ToList());
 			});
 			return pages;
 		}

@@ -17,10 +17,12 @@
                   Left="{Binding AppState.WindowProperties.Left, Mode=TwoWay}"
                   Height="{Binding AppState.WindowProperties.Height, Mode=TwoWay}"
                   Width="{Binding AppState.WindowProperties.Width, Mode=TwoWay}"
-                  MaxWidth="1920"
+                  MinWidth="1600"
+				  MinHeight="900"
 				  MaxHeight="1080"
                   WindowState="{Binding AppState.WindowProperties.WindowState, Mode=TwoWay}"
                   Loaded="MainViewOnLoaded"
+				  Closing="Window_Closing"
                   IsTabStop="True"
                   Background="{DynamicResource SystemControlPageBackgroundMediumAltMediumBrush}"
                   ui:WindowHelper.UseModernWindowStyle="True"
@@ -567,7 +569,8 @@
 											IsBackEnabled="False"
 											IsBackButtonVisible="Collapsed"
 											xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility}"
-											HorizontalAlignment="Right" Width="1912">
+											HorizontalAlignment="Right"
+											Width="auto">
 
 			<ui:NavigationView.Resources>
 				<SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="#99000000" />
@@ -610,10 +613,9 @@
 
 			<ui:NavigationView.Header>
 				<ui:SimpleStackPanel Orientation="Vertical">
-
 					<Separator BorderThickness="5" BorderBrush="#333" Margin="-10 0 0 0"/>
 					<ui:SimpleStackPanel Margin="0 10 0 0" Orientation="Vertical"  MinWidth="{Binding AppState.WindowProperties.Width, Mode=OneWay}" >
-						
+
 						<Grid Height="60"  Name="EngravingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Margin="0 0 30 0" Visibility="{Binding AppState.CurrentSession.EngravingStatusGroupVisibility}" >
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*"/>
@@ -919,7 +921,7 @@
 					<Button Background="#1e1e1e" Cursor="Hand" ToolTip="Switch Status Panel" Style="{DynamicResource InactiveButtonStyle}" Click="SwitchStatusPanelButtonOnClick" VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 10 4">
 						<ui:FontIcon FontSize="16" Glyph="&#xE8AB;" />
 					</Button>
-					<Button Background="#1e1e1e" Cursor="Hand" ToolTip="Settings" Style="{DynamicResource InactiveButtonStyle}" VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 10 4">
+					<Button Background="#1e1e1e" Cursor="Hand" ToolTip="Settings" Style="{DynamicResource InactiveButtonStyle}" VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 0 4">
 						<ui:FontIcon FontSize="16" Glyph="&#xE713;" />
 					</Button>
 				</StackPanel>
@@ -929,7 +931,6 @@
 
 
 		</ui:NavigationView>
-
-
+		
 	</Grid>
 </Window>

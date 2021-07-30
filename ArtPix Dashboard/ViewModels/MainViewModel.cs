@@ -5,6 +5,7 @@ using System.Windows;
 using ArtPix_Dashboard.Models.AppState;
 using ArtPix_Dashboard.Models.Workstation;
 using ArtPix_Dashboard.Utils.Helpers;
+using System.Threading.Tasks;
 
 namespace ArtPix_Dashboard.ViewModels
 {
@@ -66,7 +67,7 @@ namespace ArtPix_Dashboard.ViewModels
 		
 		#endregion
 
-		#region TOGGLE LOADING ANIMATION - DONE - ✅
+		#region TOGGLE LOADING ANIMATION
 
 		private void ToggleLoadingAnimation(int kind)
 		{
