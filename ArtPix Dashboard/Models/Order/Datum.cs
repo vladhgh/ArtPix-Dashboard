@@ -72,17 +72,28 @@ namespace ArtPix_Dashboard.Models.Order
 
 		public Visibility CustomerNoteVisibility => string.IsNullOrEmpty(CustomerNote) ? Visibility.Collapsed : Visibility.Visible;
 
+
+		private Visibility _shippingAddress2Visibility;
+
 		public Visibility ShippingAddress2Visibility
 		{
 			get
 			{
 				if (customers == null)
 				{
-					return Visibility.Collapsed;
+					_shippingAddress2Visibility = Visibility.Collapsed;
+					return _shippingAddress2Visibility;
 				}
-				return string.IsNullOrEmpty(customers.ShippingAddress.address_2) ? Visibility.Collapsed : Visibility.Visible;
 
+				if (customers.ShippingAddress == null)
+				{
+					_shippingAddress2Visibility = Visibility.Collapsed;
+					return _shippingAddress2Visibility;
+				}
+				_shippingAddress2Visibility = string.IsNullOrEmpty(customers.ShippingAddress.address_2) ? Visibility.Collapsed : Visibility.Visible;
+				return _shippingAddress2Visibility;
 			}
+			set => SetProperty(ref _shippingAddress2Visibility, value);
 		}
 
 
@@ -310,7 +321,7 @@ namespace ArtPix_Dashboard.Models.Order
 				{
 					var bmp = new BitmapImage();
 					bmp.BeginInit();
-					bmp.CacheOption = BitmapCacheOption.OnLoad;
+					bmp.CacheOption = BitmapCacheOption.None;
 					bmp.DecodePixelWidth = 100;
 					bmp.UriSource = logoImage;
 					bmp.EndInit();
@@ -321,7 +332,7 @@ namespace ArtPix_Dashboard.Models.Order
 					var img = TotalCrystal == 1 && !string.IsNullOrEmpty(item.UrlRenderImg) ? item.UrlRenderImg : path;
 					var bmp = new BitmapImage();
 					bmp.BeginInit();
-					bmp.CacheOption = BitmapCacheOption.OnLoad;
+					bmp.CacheOption = BitmapCacheOption.None;
 					bmp.DecodePixelWidth = 100;
 					bmp.UriSource = new Uri(img, UriKind.RelativeOrAbsolute);
 					bmp.EndInit();
@@ -516,6 +527,7 @@ namespace ArtPix_Dashboard.Models.Order
 					case "amazon_second_day": return "Amazon Second Day Shipping";
 					case "amazon_next_day": return "Amazon Next Day Shipping";
 					case "dhl_parcel_direct": return "DHL Parcel Direct Shipping";
+					case "dhl_parcel_standard": return "DHL Parcel Standard";
 					default: return _shippingType;
 				}
 			}
@@ -539,6 +551,7 @@ namespace ArtPix_Dashboard.Models.Order
 					case "amazon_second_day": return "#D50101";
 					case "amazon_next_day": return "#D50101";
 					case "dhl_parcel_direct": return "DarkGreen";
+					case "dhl_parcel_standard": return "DarkGreen";
 					default: return "DarkGray";
 				}
 			}
@@ -646,7 +659,14 @@ namespace ArtPix_Dashboard.Models.Order
 
 			}
 		}
-		public Customers customers { get; set; }
+
+		private Customers _customers;
+
+		public Customers customers
+		{
+			get => _customers;
+			set => SetProperty(ref _customers, value);
+		}
 
 		private ShippingOrderInfo _shippingOrderInfo = new ShippingOrderInfo();
 		[JsonProperty("shipping_order_info")]

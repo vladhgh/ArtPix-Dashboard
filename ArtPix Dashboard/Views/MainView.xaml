@@ -556,7 +556,7 @@
 			Grid.Row="1"
 			Visibility="{Binding AppState.CurrentSession.MainViewProgressRingVisibility, Mode=TwoWay}"
 			gif:ImageBehavior.RepeatBehavior="0x"
-			gif:ImageBehavior.AnimatedSource="../Assets/Spinner2.gif" Width="70" Height="70"/>
+			gif:ImageBehavior.AnimatedSource="../Assets/giphy.gif" Width="170" Height="170"/>
 		<ui:NavigationView
 											x:Name="MainNavigationView"
 											Grid.Row="1"
@@ -598,6 +598,9 @@
 							Text="Production Dashboard"
 							FontSize="14"
 							Style="{DynamicResource BaseTextBlockStyle}"/>
+						<Button.Effect>
+							<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+						</Button.Effect>
 					</Button>
 				</ui:NavigationViewItem>
 				<ui:NavigationViewItem Style="{DynamicResource NavigationViewItemStyle1}" Margin="0 10 0 0">
@@ -917,12 +920,21 @@
 							Text="{Binding AppState.CurrentSession.EmployeeName}"
 							FontSize="12"
 							Style="{DynamicResource BaseTextBlockStyle}"/>
+						<Button.Effect>
+							<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+						</Button.Effect>
 					</Button>
 					<Button Background="#1e1e1e" Cursor="Hand" ToolTip="Switch Status Panel" Style="{DynamicResource InactiveButtonStyle}" Click="SwitchStatusPanelButtonOnClick" VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 10 4">
 						<ui:FontIcon FontSize="16" Glyph="&#xE8AB;" />
+						<Button.Effect>
+							<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+						</Button.Effect>
 					</Button>
 					<Button Background="#1e1e1e" Cursor="Hand" ToolTip="Settings" Style="{DynamicResource InactiveButtonStyle}" VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 0 4">
 						<ui:FontIcon FontSize="16" Glyph="&#xE713;" />
+						<Button.Effect>
+							<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+						</Button.Effect>
 					</Button>
 				</StackPanel>
 			</ui:NavigationView.PaneFooter>

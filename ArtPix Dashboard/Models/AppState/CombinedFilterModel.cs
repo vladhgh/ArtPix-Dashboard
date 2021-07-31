@@ -178,7 +178,7 @@ namespace ArtPix_Dashboard.Models.AppState
 						with_shipping_totes = "False";
 						shipByToday = "False";
 						sort_by = "estimate_processing_max_date";
-						store_name = "";
+						store_name = "Amazon&store_name[]=WordPress";
 						IsFilterGroupEnabled = true;
 						IsShipByTodayButtonEnabled = true;
 						CreateManifestButtonVisibility = Visibility.Visible;
@@ -224,7 +224,7 @@ namespace ArtPix_Dashboard.Models.AppState
 						with_shipping_totes = "False";
 						shipByToday = "True";
 						sort_by = "estimate_processing_max_date";
-						store_name = "";
+						store_name = "Amazon&store_name[]=WordPress";
 						IsFilterGroupEnabled = true;
 						IsShipByTodayButtonEnabled = true;
 						CreateManifestButtonVisibility = Visibility.Visible;

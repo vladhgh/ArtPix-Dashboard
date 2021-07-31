@@ -274,7 +274,7 @@ namespace ArtPix_Dashboard.Utils
 
 		#endregion
 
-		#region SELECT STATUS COLOR - DONE - ✅
+		#region SELECT STATUS COLOR
 
 		public static string SelectStatusColor(string status)
 		{
@@ -291,6 +291,7 @@ namespace ArtPix_Dashboard.Utils
 				case "engrave_issue": return "DarkRed";
 				case "engrave_processing": return "SteelBlue";
 				case "engrave_done": return "DarkGreen";
+				case "on_hold": return "#494949";
 				case "error": return "DarkRed";
 				case "shipping_label_printed": return "DarkGreen";
 				case "In Photoshop": return "#bf6900";
@@ -305,6 +306,7 @@ namespace ArtPix_Dashboard.Utils
 				case "Awaiting Confirmation": return "#bf6900";
 				case "Awaiting Model": return "#bf6900";
 				case "Ready To Engrave": return "#494949";
+				case "On Hold": return "#494949";
 				case "Engraving Issue": return "DarkRed";
 				case "retoucher_issue": return "DarkRed";
 				case "Engraving In Progress": return "SteelBlue";
@@ -317,7 +319,7 @@ namespace ArtPix_Dashboard.Utils
 
 		#endregion
 
-		#region SELECT STATUS TEXT - DONE - ✅
+		#region SELECT STATUS TEXT
 
 		public static string SelectStatusText(string status)
 		{
@@ -333,6 +335,7 @@ namespace ArtPix_Dashboard.Utils
 				case "wait_model": return "Awaiting Model";
 				case "ready_to_engrave": return "Ready To Engrave";
 				case "success": return "Engraving Done";
+				case "on_hold": return "On Hold";
 				case "success_manually": return "Completed Manually";
 				case "engrave_issue": return "Engraving Issue";
 				case "error": return "Engraving Issue";

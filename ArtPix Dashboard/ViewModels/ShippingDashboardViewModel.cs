@@ -370,6 +370,7 @@ namespace ArtPix_Dashboard.ViewModels
 				return;
 			}
 			Orders = await ArtPixAPI.GetOrdersAsync(combinedFilter);
+			View.ShippingItemsListView.ItemsSource = Orders.Data;
 			if (combinedFilter.withPages)
 			{
 				Pages = await GetPages(combinedFilter);

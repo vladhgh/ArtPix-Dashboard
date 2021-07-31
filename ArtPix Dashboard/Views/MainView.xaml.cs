@@ -25,6 +25,8 @@ namespace ArtPix_Dashboard.Views
 
 		internal readonly MainViewModel ViewModel = new ();
 
+		public ShippingDashboardView ShippingView = new();
+
 		#region CONSTRUCTOR
 
 		public MainView()
@@ -74,7 +76,7 @@ namespace ArtPix_Dashboard.Views
 			ShowLoginDialog();
 			SwitchStatusPaneGroupToType(ViewModel.AppState.CurrentSession.StatusGroup);
 			SelectHeaderButton();
-			ContentFrame.Navigate(typeof(ShippingDashboardView), ViewModel.AppState, new SuppressNavigationTransitionInfo());
+			ContentFrame.Navigate(ShippingView, ViewModel.AppState);
 		}
 
 		#endregion
@@ -89,8 +91,6 @@ namespace ArtPix_Dashboard.Views
 
 			}
 		}
-
-
 
 		private void SelectHeaderButton()
 		{
@@ -208,6 +208,7 @@ namespace ArtPix_Dashboard.Views
 				}
 			}
 		}
+
 		private void SwitchStatusPanel()
 		{
 			switch (ViewModel.AppState.CurrentSession.StatusGroup)
@@ -235,9 +236,8 @@ namespace ArtPix_Dashboard.Views
 
 		private void ReadyToShipButtonOnClick(object sender, RoutedEventArgs e)
 		{
-			ViewModel.AppState.CombinedFilter = new CombinedFilterModel("Ready To Ship");
 			SetActiveButton((ToggleButton)sender);
-			ContentFrame.Navigate(typeof(ShippingDashboardView), ViewModel.AppState, new SuppressNavigationTransitionInfo());
+			ShippingView.SendCombinedRequest(new CombinedFilterModel("Ready To Ship"));
 		}
 
 		private void SetActiveButton(ToggleButton button, string elementName = "")
@@ -257,7 +257,7 @@ namespace ArtPix_Dashboard.Views
 				workstation.MachinesGroupVisibility = Visibility.Collapsed;
 			}
 
-				if (button == null)
+			if (button == null)
 			{
 				button = (ToggleButton)this.FindName(elementName.Replace(" ", "") + "Button");
 				if (button != null)
@@ -306,16 +306,14 @@ namespace ArtPix_Dashboard.Views
 
 		private void AwaitingShipmentButtonOnClick(object sender, RoutedEventArgs e)
 		{
-			ViewModel.AppState.CombinedFilter = new CombinedFilterModel("Awaiting Shipment");
 			SetActiveButton((ToggleButton)sender);
-			ContentFrame.Navigate(typeof(ShippingDashboardView), ViewModel.AppState, new SuppressNavigationTransitionInfo());
+			ShippingView.SendCombinedRequest(new CombinedFilterModel("Awaiting Shipment"));
 		}
 
 		private void ShipByTodayButtonOnClick(object sender, RoutedEventArgs e)
 		{
-			ViewModel.AppState.CombinedFilter = new CombinedFilterModel("Ship By Today");
 			SetActiveButton((ToggleButton)sender);
-			ContentFrame.Navigate(typeof(ShippingDashboardView), ViewModel.AppState, new SuppressNavigationTransitionInfo());
+			ShippingView.SendCombinedRequest(new CombinedFilterModel("Ship By Today"));
 		}
 
 		private void WorkstationButtonOnClick(object sender, RoutedEventArgs e)
@@ -325,36 +323,31 @@ namespace ArtPix_Dashboard.Views
 
 		private void AwaitingModelButtonOnClick(object sender, RoutedEventArgs e)
 		{
-			ViewModel.AppState.CombinedFilter = new CombinedFilterModel("Awaiting Model");
 			SetActiveButton((ToggleButton)sender);
-			ContentFrame.Navigate(typeof(ShippingDashboardView), ViewModel.AppState, new SuppressNavigationTransitionInfo());
+			ShippingView.SendCombinedRequest(new CombinedFilterModel("Awaiting Model"));
 		}
 
 		private void ReadyToEngraveButtonOnClick(object sender, RoutedEventArgs e)
 		{
-			ViewModel.AppState.CombinedFilter = new CombinedFilterModel("Ready To Engrave");
 			SetActiveButton((ToggleButton)sender);
-			ContentFrame.Navigate(typeof(ShippingDashboardView), ViewModel.AppState, new SuppressNavigationTransitionInfo());
+			ShippingView.SendCombinedRequest(new CombinedFilterModel("Ready To Engrave"));
 		}
 
 		private void EngravingButtonOnClick(object sender, RoutedEventArgs e)
 		{
-			ViewModel.AppState.CombinedFilter = new CombinedFilterModel("Engraving");
 			SetActiveButton((ToggleButton)sender);
-			ContentFrame.Navigate(typeof(ShippingDashboardView), ViewModel.AppState, new SuppressNavigationTransitionInfo());
+			ShippingView.SendCombinedRequest(new CombinedFilterModel("Engraving"));
 		}
 
 		private void ProductionIssuesButtonOnClick(object sender, RoutedEventArgs e)
 		{
-			ViewModel.AppState.CombinedFilter = new CombinedFilterModel("Production Issues");
 			SetActiveButton((ToggleButton)sender);
-			ContentFrame.Navigate(typeof(ShippingDashboardView), ViewModel.AppState, new SuppressNavigationTransitionInfo());
+			ShippingView.SendCombinedRequest(new CombinedFilterModel("Production Issues"));
 		}
 
 		private void NavigateToMachine(object sender, RoutedEventArgs e)
 		{
-			ViewModel.AppState.CombinedFilter = new CombinedFilterModel("Machine", ((Button) sender).Tag.ToString());
-			ContentFrame.Navigate(typeof(ShippingDashboardView), ViewModel.AppState, new SuppressNavigationTransitionInfo());
+			ShippingView.SendCombinedRequest(new CombinedFilterModel("Machine", ((Button) sender).Tag.ToString()));
 		}
 
 		private async void PowerAllMachinesButtonClick(object sender, RoutedEventArgs e)
@@ -386,9 +379,8 @@ namespace ArtPix_Dashboard.Views
 
 		private void EngravedTodayButtonOnClick(object sender, RoutedEventArgs e)
 		{
-			ViewModel.AppState.CombinedFilter = new CombinedFilterModel("Engraved Today");
 			SetActiveButton((ToggleButton)sender);
-			ContentFrame.Navigate(typeof(ShippingDashboardView), ViewModel.AppState, new SuppressNavigationTransitionInfo());
+			ShippingView.SendCombinedRequest(new CombinedFilterModel("Engraved Today"));
 		}
 
 		private void BackButtonOnClick(object sender, RoutedEventArgs e)
@@ -397,7 +389,7 @@ namespace ArtPix_Dashboard.Views
 			ViewModel.AppState.CombinedFilter = new CombinedFilterModel(ViewModel.AppState.NavigationStack.Last());
 			SetActiveButton(null, ViewModel.AppState.NavigationStack.Last());
 			ViewModel.AppState.CurrentSession.IsBackButtonActive = ViewModel.AppState.NavigationStack.Count > 1;
-			ContentFrame.Navigate(typeof(ShippingDashboardView), ViewModel.AppState, new SuppressNavigationTransitionInfo());
+			ShippingView.SendCombinedRequest(new CombinedFilterModel(ViewModel.AppState.NavigationStack.Last()));
 		}
 
 		private async void Button_Click(object sender, RoutedEventArgs e)

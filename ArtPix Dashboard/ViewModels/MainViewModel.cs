@@ -6,6 +6,7 @@ using ArtPix_Dashboard.Models.AppState;
 using ArtPix_Dashboard.Models.Workstation;
 using ArtPix_Dashboard.Utils.Helpers;
 using System.Threading.Tasks;
+using Microsoft.CognitiveServices.Speech;
 
 namespace ArtPix_Dashboard.ViewModels
 {
@@ -58,13 +59,40 @@ namespace ArtPix_Dashboard.ViewModels
 			ShippingStats = await ArtPixAPI.GetShippingStatsAsync();
 			WorkstationStats = await ArtPixAPI.GetWorkstationStats();
 			await ArtPixAPI.GetEntityLogsAsync();
-
 			SetTimers();
 
 			ToggleLoadingAnimation(0);
 
 		}
-		
+
+		#endregion
+
+		private async Task SynthesizeAudioAsync()
+		{
+			if (ShippingStats.ShipByToday > 0 && DateTime.Now.Hour > 17)
+			{
+				var config = SpeechConfig.FromSubscription("7c41fdfabd744deb8ff197f39b2b63e9", "eastus");
+				using var synthesizer = new SpeechSynthesizer(config);
+				await synthesizer.SpeakTextAsync($"There are {ShippingStats.ShipByToday} more orders to ship. Please, ship them now!");
+			};
+		}
+
+		#region SET STATS UPDATE TIMERS - DONE - ✅
+
+		private void SetTimers()
+		{
+			var engravingStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
+			engravingStatsTimer.Subscribe(async tick => EngravingStats = await ArtPixAPI.GetEngravingStatsAsync());
+			var shippingStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
+			shippingStatsTimer.Subscribe(async tick => ShippingStats = await ArtPixAPI.GetShippingStatsAsync());
+			var workstationsStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
+			workstationsStatsTimer.Subscribe(async tick => WorkstationStats = await ArtPixAPI.GetWorkstationStats());
+			var entityLogsTimer = Observable.Interval(TimeSpan.FromSeconds(15));
+			entityLogsTimer.Subscribe(async tick => await ArtPixAPI.GetEntityLogsAsync());
+			var checkForOrdersToShipTimer = Observable.Interval(TimeSpan.FromMinutes(15));
+			checkForOrdersToShipTimer.Subscribe(async tick => await ArtPixAPI.GetEntityLogsAsync());
+		}
+
 		#endregion
 
 		#region TOGGLE LOADING ANIMATION
@@ -82,22 +110,6 @@ namespace ArtPix_Dashboard.ViewModels
 				AppState.CurrentSession.MainNavigationViewVisibility = Visibility.Hidden;
 				AppState.CurrentSession.MainViewProgressRingVisibility = Visibility.Visible;
 			}
-		}
-
-		#endregion
-
-		#region SET STATS UPDATE TIMERS - DONE - ✅
-
-		private void SetTimers()
-		{
-			var engravingStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
-			engravingStatsTimer.Subscribe(async tick => EngravingStats = await ArtPixAPI.GetEngravingStatsAsync());
-			var shippingStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
-			shippingStatsTimer.Subscribe(async tick => ShippingStats = await ArtPixAPI.GetShippingStatsAsync());
-			var workstationsStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
-			workstationsStatsTimer.Subscribe(async tick => WorkstationStats = await ArtPixAPI.GetWorkstationStats());
-			var entityLogsTimer = Observable.Interval(TimeSpan.FromSeconds(15));
-			entityLogsTimer.Subscribe(async tick => await ArtPixAPI.GetEntityLogsAsync());
 		}
 
 		#endregion

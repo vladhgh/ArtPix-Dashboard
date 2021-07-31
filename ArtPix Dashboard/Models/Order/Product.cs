@@ -198,7 +198,7 @@ namespace ArtPix_Dashboard.Models.Order
 				{
 					var bmp = new BitmapImage();
 					bmp.BeginInit();
-					bmp.CacheOption = BitmapCacheOption.OnLoad;
+					bmp.CacheOption = BitmapCacheOption.None;
 					bmp.DecodePixelWidth = 100;
 					bmp.UriSource = logoImage;
 					bmp.EndInit();
@@ -208,7 +208,7 @@ namespace ArtPix_Dashboard.Models.Order
 				{
 					var bmp = new BitmapImage();
 					bmp.BeginInit();
-					bmp.CacheOption = BitmapCacheOption.OnLoad;
+					bmp.CacheOption = BitmapCacheOption.None;
 					bmp.DecodePixelWidth = 175;
 					bmp.UriSource = new Uri(_urlRenderImg, UriKind.RelativeOrAbsolute);
 					bmp.EndInit();

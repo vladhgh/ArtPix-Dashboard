@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -21,6 +22,7 @@ using ArtPix_Dashboard.Dialogs;
 using ArtPix_Dashboard.Models.AppState;
 using ToastNotifications.Messages;
 using Button = System.Windows.Controls.Button;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace ArtPix_Dashboard.Views
 {
@@ -34,7 +36,7 @@ namespace ArtPix_Dashboard.Views
 
 		#region PROPERTIES
 
-		private readonly ShippingDashboardViewModel _vm = new ShippingDashboardViewModel();
+		internal readonly ShippingDashboardViewModel ViewModel = new ();
 
 		private Expander _expander;
 
@@ -48,7 +50,7 @@ namespace ArtPix_Dashboard.Views
 		public ShippingDashboardView()
 		{
 			InitializeComponent();
-			DataContext = _vm;
+			DataContext = ViewModel;
 		}
 
 		#endregion
@@ -66,6 +68,7 @@ namespace ArtPix_Dashboard.Views
 			ToggleNoCrystal.Click += ToggleNoCrystal_Click;
 		}
 
+
 		private void SetKeyPressEventListener()
 		{
 			ShippingDashboardPage.PreviewKeyDown += KeyPressEventListener;
@@ -81,11 +84,11 @@ namespace ArtPix_Dashboard.Views
 
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			_vm.Initialize((AppStateModel)e.ExtraData, this);
+			ViewModel.Initialize((AppStateModel)e.ExtraData, this);
 
 			SetKeyPressEventListener();
 
-			SendCombinedRequest(_vm.AppState.CombinedFilter);
+			SendCombinedRequest(ViewModel.AppState.CombinedFilter);
 
 			SetEventListeners();
 
@@ -97,14 +100,14 @@ namespace ArtPix_Dashboard.Views
 
 		private void UpdateControls()
 		{
-			SortByComboBox.SelectedValue = _vm.AppState.CombinedFilter.sort_by;
-			StoreComboBox.SelectedValue = _vm.AppState.CombinedFilter.store_name;
-			MachineComboBox.SelectedValue = _vm.AppState.CombinedFilter.machine;
-			ToggleShipByToday.IsChecked = _vm.AppState.CombinedFilter.shipByToday == "True";
-			ToggleNoPackage.IsChecked = _vm.AppState.CombinedFilter.has_shipping_package == "0";
-			ToggleInTotes.IsChecked = _vm.AppState.CombinedFilter.with_shipping_totes == "True";
-			ToggleNoCrystal.IsChecked = _vm.AppState.CombinedFilter.with_crystals == "0";
-			SearchTextBox.Text = _vm.AppState.CombinedFilter.name_order;
+			SortByComboBox.SelectedValue = ViewModel.AppState.CombinedFilter.sort_by;
+			StoreComboBox.SelectedValue = ViewModel.AppState.CombinedFilter.store_name;
+			MachineComboBox.SelectedValue = ViewModel.AppState.CombinedFilter.machine;
+			ToggleShipByToday.IsChecked = ViewModel.AppState.CombinedFilter.shipByToday == "True";
+			ToggleNoPackage.IsChecked = ViewModel.AppState.CombinedFilter.has_shipping_package == "0";
+			ToggleInTotes.IsChecked = ViewModel.AppState.CombinedFilter.with_shipping_totes == "True";
+			ToggleNoCrystal.IsChecked = ViewModel.AppState.CombinedFilter.with_crystals == "0";
+			SearchTextBox.Text = ViewModel.AppState.CombinedFilter.name_order;
 		}
 
 		private void ToggleLoadingAnimation(int kind)
@@ -130,37 +133,44 @@ namespace ArtPix_Dashboard.Views
 
 		private void UpdatePaginationButtons()
 		{
-			if (_vm.Pages.Count == 0) return;
-			var selectedPage = _vm.Pages.First(p => p.IsSelected);
-			_vm.PaginationForwardButtonVisibility = (_vm.Pages.Count > 1) && (_vm.Pages.Count > selectedPage.PageNumber);
-			_vm.PaginationBackButtonVisibility = selectedPage.PageNumber > 1;
+			if (ViewModel.Pages.Count == 0) return;
+			var selectedPage = ViewModel.Pages.First(p => p.IsSelected);
+			ViewModel.PaginationForwardButtonVisibility = (ViewModel.Pages.Count > 1) && (ViewModel.Pages.Count > selectedPage.PageNumber);
+			ViewModel.PaginationBackButtonVisibility = selectedPage.PageNumber > 1;
 		}
 		
 		#endregion
 
 		#region SEND COMBINED REQUEST
 
-		private async void SendCombinedRequest(CombinedFilterModel orderFilterGroup)
+		public async void SendCombinedRequest(CombinedFilterModel orderFilterGroup)
 		{
 
 			ToggleLoadingAnimation(1);
 
-			_vm.AppState.CombinedFilter = orderFilterGroup;
-			_vm.AppState.CombinedFilter.withPages = true;
+			ViewModel.AppState.CombinedFilter = orderFilterGroup;
+			ViewModel.AppState.CombinedFilter.withPages = true;
 
 			UpdateControls();
 
-			await _vm.GetOrdersList(_vm.AppState.CombinedFilter);
+			await ViewModel.GetOrdersList(ViewModel.AppState.CombinedFilter);
 
-			if (_vm.Orders.Data == null) return;
-			if (_vm.Orders.Data.Count <= 0)
+			if (ViewModel.Orders.Data == null) return;
+			if (ViewModel.Orders.Data.Count <= 0)
 			{
 				ToggleLoadingAnimation(2);
 				return;
 			}
-			if (_vm.Orders.Data.Count > 0 && NoResultsText.Opacity == 1)
+			if (ViewModel.Orders.Data.Count > 0 && NoResultsText.Opacity == 1)
 			{
 				Animation.FadeOut(NoResultsText);
+			}
+			if (ViewModel.Orders.Data.Count > 0)
+			{
+				var scrollViewer = Utils.Utils.GetScrollViewer(ShippingItemsListView) as ScrollViewer;
+				scrollViewer.ScrollToVerticalOffset(0);
+				ScrollAnimationBehavior.AnimateScroll(scrollViewer, 0);
+				ScrollAnimationBehavior.intendedLocation = 0;
 			}
 
 			UpdatePaginationButtons();
@@ -180,13 +190,13 @@ namespace ArtPix_Dashboard.Views
 			var kind = ((Button)sender).Tag.ToString();
 			if (kind == "PowerOn")
 			{
-				var x = Utils.Utils.MachineAddresses.FirstOrDefault((y) => y.Value == _vm.AppState.CombinedFilter.machine);
+				var x = Utils.Utils.MachineAddresses.FirstOrDefault((y) => y.Value == ViewModel.AppState.CombinedFilter.machine);
 				Utils.Utils.SendWakeOnLan(PhysicalAddress.Parse(x.Key));
 				Utils.Utils.Notifier.ShowSuccess("Machine Power On Request Sent Succesfully!\nPlease Wait....");
 			}
 			if (kind == "PowerOff")
 			{
-				var networkPath = Utils.Utils.GetLocalMachineAddress(_vm.AppState.CombinedFilter.machine);
+				var networkPath = Utils.Utils.GetLocalMachineAddress(ViewModel.AppState.CombinedFilter.machine);
 				Process.Start("shutdown", $"-s -f -t 00 -m {networkPath}");
 				Utils.Utils.Notifier.ShowSuccess("Machine Power Off Request Sent Succesfully!\nPlease Wait....");
 			}
@@ -241,7 +251,7 @@ namespace ArtPix_Dashboard.Views
 					var lastName = fullName.Split(' ')[1];
 					var lastNameToCapitalCase = char.ToUpper(lastName.First()) + lastName.Substring(1).ToLower();
 
-					_vm.AppState.CurrentSession.EmployeeName = $"{firstNameToCapitalCase} {lastNameToCapitalCase}";
+					ViewModel.AppState.CurrentSession.EmployeeName = $"{firstNameToCapitalCase} {lastNameToCapitalCase}";
 					
 				} else
 				{
@@ -266,21 +276,21 @@ namespace ArtPix_Dashboard.Views
 
 		private void MachineComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			_vm.AppState.CombinedFilter.machine = ((ComboBoxItem)StoreComboBox.SelectedItem).Tag.ToString();
-			SendCombinedRequest(_vm.AppState.CombinedFilter);
+			ViewModel.AppState.CombinedFilter.machine = ((ComboBoxItem)StoreComboBox.SelectedItem).Tag.ToString();
+			SendCombinedRequest(ViewModel.AppState.CombinedFilter);
 		}
 
 		private void ToggleNoCrystal_Click(object sender, RoutedEventArgs e)
 		{
 			if (sender is ToggleButton btn && btn.IsChecked != null)
 			{
-				_vm.AppState.CombinedFilter.with_crystals = (bool)btn.IsChecked ? "0" : "3";
-				_vm.AppState.CombinedFilter.status_shipping = (bool)btn.IsChecked ? "" : "waiting";
+				ViewModel.AppState.CombinedFilter.with_crystals = (bool)btn.IsChecked ? "0" : "3";
+				ViewModel.AppState.CombinedFilter.status_shipping = (bool)btn.IsChecked ? "" : "waiting";
 			}
-			SendCombinedRequest(_vm.AppState.CombinedFilter);
+			SendCombinedRequest(ViewModel.AppState.CombinedFilter);
 		}
 
-		private void ButtonReloadOnClick(object sender, RoutedEventArgs e) => SendCombinedRequest(_vm.AppState.CombinedFilter);
+		private void ButtonReloadOnClick(object sender, RoutedEventArgs e) => SendCombinedRequest(ViewModel.AppState.CombinedFilter);
 
 		private void ToggleNoPackageOnClick(object sender, RoutedEventArgs e)
 		{
@@ -288,38 +298,38 @@ namespace ArtPix_Dashboard.Views
 			{
 				if (btn.IsChecked != null)
 				{
-					_vm.AppState.CombinedFilter.has_shipping_package = (bool)btn.IsChecked ? "0" : "";
+					ViewModel.AppState.CombinedFilter.has_shipping_package = (bool)btn.IsChecked ? "0" : "";
 				}
-				SendCombinedRequest(_vm.AppState.CombinedFilter);
+				SendCombinedRequest(ViewModel.AppState.CombinedFilter);
 			}
 		}
 
 		private void StoreComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			_vm.AppState.CombinedFilter.store_name = ((ComboBoxItem)StoreComboBox.SelectedItem).Tag.ToString();
-			SendCombinedRequest(_vm.AppState.CombinedFilter);
+			ViewModel.AppState.CombinedFilter.store_name = ((ComboBoxItem)StoreComboBox.SelectedItem).Tag.ToString();
+			SendCombinedRequest(ViewModel.AppState.CombinedFilter);
 		}
 
 		private void ToggleInTotes_Click(object sender, System.Windows.RoutedEventArgs e)
 		{
 			if (sender is ToggleButton btn)
 				if (btn.IsChecked != null)
-					_vm.AppState.CombinedFilter.with_shipping_totes = ((bool)btn.IsChecked).ToString();
-			SendCombinedRequest(_vm.AppState.CombinedFilter);
+					ViewModel.AppState.CombinedFilter.with_shipping_totes = ((bool)btn.IsChecked).ToString();
+			SendCombinedRequest(ViewModel.AppState.CombinedFilter);
 		}
 
 		private void ToggleShipByToday_Click(object sender, System.Windows.RoutedEventArgs e)
 		{
 			if (sender is ToggleButton btn)
 				if (btn.IsChecked != null)
-					_vm.AppState.CombinedFilter.shipByToday = ((bool)btn.IsChecked).ToString();
-			SendCombinedRequest(_vm.AppState.CombinedFilter);
+					ViewModel.AppState.CombinedFilter.shipByToday = ((bool)btn.IsChecked).ToString();
+			SendCombinedRequest(ViewModel.AppState.CombinedFilter);
 		}
 
 		private void SortByComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			_vm.AppState.CombinedFilter.sort_by = ((ComboBoxItem)SortByComboBox.SelectedItem).Tag.ToString();
-			SendCombinedRequest(_vm.AppState.CombinedFilter);
+			ViewModel.AppState.CombinedFilter.sort_by = ((ComboBoxItem)SortByComboBox.SelectedItem).Tag.ToString();
+			SendCombinedRequest(ViewModel.AppState.CombinedFilter);
 		}
 
 		#endregion
@@ -338,22 +348,22 @@ namespace ArtPix_Dashboard.Views
 
 		private async void Expander_OnExpanded(object sender, RoutedEventArgs e)
 		{
-			if (_vm.AppState.CombinedFilter.SelectedFilterGroup == "Engraved Today") return;
+			if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup == "Engraved Today") return;
 			var scrollViewer = Utils.Utils.GetScrollViewer(ShippingItemsListView) as ScrollViewer;
-			var thisOrder = _vm.Orders.Data.FirstOrDefault(i => i.NameOrder == ((Expander)sender).Tag.ToString());
+			var thisOrder = ViewModel.Orders.Data.FirstOrDefault(i => i.NameOrder == ((Expander)sender).Tag.ToString());
 			var expandSite = ((Expander)sender).Template.FindName("ExpandSite", ((Expander)sender)) as UIElement;
 			expandSite.Visibility = Visibility.Visible;
 			var sb1 = (Storyboard)((Expander)sender).FindResource("sbExpand");
 			sb1.Begin();
-			foreach (var order in _vm.Orders.Data)
+			foreach (var order in ViewModel.Orders.Data)
 			{
 				order.IsExpanded = order.IdOrders == thisOrder.IdOrders;
 			}
-			if (_vm.Orders.Data.IndexOf(thisOrder) == 14)
+			if (ViewModel.Orders.Data.IndexOf(thisOrder) == 14)
 			{
 				ScrollAnimationBehavior.AnimateScroll(scrollViewer,
-					scrollViewer.VerticalOffset + 400);
-				ScrollAnimationBehavior.intendedLocation = scrollViewer.VerticalOffset + 400;
+					scrollViewer.VerticalOffset + 600);
+				ScrollAnimationBehavior.intendedLocation = scrollViewer.VerticalOffset + 600;
 			} else
 			{
 				ScrollAnimationBehavior.AnimateScroll(scrollViewer,
@@ -408,15 +418,15 @@ namespace ArtPix_Dashboard.Views
 		
 		private void Expander_OnLoaded(object sender, RoutedEventArgs e)
 		{
-			if (_vm.AppState.CombinedFilter.SelectedFilterGroup != "Search") return;
+			if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup != "Search") return;
 			_expander = (Expander) sender;
-			_vm.Orders.Data[0].IsExpanded = true;
+			ViewModel.Orders.Data[0].IsExpanded = true;
 			var expandSite = _expander.Template.FindName("ExpandSite", (_expander)) as UIElement;
 			expandSite.Visibility = Visibility.Visible;
 			var sb1 = (Storyboard)(_expander).FindResource("sbExpand");
 			sb1.Begin();
-			_vm.AppState.CombinedFilter.name_order = _vm.Orders.Data[0].NameOrder;
-			SearchTextBox.Text = _vm.AppState.CombinedFilter.name_order;
+			ViewModel.AppState.CombinedFilter.name_order = ViewModel.Orders.Data[0].NameOrder;
+			SearchTextBox.Text = ViewModel.AppState.CombinedFilter.name_order;
 		}
 
 		#endregion
@@ -427,31 +437,31 @@ namespace ArtPix_Dashboard.Views
 		{
 			ToggleLoadingAnimation(1);
 			var btn = (TitleBarButton)sender;
-			foreach (var page in _vm.Pages)
+			foreach (var page in ViewModel.Pages)
 			{
 				page.IsSelected = false;
 			}
-			_vm.Pages[(int)btn.Tag - 1].IsSelected = true;
+			ViewModel.Pages[(int)btn.Tag - 1].IsSelected = true;
 
-			if (_vm.Orders.Data.Count > 0)
+			ViewModel.AppState.CombinedFilter.pageNumber = (int)btn.Tag;
+			ViewModel.AppState.CombinedFilter.withPages = false;
+			await ViewModel.GetOrdersList(ViewModel.AppState.CombinedFilter);
+			if (ViewModel.Orders.Data.Count > 0)
 			{
 				var scrollViewer = Utils.Utils.GetScrollViewer(ShippingItemsListView) as ScrollViewer;
 				scrollViewer.ScrollToVerticalOffset(0);
 				ScrollAnimationBehavior.AnimateScroll(scrollViewer, 0);
 				ScrollAnimationBehavior.intendedLocation = 0;
 			}
-
-			_vm.AppState.CombinedFilter.pageNumber = (int)btn.Tag;
-			_vm.AppState.CombinedFilter.withPages = false;
-			await _vm.GetOrdersList(_vm.AppState.CombinedFilter);
-			_vm.PaginationBackButtonVisibility = (int)btn.Tag > 1;
+			ViewModel.PaginationBackButtonVisibility = (int)btn.Tag > 1;
 			ToggleLoadingAnimation(0);
 		}
 
 		private async void BackButton_OnClick(object sender, RoutedEventArgs e)
 		{
+			ToggleLoadingAnimation(1);
 			var selectedPage = 0;
-			foreach (var page in _vm.Pages)
+			foreach (var page in ViewModel.Pages)
 			{
 				if (page.IsSelected)
 				{
@@ -459,25 +469,28 @@ namespace ArtPix_Dashboard.Views
 				}
 				page.IsSelected = false;
 			}
-			_vm.Pages[selectedPage - 2].IsSelected = true;
-			_vm.AppState.CombinedFilter.pageNumber--;
-			_vm.AppState.CombinedFilter.withPages = false;
-			await _vm.GetOrdersList(_vm.AppState.CombinedFilter);
+			ViewModel.Pages[selectedPage - 2].IsSelected = true;
+			ViewModel.AppState.CombinedFilter.pageNumber--;
+			ViewModel.AppState.CombinedFilter.withPages = false;
+			await ViewModel.GetOrdersList(ViewModel.AppState.CombinedFilter);
 
-			if (_vm.Orders.Data.Count > 0)
+			if (ViewModel.Orders.Data.Count > 0)
 			{
 				ScrollViewer scrollViewer = Utils.Utils.GetScrollViewer(ShippingItemsListView) as ScrollViewer;
 				Utils.ScrollAnimationBehavior.AnimateScroll(scrollViewer,
 					0);
 			}
-			_vm.PaginationForwardButtonVisibility = _vm.Pages.Count > 1 ;
-			_vm.PaginationBackButtonVisibility = selectedPage - 1 > 1 ;
+			ViewModel.PaginationForwardButtonVisibility = ViewModel.Pages.Count > 1 ;
+			ViewModel.PaginationBackButtonVisibility = selectedPage - 1 > 1 ;
+			ToggleLoadingAnimation(0);
 		}
 
 		private async void ForwardButton_OnClick(object sender, RoutedEventArgs e)
 		{
+			ToggleLoadingAnimation(1);
+
 			var selectedPage = 0;
-			foreach (var page in _vm.Pages)
+			foreach (var page in ViewModel.Pages)
 			{
 				if (page.IsSelected)
 				{
@@ -485,44 +498,62 @@ namespace ArtPix_Dashboard.Views
 				}
 				page.IsSelected = false;
 			}
-			_vm.Pages[selectedPage].IsSelected = true;
-			_vm.AppState.CombinedFilter.pageNumber++;
-			_vm.AppState.CombinedFilter.withPages = false;
-			await _vm.GetOrdersList(_vm.AppState.CombinedFilter);
-			if (_vm.Orders.Data.Count > 0)
+			ViewModel.Pages[selectedPage].IsSelected = true;
+			ViewModel.AppState.CombinedFilter.pageNumber++;
+			ViewModel.AppState.CombinedFilter.withPages = false;
+			await ViewModel.GetOrdersList(ViewModel.AppState.CombinedFilter);
+			if (ViewModel.Orders.Data.Count > 0)
 			{
 				ScrollViewer scrollViewer = Utils.Utils.GetScrollViewer(ShippingItemsListView) as ScrollViewer;
 				Utils.ScrollAnimationBehavior.AnimateScroll(scrollViewer,
 					0);
 			}
-			_vm.PaginationBackButtonVisibility = selectedPage > 1 ;
-			_vm.PaginationForwardButtonVisibility = _vm.Pages.Count > 1;
+			ViewModel.PaginationBackButtonVisibility = selectedPage > 1 ;
+			ViewModel.PaginationForwardButtonVisibility = ViewModel.Pages.Count > 1;
+
+			ToggleLoadingAnimation(0);
 
 		}
 
 		#endregion
 
-		
+
 		//TODO: MOVE THIS TO VIEW MODEL
 		public async void ShowLoginDialog()
 		{
-			var dialog = new LoginDialog(_vm.AppState);
+			var dialog = new LoginDialog(ViewModel.AppState);
 			var result = await dialog.ShowAsync();
 		}
 
-		//TODO: MOVE THIS TO VIEW MODEL
-		private async void EditAddressButtonClick(object sender, RoutedEventArgs e)
+		private async void UpdateShippingAddressButtonOnClick(object sender, RoutedEventArgs e)
 		{
-			//var product = (Product)param;
-			//var order = Orders.Data.SingleOrDefault(p => p.IdOrders == product.IdOrders);
-			//var machines = await ArtPixAPI.GetMachines(product.IdProducts);
-			var dialog = new ChangeAddressDialog();
-			var result = await dialog.ShowAsync();
-			if (result == ContentDialogResult.Primary)
+			var orderId = ((Button) sender).Tag.ToString();
+			var updatedOrder = await ArtPixAPI.UpdateShippingAddress(orderId);
+			var order = ViewModel.Orders.Data.FirstOrDefault((x) => x.IdOrders.ToString() == orderId);
+			order.customers = updatedOrder.Data[0].customers;
+			order.ShippingAddress2Visibility = Visibility.Visible;
+			Utils.Utils.Notifier.ShowSuccess("Address updated successfully!");
+		}
+
+		private void ShowOnMapButtonOnClick(object sender, RoutedEventArgs e)
+		{
+			var orderId = ((Button)sender).Tag.ToString();
+			var order = ViewModel.Orders.Data.FirstOrDefault((x) => x.IdOrders.ToString() == orderId);
+			var target =
+				$"https://www.google.com/maps/place/{order.customers.ShippingAddress.address_1}+{order.customers.ShippingAddress.City}+{order.customers.ShippingAddress.State}+{order.customers.ShippingAddress.Postcode}";
+			try
 			{
-				
+				Process.Start(target);
+			}
+			catch (Win32Exception noBrowser)
+			{
+				if (noBrowser.ErrorCode == -2147467259)
+					System.Windows.Forms.MessageBox.Show(noBrowser.Message);
+			}
+			catch (Exception other)
+			{
+				MessageBox.Show(other.Message);
 			}
 		}
-
 	}
 }

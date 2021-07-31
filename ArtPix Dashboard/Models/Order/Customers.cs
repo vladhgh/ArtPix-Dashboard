@@ -12,6 +12,7 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("id_customers")]
 		public int IdCustomers { get; set; }
 
+
 		[JsonProperty("email")]
 		public string Email { get; set; }
 

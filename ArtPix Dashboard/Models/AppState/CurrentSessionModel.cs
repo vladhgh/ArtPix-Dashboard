@@ -72,7 +72,7 @@ namespace ArtPix_Dashboard.Models.AppState
 			set => SetProperty(ref _previousVersion, value);
 		}
 
-		private string _employeeName;
+		private string _employeeName = "Vlad Prokopev";
 
 		public string EmployeeName
 		{

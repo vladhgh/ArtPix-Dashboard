@@ -62,8 +62,8 @@ namespace ArtPix_Dashboard.API
 			var machineAssignItems = await Task.WhenAll(
 				GetOrdersAsync(new CombinedFilterModel("Ready To Engrave"){perPage = 1}),
 				GetOrdersAsync(new CombinedFilterModel("Engraving"){perPage = 1}),
-				GetOrdersAsync(new CombinedFilterModel("Awaiting Model"){perPage = 1}));
-			var productionIssues = await GetProductionIssuesAsync("1", "1");
+				GetOrdersAsync(new CombinedFilterModel("Awaiting Model"){perPage = 1}),
+				GetOrdersAsync(new CombinedFilterModel("Production Issues")));
 			var engravedToday = await GetEngravedTodayItemsAsync("All", "1", "1");
 			var stats = new EngravingStatsModel
 			{
@@ -71,37 +71,20 @@ namespace ArtPix_Dashboard.API
 				ProcessingCount = machineAssignItems[1].Meta.Total,
 				AwaitingModelCount = machineAssignItems[2].Meta.Total,
 				EngravedTodayCount = engravedToday.Meta.Total,
-				IssueCount = productionIssues.Meta.Total
+				IssueCount = machineAssignItems[3].Meta.Total
 			};
 			return stats;
 		}
 
 		#endregion
 
-		#region GET: SHIPPING  STATS - DONE - ✅
+		#region GET: SHIPPING  STATS
 
 		public static async Task<ShippingStatsModel> GetShippingStatsAsync()
 		{
-			var awaitingShipmentModel = new CombinedFilterModel
-			{
-				perPage = 1,
-				status_order = "processing",
-				status_shipping = "waiting"
-			};
-			var shipByTodayModel = new CombinedFilterModel
-			{
-				perPage = 1,
-				status_order = "processing",
-				status_shipping = "waiting",
-				shipByToday = "True"
-			};
-			var readyToShip = new CombinedFilterModel
-			{
-				perPage = 1,
-				status_order = "processing",
-				status_shipping = "waiting",
-				status_engraving = "engrave_done&amp;with_crystal_product_status[]=completed"
-			};
+			var awaitingShipmentModel = new CombinedFilterModel("Awaiting Shipment");
+			var shipByTodayModel = new CombinedFilterModel("Ship By Today");
+			var readyToShip = new CombinedFilterModel("Ready To Ship");
 			var orders = await Task.WhenAll(GetOrdersAsync(awaitingShipmentModel), GetOrdersAsync(shipByTodayModel), GetOrdersAsync(readyToShip));
 			var shippedOrders = await GetShippedTodayOrders();
 
@@ -122,6 +105,17 @@ namespace ArtPix_Dashboard.API
 				OrdersShipped = ordersShippedByUser
 			};
 			return stats;
+		}
+
+		#endregion
+
+		#region PATCH: UPDATE SHIPPING ADDRESS
+
+		public static async Task<OrderModel> UpdateShippingAddress(string orderId)
+		{
+			var request = $"/order/{orderId}/shipping-address";
+			var res = await Client.PatchAsync<OrderModel>(new RestRequest(request, DataFormat.Json).AddHeader("Accept", "application/json").AddHeader("Authorization", "Bearer " + BearerToken));
+			return res;
 		}
 
 		#endregion
