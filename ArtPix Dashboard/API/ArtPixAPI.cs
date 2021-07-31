@@ -22,6 +22,7 @@ using ToastNotifications.Messages;
 using ArtPix_Dashboard.Properties;
 using Microsoft.Toolkit.Uwp.Notifications;
 using DataFormat = RestSharp.DataFormat;
+using ArtPix_Dashboard.Models.DhlManifest;
 
 namespace ArtPix_Dashboard.API
 {
@@ -33,7 +34,7 @@ namespace ArtPix_Dashboard.API
 
 		#region CLIENTS AND TOKENS
 
-		public static string BearerToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyIiwianRpIjoiZGZkMWFjZWIyN2EyOGU2ODliMjE2ZThjOGMyZTU1YTkxODgzODM5MDAwNGM2OWM1ZDE2OWU5NDQzMzRjZWRjZmRlOGJiNTljOGJjN2Y2OWUiLCJpYXQiOjE2MDAzMTg4OTksIm5iZiI6MTYwMDMxODg5OSwiZXhwIjoxNjMxODU0ODk5LCJzdWIiOiIxNiIsInNjb3BlcyI6W119.QWBy29NAIWiYQzU6QI4XLFYaZTZnxVj_Jw0z3uzv7WSapgLJTi1pa3sy57d9DEqnOG_H2bfLjrJv3yP48Ix86Q_CwkW5YME40ZlafbJzT1203Rf4fB46dFUzhtbSmVMrQfc6bYP77naN6Ev06TGjiLIZ2SYrM94scCFLdN1tJEdZdqYI3EEbABWaGIr2g1jok5G_3T9VHnrWOWYOdffaOH7w7kpl6_QTGaX5e3Z3XDYynKJAgub4xTaHptLxbNq1EpCjNvOcw1vjTV22MKj-1p3IWOWjXNtVelIOkNx1VE1w--7hAlaIaOHYoSbslqXYla1aSfCLQ6P4EPMYqvsKTArYBpnVG6LM_XQhQK-iNKmYoJa1ZIVTlSc9fQwE7z9hnmOZCcjqgc-kbN6f6DShboe0sjaAA12o-lxjbmIjPdobruDBKMIFsQ5boCrURWR2kaKIe2uATJFTImuE54C_8H2vfu2mOcH_UUPU9u3B6dLQCCk2cjLuPPj6ZOLy4DKrwafk14cvVFtMxRxu2u6ICVz0pztRzxBHo9zZTMKeW7JsZsZvhYeI4A16-7jtzhDF5lhQAHXQ_oOHsvXjLND_XDfGkTAue3Z4GS1O_7GmkvdV2URbHoD0wfNHFDvxl2ecph3u18A40jntJbgFd3ey4hHtq-IwXJaj0RM6AV_nVZ8";
+		public static string BearerToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyIiwianRpIjoiNGU0OGQ0ZmFkZWE0MTc0OGJjMGQ3OGM4ZDQ2ZjNmODlhZTgyMWNkNmUzZjQ0OTJlNzJjNjJhMDg1MTYyYmE3ZWY2NzRlNmRjZjcyMDk3OWQiLCJpYXQiOjE2MjcyOTM0ODUsIm5iZiI6MTYyNzI5MzQ4NSwiZXhwIjoxNjU4ODI5NDg1LCJzdWIiOiIxNiIsInNjb3BlcyI6W119.37YvMLrJKvZfUltaVfrYADOLz0MuYJQezh69k0MSHztpWxm-xZ-NMnhL9PgcRTZ4De4sbMAgBCBGqcBGIoLqLUACSqAjIhU_mI0Al3IQpWnKfw0jchMQwUap1ZwHPDtteEH5Nme8w0qVc5MPibtNFP_K0t6HUBITlRUiScU9waG91__E4uEge_xuE52aMv26wlyj4q-otRatB63UaqtmcAUcgFGqcYp1bJLNZh936-LlWT6P5Vfrg4oh1n6WKxKyB7vb6-oEz1ydknaCjCkVPHb4j8UkiuTBYh6B17sd7zbrrZTDNwAEBAWwHNxzWFurtW6aZHHZ8O_vEZLZ2Tvf7aiAs_-05YUZ0RkkEB3R7cAuAf4qjvQdqJBXTh4l80NNr7VaJ1XkFC_I24U-rh6-4XEurYclK2j24v7GOGMdTQISscDpdNjxvrRIvZ-iT21N5FHlZt8Z2bIVgz3Q_C4VKV4XJkgwI_YcxVkFWGrnDytRK7OpTOkcQYYwm3zNeWmaQyQPBah2EKmZeqPaiK89UeMQ7RaHnWSg6GrS7KM6zamgm15xkLeJ_FLtf3GcRkB85qFIzqRKFxxnZg3EuXuY-JRURNEpgb0DaMwDngVt4grweKq0z5ejPsKnNQwIsmtMVZquroGPW2ezvz4yRS-ui85zIpArPzwqohw8iohqV9I";
 
 		private static readonly RestClient Client = new ("https://order-archive.artpix3d.com/api/v1");
 
@@ -269,6 +270,19 @@ namespace ArtPix_Dashboard.API
 			Debug.WriteLine($"API GET: {request}");
 			var res = await Client.GetAsync<OrderModel>(req);
 			return res.Data.Count > 0 ? res.Data[0] : null;
+		}
+
+		#endregion
+
+		#region POST: CREATE DHL MANIFEST
+
+		public static async Task<DhlManifestModel> CreateDhlManifest(CreateDhlManifestRequest request)
+		{
+			var apiRequest = "/shipping/shipping-manifests/dhl";
+			var req = new RestRequest(apiRequest).AddJsonBody(request).AddHeader("Accept", "application/json").AddHeader("Authorization", "Bearer " + BearerToken);
+			req.AlwaysMultipartFormData = true;
+			Debug.WriteLine($"API GET: {request}");
+			return await Client.PostAsync<DhlManifestModel>(req);
 		}
 
 		#endregion

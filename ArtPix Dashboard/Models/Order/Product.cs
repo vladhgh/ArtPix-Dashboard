@@ -192,8 +192,7 @@ namespace ArtPix_Dashboard.Models.Order
 			get
 			{
 				var outPutDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-				var productImagePath = Path.Combine(outPutDirectory, $"..\\..\\Assets\\Images\\{UrlRenderImg}");
-				var productImageLocalPath = new Uri(productImagePath).LocalPath;
+				var logoImage = new Uri($"pack://application:,,,/Assets/Images/{UrlRenderImg}", UriKind.RelativeOrAbsolute);
 
 				if (String.IsNullOrEmpty(_urlRenderImg))
 				{
@@ -201,7 +200,7 @@ namespace ArtPix_Dashboard.Models.Order
 					bmp.BeginInit();
 					bmp.CacheOption = BitmapCacheOption.OnLoad;
 					bmp.DecodePixelWidth = 100;
-					bmp.UriSource = new Uri(productImageLocalPath, UriKind.RelativeOrAbsolute);
+					bmp.UriSource = logoImage;
 					bmp.EndInit();
 					return bmp;
 				}
@@ -227,19 +226,19 @@ namespace ArtPix_Dashboard.Models.Order
 			{
 				switch (CrystalType.Sku)
 				{
-					case "6GFS3P3": return "\\GreetingCards\\greeting_card_flowers_orange_ribbon.png";
-					case "6GSS2R3": return "\\GreetingCards\\greeting_card_loving_heart.png";
-					case "6GSS1P3": return "\\GreetingCards\\greeting_card_i_love_you.png";
-					case "6GSS5R3": return "\\GreetingCards\\greeting_card_cupid_couple.png";
-					case "6GSS4R3": return "\\GreetingCards\\greeting_card_sweatheart_couple.png"; 
-					case "1PBS": return "\\LightBases\\plastic_light_base_small.png";
-					case "1PBM": return "\\LightBases\\plastic_light_base_medium.png";
-					case "1LBS": return "\\LightBases\\light_base_small.png";
-					case "1LBM": return "\\LightBases\\light_base_medium.png";
-					case "1LBL": return "\\LightBases\\light_base_large.png";
-					case "1LBX": return "\\LightBases\\light_base_xl.png";
-					case "1RBS": return "\\LightBases\\rotating_base_small.png";
-					case "1RBL": return "\\LightBases\\rotating_base_large.png";
+					case "6GFS3P3": return "GreetingCards/greeting_card_flowers_orange_ribbon.png";
+					case "6GSS2R3": return "GreetingCards/greeting_card_loving_heart.png";
+					case "6GSS1P3": return "GreetingCards/greeting_card_i_love_you.png";
+					case "6GSS5R3": return "GreetingCards/greeting_card_cupid_couple.png";
+					case "6GSS4R3": return "GreetingCards/greeting_card_sweatheart_couple.png"; 
+					case "1PBS": return "LightBases/plastic_light_base_small.png";
+					case "1PBM": return "LightBases/plastic_light_base_medium.png";
+					case "1LBS": return "LightBases/light_base_small.png";
+					case "1LBM": return "LightBases/light_base_medium.png";
+					case "1LBL": return "LightBases/light_base_large.png";
+					case "1LBX": return "LightBases/light_base_xl.png";
+					case "1RBS": return "LightBases/rotating_base_small.png";
+					case "1RBL": return "LightBases/rotating_base_large.png";
 				}
 
 				switch (Name)
@@ -247,15 +246,15 @@ namespace ArtPix_Dashboard.Models.Order
 					case "Cleaning Kit":
 						return "cleaning_kit.png";
 					case "Sunshine Wrapping Paper":
-						return "\\WrappingPaper\\sunshine_wrapping_paper.png";
+						return "WrappingPaper/sunshine_wrapping_paper.png";
 					case "Balloon Wrapping Paper":
-						return "\\WrappingPaper\\baloon_wrapping_paper.png";
+						return "WrappingPaper/baloon_wrapping_paper.png";
 					case "Red Star Wrapping Paper":
-						return "\\WrappingPaper\\red_star_wrapping_paper.png";
+						return "WrappingPaper/red_star_wrapping_paper.png";
 					case "Golden Star Wrapping Paper":
-						return "\\WrappingPaper\\golden_star_wrapping_paper.png";
+						return "WrappingPaper/golden_star_wrapping_paper.png";
 					case "Blue Polka Dot Wrapping Paper":
-						return "\\WrappingPaper\\blue_polka_dot_wrapping_paper.png";
+						return "WrappingPaper/blue_polka_dot_wrapping_paper.png";
 					default:
 						return _urlRenderImg ?? "multiple_item_order_preview.png";
 				}
@@ -283,7 +282,7 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("customer_engraving")]
 		public string CustomerEngraving
 		{
-			get => string.IsNullOrEmpty(_customerEngraving) ? null : _customerEngraving.Replace("&amp;", "&");
+			get => string.IsNullOrEmpty(_customerEngraving) ? null : _customerEngraving.Replace("&amp;", "&").Replace("&quot;", "\"");
 			set => SetProperty(ref _customerEngraving, value);
 		}
 		

@@ -12,6 +12,8 @@ using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Store;
 using Windows.Foundation.Collections;
 using ArtPix_Dashboard.Views;
+using ModernWpf.Media.Animation;
+using ArtPix_Dashboard.Models.AppState;
 
 namespace ArtPix_Dashboard
 {
@@ -30,7 +32,14 @@ namespace ArtPix_Dashboard
                 Application.Current.Dispatcher.Invoke(delegate
                 {
                     // TODO: Navigate to order with issue
-                    MessageBox.Show("Toast activated. Args: " + toastArgs.Argument);
+                    //MessageBox.Show("Toast activated. Args: " + toastArgs.Argument);
+                    var action = toastArgs.Argument.Split(';')[0].Split('=')[1];
+                    var param = toastArgs.Argument.Split(';')[1].Split('=')[1];
+                    if (action == "openIssue")
+					{
+                        MainView.ViewModel.AppState.CombinedFilter = new CombinedFilterModel("Search", "", "", param);
+                        MainView.ContentFrame.Navigate(typeof(ShippingDashboardView), MainView.ViewModel.AppState, new SuppressNavigationTransitionInfo());
+                    }
                 });
             };
         }

@@ -67,14 +67,28 @@ namespace ArtPix_Dashboard.Views
 			if (x != null)
 			{
 				x.CurrentSession = new();
+				x.CombinedFilter.pageNumber = 1;
 				ViewModel.AppState = x;
+
 			}
+			ShowLoginDialog();
 			SwitchStatusPaneGroupToType(ViewModel.AppState.CurrentSession.StatusGroup);
 			SelectHeaderButton();
 			ContentFrame.Navigate(typeof(ShippingDashboardView), ViewModel.AppState, new SuppressNavigationTransitionInfo());
 		}
 
 		#endregion
+
+		private async void ShowLoginDialog()
+		{
+			if (String.IsNullOrEmpty(ViewModel.AppState.CurrentSession.EmployeeName))
+			{
+				var dialog = new LoginDialog(ViewModel.AppState);
+				var result = await dialog.ShowAsync();
+				if (result != ContentDialogResult.Primary) return;
+
+			}
+		}
 
 
 
@@ -237,7 +251,13 @@ namespace ArtPix_Dashboard.Views
 			EngravedTodayButton.IsChecked = false;
 			ProductionIssuesButton.IsChecked = false;
 
-			if (button == null)
+			foreach (var workstation in ViewModel.WorkstationStats.Data)
+			{
+				workstation.IsChecked = false;
+				workstation.MachinesGroupVisibility = Visibility.Collapsed;
+			}
+
+				if (button == null)
 			{
 				button = (ToggleButton)this.FindName(elementName.Replace(" ", "") + "Button");
 				if (button != null)
@@ -257,7 +277,6 @@ namespace ArtPix_Dashboard.Views
 						ViewModel.WorkstationStats.PanelSpacing = 45;
 						workstation.MachinesGroupVisibility = Visibility.Collapsed;
 						workstation.IsChecked = false;
-						Settings.Default.SelectedWorkstation = 0;
 						return;
 					}
 
@@ -266,14 +285,12 @@ namespace ArtPix_Dashboard.Views
 						ViewModel.WorkstationStats.PanelSpacing = 45;
 						workstation.MachinesGroupVisibility = Visibility.Collapsed;
 						workstation.IsChecked = false;
-						Settings.Default.SelectedWorkstation = 0;
 					}
 
 					if (workstation.Id == Int32.Parse(button.Tag.ToString()))
 					{
 						workstation.MachinesGroupVisibility = Visibility.Visible;
 						workstation.IsChecked = true;
-						Settings.Default.SelectedWorkstation = workstation.Id;
 						if (workstation.Id == 10 || workstation.Id == 11) ViewModel.WorkstationStats.PanelSpacing = 35;
 					}
 				}
@@ -381,6 +398,13 @@ namespace ArtPix_Dashboard.Views
 			SetActiveButton(null, ViewModel.AppState.NavigationStack.Last());
 			ViewModel.AppState.CurrentSession.IsBackButtonActive = ViewModel.AppState.NavigationStack.Count > 1;
 			ContentFrame.Navigate(typeof(ShippingDashboardView), ViewModel.AppState, new SuppressNavigationTransitionInfo());
+		}
+
+		private async void Button_Click(object sender, RoutedEventArgs e)
+		{
+			var dialog = new LoginDialog(ViewModel.AppState);
+			var result = await dialog.ShowAsync();
+			if (result != ContentDialogResult.Primary) return;
 		}
 	}
 }

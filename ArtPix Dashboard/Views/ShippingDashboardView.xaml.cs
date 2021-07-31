@@ -233,14 +233,22 @@ namespace ArtPix_Dashboard.Views
 			if (e.Key == Key.Enter && _tabPressed)
 			{
 				_tabPressed = false;
-				Debug.WriteLine(_inputString);
 				if (_inputString.Split('-')[0] == "LOGIN")
 				{
-					_vm.AppState.CurrentSession.EmployeeName = _inputString.Split('-')[1];
-					ShowLoginDialog();
+					var fullName = _inputString.Split('-')[1];
+					var firstName = fullName.Split(' ')[0];
+					var firstNameToCapitalCase = char.ToUpper(firstName.First()) + firstName.Substring(1).ToLower();
+					var lastName = fullName.Split(' ')[1];
+					var lastNameToCapitalCase = char.ToUpper(lastName.First()) + lastName.Substring(1).ToLower();
+
+					_vm.AppState.CurrentSession.EmployeeName = $"{firstNameToCapitalCase} {lastNameToCapitalCase}";
+					
 				} else
 				{
-					SendCombinedRequest(new CombinedFilterModel("Search", "", "", _inputString.Split('-')[0]));
+					if (_inputString.Split('-').Length == 3)
+					{
+						SendCombinedRequest(new CombinedFilterModel("Search", "", "", _inputString.Split('-')[0]));
+					}
 				}
 				_inputString = "";
 				e.Handled = true;

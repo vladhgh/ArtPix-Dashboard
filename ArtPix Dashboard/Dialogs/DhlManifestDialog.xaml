@@ -82,7 +82,7 @@
 							Style="{DynamicResource BaseTextBlockStyle}"
 							Margin="0 10 0 5"/>
 						<ComboBox
-							Name="cmbPrinterSelection"
+							x:Name="PrinterSelection"
 							Width="442"
 							Cursor="Hand"
 							ui:ControlHelper.PlaceholderText="Select Printer"

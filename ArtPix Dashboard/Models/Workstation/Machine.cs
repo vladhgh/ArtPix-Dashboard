@@ -46,7 +46,7 @@ namespace ArtPix_Dashboard.Models.Workstation
 
         public string NetworkPath => Utils.Utils.GetLocalMachineAddress(Name);
 
-        public string JobsCountColor => JobsCount < 3 ? "DarkRed" : JobsCount < 5 ? "DarkOrange" : "DarkGreen";
+        public string JobsCountColor => JobsCount < 3 ? "DarkRed" : JobsCount < 5 ? "#bf6900" : "DarkGreen";
 
         public Visibility OfflineTextVisibility => NetworkStatus == "Offline" && JobsCount == 0 ? Visibility.Visible : Visibility.Collapsed;
 

@@ -27,6 +27,7 @@ using ArtPix_Dashboard.Utils.Helpers;
 using ArtPix_Dashboard.Views;
 using Color = System.Drawing.Color;
 using Image = System.Drawing.Image;
+using System.IO;
 
 namespace ArtPix_Dashboard.ViewModels
 {
@@ -303,18 +304,26 @@ namespace ArtPix_Dashboard.ViewModels
 
 		private async void OpenDhlManifestDialog(object param)
 		{
-			var dialog = new DhlManifestDialog();
-			var result = await dialog.ShowAsync();
-			if (result != ContentDialogResult.Primary) return;
-			if (string.IsNullOrEmpty(dialog.Combo1.Text))
-			{
-				Utils.Utils.Notifier.ShowError("Jobs count has to be selected!\nPlease try again!");
-				return;
-			}
-			//ToggleMainLoadingAnimation(1);
-			//await ArtPixAPI.GetNextOrderAsync(AppState.OrderFilterGroup.machine, dialog.Combo1.Text);
-			//await GetOrdersList(1, 15, true, AppState.OrderFilterGroup);
-			//ToggleMainLoadingAnimation(0);
+			//var dialog = new DhlManifestDialog();
+			//var result = await dialog.ShowAsync();
+			//if (result != ContentDialogResult.Primary) return;
+			//if (string.IsNullOrEmpty(dialog.PrinterSelection.Text))
+			//{
+			//	Utils.Utils.Notifier.ShowError("Printer has to be selected!\nPlease try again!");
+			//	return;
+			//}
+			//var x = await ArtPixAPI.CreateDhlManifest(new CreateDhlManifestRequest()
+			//{
+			//	international_containers_count = Int32.Parse(dialog.Combo1.Text),
+			//	domestic_containers_count = Int32.Parse(dialog.Combo2.Text),
+			//});
+			//foreach(var manifest in x.Manifests)
+			//{
+			//	byte[] sPDFDecoded = Convert.FromBase64String(manifest.FileData);
+
+			//	File.WriteAllBytes("\\\\artpix\\wh\\testManifest.pdf", sPDFDecoded);
+
+			//}
 		}
 
 		#endregion

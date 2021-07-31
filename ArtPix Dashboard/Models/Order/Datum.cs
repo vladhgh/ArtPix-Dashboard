@@ -302,9 +302,9 @@ namespace ArtPix_Dashboard.Models.Order
 			get
 			{
 				var item = Products.Find(product => Utils.Utils.IsCrystal(product));
-				var outPutDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-				var logoImage = Path.Combine(outPutDirectory, "..\\..\\Assets\\Images\\multiple_item_order_preview.png");
-				var relLogo = new Uri(logoImage).LocalPath;
+				var outPutDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+				var path = "pack://application:,,,/Assets/Images/multiple_item_order_preview.png";
+				var logoImage = new Uri("pack://application:,,,/Assets/Images/multiple_item_order_preview.png", UriKind.RelativeOrAbsolute);
 
 				if (item == null)
 				{
@@ -312,13 +312,13 @@ namespace ArtPix_Dashboard.Models.Order
 					bmp.BeginInit();
 					bmp.CacheOption = BitmapCacheOption.OnLoad;
 					bmp.DecodePixelWidth = 100;
-					bmp.UriSource = new Uri(logoImage, UriKind.RelativeOrAbsolute);
+					bmp.UriSource = logoImage;
 					bmp.EndInit();
 					return bmp;
 				}
 				else
 				{
-					var img = TotalCrystal == 1 && !string.IsNullOrEmpty(item.UrlRenderImg) ? item.UrlRenderImg : relLogo;
+					var img = TotalCrystal == 1 && !string.IsNullOrEmpty(item.UrlRenderImg) ? item.UrlRenderImg : path;
 					var bmp = new BitmapImage();
 					bmp.BeginInit();
 					bmp.CacheOption = BitmapCacheOption.OnLoad;

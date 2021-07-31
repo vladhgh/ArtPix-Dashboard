@@ -817,7 +817,7 @@
 	                                                    VerticalAlignment="Center"
 	                                                    FontWeight="SemiBold"
 	                                                    Visibility="{Binding OfflineTextVisibility}"
-	                                                    Foreground="#E5E81123"
+	                                                    Foreground="Red"
 	                                                    Text="Offline"
 	                                                    FontSize="14"
 	                                                    Style="{DynamicResource SubtitleTextBlockStyle}" />
@@ -826,7 +826,7 @@
 	                                                    VerticalAlignment="Center"
 	                                                    FontWeight="SemiBold"
 	                                                    Visibility="{Binding OnlineTextVisibility}"
-	                                                    Foreground="DarkGreen"
+	                                                    Foreground="Green"
 	                                                    Text="Online"
 	                                                    FontSize="14"
 	                                                    Style="{DynamicResource SubtitleTextBlockStyle}" />
@@ -912,9 +912,9 @@
 							FontSize="12"
 							Style="{DynamicResource BaseTextBlockStyle}"/>
 					</Button>
-					<Button Background="#1e1e1e" Cursor="Hand" ToolTip="Currently Active User" Style="{DynamicResource InactiveButtonStyle}"  VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 10 4">
+					<Button Background="#1e1e1e" Cursor="Hand" ToolTip="Currently Active User" Style="{DynamicResource InactiveButtonStyle}" Click="Button_Click"  VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 10 4">
 						<TextBlock
-							Text="Vlad Prokopev"
+							Text="{Binding AppState.CurrentSession.EmployeeName}"
 							FontSize="12"
 							Style="{DynamicResource BaseTextBlockStyle}"/>
 					</Button>

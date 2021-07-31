@@ -32,6 +32,8 @@ namespace ArtPix_Dashboard.Models.AppState
 						sort_by = "estimate_processing_max_date";
 						store_name = "";
 						IsFilterGroupEnabled = false;
+						IsClearSearchButtonEnabled = true;
+						IsShipByTodayButtonEnabled = false;
 						return;
 					}
 
@@ -51,7 +53,7 @@ namespace ArtPix_Dashboard.Models.AppState
 						sort_by = "estimate_processing_max_date";
 						store_name = "";
 						IsFilterGroupEnabled = false;
-
+						IsShipByTodayButtonEnabled = true;
 						return;
 					}
 
@@ -71,6 +73,8 @@ namespace ArtPix_Dashboard.Models.AppState
 						shipByToday = "False";
 						sort_by = "estimate_processing_max_date";
 						store_name = "";
+						IsFilterGroupEnabled = false;
+						IsShipByTodayButtonEnabled = true;
 						MachineComboBoxVisibility = Visibility.Visible;
 						return;
 					}
@@ -91,13 +95,14 @@ namespace ArtPix_Dashboard.Models.AppState
 						shipByToday = "False";
 						sort_by = "estimate_processing_max_date";
 						store_name = "";
+						IsFilterGroupEnabled = false;
+						IsShipByTodayButtonEnabled = false;
 						MachineComboBoxVisibility = Visibility.Visible;
 						return;
 					}
 
 				case "Awaiting Model":
 					{
-
 						SelectedFilterGroup = "Awaiting Model";
 						name_order = "";
 						order_id = "";
@@ -111,6 +116,8 @@ namespace ArtPix_Dashboard.Models.AppState
 						shipByToday = "False";
 						sort_by = "estimate_processing_max_date";
 						store_name = "";
+						IsFilterGroupEnabled = false;
+						IsShipByTodayButtonEnabled = true;
 						return;
 					}
 
@@ -129,6 +136,8 @@ namespace ArtPix_Dashboard.Models.AppState
 						shipByToday = "False";
 						sort_by = "estimate_processing_max_date";
 						store_name = "";
+						IsFilterGroupEnabled = false;
+						IsShipByTodayButtonEnabled = true;
 						MachineComboBoxVisibility = Visibility.Visible;
 						return;
 					}
@@ -149,6 +158,7 @@ namespace ArtPix_Dashboard.Models.AppState
 						sort_by = "estimate_processing_max_date";
 						store_name = "";
 						IsFilterGroupEnabled = false;
+						IsShipByTodayButtonEnabled = false;
 						UnAssignJobsFromMachineButtonVisibility = Visibility.Visible;
 						PcPowerButtonsVisibility = Visibility.Visible;
 						return;
@@ -169,6 +179,8 @@ namespace ArtPix_Dashboard.Models.AppState
 						shipByToday = "False";
 						sort_by = "estimate_processing_max_date";
 						store_name = "";
+						IsFilterGroupEnabled = true;
+						IsShipByTodayButtonEnabled = true;
 						CreateManifestButtonVisibility = Visibility.Visible;
 						StoreComboBoxVisibility = Visibility.Visible;
 
@@ -190,6 +202,8 @@ namespace ArtPix_Dashboard.Models.AppState
 						shipByToday = "False";
 						sort_by = "estimate_processing_max_date";
 						store_name = "";
+						IsFilterGroupEnabled = true;
+						IsShipByTodayButtonEnabled = true;
 						CreateManifestButtonVisibility = Visibility.Visible;
 						StoreComboBoxVisibility = Visibility.Visible;
 						return;
@@ -211,12 +225,33 @@ namespace ArtPix_Dashboard.Models.AppState
 						shipByToday = "True";
 						sort_by = "estimate_processing_max_date";
 						store_name = "";
+						IsFilterGroupEnabled = true;
+						IsShipByTodayButtonEnabled = true;
 						CreateManifestButtonVisibility = Visibility.Visible;
 						StoreComboBoxVisibility = Visibility.Visible;
 						return;
 					}
 
 			}
+		}
+
+		
+		private bool _isClearSearchButtonEnabled = false;
+
+		public bool IsClearSearchButtonEnabled
+
+		{
+			get => _isClearSearchButtonEnabled;
+			set => SetProperty(ref _isClearSearchButtonEnabled, value);
+		}
+
+		private bool _isShipByTodayButtonEnabled = true;
+
+		public bool IsShipByTodayButtonEnabled
+
+		{
+			get => _isShipByTodayButtonEnabled;
+			set => SetProperty(ref _isShipByTodayButtonEnabled, value);
 		}
 
 		private Visibility _storeComboBoxVisibility = Visibility.Collapsed;
@@ -227,6 +262,7 @@ namespace ArtPix_Dashboard.Models.AppState
 			get => _storeComboBoxVisibility;
 			set => SetProperty(ref _storeComboBoxVisibility, value);
 		}
+
 		private Visibility _unAssignJobsFromMachineButtonVisibility = Visibility.Collapsed;
 
 		public Visibility UnAssignJobsFromMachineButtonVisibility

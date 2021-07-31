@@ -51,7 +51,7 @@
 						QuerySubmitted="SearchTextBoxOnQuerySubmitted"
                         ui:ControlHelper.Header="Search Orders:"
 						ui:ControlHelper.PlaceholderText="Search by order name..."/>
-			<Button IsTabStop="True" Height="32" Width="32" Cursor="Hand" Padding="8 2 8 2" VerticalAlignment="Bottom" Click="ButtonClearSearchOnClick" Style="{DynamicResource CustomButtonStyle}">
+			<Button IsTabStop="True" Height="32" Width="32" Cursor="Hand" Padding="8 2 8 2" IsEnabled="{Binding AppState.CombinedFilter.IsClearSearchButtonEnabled}" VerticalAlignment="Bottom" Click="ButtonClearSearchOnClick" Style="{DynamicResource CustomButtonStyle}">
                 <ui:FontIcon Glyph="&#xE894;" FontSize="10"/>
             </Button>
 			<Button IsTabStop="True" Content="Search" VerticalAlignment="Bottom" Style="{DynamicResource SearchButtonStyle}" Cursor="Hand" Click="ButtonSearchOnClick" Margin="0 0 10 0"/>
@@ -128,7 +128,7 @@
             <ui:SimpleStackPanel  Name="AdditionalControls" Orientation="Vertical" Margin="10 0 0 0">
 				<TextBlock Text="Additional Controls:" Margin="0 0 0 5"/>
 				<ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
-					<ToggleButton IsTabStop="True" x:Name="ToggleShipByToday" IsEnabled="{Binding AppState.CombinedFilter.IsFilterGroupEnabled}" IsChecked="True"  Content="Ship By Today" Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
+					<ToggleButton IsTabStop="True" x:Name="ToggleShipByToday" IsEnabled="{Binding AppState.CombinedFilter.IsShipByTodayButtonEnabled}" IsChecked="True"  Content="Ship By Today" Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
 					<ToggleButton IsTabStop="True" x:Name="ToggleNoCrystal" IsEnabled="{Binding AppState.CombinedFilter.IsFilterGroupEnabled}" Content="No Crystal"  Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
 					<ToggleButton IsTabStop="True" x:Name="ToggleInTotes" IsEnabled="{Binding AppState.CombinedFilter.IsFilterGroupEnabled}" Content="In Totes"  Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
 					<ToggleButton IsTabStop="True" x:Name="ToggleNoPackage" IsEnabled="{Binding AppState.CombinedFilter.IsFilterGroupEnabled}" Content="No Package"  Cursor="Hand" VerticalAlignment="Bottom" Style="{DynamicResource CustomToggleButtonStyle}"/>
@@ -609,21 +609,32 @@
 																				Foreground="#bf6900 "/>
 																	</ui:SimpleStackPanel>
 																	<ui:SimpleStackPanel Orientation="Horizontal" Spacing="6">
-																		<TextBlock
+																	<TextBlock
 																			Text="Filename:"
 																			HorizontalAlignment="Left"
 																			VerticalAlignment="Center"
 																			Foreground="LightGray"
 																			Visibility="{Binding ProductionIssueButtonsVisibility, Mode=OneWay}"
 																			Style="{DynamicResource BaseTextBlockStyle}"/>
-																		<TextBlock
+																	<TextBlock
 																			Text="{Binding Retouch.Filename}"
 																			HorizontalAlignment="Left"
 																			VerticalAlignment="Center"
 																			Visibility="{Binding ProductionIssueButtonsVisibility, Mode=OneWay}"
 																			Style="{DynamicResource BaseTextBlockStyle}"
-																			Foreground="LightGray"/>
-																	</ui:SimpleStackPanel>
+																			Foreground="LightGray">
+																		<TextBlock.InputBindings>
+																			<MouseBinding Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.CopyToClipboard}" CommandParameter="{Binding Retouch.Filename}"  MouseAction="LeftClick" />
+																		</TextBlock.InputBindings>
+																			<ToolTipService.ToolTip>
+																				<ToolTip
+																				Content="Click To Copy File Name!"
+																				Placement="MousePoint"
+																				HorizontalOffset="20"
+																				VerticalOffset="30"/>
+																			</ToolTipService.ToolTip>
+																	</TextBlock>
+																</ui:SimpleStackPanel>
 																	<ui:SimpleStackPanel Orientation="Horizontal" Margin="0 5 0 0" Spacing="8">
 																		<Button 
 																			Cursor="Hand"
