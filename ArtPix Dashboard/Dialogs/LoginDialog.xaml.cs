@@ -86,7 +86,7 @@ namespace ArtPix_Dashboard.Dialogs
 					var lastName = fullName.Split(' ')[1];
 					var lastNameToCapitalCase = char.ToUpper(lastName.First()) + lastName.Substring(1).ToLower();
 
-					_vm.AppState.CurrentSession.EmployeeName = $"{firstNameToCapitalCase} {lastNameToCapitalCase}";
+					_vm.AppState.EmployeeName = $"{firstNameToCapitalCase} {lastNameToCapitalCase}";
 					Hide();
 				}
 				_inputString = "";

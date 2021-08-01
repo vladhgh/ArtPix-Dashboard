@@ -36,6 +36,15 @@ namespace ArtPix_Dashboard.Models.Order
 			}
 			set => SetProperty(ref _productionIssueButtonsVisibility, value);
 		}
+		
+
+		private Visibility _failedTextEngravingPanelVisibility = Visibility.Collapsed;
+
+		public Visibility FailedTextEngravingPanelVisibility
+		{
+			get => _failedTextEngravingPanelVisibility;
+			set => SetProperty(ref _failedTextEngravingPanelVisibility, value);
+		}
 
 		private Visibility _reEngraveButtonVisibility;
 
@@ -285,7 +294,14 @@ namespace ArtPix_Dashboard.Models.Order
 			get => string.IsNullOrEmpty(_customerEngraving) ? null : _customerEngraving.Replace("&amp;", "&").Replace("&quot;", "\"");
 			set => SetProperty(ref _customerEngraving, value);
 		}
-		
+		private string _failedCustomerEngraving;
+
+		public string FailedCustomerEngraving
+		{
+			get => string.IsNullOrEmpty(_failedCustomerEngraving) ? null : _failedCustomerEngraving.Replace("&amp;", "&").Replace("&quot;", "\"");
+			set => SetProperty(ref _failedCustomerEngraving, value);
+		}
+
 		[JsonProperty("crystal_position")]
 		public string CrystalPosition { get; set; }
 

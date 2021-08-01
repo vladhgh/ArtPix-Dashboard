@@ -37,8 +37,9 @@ namespace ArtPix_Dashboard
                     var param = toastArgs.Argument.Split(';')[1].Split('=')[1];
                     if (action == "openIssue")
 					{
-                        MainView.ViewModel.AppState.CombinedFilter = new CombinedFilterModel("Search", "", "", param);
-                        MainView.ContentFrame.Navigate(typeof(ShippingDashboardView), MainView.ViewModel.AppState, new SuppressNavigationTransitionInfo());
+                        MainView.MainViewModel.AppState.CombinedFilter = new CombinedFilterModel("Search", "", "", param);
+                        MainView.SetActiveButton(null, "None");
+                        MainView.ContentFrame.Navigate(MainView.ShippingView, MainView.MainViewModel.AppState);
                     }
                 });
             };

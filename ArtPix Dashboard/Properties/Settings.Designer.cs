@@ -26,12 +26,12 @@ namespace ArtPix_Dashboard.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string LastActiveUser {
+        public string EmployeeName {
             get {
-                return ((string)(this["LastActiveUser"]));
+                return ((string)(this["EmployeeName"]));
             }
             set {
-                this["LastActiveUser"] = value;
+                this["EmployeeName"] = value;
             }
         }
         
@@ -197,6 +197,18 @@ namespace ArtPix_Dashboard.Properties {
             }
             set {
                 this["AppState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SessionTimeOut {
+            get {
+                return ((int)(this["SessionTimeOut"]));
+            }
+            set {
+                this["SessionTimeOut"] = value;
             }
         }
     }

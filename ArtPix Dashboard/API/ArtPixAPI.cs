@@ -42,7 +42,7 @@ namespace ArtPix_Dashboard.API
 
 		#endregion
 
-		#region GET: PRODUCT HISTORY - DONE - ✅
+		#region GET: PRODUCT HISTORY
 
 		public static async Task<ProductHistoryModel> GetProductHistoryAsync(int productId)
 		{
@@ -120,7 +120,7 @@ namespace ArtPix_Dashboard.API
 
 		#endregion
 
-		#region GET: ACTIVE MACHINES - NOT DONE - ❎
+		#region GET: ACTIVE MACHINES
 
 		//TODO: CHANGE ENDPOINT TO /ORDER
 
@@ -148,7 +148,7 @@ namespace ArtPix_Dashboard.API
 
 		#endregion
 
-		#region GET: WORKSTATIONS - NOT DONE - ❎
+		#region GET: WORKSTATIONS
 
 		//TODO: GET CURRENTLY ENGRAVING ORDERS FROM GET /ORDER ENDPOINT AND ENSURE PROPER FUNCTIONING
 
@@ -252,7 +252,7 @@ namespace ArtPix_Dashboard.API
 
 		#endregion
 
-		#region GET: ORDER - DONE - ✅
+		#region GET: ORDER
 
 		public static async Task<Models.Order.Datum> GetOrder(string orderId = "", string orderName = "")
 		{
@@ -530,7 +530,7 @@ namespace ArtPix_Dashboard.API
 
 		#endregion
 
-		#region GET: SHIPPED TODAY ORDERS - DONE - ✅
+		#region GET: SHIPPED TODAY ORDERS
 
 		public static async Task<List<Models.OrderAssignedLogs.Datum>> GetShippedTodayOrders()
 		{
@@ -568,11 +568,11 @@ namespace ArtPix_Dashboard.API
 
 		#endregion
 
-		#region GET: ENTITY LOGS - NOT DONE - ❎
+		#region GET: ENTITY LOGS
 
 		public static async Task GetEntityLogsAsync()
 		{
-			var request = new RestRequest("/entity-logs?entity_type=machine_assign_item&per_page=100", DataFormat.Json);
+			var request = new RestRequest("/entity-logs?entity_type=machine_assign_item&per_page=25", DataFormat.Json);
 			request.AddHeader("Accept", "application/json");
 			request.AddHeader("Content-Type", "application/json");
 			var res = await Client.GetAsync<EntityLogsModel>(request);
@@ -599,7 +599,7 @@ namespace ArtPix_Dashboard.API
 				}
 			}
 
-
+			/*
 			foreach (var log in res.Data)
 			{
 				// Check if log id is the same as the last processed one - stop
@@ -618,7 +618,7 @@ namespace ArtPix_Dashboard.API
 					{
 						startEngravingTime = DateTime.Parse(log.EventDate);
 					}
-					previousLog = previousLog.EventDate != null ? previousLog : log;
+					previousLog = !String.IsNullOrEmpty(previousLog.EventDate) ? previousLog : log;
 					Debug.WriteLine($"START ENGRAVING: {startEngravingTime}");
 					continue;
 				}
@@ -649,16 +649,12 @@ namespace ArtPix_Dashboard.API
 					Settings.Default.LastEntityLogId = previousLog.Id;
 				}
 
-			}
-
-			
-
-
+			}*/
 		}
 
 		#endregion
 
-		#region GET: PRODUCTION ISSUE - DONE - ✅
+		#region GET: PRODUCTION ISSUE
 
 		public static async Task<ProductionIssueModel> GetProductionIssueAsync(string machineAssignItemId)
 		{

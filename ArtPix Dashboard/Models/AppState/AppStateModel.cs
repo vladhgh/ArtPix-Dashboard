@@ -24,6 +24,22 @@ namespace ArtPix_Dashboard.Models.AppState
 			set => SetProperty(ref _currentSession, value);
 		}
 
+		private string _employeeName;
+
+		public string EmployeeName
+		{
+			get => _employeeName;
+			set => SetProperty(ref _employeeName, value);
+		}
+
+		private int _sessionTimeOut;
+
+		public int SessionTimeOut
+		{
+			get => _sessionTimeOut;
+			set => SetProperty(ref _sessionTimeOut, value);
+		}
+
 		private List<string> _navigationStack = new();
 
 		public List<string> NavigationStack

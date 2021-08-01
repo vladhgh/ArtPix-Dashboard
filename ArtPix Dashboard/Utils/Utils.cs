@@ -284,6 +284,7 @@ namespace ArtPix_Dashboard.Utils
 				case "issue": return "DarkRed";
 				case "3d_model_in_progress": return "SteelBlue";
 				case "3d_model_pending": return "#bf6900";
+				case "3d_model_rework": return "#bf6900";
 				case "retoucher_in_progress": return "SteelBlue";
 				case "retoucher_pending": return "#bf6900";
 				case "waiting_to_confirm": return "#bf6900";
@@ -301,6 +302,7 @@ namespace ArtPix_Dashboard.Utils
 				case "Customer Service Issue": return "DarkRed";
 				case "3D Model In Progress": return "SteelBlue";
 				case "3D Model Pending": return "#bf6900";
+				case "3D Model Rework": return "#bf6900";
 				case "Retouch In Progress": return "SteelBlue";
 				case "Retouch Pending": return "#bf6900";
 				case "Awaiting Confirmation": return "#bf6900";
@@ -329,6 +331,7 @@ namespace ArtPix_Dashboard.Utils
 				case "issue": return "Customer Service Issue";
 				case "3d_model_in_progress": return "3D Model In Progress";
 				case "3d_model_pending": return "3D Model Pending";
+				case "3d_model_rework": return "3D Model Rework";
 				case "retoucher_in_progress": return "Retouch In Progress";
 				case "retoucher_pending": return "Retouch Pending";
 				case "waiting_to_confirm": return "Awaiting Confirmation";

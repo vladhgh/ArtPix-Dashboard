@@ -71,23 +71,25 @@ namespace ArtPix_Dashboard.ViewModels
 
 		#endregion
 
+		private IObservable<long> entityLogsTimer = Observable.Interval(TimeSpan.FromSeconds(15));
+
 		#region INITIALIZER
 
-		public async void Initialize()
+		public async Task Initialize()
 		{
-			ToggleLoadingAnimation(1);
-
 			EngravingStats = await ArtPixAPI.GetEngravingStatsAsync();
 			ShippingStats = await ArtPixAPI.GetShippingStatsAsync();
 			WorkstationStats = await ArtPixAPI.GetWorkstationStats();
-			await ArtPixAPI.GetEntityLogsAsync();
 			SetTimers();
-
-			ToggleLoadingAnimation(0);
-
 		}
 
 		#endregion
+
+		public async void SetGetEntityLogsTimer()
+		{
+			entityLogsTimer.Subscribe(async tick => await ArtPixAPI.GetEntityLogsAsync());
+		}
+
 
 		private async Task SynthesizeAudioAsync()
 		{
@@ -99,47 +101,28 @@ namespace ArtPix_Dashboard.ViewModels
 			};
 		}
 
-		#region SET STATS UPDATE TIMERS - DONE - ✅
+
+
+
+
+		#region SET STATS UPDATE TIMERS
 
 		private void SetTimers()
 		{
+			
 			var engravingStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
 			engravingStatsTimer.Subscribe(async tick => EngravingStats = await ArtPixAPI.GetEngravingStatsAsync());
 			var shippingStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
 			shippingStatsTimer.Subscribe(async tick => ShippingStats = await ArtPixAPI.GetShippingStatsAsync());
 			var workstationsStatsTimer = Observable.Interval(TimeSpan.FromSeconds(30));
 			workstationsStatsTimer.Subscribe(async tick => WorkstationStats = await ArtPixAPI.GetWorkstationStats());
-			var entityLogsTimer = Observable.Interval(TimeSpan.FromSeconds(15));
-			entityLogsTimer.Subscribe(async tick => await ArtPixAPI.GetEntityLogsAsync());
 			//var checkForOrdersToShipTimer = Observable.Interval(TimeSpan.FromMinutes(15));
 			//checkForOrdersToShipTimer.Subscribe(async tick => await SynthesizeAudioAsync());
 		}
 
 		#endregion
 
-		#region TOGGLE LOADING ANIMATION
-
-		private void ToggleLoadingAnimation(int kind)
-		{
-			if (kind == 0)
-			{
-				if (String.IsNullOrEmpty(AppState.CurrentSession.EmployeeName))
-				{
-					AppState.CurrentSession.LoginPanelVisibility = Visibility.Visible;
-					return;
-				}
-				AppState.CurrentSession.MainNavigationViewVisibility = Visibility.Visible;
-				AppState.CurrentSession.MainViewProgressRingVisibility = Visibility.Hidden;
-			}
-
-			if (kind == 1)
-			{
-				AppState.CurrentSession.MainNavigationViewVisibility = Visibility.Hidden;
-				AppState.CurrentSession.MainViewProgressRingVisibility = Visibility.Visible;
-			}
-		}
-
-		#endregion
+		
 
 	}
 }

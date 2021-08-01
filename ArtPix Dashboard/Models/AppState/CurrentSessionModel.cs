@@ -61,13 +61,7 @@ namespace ArtPix_Dashboard.Models.AppState
 			set => SetProperty(ref _statusGroup, value);
 		}
 
-		private string _employeeName = "Vlad";
-
-		public string EmployeeName
-		{
-			get => _employeeName;
-			set => SetProperty(ref _employeeName, value);
-		}
+		
 
 		private Visibility _mainNavigationViewVisibility = Visibility.Hidden;
 

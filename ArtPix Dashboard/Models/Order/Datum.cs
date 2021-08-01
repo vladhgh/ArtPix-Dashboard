@@ -246,27 +246,7 @@ namespace ArtPix_Dashboard.Models.Order
 					return "DarkRed";
 				}
 
-				switch (Status)
-				{
-					case "Awaiting Model": return "#bf6900";
-					case "Ready To Engrave": return "#494949";
-					case "Engraving Issue": return "DarkRed";
-					case "Retouch Issue": return "DarkRed";
-					case "Retouch Pending": return "#bf6900";
-					case "Ready To Ship": return "DarkGreen";
-					case "Retouch In Progress": return "SteelBlue";
-					case "Engraving In Progress": return "SteelBlue";
-					case "3D Model Pending": return "#bf6900";
-					case "3D Model In Progress": return "SteelBlue";
-				}
-
-				switch (_status)
-				{
-					case "shipped": return "DarkGreen";
-					case "ready_to_ship": return "DarkGreen";
-					case "waiting_to_confirm": return "#bf6900";
-					default: return "#494949";
-				}
+				return Utils.Utils.SelectStatusColor(Status);
 			}
 			set => SetProperty(ref _statusOrderColor, value);
 		}

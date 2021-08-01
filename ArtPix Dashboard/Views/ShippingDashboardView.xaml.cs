@@ -25,6 +25,7 @@ using ToastNotifications.Messages;
 using Button = System.Windows.Controls.Button;
 using ListView = ModernWpf.Controls.ListView;
 using MessageBox = System.Windows.Forms.MessageBox;
+using System.Text.RegularExpressions;
 
 namespace ArtPix_Dashboard.Views
 {
@@ -78,16 +79,6 @@ namespace ArtPix_Dashboard.Views
 			ToggleNoPackage.Click -= ToggleNoPackageOnClick;
 			ToggleInTotes.Click -= ToggleInTotes_Click;
 			ToggleNoCrystal.Click -= ToggleNoCrystal_Click;
-		}
-
-
-		private void SetKeyPressEventListener()
-		{
-			ShippingDashboardPage.PreviewKeyDown += KeyPressEventListener;
-			ShippingDashboardPage.KeyDown += ShippingDashboardPage_KeyDown; ;
-			ShippingDashboardPage.PreviewKeyUp += ShippingDashboardPage_KeyDown;
-			ShippingDashboardPage.KeyUp += ShippingDashboardPage_KeyDown;
-			ShippingDashboardPage.Focus();
 		}
 
 		#endregion
@@ -230,6 +221,15 @@ namespace ArtPix_Dashboard.Views
 
 		//TODO: ADD TOTE SCAN ABILITY AND ASSURE PROPER FUNCTIONING
 
+		private void SetKeyPressEventListener()
+		{
+			ShippingDashboardPage.PreviewKeyDown += KeyPressEventListener;
+			ShippingDashboardPage.KeyDown += ShippingDashboardPage_KeyDown; ;
+			ShippingDashboardPage.PreviewKeyUp += ShippingDashboardPage_KeyDown;
+			ShippingDashboardPage.KeyUp += ShippingDashboardPage_KeyDown;
+			ShippingDashboardPage.Focus();
+		}
+
 		public void KeyPressEventListener(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Tab && !_tabPressed)
@@ -273,7 +273,7 @@ namespace ArtPix_Dashboard.Views
 					var lastName = fullName.Split(' ')[1];
 					var lastNameToCapitalCase = char.ToUpper(lastName.First()) + lastName.Substring(1).ToLower();
 
-					ViewModel.AppState.CurrentSession.EmployeeName = $"{firstNameToCapitalCase} {lastNameToCapitalCase}";
+					ViewModel.AppState.EmployeeName = $"{firstNameToCapitalCase} {lastNameToCapitalCase}";
 					
 				} else
 				{
@@ -381,11 +381,11 @@ namespace ArtPix_Dashboard.Views
 			{
 				order.IsExpanded = order.IdOrders == thisOrder.IdOrders;
 			}
-			if (ViewModel.Orders.Data.IndexOf(thisOrder) == 14)
+			if (ViewModel.Orders.Data.IndexOf(thisOrder) == ViewModel.Orders.Data.Count + 1)
 			{
 				ScrollAnimationBehavior.AnimateScroll(scrollViewer,
-					scrollViewer.VerticalOffset + 600);
-				ScrollAnimationBehavior.intendedLocation = scrollViewer.VerticalOffset + 600;
+					scrollViewer.VerticalOffset + 1200);
+				ScrollAnimationBehavior.intendedLocation = scrollViewer.VerticalOffset + 1200;
 			} else
 			{
 				ScrollAnimationBehavior.AnimateScroll(scrollViewer,
@@ -433,6 +433,27 @@ namespace ArtPix_Dashboard.Views
 					return;
 				}
 				product.Status = productionIssue.Data[0].ProductionIssueReason.Reason;
+				if (product.Status == "Text Validation Failed")
+				{
+					var error = productionIssue.Data[0].ErrorText;
+
+					string failedText;
+					string originalText;
+
+					if (error.Split('|').Length > 2)
+					{
+						failedText = Regex.Replace(error.Split('|')[1], "<.*?>", String.Empty);
+						originalText = Regex.Replace(error.Split('|')[2], "<.*?>", String.Empty);
+					} else
+					{
+						failedText = Regex.Replace(error.Split('|')[0], "<.*?>", String.Empty);
+						originalText = Regex.Replace(error.Split('|')[1], "<.*?>", String.Empty);
+					}
+
+					product.FailedTextEngravingPanelVisibility = Visibility.Visible;
+					product.CustomerEngraving = String.IsNullOrWhiteSpace(originalText) ? product.CustomerEngraving : originalText;
+					product.FailedCustomerEngraving = failedText;
+				}
 				product.Employee = productionIssue.Data[0].User;
 			}
 
@@ -548,12 +569,6 @@ namespace ArtPix_Dashboard.Views
 
 		#endregion
 
-		//TODO: MOVE THIS TO VIEW MODEL
-		public async void ShowLoginDialog()
-		{
-			var dialog = new LoginDialog(ViewModel.AppState);
-			var result = await dialog.ShowAsync();
-		}
 
 		private async void UpdateShippingAddressButtonOnClick(object sender, RoutedEventArgs e)
 		{
@@ -586,10 +601,6 @@ namespace ArtPix_Dashboard.Views
 			}
 		}
 
-		private void ProductsListView_OnMouseEnter(object sender, MouseEventArgs e)
-		{
-			var listView = (ListView) sender;
-			listView.Focus();
-		}
+
 	}
 }
