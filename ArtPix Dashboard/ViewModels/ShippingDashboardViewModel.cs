@@ -28,6 +28,7 @@ using ArtPix_Dashboard.Views;
 using Color = System.Drawing.Color;
 using Image = System.Drawing.Image;
 using System.IO;
+using ArtPix_Dashboard.Models.ProductionIssue;
 
 namespace ArtPix_Dashboard.ViewModels
 {
@@ -49,7 +50,12 @@ namespace ArtPix_Dashboard.ViewModels
 			get => _appState;
 			set => SetProperty(ref _appState, value);
 		}
-
+		private ProductionIssueModel _productionIssues;
+		public ProductionIssueModel ProductionIssues
+		{
+			get => _productionIssues;
+			set => SetProperty(ref _productionIssues, value);
+		}
 		private ShippingDashboardView _view;
 		public ShippingDashboardView View
 		{
@@ -348,7 +354,7 @@ namespace ArtPix_Dashboard.ViewModels
 
 		#endregion
 
-		#region ORDERS LIST INITIALIZATION - DONE - ✅
+		#region ORDERS LIST INITIALIZATION
 
 		public async Task GetOrdersList(CombinedFilterModel combinedFilter)
 		{
@@ -369,7 +375,19 @@ namespace ArtPix_Dashboard.ViewModels
 				}
 				return;
 			}
+			
 			Orders = await ArtPixAPI.GetOrdersAsync(combinedFilter);
+
+			if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
+			{
+				//ProductionIssues = await ArtPixAPI.GetProductionIssuesAsync();
+				//foreach(var order in ProductionIssues)
+				//{
+					
+				//}
+
+			}
+
 			View.ShippingItemsListView.ItemsSource = Orders.Data;
 			if (combinedFilter.withPages)
 			{

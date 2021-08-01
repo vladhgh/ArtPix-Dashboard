@@ -82,6 +82,7 @@ namespace ArtPix_Dashboard.Views
 					Animation.FadeOut(AwaitingScanText);
 					UnloadKeyPressEventListener();
 				}
+				ShippingView.ShippingDashboardPage.Focus();
 				MainViewModel.SetGetEntityLogsTimer();
 				SetSessionTimeOutTimer();
 			}

@@ -47,9 +47,15 @@ namespace ArtPix_Dashboard
 
         protected override void OnStartup(StartupEventArgs e)
         {
-	        MainView = new MainView();
-            MainView.Show();
-	        Debug.WriteLine("STARTUP");
+            try
+			{
+	            MainView = new MainView();
+                MainView.Show();
+	            Debug.WriteLine("STARTUP");
+			} catch (Exception ex)
+			{
+                MessageBox.Show("EXCEPTION " + ex.Message);
+			}
         }
     }
 }

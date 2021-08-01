@@ -224,6 +224,7 @@
 	                            Height="auto"
 								Cursor="Hand"
 								Tag="Engraved Today"
+								Margin="40 0 0 0"
 	                            HorizontalAlignment="Center"
 								Click="EngravedTodayButtonOnClick"
 	                            Style="{StaticResource HeaderButtonStyle}">
@@ -241,6 +242,7 @@
 	                            Cursor="Hand"
 	                            Height="auto"
 								Tag="Ready To Engrave"
+								Margin="-40 0 0 0"
 	                            HorizontalAlignment="Center"
 	                            Click="ReadyToEngraveButtonOnClick"
 	                            Style="{StaticResource HeaderButtonStyle}">
@@ -402,8 +404,8 @@
 	                                                    VerticalAlignment="Center"
 	                                                    FontWeight="SemiBold"
 	                                                    Visibility="{Binding OnlineTextVisibility}"
-	                                                    Foreground="Green"
-	                                                    Text="Online"
+	                                                    Foreground="Red"
+	                                                    Text="Offline"
 	                                                    FontSize="14"
 	                                                    Style="{DynamicResource SubtitleTextBlockStyle}" />
 												</ui:SimpleStackPanel>

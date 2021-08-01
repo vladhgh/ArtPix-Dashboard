@@ -186,6 +186,8 @@ namespace ArtPix_Dashboard.Views
 
 			SetEventListeners();
 
+			SetKeyPressEventListener();
+
 			UpdatePaginationButtons();
 
 			ToggleLoadingAnimation(0);
@@ -277,10 +279,10 @@ namespace ArtPix_Dashboard.Views
 					
 				} else
 				{
-					if (_inputString.Split('-').Length == 3)
+					if (_inputString.Split('-').Length > 2)
 					{
 						SendCombinedRequest(new CombinedFilterModel("Search", "", "", _inputString.Split('-')[0]));
-					}
+					}			
 				}
 				_inputString = "";
 				e.Handled = true;
