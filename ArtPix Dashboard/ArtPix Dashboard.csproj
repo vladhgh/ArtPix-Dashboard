@@ -176,6 +176,7 @@
     <Compile Include="API\ArtPixAPI.cs" />
     <Compile Include="Models\Workstation\Datum.cs" />
     <Compile Include="Models\Workstation\Machine.cs" />
+    <Compile Include="Models\Workstation\MachineModel.cs" />
     <Compile Include="Models\Workstation\WorkstationsModel.cs" />
     <Compile Include="Utils\Animation.cs" />
     <Compile Include="Utils\Converters\MultiplyConverter.cs" />
@@ -559,6 +560,12 @@
     <Resource Include="Assets\giphy-1.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\giphy2.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\giphy3.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

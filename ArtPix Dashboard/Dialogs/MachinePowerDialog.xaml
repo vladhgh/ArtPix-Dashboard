@@ -3,22 +3,22 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.modernwpf.com/2019"
-    PrimaryButtonText="{Binding PrimaryButtonText}"
-    CloseButtonText="Cancel"
-    DefaultButton="Primary"
+    xmlns:xamlFlair="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
     Style="{StaticResource SmallContentDialogStyle}">
 
 	<ui:SimpleStackPanel Orientation="Vertical" HorizontalAlignment="Center">
 		<TextBlock
-			Text="{Binding MainText}"
+			Text="☢️ Laser Machines Power ☢️"
 			FontWeight="Black"
 			HorizontalAlignment="Center"
 			TextAlignment="Center"
+			xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600}"
 			Style="{DynamicResource TitleTextBlockStyle}"
 			Margin="0 0 0 9"/>
 		<ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="2">
 			<TextBlock
 				Text="This action cannot be undone and will take a while to execute!"
+				xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=100}"
 				HorizontalAlignment="Center"
 				TextTrimming="CharacterEllipsis"
 				Width="auto"
@@ -26,6 +26,24 @@
 				Margin="0,2,0,4"/>
 
 		</ui:SimpleStackPanel>
-    </ui:SimpleStackPanel>
+		<Border Padding="12 12 12 12" Margin="0 12 0 0" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=200}" BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="1" CornerRadius="8">
+			<ui:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+				<Button Cursor="Hand" Tag="PowerOn" ToolTip="Power All PC On" Click="PowerAllMachinesButtonClick" Style="{DynamicResource ManualCompleteButtonStyle}"  VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 30 0">
+								<TextBlock
+									Text="Power All PC's On"
+									FontSize="12"
+									Style="{DynamicResource BaseTextBlockStyle}"/>
+							</Button>
+				<Button Cursor="Hand" Tag="PowerOff" ToolTip="Power All PC Off" Click="PowerAllMachinesButtonClick" Style="{DynamicResource UnassignButtonStyle}"  VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="30 0 0 0">
+					<TextBlock
+								Text="Power All PC's Off"
+								FontSize="12"
+								Style="{DynamicResource BaseTextBlockStyle}"/>
+				</Button>
+			</ui:SimpleStackPanel>
+		</Border>
+		<Button Content="Go Back" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=300}" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Center" Cursor="Hand" Margin="0 25 0 0" Width="350" Click="ButtonBase_OnClick"/>
+
+	</ui:SimpleStackPanel>
 
 </ui:ContentDialog>

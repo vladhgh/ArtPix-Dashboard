@@ -355,7 +355,7 @@ namespace ArtPix_Dashboard.ViewModels
 
 			if (AppState.CombinedFilter.SelectedFilterGroup == "Engraved Today")
 			{
-				EngravedTodayItems = await ArtPixAPI.GetEngravedTodayItemsAsync("All", combinedFilter.pageNumber.ToString(), combinedFilter.perPage.ToString());
+				EngravedTodayItems = await ArtPixAPI.GetEngravedTodayItemsAsync(combinedFilter.machine, combinedFilter.pageNumber.ToString(), combinedFilter.perPage.ToString());
 				Orders.Meta = EngravedTodayItems.Meta;
 				Orders.Data = new List<Models.Order.Datum>();
 				View.ShippingItemsListView.ItemsSource = EngravedTodayItems.Data;

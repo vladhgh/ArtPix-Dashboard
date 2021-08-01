@@ -1,41 +1,55 @@
-﻿using ArtPix_Dashboard.Utils.Helpers;
+﻿using System.Diagnostics;
+using System.Net.NetworkInformation;
+using System.Windows;
+using System.Windows.Controls;
+using ArtPix_Dashboard.Utils.Helpers;
+using ArtPix_Dashboard.ViewModels;
+using ModernWpf.Controls;
+using ToastNotifications.Messages;
 
 namespace ArtPix_Dashboard.Dialogs
 {
 
     public partial class MachinePowerDialog
     {
-        private MachinePowerViewModel _vm = new();
 
-        public MachinePowerDialog(string kind)
+        internal MainViewModel ViewModel;
+
+        public MachinePowerDialog(MainViewModel viewModel)
         {
             InitializeComponent();
-            DataContext = _vm;
-            _vm.PrimaryButtonText = kind == "PowerOn" ? "Power On" : "Power Off";
-            _vm.MainText = kind == "PowerOn" ? "Are you sure you want to power all machines on?" : "Are you sure you want to power all machines off?";
+            DataContext = this;
+            ViewModel = viewModel;
         }
-    }
 
-    public class MachinePowerViewModel : PropertyChangedListener
-	{
-        private string _primaryButtonText;
-
-        public string PrimaryButtonText
+        private void PowerAllMachinesButtonClick(object sender, RoutedEventArgs e)
         {
-            get => _primaryButtonText;
-
-            set => SetProperty(ref _primaryButtonText, value);
+	        var kind = ((Button)sender).Tag.ToString();
+	        if (kind == "PowerOn")
+	        {
+		        foreach (var machineAddress in Utils.Utils.MachineAddresses)
+		        {
+			        Utils.Utils.SendWakeOnLan(PhysicalAddress.Parse(machineAddress.Key));
+		        }
+		        Utils.Utils.Notifier.ShowSuccess("Machine Power On Request Sent Succesfully!\nPlease Wait....");
+	        }
+	        if (kind == "PowerOff")
+	        {
+		        foreach (var workstation in ViewModel.WorkstationStats.Data)
+		        {
+			        foreach (var machine in workstation.Machines)
+			        {
+				        Process.Start("shutdown", $"-s -f -t 00 -m {machine.NetworkPath}");
+			        }
+		        }
+		        Utils.Utils.Notifier.ShowSuccess("Machine Power Off Request Sent Succesfully!\nPlease Wait....");
+	        }
         }
-        
-        private string _mainText;
 
-		public string MainText
-		{
-            get => _mainText;
-
-            set => SetProperty(ref _mainText, value);
-		}
-
-
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+	        Hide();
+        }
     }
+
 }

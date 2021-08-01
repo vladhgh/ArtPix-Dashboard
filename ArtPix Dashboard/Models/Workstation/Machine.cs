@@ -36,6 +36,14 @@ namespace ArtPix_Dashboard.Models.Workstation
         [JsonProperty("updated_at")]
         public string UpdatedAt { get; set; }
 
+        private bool _isSelected;
+
+        public bool IsSelected
+        {
+	        get => _isSelected;
+	        set => SetProperty(ref _isSelected, value);
+        }
+
         private int _jobsCount;
 
         public int JobsCount

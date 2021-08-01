@@ -57,7 +57,7 @@ namespace ArtPix_Dashboard.Models.AppState
 						return;
 					}
 
-				case "Engraving":
+				case "Engraving In Progress":
 					{
 
 						SelectedFilterGroup = "Engraving In Progress";

@@ -55,16 +55,16 @@ namespace ArtPix_Dashboard.API
 
 		#endregion
 
-		#region GET: ENGRAVING STATS - DONE - ✅
+		#region GET: ENGRAVING STATS
 
 		public static async Task<EngravingStatsModel> GetEngravingStatsAsync()
 		{
 			var machineAssignItems = await Task.WhenAll(
 				GetOrdersAsync(new CombinedFilterModel("Ready To Engrave"){perPage = 1}),
-				GetOrdersAsync(new CombinedFilterModel("Engraving"){perPage = 1}),
+				GetOrdersAsync(new CombinedFilterModel("Engraving In Progress"){perPage = 1}),
 				GetOrdersAsync(new CombinedFilterModel("Awaiting Model"){perPage = 1}),
-				GetOrdersAsync(new CombinedFilterModel("Production Issues")));
-			var engravedToday = await GetEngravedTodayItemsAsync("All", "1", "1");
+				GetOrdersAsync(new CombinedFilterModel("Production Issues") { perPage = 1 }));
+			var engravedToday = await GetEngravedTodayItemsAsync("", "1", "1");
 			var stats = new EngravingStatsModel
 			{
 				ReadyToEngraveCount = machineAssignItems[0].Meta.Total,
@@ -155,7 +155,7 @@ namespace ArtPix_Dashboard.API
 		public static async Task<WorkstationsModel> GetWorkstationStats()
 		{
 			var req = new RestRequest("/work-stations");
-			Debug.WriteLine($"API GET: /work-stations");
+			//Debug.WriteLine($"API GET: /work-stations");
 			req.AddHeader("Accept", "application/json");
 			var networkAddresses = Utils.Utils.GetAllMacAddressesAndIppairs();
 			var workstations = await Client.GetAsync<WorkstationsModel>(req);
@@ -321,7 +321,7 @@ namespace ArtPix_Dashboard.API
 						break;
 				}
 			}
-			Debug.WriteLine($"API GET: {request}");
+			//Debug.WriteLine($"API GET: {request}");
 			var req = new RestRequest(request);
 			req.AddHeader("Accept", "application/json");
 			req.AddHeader("Authorization", "Bearer " + BearerToken);
@@ -337,7 +337,8 @@ namespace ArtPix_Dashboard.API
 		{
 			var req = new RestRequest("/machines?product_id=" + productId);
 			req.AddHeader("Accept", "application/json");
-			return await Client.GetAsync<List<Machine>>(req);
+			var res = await Client.GetAsync<MachineModel>(req);
+			return res.Data;
 		}
 
 		#endregion
@@ -359,9 +360,10 @@ namespace ArtPix_Dashboard.API
 
 		public static async Task<MachineAssignItemModel> GetMachineAssignItemsAsync(string status, string machineId, string page = "1", string perPage = "15")
 		{
-			var request = machineId == "All" ? new RestRequest("/machine/assign-item?per_page=" + perPage + "&page=" + page + "&status=" + status + "&sort_by=ended_at_desc", DataFormat.Json) : new RestRequest("/machine/assign-item?per_page=" + perPage + "&page=" + page + "&status=" + status + "&machine_id=" + machineId + "&sort_by=ended_at_desc", DataFormat.Json);
-			Debug.WriteLine($"API GET: {request}");
-			var res = await Client.GetAsync<MachineAssignItemModel>(request);
+			var request = machineId == "All" ? "/machine/assign-item?per_page=" + perPage + "&page=" + page + "&status=" + status + "&sort_by=ended_at_desc" : "/machine/assign-item?per_page=" + perPage + "&page=" + page + "&status=" + status + "&machine_id=" + machineId + "&sort_by=ended_at_desc";
+			//Debug.WriteLine($"API GET: {request}");
+			var req = new RestRequest(request, DataFormat.Json);
+			var res = await Client.GetAsync<MachineAssignItemModel>(req);
 			return res;
 		}
 
@@ -372,7 +374,7 @@ namespace ArtPix_Dashboard.API
 		public static async Task<MachineAssignItemModel> GetEngravedTodayItemsAsync(string machineId, string page = "1", string perPage = "15")
 		{
 			var today = DateTime.Now.Date.ToString("yyyy/MM/dd");
-			var request = machineId == "All" ? ("/machine/assign-item?page=" + page + "&per_page=" + perPage + "&status=success&ended_after=" + today + " 12:00:00&sort_by=ended_at_desc")
+			var request = machineId == "" ? ("/machine/assign-item?page=" + page + "&per_page=" + perPage + "&status=success&ended_after=" + today + " 12:00:00&sort_by=ended_at_desc")
 				: ("/machine/assign-item?page=" + page + "&per_page=" + perPage + "&status=success&ended_after=" + today + " 12:00:00&machine_id=" + machineId + "&sort_by=ended_at_desc");
 			Debug.WriteLine($"API GET: {request}");
 			var req = new RestRequest(request, DataFormat.Json);
@@ -522,8 +524,8 @@ namespace ArtPix_Dashboard.API
 			request.AddHeader("Content-Type", "application/json");
 			request.AddHeader("Cookie", "XSRF-TOKEN=eyJpdiI6Ik9yRWVJaGdrMHU1QXpKeURcL0QrYndnPT0iLCJ2YWx1ZSI6IkkzRGloZ1M1cUdQK3pEb0VkZXVsWWVtNlJwSGpQVkM5U3dYOEhWbzR5bnFnMm1PTFBMeFlkZWorMlo5S2c0NE10aGxUWkNvbElXeG5YOExUbzFYTnRKOER3ZlZUYnM2U0paNndqMmx6QnF4MXNKK3loeXBIb0NDTG5wTHQ5aXVWIiwibWFjIjoiZGEyZjkzMWYzMGEyNWU2MTcyNGU3ZTNmNWZmOGVlN2QwNDNlOTcxNGVlMDQxZmM5NWQ0NzAyZmMyNzgwYjlkNCJ9; orderarchive_session=eyJpdiI6IjlPQlNrTmRMNFBlWjh6OGE4Qlg4OXc9PSIsInZhbHVlIjoiQTNmODhjaDZ6c2pwaXp1eDZHUGp0SlZGUWdcL1JEdG8wT2VkMFwvQ2VZRGRYSDhmWXJtc1wvMk92TWlvZHNDdm5SYmNKTW5Ocm1YQnp2Nk5CRWFDcHdoVlJhMnhGV3lRWnE1VTBEV2t5c0hFYWdUQ29oWVhHbzhXUmhhUGlTOHJFTGIiLCJtYWMiOiJiYTJjOGRjNjIyZjVmNTBjNTQxYTViYzY3NjkxMmMwMGNhZTEyZjMyMzVmYzAwYjc4MzJiNDlhMzBmNmE2ZTg1In0%3D");
 			IRestResponse response = await Client.ExecuteAsync(request);
+			Debug.WriteLine(response.Content);
 			return JsonConvert.DeserializeObject<FindBestServiceModel>(response.Content);
-			//Debug.WriteLine(res.Success);
 		}
 
 		#endregion

@@ -10,14 +10,7 @@ namespace ArtPix_Dashboard.Models.AppState
 {
 	public class WindowPropertiesModel : PropertyChangedListener
 	{
-		public WindowPropertiesModel()
-		{
-			Top = 0;
-			Left = 0;
-			Width = 1920;
-			Height = 1080;
-		}
-
+		
 		private double _top;
 		public double Top
 		{

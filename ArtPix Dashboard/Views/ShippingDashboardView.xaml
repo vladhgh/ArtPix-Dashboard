@@ -10,13 +10,15 @@
 	xmlns:gif="http://wpfanimatedgif.codeplex.com"
 	xmlns:viewmodels="clr-namespace:ArtPix_Dashboard.ViewModels"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:common="clr-namespace:ArtPix_Dashboard.Models.Common"
+	xmlns:properties="clr-namespace:ArtPix_Dashboard.Properties"
 	mc:Ignorable="d"
 	d:DataContext="{d:DesignInstance Type=viewmodels:ShippingDashboardViewModel}"
 	KeepAlive="False"
 	Background="Transparent"
     Focusable="True"
 	Title="Shipping Dashboard">
-    <Grid >
+	<Grid >
 		<Grid.RowDefinitions>
 			<RowDefinition Height="0"/>
 			<RowDefinition Height="Auto"/>
@@ -54,8 +56,8 @@
 			<Button IsTabStop="True" Height="32" Width="32" Cursor="Hand" Padding="8 2 8 2" IsEnabled="{Binding AppState.CombinedFilter.IsClearSearchButtonEnabled}" VerticalAlignment="Bottom" Click="ButtonClearSearchOnClick" Style="{DynamicResource CustomButtonStyle}">
                 <ui:FontIcon Glyph="&#xE894;" FontSize="10"/>
             </Button>
-			<Button IsTabStop="True" Content="Search" VerticalAlignment="Bottom" Style="{DynamicResource SearchButtonStyle}" Cursor="Hand" Click="ButtonSearchOnClick" Margin="0 0 10 0"/>
-			<ComboBox IsTabStop="True" SelectedIndex="0" Visibility="{Binding AppState.CombinedFilter.StoreComboBoxVisibility, Mode=OneWay}" Style="{StaticResource CustomComboBoxStyle}" IsEnabled="{Binding AppState.CombinedFilter.IsFilterGroupEnabled}" Cursor="Hand" Name="StoreComboBox" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="175" ui:ControlHelper.Header="Store:" ui:ControlHelper.PlaceholderText="Select Store">
+			<Button IsTabStop="True" IsEnabled="{Binding AppState.CombinedFilter.IsClearSearchButtonEnabled}" Content="Search" VerticalAlignment="Bottom" Style="{DynamicResource SearchButtonStyle}" Cursor="Hand" Click="ButtonSearchOnClick" Margin="0 0 10 0"/>
+			<ComboBox IsTabStop="True" Visibility="{Binding AppState.CombinedFilter.StoreComboBoxVisibility, Mode=OneWay}" Style="{StaticResource CustomComboBoxStyle}" IsEnabled="{Binding AppState.CombinedFilter.IsFilterGroupEnabled}" Cursor="Hand" Name="StoreComboBox" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="175" ui:ControlHelper.Header="Store:" ui:ControlHelper.PlaceholderText="Select Store">
 				<ComboBoxItem Content="All Stores" Tag=""/>
 				<ComboBoxItem Content="Amazon &amp; WordPress" Tag="Amazon&amp;store_name[]=WordPress"/>
 				<ComboBoxItem Content="Amazon Store" Tag="Amazon"/>
@@ -83,7 +85,7 @@
                 <ComboBoxItem Content="Processing" Tag="processing"/>
                 <ComboBoxItem Content="Shipped" Tag="done"/>
             </ComboBox>
-			<ComboBox IsTabStop="True" SelectedIndex="0" Name="MachineComboBox" Visibility="{Binding AppState.CombinedFilter.MachineComboBoxVisibility}" Cursor="Hand" Style="{StaticResource CustomComboBoxStyle}" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Machine:" ui:ControlHelper.PlaceholderText="Select Engraving Machine">
+			<ComboBox IsTabStop="True"  Name="MachineComboBox" Visibility="{Binding AppState.CombinedFilter.MachineComboBoxVisibility}" Cursor="Hand" Style="{StaticResource CustomComboBoxStyle}" SelectedValuePath="Tag" VerticalAlignment="Center"  Width="150" ui:ControlHelper.Header="Machine:" ui:ControlHelper.PlaceholderText="Select Engraving Machine">
 				<ComboBoxItem Content="All Machines" Tag=""/>
 				<ComboBoxItem Content="Machine 1" Tag="1"/>
 				<ComboBoxItem Content="Machine 2" Tag="2"/>
@@ -147,20 +149,21 @@
 			Grid.Column="1"
 			Grid.Row="4"
 			gif:ImageBehavior.RepeatBehavior="0x"
-			gif:ImageBehavior.AnimatedSource="../Assets/giphy.gif" Width="150" Height="150"/>
+			gif:ImageBehavior.AnimatedSource="../Assets/giphy.gif" Width="65" Height="65"/>
 
 		<TextBlock
 			x:Name="NoResultsText"
-			Text="No Results :)"
+			Text="No Results"
 			Grid.Column="1"
 			Grid.Row="4"
-			Margin="0 0 0 0"
+			Margin="0 120 0 0"
 			Opacity="0"
+			FontSize="16"
 			TextAlignment="Center"
 			HorizontalAlignment="Center"
 			VerticalAlignment="Center"
-			Style="{DynamicResource TitleTextBlockStyle}"
-			FontWeight="Black"/>
+			Style="{DynamicResource TitleTextBlockStyle}"/>
+
 
 		<ui:SimpleStackPanel Grid.Row="3" Grid.Column="1" Margin="0 0 0 10" Orientation="Horizontal">
 	        <TextBlock
@@ -257,14 +260,14 @@
 					Style="{StaticResource UnassignButtonStyle}"/>
 		</ui:SimpleStackPanel>
 
-		<Border Grid.Row="4" Grid.Column="1" BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="1" CornerRadius="8">
+		<Border Grid.Row="4" Grid.Column="1"  BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="1" CornerRadius="8">
 			<ui:ListView
 						x:Name="ShippingItemsListView"
 						ItemsSource="{Binding Orders.Data}"
 						IsSelectionEnabled="False"
 						IsTabStop="True"
 						MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
-						MinWidth="550"
+						MinWidth="1912"
 						ScrollViewer.CanContentScroll="True"
 						VirtualizingPanel.ScrollUnit="Pixel"
 						Style="{DynamicResource CustomListViewStyle}">
@@ -276,7 +279,7 @@
 								Tag="{Binding NameOrder}"
 								Opacity="0"
 								gif:ImageBehavior.RepeatBehavior="0x"
-								gif:ImageBehavior.AnimatedSource="../Assets/Spinner2.gif" Width="70" Height="70"/>
+								gif:ImageBehavior.AnimatedSource="../Assets/giphy.gif" Width="65" Height="65"/>
 							<Expander
 									x:Name="expander"
 									Cursor="Hand"
@@ -475,8 +478,9 @@
 											BorderThickness="1"
 											MaxHeight="520"
 											CornerRadius="8"
-											ScrollViewer.CanContentScroll="False"
-											
+											Focusable="True"
+											ScrollViewer.CanContentScroll="True"
+											MouseEnter="ProductsListView_OnMouseEnter"
 											BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
 											VirtualizingPanel.ScrollUnit="Pixel">
 											<ui:ListView.ItemTemplate>
@@ -976,7 +980,7 @@
 							Margin="5 0 5 0"
 							ItemsSource="{Binding Pages}">
 					<ui:ItemsRepeater.ItemTemplate>
-						<DataTemplate DataType="types:PageModel">
+						<DataTemplate DataType="common:PageModel">
 							<ui:TitleBarButton
 								Cursor="Hand"
 								FontFamily="Segoe UI"

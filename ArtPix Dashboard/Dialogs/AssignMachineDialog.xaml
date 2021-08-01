@@ -44,7 +44,7 @@
 							x:Name="Combo2"  
 							ui:ControlHelper.PlaceholderText="Assign Machine"
 							ItemsSource="{Binding Machines}"
-							Width="290"
+							Width="200"
 							Cursor="Hand"
 							Style="{StaticResource AssignMachineComboBoxStyle}">
 							<ComboBox.ItemTemplate>

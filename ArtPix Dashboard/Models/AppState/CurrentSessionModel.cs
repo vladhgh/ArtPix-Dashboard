@@ -27,7 +27,12 @@ namespace ArtPix_Dashboard.Models.AppState
 			set => SetProperty(ref _isBackButtonActive, value);
 		}
 		
-
+		private Visibility _loginPanelVisibility = Visibility.Collapsed;
+		public Visibility LoginPanelVisibility
+		{
+			get => _loginPanelVisibility;
+			set => SetProperty(ref _loginPanelVisibility, value);
+		}
 		private Visibility _shippingStatusGroupVisibility = Visibility.Visible;
 		public Visibility ShippingStatusGroupVisibility
 		{
@@ -56,23 +61,7 @@ namespace ArtPix_Dashboard.Models.AppState
 			set => SetProperty(ref _statusGroup, value);
 		}
 
-		private string _currentVersion;
-
-		public string CurrentVersion
-		{
-			get => _currentVersion;
-			set => SetProperty(ref _currentVersion, value);
-		}
-
-		private string _previousVersion;
-
-		public string PreviousVersion
-		{
-			get => _previousVersion;
-			set => SetProperty(ref _previousVersion, value);
-		}
-
-		private string _employeeName = "Vlad Prokopev";
+		private string _employeeName = "Vlad";
 
 		public string EmployeeName
 		{

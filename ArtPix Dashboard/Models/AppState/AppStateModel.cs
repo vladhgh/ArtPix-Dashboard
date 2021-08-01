@@ -8,15 +8,6 @@ namespace ArtPix_Dashboard.Models.AppState
 
 	public class AppStateModel : PropertyChangedListener
 	{
-
-		private WindowPropertiesModel _windowProperties = new();
-
-		public WindowPropertiesModel WindowProperties
-		{
-			get => _windowProperties;
-			set => SetProperty(ref _windowProperties, value);
-		}
-
 		private CombinedFilterModel _combinedFilter = new ();
 
 		public CombinedFilterModel CombinedFilter

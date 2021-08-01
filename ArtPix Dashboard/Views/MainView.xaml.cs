@@ -43,22 +43,10 @@ namespace ArtPix_Dashboard.Views
 		{
 			ViewModel.Initialize();
 			InitializeSettings();
-			ShowChangesDialog();
 		}
 		
 		#endregion
 
-		#region SHOW CHANGES DIALOG
-
-		private async void ShowChangesDialog()
-		{
-			if (ViewModel.AppState.CurrentSession.CurrentVersion == ViewModel.AppState.CurrentSession.PreviousVersion) return;
-			var dialog = new ChangeLogsDialog();
-			var result = await dialog.ShowAsync();
-			ViewModel.AppState.CurrentSession.PreviousVersion = ViewModel.AppState.CurrentSession.CurrentVersion;
-		}
-
-		#endregion
 
 		#region INITIALIZE USER SETTINGS
 
@@ -66,31 +54,25 @@ namespace ArtPix_Dashboard.Views
 		{
 			Utils.Utils.EnableBlur(this);
 			var x = JsonConvert.DeserializeObject<AppStateModel>(Settings.Default.AppState);
+			var statusGroup = "Shipping";
 			if (x != null)
 			{
+				statusGroup = x.CurrentSession.StatusGroup;
 				x.CurrentSession = new();
 				x.CombinedFilter.pageNumber = 1;
 				ViewModel.AppState = x;
-
 			}
-			ShowLoginDialog();
-			SwitchStatusPaneGroupToType(ViewModel.AppState.CurrentSession.StatusGroup);
+			Window.Top = Settings.Default.Top;
+			Window.Left = Settings.Default.Left;
+			Window.Width = Settings.Default.Width;
+			Window.Height = Settings.Default.Height;
+			SwitchStatusPaneGroupToType(statusGroup);
 			SelectHeaderButton();
 			ContentFrame.Navigate(ShippingView, ViewModel.AppState);
 		}
 
 		#endregion
 
-		private async void ShowLoginDialog()
-		{
-			if (String.IsNullOrEmpty(ViewModel.AppState.CurrentSession.EmployeeName))
-			{
-				var dialog = new LoginDialog(ViewModel.AppState);
-				var result = await dialog.ShowAsync();
-				if (result != ContentDialogResult.Primary) return;
-
-			}
-		}
 
 		private void SelectHeaderButton()
 		{
@@ -109,11 +91,11 @@ namespace ArtPix_Dashboard.Views
 						return;
 					}
 
-				case "Engraving":
+				case "Engraving In Progress":
 					{
 
 						EngravingButton.IsChecked = true;
-						ViewModel.AppState.NavigationStack.Add("Engraving");
+						ViewModel.AppState.NavigationStack.Add("Engraving In Progress");
 						return;
 					}
 
@@ -229,6 +211,10 @@ namespace ArtPix_Dashboard.Views
 		{
 			ToastNotificationManagerCompat.History.Clear();
 			Settings.Default.AppState = JsonConvert.SerializeObject(ViewModel.AppState, Formatting.Indented);
+			Settings.Default.Top = Window.Top;
+			Settings.Default.Left = Window.Left;
+			Settings.Default.Width = Window.Width;
+			Settings.Default.Height = Window.Height;
 			Settings.Default.Save();
 		}
 
@@ -251,12 +237,6 @@ namespace ArtPix_Dashboard.Views
 			EngravedTodayButton.IsChecked = false;
 			ProductionIssuesButton.IsChecked = false;
 
-			foreach (var workstation in ViewModel.WorkstationStats.Data)
-			{
-				workstation.IsChecked = false;
-				workstation.MachinesGroupVisibility = Visibility.Collapsed;
-			}
-
 			if (button == null)
 			{
 				button = (ToggleButton)this.FindName(elementName.Replace(" ", "") + "Button");
@@ -274,7 +254,7 @@ namespace ArtPix_Dashboard.Views
 					if (workstation.Id == Int32.Parse(button.Tag.ToString()) &&
 					    workstation.MachinesGroupVisibility == Visibility.Visible)
 					{
-						ViewModel.WorkstationStats.PanelSpacing = 45;
+						ViewModel.WorkstationStats.PanelSpacing = 47;
 						workstation.MachinesGroupVisibility = Visibility.Collapsed;
 						workstation.IsChecked = false;
 						return;
@@ -282,7 +262,7 @@ namespace ArtPix_Dashboard.Views
 
 					if (workstation.MachinesGroupVisibility == Visibility.Visible)
 					{
-						ViewModel.WorkstationStats.PanelSpacing = 45;
+						ViewModel.WorkstationStats.PanelSpacing = 47;
 						workstation.MachinesGroupVisibility = Visibility.Collapsed;
 						workstation.IsChecked = false;
 					}
@@ -301,6 +281,15 @@ namespace ArtPix_Dashboard.Views
 				button.IsChecked = true;
 				ViewModel.AppState.NavigationStack.Add(button.Tag.ToString());
 				ViewModel.AppState.CurrentSession.IsBackButtonActive = ViewModel.AppState.NavigationStack.Count > 0;
+			}
+
+			if (button.Tag.ToString().Contains(" "))
+			{
+				foreach (var workstation in ViewModel.WorkstationStats.Data)
+				{
+					workstation.IsChecked = false;
+					workstation.MachinesGroupVisibility = Visibility.Collapsed;
+				}
 			}
 		}
 
@@ -336,7 +325,7 @@ namespace ArtPix_Dashboard.Views
 		private void EngravingButtonOnClick(object sender, RoutedEventArgs e)
 		{
 			SetActiveButton((ToggleButton)sender);
-			ShippingView.SendCombinedRequest(new CombinedFilterModel("Engraving"));
+			ShippingView.SendCombinedRequest(new CombinedFilterModel("Engraving In Progress"));
 		}
 
 		private void ProductionIssuesButtonOnClick(object sender, RoutedEventArgs e)
@@ -347,35 +336,27 @@ namespace ArtPix_Dashboard.Views
 
 		private void NavigateToMachine(object sender, RoutedEventArgs e)
 		{
-			ShippingView.SendCombinedRequest(new CombinedFilterModel("Machine", ((Button) sender).Tag.ToString()));
-		}
-
-		private async void PowerAllMachinesButtonClick(object sender, RoutedEventArgs e)
-		{
-			var kind = ((Button)sender).Tag.ToString();
-			var dialog = new MachinePowerDialog(kind);
-			var result = await dialog.ShowAsync();
-			if (result != ContentDialogResult.Primary) return;
-			if (kind == "PowerOn")
+			var button = ((ToggleButton) sender);
+			foreach (var workstation in ViewModel.WorkstationStats.Data)
 			{
-				foreach (var machineAddress in Utils.Utils.MachineAddresses)
-				{
-					Utils.Utils.SendWakeOnLan(PhysicalAddress.Parse(machineAddress.Key));
-				}
-				Utils.Utils.Notifier.ShowSuccess("Machine Power On Request Sent Succesfully!\nPlease Wait....");
-			}
-			if (kind == "PowerOff")
-			{
-				foreach (var workstation in ViewModel.WorkstationStats.Data)
+				if (workstation.IsChecked)
 				{
 					foreach (var machine in workstation.Machines)
 					{
-						Process.Start("shutdown", $"-s -f -t 00 -m {machine.NetworkPath}");
+						machine.IsSelected = false;
+
+						if (machine.IdMachines == (int)button.Tag)
+						{
+							ShippingView.SendCombinedRequest(new CombinedFilterModel("Machine", ((ToggleButton)sender).Tag.ToString()));
+							machine.IsSelected = true;
+						}
 					}
 				}
-				Utils.Utils.Notifier.ShowSuccess("Machine Power Off Request Sent Succesfully!\nPlease Wait....");
 			}
+			
 		}
+
+		
 
 		private void EngravedTodayButtonOnClick(object sender, RoutedEventArgs e)
 		{
@@ -397,6 +378,12 @@ namespace ArtPix_Dashboard.Views
 			var dialog = new LoginDialog(ViewModel.AppState);
 			var result = await dialog.ShowAsync();
 			if (result != ContentDialogResult.Primary) return;
+		}
+
+		private void MachinesPowerButtonOnClick(object sender, RoutedEventArgs e)
+		{
+			var dialog = new MachinePowerDialog(ViewModel);
+			dialog.ShowAsync();
 		}
 	}
 }

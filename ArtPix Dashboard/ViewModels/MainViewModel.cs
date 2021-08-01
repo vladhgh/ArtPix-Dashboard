@@ -1,5 +1,6 @@
 ﻿using ArtPix_Dashboard.API;
 using System;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
 using ArtPix_Dashboard.Models.AppState;
@@ -36,7 +37,28 @@ namespace ArtPix_Dashboard.ViewModels
 		public WorkstationsModel WorkstationStats
 		{
 			get => _workstationStats;
-			set => SetProperty(ref _workstationStats, value);
+			set
+			{
+				var selectedWorkstation = new Datum();
+				if (_workstationStats.Data != null)
+				{
+					foreach (var workstation in _workstationStats.Data)
+					{
+						if (workstation.IsChecked)
+						{
+							selectedWorkstation = workstation;
+						}
+					}
+					SetProperty(ref _workstationStats, value);
+					if (selectedWorkstation.Id <= 0) return;
+					var newSelectedWorkstation = _workstationStats.Data.FirstOrDefault((x) => x.Id == selectedWorkstation.Id);
+					newSelectedWorkstation.IsChecked = selectedWorkstation.IsChecked;
+					newSelectedWorkstation.MachinesGroupVisibility = selectedWorkstation.MachinesGroupVisibility;
+					newSelectedWorkstation.Machines = selectedWorkstation.Machines;
+					return;
+				}
+				SetProperty(ref _workstationStats, value);
+			}
 		}
 
 		private AppStateModel _appState = new ();
@@ -69,7 +91,7 @@ namespace ArtPix_Dashboard.ViewModels
 
 		private async Task SynthesizeAudioAsync()
 		{
-			if (ShippingStats.ShipByToday > 0 && DateTime.Now.Hour > 17)
+			if (ShippingStats.ShipByToday > 0 && DateTime.Now.Hour >= 17)
 			{
 				var config = SpeechConfig.FromSubscription("7c41fdfabd744deb8ff197f39b2b63e9", "eastus");
 				using var synthesizer = new SpeechSynthesizer(config);
@@ -89,8 +111,8 @@ namespace ArtPix_Dashboard.ViewModels
 			workstationsStatsTimer.Subscribe(async tick => WorkstationStats = await ArtPixAPI.GetWorkstationStats());
 			var entityLogsTimer = Observable.Interval(TimeSpan.FromSeconds(15));
 			entityLogsTimer.Subscribe(async tick => await ArtPixAPI.GetEntityLogsAsync());
-			var checkForOrdersToShipTimer = Observable.Interval(TimeSpan.FromMinutes(15));
-			checkForOrdersToShipTimer.Subscribe(async tick => await ArtPixAPI.GetEntityLogsAsync());
+			//var checkForOrdersToShipTimer = Observable.Interval(TimeSpan.FromMinutes(15));
+			//checkForOrdersToShipTimer.Subscribe(async tick => await SynthesizeAudioAsync());
 		}
 
 		#endregion
@@ -101,6 +123,11 @@ namespace ArtPix_Dashboard.ViewModels
 		{
 			if (kind == 0)
 			{
+				if (String.IsNullOrEmpty(AppState.CurrentSession.EmployeeName))
+				{
+					AppState.CurrentSession.LoginPanelVisibility = Visibility.Visible;
+					return;
+				}
 				AppState.CurrentSession.MainNavigationViewVisibility = Visibility.Visible;
 				AppState.CurrentSession.MainViewProgressRingVisibility = Visibility.Hidden;
 			}

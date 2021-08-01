@@ -17,11 +17,13 @@ using ArtPix_Dashboard.Utils;
 using ModernWpf.Controls.Primitives;
 using System.Linq.Expressions;
 using System.Net.NetworkInformation;
+using System.Text;
 using System.Web.UI.WebControls;
 using ArtPix_Dashboard.Dialogs;
 using ArtPix_Dashboard.Models.AppState;
 using ToastNotifications.Messages;
 using Button = System.Windows.Controls.Button;
+using ListView = ModernWpf.Controls.ListView;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace ArtPix_Dashboard.Views
@@ -67,6 +69,16 @@ namespace ArtPix_Dashboard.Views
 			ToggleInTotes.Click += ToggleInTotes_Click;
 			ToggleNoCrystal.Click += ToggleNoCrystal_Click;
 		}
+		private void UnloadEventListeners()
+		{
+			SortByComboBox.SelectionChanged -= SortByComboBoxOnSelectionChanged;
+			StoreComboBox.SelectionChanged -= StoreComboBoxOnSelectionChanged;
+			MachineComboBox.SelectionChanged -= MachineComboBox_SelectionChanged;
+			ToggleShipByToday.Click -= ToggleShipByToday_Click;
+			ToggleNoPackage.Click -= ToggleNoPackageOnClick;
+			ToggleInTotes.Click -= ToggleInTotes_Click;
+			ToggleNoCrystal.Click -= ToggleNoCrystal_Click;
+		}
 
 
 		private void SetKeyPressEventListener()
@@ -88,9 +100,9 @@ namespace ArtPix_Dashboard.Views
 
 			SetKeyPressEventListener();
 
-			SendCombinedRequest(ViewModel.AppState.CombinedFilter);
-
 			SetEventListeners();
+
+			SendCombinedRequest(ViewModel.AppState.CombinedFilter);
 
 		}
 
@@ -98,17 +110,6 @@ namespace ArtPix_Dashboard.Views
 
 		#region UPDATE CONTROLS
 
-		private void UpdateControls()
-		{
-			SortByComboBox.SelectedValue = ViewModel.AppState.CombinedFilter.sort_by;
-			StoreComboBox.SelectedValue = ViewModel.AppState.CombinedFilter.store_name;
-			MachineComboBox.SelectedValue = ViewModel.AppState.CombinedFilter.machine;
-			ToggleShipByToday.IsChecked = ViewModel.AppState.CombinedFilter.shipByToday == "True";
-			ToggleNoPackage.IsChecked = ViewModel.AppState.CombinedFilter.has_shipping_package == "0";
-			ToggleInTotes.IsChecked = ViewModel.AppState.CombinedFilter.with_shipping_totes == "True";
-			ToggleNoCrystal.IsChecked = ViewModel.AppState.CombinedFilter.with_crystals == "0";
-			SearchTextBox.Text = ViewModel.AppState.CombinedFilter.name_order;
-		}
 
 		private void ToggleLoadingAnimation(int kind)
 		{
@@ -126,9 +127,21 @@ namespace ArtPix_Dashboard.Views
 			}
 			if (kind == 2)
 			{
-				Animation.FadeOut(ProgressRingImage);
+				//Animation.FadeOut(ProgressRingImage);
 				Animation.FadeIn(NoResultsText);
 			}
+		}
+
+		private void UpdateControls()
+		{
+			SortByComboBox.SelectedValue = ViewModel.AppState.CombinedFilter.sort_by;
+			StoreComboBox.SelectedValue = ViewModel.AppState.CombinedFilter.store_name;
+			MachineComboBox.SelectedValue = ViewModel.AppState.CombinedFilter.machine;
+			ToggleShipByToday.IsChecked = ViewModel.AppState.CombinedFilter.shipByToday == "True";
+			ToggleNoPackage.IsChecked = ViewModel.AppState.CombinedFilter.has_shipping_package == "0";
+			ToggleInTotes.IsChecked = ViewModel.AppState.CombinedFilter.with_shipping_totes == "True";
+			ToggleNoCrystal.IsChecked = ViewModel.AppState.CombinedFilter.with_crystals == "0";
+			SearchTextBox.Text = ViewModel.AppState.CombinedFilter.name_order;
 		}
 
 		private void UpdatePaginationButtons()
@@ -148,10 +161,10 @@ namespace ArtPix_Dashboard.Views
 
 			ToggleLoadingAnimation(1);
 
+			UnloadEventListeners();
+
 			ViewModel.AppState.CombinedFilter = orderFilterGroup;
 			ViewModel.AppState.CombinedFilter.withPages = true;
-
-			UpdateControls();
 
 			await ViewModel.GetOrdersList(ViewModel.AppState.CombinedFilter);
 
@@ -159,6 +172,11 @@ namespace ArtPix_Dashboard.Views
 			if (ViewModel.Orders.Data.Count <= 0)
 			{
 				ToggleLoadingAnimation(2);
+
+				UpdateControls();
+
+				SetEventListeners();
+
 				return;
 			}
 			if (ViewModel.Orders.Data.Count > 0 && NoResultsText.Opacity == 1)
@@ -172,6 +190,10 @@ namespace ArtPix_Dashboard.Views
 				ScrollAnimationBehavior.AnimateScroll(scrollViewer, 0);
 				ScrollAnimationBehavior.intendedLocation = 0;
 			}
+			
+			UpdateControls();
+
+			SetEventListeners();
 
 			UpdatePaginationButtons();
 
@@ -181,7 +203,7 @@ namespace ArtPix_Dashboard.Views
 
 		#endregion
 
-		#region MACHINE POWER BUTTONS EVENT HANDLER - NOT DONE ❎ 
+		#region MACHINE POWER BUTTONS EVENT HANDLER
 
 		//TODO: ADD CONTENT DIALOG POP UP
 
@@ -204,7 +226,7 @@ namespace ArtPix_Dashboard.Views
 
 		#endregion
 
-		#region SCAN EVENT LISTENER - NOT DONE - ❎
+		#region SCAN EVENT LISTENER
 
 		//TODO: ADD TOTE SCAN ABILITY AND ASSURE PROPER FUNCTIONING
 
@@ -272,11 +294,11 @@ namespace ArtPix_Dashboard.Views
 
 		#endregion
 
-		#region FILTER GROUP EVENT HANDLERS - DONE - ✅
+		#region FILTER GROUP EVENT HANDLERS
 
 		private void MachineComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			ViewModel.AppState.CombinedFilter.machine = ((ComboBoxItem)StoreComboBox.SelectedItem).Tag.ToString();
+			ViewModel.AppState.CombinedFilter.machine = ((ComboBoxItem)MachineComboBox.SelectedItem).Tag.ToString();
 			SendCombinedRequest(ViewModel.AppState.CombinedFilter);
 		}
 
@@ -334,7 +356,7 @@ namespace ArtPix_Dashboard.Views
 
 		#endregion
 
-		#region SEARCH BOX EVENT HANDLERS - DONE - ✅
+		#region SEARCH BOX EVENT HANDLERS
 
 		private void SearchTextBoxOnQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) => SendCombinedRequest(new CombinedFilterModel("Search", "", SearchTextBox.Text));
 
@@ -344,7 +366,7 @@ namespace ArtPix_Dashboard.Views
 
 		#endregion
 
-		#region EXPANDER EVENT HANDLERS - DONE - ✅
+		#region EXPANDER EVENT HANDLERS
 
 		private async void Expander_OnExpanded(object sender, RoutedEventArgs e)
 		{
@@ -402,6 +424,14 @@ namespace ArtPix_Dashboard.Views
 				var productionIssue =
 					await ArtPixAPI.GetProductionIssueAsync(product.MachineAssignItemId.ToString());
 				product.MachineAssignErrorId = productionIssue.Data[0].Id;
+				if (product.MachineId == "34")
+				{
+					var data = Convert.FromBase64String(productionIssue.Data[0].ErrorText);
+					var issueText = Encoding.UTF8.GetString(data);
+					product.Status = issueText;
+					product.Employee = "Fashion Outlets Employee";
+					return;
+				}
 				product.Status = productionIssue.Data[0].ProductionIssueReason.Reason;
 				product.Employee = productionIssue.Data[0].User;
 			}
@@ -454,6 +484,7 @@ namespace ArtPix_Dashboard.Views
 				ScrollAnimationBehavior.intendedLocation = 0;
 			}
 			ViewModel.PaginationBackButtonVisibility = (int)btn.Tag > 1;
+			ViewModel.PaginationForwardButtonVisibility = ViewModel.Pages.Count > 1 && (int)btn.Tag < ViewModel.Pages.Count;
 			ToggleLoadingAnimation(0);
 		}
 
@@ -480,7 +511,7 @@ namespace ArtPix_Dashboard.Views
 				Utils.ScrollAnimationBehavior.AnimateScroll(scrollViewer,
 					0);
 			}
-			ViewModel.PaginationForwardButtonVisibility = ViewModel.Pages.Count > 1 ;
+			ViewModel.PaginationForwardButtonVisibility = ViewModel.Pages.Count > 1 && selectedPage < ViewModel.Pages.Count;
 			ViewModel.PaginationBackButtonVisibility = selectedPage - 1 > 1 ;
 			ToggleLoadingAnimation(0);
 		}
@@ -509,14 +540,13 @@ namespace ArtPix_Dashboard.Views
 					0);
 			}
 			ViewModel.PaginationBackButtonVisibility = selectedPage > 1 ;
-			ViewModel.PaginationForwardButtonVisibility = ViewModel.Pages.Count > 1;
+			ViewModel.PaginationForwardButtonVisibility = ViewModel.Pages.Count > 1 && selectedPage < ViewModel.Pages.Count;
 
 			ToggleLoadingAnimation(0);
 
 		}
 
 		#endregion
-
 
 		//TODO: MOVE THIS TO VIEW MODEL
 		public async void ShowLoginDialog()
@@ -554,6 +584,12 @@ namespace ArtPix_Dashboard.Views
 			{
 				MessageBox.Show(other.Message);
 			}
+		}
+
+		private void ProductsListView_OnMouseEnter(object sender, MouseEventArgs e)
+		{
+			var listView = (ListView) sender;
+			listView.Focus();
 		}
 	}
 }

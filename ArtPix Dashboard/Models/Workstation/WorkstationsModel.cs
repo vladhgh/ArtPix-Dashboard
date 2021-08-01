@@ -18,7 +18,7 @@ namespace ArtPix_Dashboard.Models.Workstation
 		    set => SetProperty(ref _data, value);
 	    }
 
-	    private Double _panelSpacing = 45;
+	    private Double _panelSpacing = 46.5;
 
         public Double PanelSpacing
         {

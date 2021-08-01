@@ -12,15 +12,10 @@
                   xmlns:viewmodels="clr-namespace:ArtPix_Dashboard.ViewModels"
                   d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
                   Icon="../Assets/logo.ico"
-                  Title="{Binding AppState.CurrentSession.CurrentVersion, StringFormat=ArtPix Dashboard {0:N}}"
-                  Top="{Binding AppState.WindowProperties.Top, Mode=TwoWay}"
-                  Left="{Binding AppState.WindowProperties.Left, Mode=TwoWay}"
-                  Height="{Binding AppState.WindowProperties.Height, Mode=TwoWay}"
-                  Width="{Binding AppState.WindowProperties.Width, Mode=TwoWay}"
-                  MinWidth="1600"
+                  Title="ArtPix Dashboard 2.0"
+                  MinWidth="1920"
+                  MaxWidth="1920"
 				  MinHeight="900"
-				  MaxHeight="1080"
-                  WindowState="{Binding AppState.WindowProperties.WindowState, Mode=TwoWay}"
                   Loaded="MainViewOnLoaded"
 				  Closing="Window_Closing"
                   IsTabStop="True"
@@ -29,8 +24,7 @@
                   ui:TitleBar.ExtendViewIntoTitleBar="True"
                   ui:TitleBar.IsBackEnabled="False"
                   ui:TitleBar.Style="{DynamicResource AppTitleBarStyle}"
-                  ui:TitleBar.ButtonStyle="{DynamicResource AppTitleBarButtonStyle}"
-                  >
+                  ui:TitleBar.ButtonStyle="{DynamicResource AppTitleBarButtonStyle}">
 	<Window.Resources>
 		<converters:PixelsToGridLengthConverter x:Key="PixelsToGridLength" />
 
@@ -519,7 +513,8 @@
 		<Grid
 				x:Name="AppTitleBar"
                 Background="{DynamicResource SystemControlPageBackgroundMediumAltMediumBrush}"
-				Height="{Binding ElementName=Window, Path=(ui:TitleBar.Height)}">
+				Height="{Binding ElementName=Window, Path=(ui:TitleBar.Height)}"
+				Width="{Binding ElementName=Window, Path=Width}">
 
 			<Grid.Style>
 				<Style TargetType="Grid">
@@ -552,11 +547,58 @@
 
 		</Grid>
 
-		<Image
-			Grid.Row="1"
-			Visibility="{Binding AppState.CurrentSession.MainViewProgressRingVisibility, Mode=TwoWay}"
-			gif:ImageBehavior.RepeatBehavior="0x"
-			gif:ImageBehavior.AnimatedSource="../Assets/giphy.gif" Width="170" Height="170"/>
+		<Border Grid.Row="1" Visibility="{Binding AppState.CurrentSession.LoginPanelVisibility}" Width="500" Height="280" Padding="0 " Margin="0 0 0 0" BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="1" CornerRadius="8">
+			<ui:SimpleStackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
+				<ui:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+					<TextBlock
+						x:Name="WelcomeText"
+						Text="Welcome! Ласкаво Просимо!"
+						FontWeight="Black"
+						Visibility="{Binding AppState.CurrentSession.LoginPanelVisibility}"
+						TextAlignment="Center"
+						HorizontalAlignment="Center"
+						Style="{DynamicResource TitleTextBlockStyle}"
+						Margin="0 -20 0 16"/>
+				</ui:SimpleStackPanel>
+				<Separator BorderThickness="5" Visibility="{Binding AppState.CurrentSession.LoginPanelVisibility}" BorderBrush="#333" Margin="0 0 0 0"/>
+				<ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="2">
+					<TextBlock
+						x:Name="WelcomeSecondaryText"
+						Text="Please scan your employee badge to continue!"
+						TextTrimming="CharacterEllipsis"
+						Width="500"
+						Visibility="{Binding AppState.CurrentSession.LoginPanelVisibility}"
+						TextWrapping="Wrap"
+						TextAlignment="Center"
+						FontSize="20"
+						HorizontalAlignment="Center"
+						Style="{DynamicResource TitleTextBlockStyle}"
+						Margin="0,8,0,4"/>
+				</ui:SimpleStackPanel>
+				<ui:SimpleStackPanel Orientation="Vertical">
+					<Image
+						Visibility="{Binding AppState.CurrentSession.MainViewProgressRingVisibility, Mode=TwoWay}"
+						gif:ImageBehavior.RepeatBehavior="0x"
+						Margin="0,20,0,20"
+						gif:ImageBehavior.AnimatedSource="../Assets/giphy.gif" Width="75" Height="75"/>
+					<TextBlock
+						x:Name="AwaitingScanText"
+						Text="Awaiting Scan..."
+						TextTrimming="CharacterEllipsis"
+						Width="auto"
+						Visibility="{Binding AppState.CurrentSession.LoginPanelVisibility}"
+						TextWrapping="Wrap"
+						TextAlignment="Center"
+						FontSize="14"
+						HorizontalAlignment="Center"
+						Style="{DynamicResource TitleTextBlockStyle}"
+						/>
+				</ui:SimpleStackPanel>
+			</ui:SimpleStackPanel>
+		</Border>
+
+
+		
 		<ui:NavigationView
 											x:Name="MainNavigationView"
 											Grid.Row="1"
@@ -617,22 +659,24 @@
 			<ui:NavigationView.Header>
 				<ui:SimpleStackPanel Orientation="Vertical">
 					<Separator BorderThickness="5" BorderBrush="#333" Margin="-10 0 0 0"/>
-					<ui:SimpleStackPanel Margin="0 10 0 0" Orientation="Vertical"  MinWidth="{Binding AppState.WindowProperties.Width, Mode=OneWay}" >
+					<ui:SimpleStackPanel Margin="0 10 0 0" Orientation="Vertical" >
 
-						<Grid Height="60"  Name="EngravingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Margin="0 0 30 0" Visibility="{Binding AppState.CurrentSession.EngravingStatusGroupVisibility}" >
+						<Grid Height="60"  Name="EngravingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Margin="0 0 10 0" Visibility="{Binding AppState.CurrentSession.EngravingStatusGroupVisibility}" >
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*"/>
+								<ColumnDefinition  Width="*"/>
 								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="*"/>
+								<ColumnDefinition  Width="*"/>
+								<ColumnDefinition  Width="*"/>
 							</Grid.ColumnDefinitions>
 							<ToggleButton
 								x:Name="AwaitingModelButton"
 								Grid.Column="0"
+								Grid.ColumnSpan="3"
 								Height="auto"
 								Cursor="Hand"
 								Tag="Awaiting Model"
+								HorizontalAlignment="Left"
 								Click="AwaitingModelButtonOnClick"
 								Style="{StaticResource HeaderButtonStyle}">
 								<TextBlock
@@ -650,7 +694,6 @@
 								Cursor="Hand"
 								Tag="Engraved Today"
 	                            HorizontalAlignment="Center"
-	                            Margin="35 0 0 0"
 								Click="EngravedTodayButtonOnClick"
 	                            Style="{StaticResource HeaderButtonStyle}">
 								<TextBlock
@@ -668,7 +711,6 @@
 	                            Height="auto"
 								Tag="Ready To Engrave"
 	                            HorizontalAlignment="Center"
-								Margin="-35 0 0 0"
 	                            Click="ReadyToEngraveButtonOnClick"
 	                            Style="{StaticResource HeaderButtonStyle}">
 								<TextBlock
@@ -684,12 +726,12 @@
 	                            Grid.Column="2"
 	                            Cursor="Hand"
 	                            Height="auto"
-								Tag="Engraving"
+								Tag="Engraving In Progress"
 	                            Click="EngravingButtonOnClick"
 	                            HorizontalAlignment="Center"
 	                            Style="{StaticResource HeaderButtonStyle}">
 								<TextBlock
-	                                Text="{Binding EngravingStats.ProcessingCount, StringFormat=Engraving: {0:F0}, Mode=OneWay}"
+	                                Text="{Binding EngravingStats.ProcessingCount, StringFormat=Engraving In Progress: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
 	                                Style="{DynamicResource SubtitleTextBlockStyle}"/>
 								<ToggleButton.Effect>
@@ -714,7 +756,7 @@
 								</ToggleButton.Effect>
 							</ToggleButton>
 						</Grid>
-						<Grid Height="60" Name="ShippingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding AppState.CurrentSession.ShippingStatusGroupVisibility}" Margin="0 0 30 0" >
+						<Grid Height="60" Name="ShippingStatusGroup" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding AppState.CurrentSession.ShippingStatusGroupVisibility}" Margin="0 0 10 0" >
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*"/>
 								<ColumnDefinition Width="*"/>
@@ -841,7 +883,7 @@
 											<ItemsControl ItemsSource="{Binding Machines}" Background="Transparent" Padding="10 5" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding MachinesGroupVisibility}">
 												<ItemsControl.ItemTemplate>
 													<DataTemplate>
-														<Button Background="#333" Style="{StaticResource InactiveButtonStyle}" Height="auto" Cursor="Hand" Tag="{Binding IdMachines}" Click="NavigateToMachine">
+														<ToggleButton Background="#333" IsChecked="{Binding IsSelected}" Style="{StaticResource HeaderButtonStyle}" Padding="8 2 8 4" Width="auto" Height="auto" Cursor="Hand" Tag="{Binding IdMachines}" Click="NavigateToMachine">
 															<ui:SimpleStackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Vertical"  Spacing="2">
 																<TextBlock
 	                                                                HorizontalAlignment="Center"
@@ -877,7 +919,7 @@
 	                                                                FontSize="10"
 	                                                                Style="{DynamicResource SubtitleTextBlockStyle}" />
 															</ui:SimpleStackPanel>
-														</Button>
+														</ToggleButton>
 													</DataTemplate>
 												</ItemsControl.ItemTemplate>
 												<ItemsControl.ItemsPanel>
@@ -903,23 +945,18 @@
 
 			<ui:NavigationView.PaneFooter>
 				<StackPanel Orientation="Horizontal" Margin="0 0 10 0">
-					<Button Cursor="Hand" Tag="PowerOn" ToolTip="Power All PC On" Click="PowerAllMachinesButtonClick" Style="{DynamicResource ManualCompleteButtonStyle}"  VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 10 4">
-						<TextBlock
-							Text="Power All PC On"
-							FontSize="12"
-							Style="{DynamicResource BaseTextBlockStyle}"/>
-					</Button>
-					<Button Cursor="Hand" Tag="PowerOff" ToolTip="Power All PC Off" Click="PowerAllMachinesButtonClick" Style="{DynamicResource UnassignButtonStyle}"  VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 10 4">
-						<TextBlock
-							Text="Power All PC Off"
-							FontSize="12"
-							Style="{DynamicResource BaseTextBlockStyle}"/>
-					</Button>
+					
 					<Button Background="#1e1e1e" Cursor="Hand" ToolTip="Currently Active User" Style="{DynamicResource InactiveButtonStyle}" Click="Button_Click"  VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 10 4">
 						<TextBlock
 							Text="{Binding AppState.CurrentSession.EmployeeName}"
 							FontSize="12"
 							Style="{DynamicResource BaseTextBlockStyle}"/>
+						<Button.Effect>
+							<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+						</Button.Effect>
+					</Button>
+					<Button Background="#1e1e1e" Cursor="Hand" ToolTip="Machines Power" Style="{DynamicResource InactiveButtonStyle}" Click="MachinesPowerButtonOnClick" VerticalAlignment="Bottom" Padding="10 4 10 4" Height="28" Opacity="0.9" Margin="0 0 10 4">
+						<ui:FontIcon FontSize="16" Glyph="&#xE7E8;" />
 						<Button.Effect>
 							<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
 						</Button.Effect>
