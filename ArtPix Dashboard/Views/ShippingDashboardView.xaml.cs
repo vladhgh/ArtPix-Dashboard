@@ -604,5 +604,16 @@ namespace ArtPix_Dashboard.Views
 		}
 
 
+		private async void CreateDailyReportButtonOnClick(object sender, RoutedEventArgs e)
+		{
+			var logs = await ArtPixAPI.GetEngravedTodayItemsEntityLogsAsync(250);
+			var dateGrouped = logs.Data.GroupBy(x => x.Data.User)
+				.Select(x => new { Name = x.Key, Count = x.Distinct().Count() });
+
+			foreach (var result in dateGrouped)
+			{
+				Console.WriteLine("Name: {0}, Engraved: {1}", result.Name, result.Count);
+			}
+		}
 	}
 }

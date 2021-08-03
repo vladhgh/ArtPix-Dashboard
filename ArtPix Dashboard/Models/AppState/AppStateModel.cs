@@ -24,7 +24,7 @@ namespace ArtPix_Dashboard.Models.AppState
 			set => SetProperty(ref _currentSession, value);
 		}
 
-		private string _employeeName;
+		private string _employeeName = "Dev";
 
 		public string EmployeeName
 		{
@@ -32,7 +32,7 @@ namespace ArtPix_Dashboard.Models.AppState
 			set => SetProperty(ref _employeeName, value);
 		}
 
-		private int _sessionTimeOut;
+		private int _sessionTimeOut = 24 * 60 * 60;
 
 		public int SessionTimeOut
 		{

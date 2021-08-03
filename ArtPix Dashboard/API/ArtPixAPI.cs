@@ -23,6 +23,7 @@ using ArtPix_Dashboard.Properties;
 using Microsoft.Toolkit.Uwp.Notifications;
 using DataFormat = RestSharp.DataFormat;
 using ArtPix_Dashboard.Models.DhlManifest;
+using ArtPix_Dashboard.ViewModels;
 
 namespace ArtPix_Dashboard.API
 {
@@ -281,7 +282,7 @@ namespace ArtPix_Dashboard.API
 
 		#endregion
 
-		#region GET: ORDERS - DONE - ✅
+		#region GET: ORDERS
 
 		public static async Task<OrderModel> GetOrdersAsync(CombinedFilterModel combinedFilter)
 		{
@@ -331,7 +332,7 @@ namespace ArtPix_Dashboard.API
 
 		#endregion
 
-		#region GET: MACHINES - DONE - ✅
+		#region GET: MACHINES
 
 		public static async Task<List<Machine>> GetMachines(int productId)
 		{
@@ -369,7 +370,7 @@ namespace ArtPix_Dashboard.API
 
 		#endregion
 
-		#region GET: ENGRAVED TODAY ITEMS - DONE  - ✅
+		#region GET: ENGRAVED TODAY ITEMS
 
 		public static async Task<MachineAssignItemModel> GetEngravedTodayItemsAsync(string machineId, string page = "1", string perPage = "15")
 		{
@@ -501,7 +502,7 @@ namespace ArtPix_Dashboard.API
 
 		#endregion
 
-		#region POST: RE-ENGRAVE PRODUCT - DONE - ✅
+		#region POST: RE-ENGRAVE PRODUCT
 
 		public static async Task ProductReEngrave(ChangeMachineAssignItemStatusRequest requestBody)
 		{
@@ -514,7 +515,7 @@ namespace ArtPix_Dashboard.API
 
 		#endregion
 
-		#region POST: FIND BEST SERVICE - DONE - ✅
+		#region POST: FIND BEST SERVICE
 
 		public static async Task<FindBestServiceModel> FindBestServiceAsync(FindBestServiceRequest requestBody)
 		{
@@ -650,6 +651,29 @@ namespace ArtPix_Dashboard.API
 				}
 
 			}*/
+		}
+
+		#endregion
+
+		#region GET: ENTITY LOGS
+
+		public static async Task<EntityLogsModel> GetEngravedTodayItemsEntityLogsAsync(int jobsCount)
+		{
+			var today = DateTime.Now.Date.ToString("yyyy/MM/dd") + " 12:00:00";
+			var request = new RestRequest($"/entity-logs?page=1entity_type=machine_assign_item&type=engraving_end&per_page={jobsCount + 50}", DataFormat.Json);
+			request.AddHeader("Accept", "application/json");
+			request.AddHeader("Content-Type", "application/json");
+			var logs = await Client.GetAsync<EntityLogsModel>(request);
+			foreach (var log in logs.Data.ToList())
+			{
+				if (DateTime.Parse(log.EventDate, CultureInfo.CurrentUICulture) < DateTime.Parse(today, CultureInfo.CurrentUICulture))
+				{
+					logs.Data.Remove(log);
+				}
+			}
+
+			return logs;
+
 		}
 
 		#endregion

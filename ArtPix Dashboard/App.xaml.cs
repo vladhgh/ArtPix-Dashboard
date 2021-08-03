@@ -31,31 +31,31 @@ namespace ArtPix_Dashboard
 
                 Application.Current.Dispatcher.Invoke(delegate
                 {
-                    // TODO: Navigate to order with issue
-                    //MessageBox.Show("Toast activated. Args: " + toastArgs.Argument);
-                    var action = toastArgs.Argument.Split(';')[0].Split('=')[1];
-                    var param = toastArgs.Argument.Split(';')[1].Split('=')[1];
-                    if (action == "openIssue")
-					{
-                        MainView.MainViewModel.AppState.CombinedFilter = new CombinedFilterModel("Search", "", "", param);
-                        MainView.SetActiveButton(null, "None");
-                        MainView.ContentFrame.Navigate(MainView.ShippingView, MainView.MainViewModel.AppState);
-                    }
+	                try
+	                {
+		                // TODO: Navigate to order with issue
+	                    //MessageBox.Show("Toast activated. Args: " + toastArgs.Argument);
+	                    var action = toastArgs.Argument.Split(';')[0].Split('=')[1];
+	                    var param = toastArgs.Argument.Split(';')[1].Split('=')[1];
+	                    if (action == "openIssue")
+						{
+	                        MainView.MainViewModel.AppState.CombinedFilter = new CombinedFilterModel("Search", "", "", param);
+	                        MainView.SetActiveButton(null, "None");
+	                        MainView.ContentFrame.Navigate(MainView.ShippingView, MainView.MainViewModel.AppState);
+	                    }
+	                }
+	                catch (Exception ex)
+	                {
+		                MessageBox.Show("TOAST ON ACTIVATED EXCEPTION " + ex.Message);
+	                }
                 });
             };
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            try
-			{
-	            MainView = new MainView();
-                MainView.Show();
-	            Debug.WriteLine("STARTUP");
-			} catch (Exception ex)
-			{
-                MessageBox.Show("EXCEPTION " + ex.Message);
-			}
+	        MainView = new MainView();
+	        MainView.Show();
         }
     }
 }

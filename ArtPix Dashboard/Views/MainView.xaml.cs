@@ -138,6 +138,10 @@ namespace ArtPix_Dashboard.Views
 				x.CombinedFilter.pageNumber = 1;
 				MainViewModel.AppState = x;
 			}
+			//REMOVE
+			MainViewModel.AppState.EmployeeName = "Vlad";
+			MainViewModel.AppState.SessionTimeOut = Int32.MaxValue;
+
 			Window.Top = Settings.Default.Top;
 			Window.Left = Settings.Default.Left;
 			Window.Width = Settings.Default.Width;

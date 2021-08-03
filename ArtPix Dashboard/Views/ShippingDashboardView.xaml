@@ -197,7 +197,16 @@
 					CommandParameter="{Binding }"
 					Opacity="0.9"
 					Style="{StaticResource ManualCompleteButtonStyle}"/>
-
+				<Button
+					Cursor="Hand"
+					Content="Create Daily Report"
+					FontSize="10"
+					Margin="0 4 8 0"
+					Padding="8 2 8 4"
+					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
+					Click="CreateDailyReportButtonOnClick"
+					Opacity="0.9"
+					Style="{StaticResource RedoButtonStyle}"/>
 				<Button
 					Cursor="Hand"
 					Content="Assign Jobs"
