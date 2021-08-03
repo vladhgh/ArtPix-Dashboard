@@ -322,7 +322,7 @@ namespace ArtPix_Dashboard.API
 						break;
 				}
 			}
-			//Debug.WriteLine($"API GET: {request}");
+			Debug.WriteLine($"API GET: {request}");
 			var req = new RestRequest(request);
 			req.AddHeader("Accept", "application/json");
 			req.AddHeader("Authorization", "Bearer " + BearerToken);
@@ -344,7 +344,7 @@ namespace ArtPix_Dashboard.API
 
 		#endregion
 
-		#region GET: NEXT ORDERS - DONE - ✅
+		#region GET: NEXT ORDERS
 
 		public static async Task GetNextOrderAsync(string machineId, string count)
 		{

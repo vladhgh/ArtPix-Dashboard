@@ -389,7 +389,7 @@ namespace ArtPix_Dashboard.ViewModels
 			}
 
 			View.ShippingItemsListView.ItemsSource = Orders.Data;
-			if (combinedFilter.withPages)
+			if (combinedFilter.withPages && Orders.Meta != null)
 			{
 				Pages = await GetPages(combinedFilter);
 			}

@@ -1,0 +1,40 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<ResourceDictionary.MergedDictionaries>
+		
+		
+		<ResourceDictionary Source="Button/AddCrystalIssueButtonStyle.xaml" />
+		<ResourceDictionary Source="Button/CancelButtonStyle.xaml" />
+		<ResourceDictionary Source="Button/CrystalRedoButtonStyle.xaml" />
+		<ResourceDictionary Source="Button/CustomButtonStyle.xaml" />
+		<ResourceDictionary Source="Button/InactiveButtonStyle.xaml" />
+		<ResourceDictionary Source="Button/LateShipmentButtonStyle.xaml" />
+		<ResourceDictionary Source="Button/MachineButtonStyle.xaml" />
+		<ResourceDictionary Source="Button/ManualCompleteButtonStyle.xaml" />
+		<ResourceDictionary Source="Button/RedoButtonStyle.xaml" />
+		<ResourceDictionary Source="Button/ReworkButtonStyle.xaml" />
+		<ResourceDictionary Source="Button/SearchButtonStyle.xaml" />
+		<ResourceDictionary Source="Button/SlotButtonStyle.xaml" />
+		<ResourceDictionary Source="Button/ToteButtonStyle.xaml" />
+		<ResourceDictionary Source="Button/UnassignButtonStyle.xaml" />
+		<ResourceDictionary Source="Button/VitroMarkButtonStyle.xaml" />
+		<ResourceDictionary Source="Button/YellowButtonStyle.xaml" />
+		
+		<ResourceDictionary Source="ToggleButton/WorkstationToggleButtonStyle.xaml" />
+		<ResourceDictionary Source="ToggleButton/CustomToggleButtonStyle.xaml"/>
+		<ResourceDictionary Source="ToggleButton/HeaderToggleButtonStyle.xaml"/>
+
+		<ResourceDictionary Source="ComboBox/AssignMachineComboBoxStyle.xaml" />
+		<ResourceDictionary Source="ComboBox/CustomComboBoxStyle.xaml" />
+		
+		<ResourceDictionary Source="NavigationView/NavigationViewItemStyle.xaml" />
+
+		<ResourceDictionary Source="ListView/CustomListViewStyle.xaml" />
+
+		<ResourceDictionary Source="Expander/CustomExpanderStyle.xaml" />
+
+		<ResourceDictionary Source="ContentDialog/ContentDialogStyle.xaml" />
+		<ResourceDictionary Source="ContentDialog/CustomContentDialogStyle.xaml" />
+		<ResourceDictionary Source="ContentDialog/SmallContentDialogStyle.xaml" />
+
+	</ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

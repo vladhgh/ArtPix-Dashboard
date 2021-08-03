@@ -420,8 +420,9 @@ namespace ArtPix_Dashboard.Views
 					button.IsChecked = true;
 					return;
 				}
+				if (button == null) return;
 			}
-
+			
 			if (button.Tag != null && Int32.TryParse(button.Tag.ToString(), out int res))
 			{
 				foreach (var workstation in MainViewModel.WorkstationStats.Data)

@@ -209,7 +209,7 @@
 								Tag="Awaiting Model"
 								HorizontalAlignment="Left"
 								Click="AwaitingModelButtonOnClick"
-								Style="{StaticResource HeaderButtonStyle}">
+								Style="{StaticResource HeaderToggleButtonStyle}">
 								<TextBlock
 									Text="{Binding EngravingStats.AwaitingModelCount, StringFormat=Awaiting Model: {0:F0}, Mode=OneWay}"
 									FontWeight="Black"
@@ -227,7 +227,7 @@
 								Margin="40 0 0 0"
 	                            HorizontalAlignment="Center"
 								Click="EngravedTodayButtonOnClick"
-	                            Style="{StaticResource HeaderButtonStyle}">
+	                            Style="{StaticResource HeaderToggleButtonStyle}">
 								<TextBlock
 	                                Text="{Binding EngravingStats.EngravedTodayCount, StringFormat=Engraved Today: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
@@ -245,7 +245,7 @@
 								Margin="-40 0 0 0"
 	                            HorizontalAlignment="Center"
 	                            Click="ReadyToEngraveButtonOnClick"
-	                            Style="{StaticResource HeaderButtonStyle}">
+	                            Style="{StaticResource HeaderToggleButtonStyle}">
 								<TextBlock
 	                                Text="{Binding EngravingStats.ReadyToEngraveCount, StringFormat=Ready To Engrave: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
@@ -262,7 +262,7 @@
 								Tag="Engraving In Progress"
 	                            Click="EngravingButtonOnClick"
 	                            HorizontalAlignment="Center"
-	                            Style="{StaticResource HeaderButtonStyle}">
+	                            Style="{StaticResource HeaderToggleButtonStyle}">
 								<TextBlock
 	                                Text="{Binding EngravingStats.ProcessingCount, StringFormat=Engraving In Progress: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
@@ -279,7 +279,7 @@
 	                            x:Name="ProductionIssuesButton"
 	                            HorizontalAlignment="Right"
 	                            Click="ProductionIssuesButtonOnClick"
-	                            Style="{StaticResource HeaderButtonStyle}">
+	                            Style="{StaticResource HeaderToggleButtonStyle}">
 								<TextBlock
 	                                Text="{Binding EngravingStats.IssueCount, StringFormat=Production Issues: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
@@ -303,7 +303,7 @@
 	                            Height="auto"
 								Tag="Awaiting Shipment"
 								Click="AwaitingShipmentButtonOnClick"
-	                            Style="{StaticResource HeaderButtonStyle}">
+	                            Style="{StaticResource HeaderToggleButtonStyle}">
 								<TextBlock
 	                                Text="{Binding ShippingStats.AwaitingShipment, StringFormat=Awaiting Shipment: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
@@ -321,7 +321,7 @@
 								Tag="Ship By Today"
 	                            Click="ShipByTodayButtonOnClick"
 								Margin="-90 0 0 0"
-	                            Style="{StaticResource HeaderButtonStyle}">
+	                            Style="{StaticResource HeaderToggleButtonStyle}">
 								<TextBlock
 	                                Text="{Binding ShippingStats.ShipByToday, StringFormat=Ship By Today: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
@@ -340,7 +340,7 @@
 								Height="auto"
 	                            Margin="90 0 0 0"
 	                            Click="ReadyToShipButtonOnClick"
-	                            Style="{StaticResource HeaderButtonStyle}">
+	                            Style="{StaticResource HeaderToggleButtonStyle}">
 								<TextBlock
 	                                Text="{Binding ShippingStats.ReadyToShip, StringFormat=Ready To Ship: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
@@ -358,7 +358,7 @@
 								Tag="Shipped Today"
 								Height="auto"
 	                            ToolTip="{Binding ShippingStats.OrdersShipped}"
-	                            Style="{StaticResource HeaderButtonStyle}">
+	                            Style="{StaticResource HeaderToggleButtonStyle}">
 								<TextBlock
 	                                Text="{Binding ShippingStats.ShippedToday, StringFormat=Shipped Today: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
@@ -416,7 +416,7 @@
 											<ItemsControl ItemsSource="{Binding Machines}" Background="Transparent" Padding="10 5" xf:Animations.Primary="{xf:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}" Visibility="{Binding MachinesGroupVisibility}">
 												<ItemsControl.ItemTemplate>
 													<DataTemplate>
-														<ToggleButton Background="#333" IsChecked="{Binding IsSelected}" Style="{StaticResource HeaderButtonStyle}" Padding="8 2 8 4" Width="auto" Height="auto" Cursor="Hand" Tag="{Binding IdMachines}" Click="NavigateToMachine">
+														<ToggleButton Background="#333" IsChecked="{Binding IsSelected}" Style="{StaticResource HeaderToggleButtonStyle}" Padding="8 2 8 4" Width="auto" Height="auto" Cursor="Hand" Tag="{Binding IdMachines}" Click="NavigateToMachine">
 															<ui:SimpleStackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Vertical"  Spacing="2">
 																<TextBlock
 	                                                                HorizontalAlignment="Center"
