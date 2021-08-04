@@ -5,7 +5,7 @@
 	<Style x:Key="CustomListViewStyle" TargetType="{x:Type ui:ListView}">
 		<Setter Property="Padding" Value="0,0,0,10"/>
 		<Setter Property="IsTabStop" Value="False"/>
-		<Setter Property="KeyboardNavigation.TabNavigation" Value="Once"/>
+		<Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
 		<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
 		<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
 		<Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False"/>

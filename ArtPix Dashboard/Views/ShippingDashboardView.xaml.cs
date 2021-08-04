@@ -104,21 +104,32 @@ namespace ArtPix_Dashboard.Views
 
 		private void ToggleLoadingAnimation(int kind)
 		{
-			if (kind == 0)
+			if (kind == 0) // LOADING END
 			{
+				if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
+				{
+					Animation.FadeIn(IssuesListView);
+				}
 				Animation.FadeOut(ProgressRingImage);
 				Animation.FadeIn(ShippingItemsListView);
 				return;
 			}
 
-			if (kind == 1)
+			if (kind == 1) // LOADING START
 			{
+				if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
+				{
+					Animation.FadeOut(IssuesListView);
+				}
+				if (NoResultsText.Opacity == 1)
+				{
+					Animation.FadeOut(NoResultsText);
+				}
 				Animation.FadeOut(ShippingItemsListView);
 				Animation.FadeIn(ProgressRingImage);
 			}
-			if (kind == 2)
+			if (kind == 2) // LOADING END NO RESULTS
 			{
-				//Animation.FadeOut(ProgressRingImage);
 				Animation.FadeIn(NoResultsText);
 			}
 		}
@@ -159,27 +170,30 @@ namespace ArtPix_Dashboard.Views
 
 			await ViewModel.GetOrdersList(ViewModel.AppState.CombinedFilter);
 
-			if (ViewModel.Orders.Data == null) return;
-			if (ViewModel.Orders.Data.Count <= 0)
+			if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup != "Production Issues")
 			{
-				ToggleLoadingAnimation(2);
+				if (ViewModel.Orders.Data == null) return;
+				if (ViewModel.Orders.Data.Count <= 0)
+				{
+					ToggleLoadingAnimation(2);
 
-				UpdateControls();
+					UpdateControls();
 
-				SetEventListeners();
+					SetEventListeners();
 
-				return;
-			}
-			if (ViewModel.Orders.Data.Count > 0 && NoResultsText.Opacity == 1)
-			{
-				Animation.FadeOut(NoResultsText);
-			}
-			if (ViewModel.Orders.Data.Count > 0)
-			{
-				var scrollViewer = Utils.Utils.GetScrollViewer(ShippingItemsListView) as ScrollViewer;
-				scrollViewer.ScrollToVerticalOffset(0);
-				ScrollAnimationBehavior.AnimateScroll(scrollViewer, 0);
-				ScrollAnimationBehavior.intendedLocation = 0;
+					return;
+				}
+				if (ViewModel.Orders.Data.Count > 0 && NoResultsText.Opacity == 1)
+				{
+					Animation.FadeOut(NoResultsText);
+				}
+				if (ViewModel.Orders.Data.Count > 0)
+				{
+					var scrollViewer = Utils.Utils.GetScrollViewer(ShippingItemsListView) as ScrollViewer;
+					scrollViewer.ScrollToVerticalOffset(0);
+					ScrollAnimationBehavior.AnimateScroll(scrollViewer, 0);
+					ScrollAnimationBehavior.intendedLocation = 0;
+				}
 			}
 			
 			UpdateControls();

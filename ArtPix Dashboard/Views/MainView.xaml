@@ -161,9 +161,8 @@
 						Margin="0 0 4 0"
 						Content="&#xE72B;"
 						Click="BackButtonOnClick"
-						IsEnabled="{Binding IsBackButtonActive}"
-						Template="{DynamicResource TitleBarButtonControlTemplate1}"
-						ContentTemplate="{x:Null}" />
+						IsEnabled="{Binding AppState.CurrentSession.IsBackButtonActive}"
+						Template="{DynamicResource PaginationTitleBarButtonControlTemplate}"/>
 				</ui:NavigationViewItem>
 				<ui:NavigationViewItem Style="{DynamicResource NavigationViewItemStyle}" Margin="0 10 0 0">
 					<Button Background="#1e1e1e" Cursor="Hand" ToolTip="Production Dashboard" Style="{DynamicResource InactiveButtonStyle}" Padding="10 2 10 4" Height="auto" Opacity="0.9" Margin="-20 0 10 0">
@@ -255,7 +254,7 @@
 								</ToggleButton.Effect>
 							</ToggleButton>
 							<ToggleButton
-								x:Name="EngravingButton"
+								x:Name="EngravingInProgressButton"
 	                            Grid.Column="2"
 	                            Cursor="Hand"
 	                            Height="auto"

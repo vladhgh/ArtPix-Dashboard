@@ -337,9 +337,9 @@
 													<ColumnDefinition Width="0.5*"/>
 													<ColumnDefinition/>
 												</Grid.ColumnDefinitions>
-												<Button x:Name="PrimaryButton" Cursor="Hand" Content="{TemplateBinding PrimaryButtonText}" Grid.Column="0" HorizontalAlignment="Stretch" IsEnabled="{TemplateBinding IsPrimaryButtonEnabled}" Margin="0,0,8,0" Style="{StaticResource SearchButtonStyle}" VerticalAlignment="Stretch"/>
-												<Button x:Name="SecondaryButton" Cursor="Hand" Grid.ColumnSpan="2" Content="{TemplateBinding SecondaryButtonText}" Grid.Column="1" HorizontalAlignment="Stretch" IsEnabled="{TemplateBinding IsSecondaryButtonEnabled}" Margin="0,0, 8, 0" Style="{StaticResource SearchButtonStyle}" VerticalAlignment="Stretch"/>
-												<Button x:Name="CloseButton" Cursor="Hand" Content="{TemplateBinding CloseButtonText}" Grid.Column="3" HorizontalAlignment="Stretch" Margin="0,0,0,0" Style="{StaticResource CustomButtonStyle}" VerticalAlignment="Stretch"/>
+												<Button x:Name="PrimaryButton" Cursor="Hand" Content="{TemplateBinding PrimaryButtonText}" Grid.Column="0" HorizontalAlignment="Stretch" IsEnabled="{TemplateBinding IsPrimaryButtonEnabled}" Margin="0,0,8,0" Style="{DynamicResource SearchButtonStyle}" VerticalAlignment="Stretch"/>
+												<Button x:Name="SecondaryButton" Cursor="Hand" Grid.ColumnSpan="2" Content="{TemplateBinding SecondaryButtonText}" Grid.Column="1" HorizontalAlignment="Stretch" IsEnabled="{TemplateBinding IsSecondaryButtonEnabled}" Margin="0,0, 8, 0" Style="{DynamicResource SearchButtonStyle}" VerticalAlignment="Stretch"/>
+												<Button x:Name="CloseButton" Cursor="Hand" Content="{TemplateBinding CloseButtonText}" Grid.Column="3" HorizontalAlignment="Stretch" Margin="0,0,0,0" Style="{DynamicResource CustomButtonStyle}" VerticalAlignment="Stretch"/>
 											</Grid>
 										</Grid>
 									</Border>

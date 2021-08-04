@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using ArtPix_Dashboard.Utils.Helpers;
 using Newtonsoft.Json;
 
@@ -13,20 +16,18 @@ namespace ArtPix_Dashboard.Models.ProductionIssue
 		[JsonProperty("url_original_img")]
 		public string UrlOriginalImg { get; set; }
 
-		private int _urlRenderImgSize;
-
-		public int UrlRenderImgSize
+		public BitmapImage ProductImage
 		{
-			get => IsImageExpanded ? _urlRenderImgSize : 175;
-			set => SetProperty(ref _urlRenderImgSize, value);
-		}
-
-		private bool _isImageExpanded;
-
-		public bool IsImageExpanded
-		{
-			get => _isImageExpanded;
-			set => SetProperty(ref _isImageExpanded, value);
+			get
+			{
+				var bmp = new BitmapImage();
+				bmp.BeginInit();
+				bmp.CacheOption = BitmapCacheOption.None;
+				bmp.DecodePixelWidth = 175;
+				bmp.UriSource = new Uri(UrlRenderImg, UriKind.RelativeOrAbsolute);
+				bmp.EndInit();
+				return bmp;
+			}
 		}
 
 		[JsonProperty("url_render_img")]

@@ -8,7 +8,9 @@
 				<ResourceDictionary Source="Styles/Animations.xaml" />
 				<ResourceDictionary Source="Styles/CustomStyles.xaml" />
 				<ResourceDictionary Source="DataTemplates/ProductsListViewDataTemplate.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
+				<ResourceDictionary Source="DataTemplates/ProductionIssuesListViewDataTemplate.xaml" />
+				<ResourceDictionary Source="Styles/PaginationTitleBarButtonControlTemplate.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
                 <ui:ThemeResources />
                 <ui:XamlControlsResources />
 			</ResourceDictionary.MergedDictionaries>

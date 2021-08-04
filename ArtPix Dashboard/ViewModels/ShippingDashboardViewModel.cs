@@ -28,6 +28,7 @@ using ArtPix_Dashboard.Views;
 using Color = System.Drawing.Color;
 using Image = System.Drawing.Image;
 using System.IO;
+using ArtPix_Dashboard.Models.IssueReasons;
 using ArtPix_Dashboard.Models.ProductionIssue;
 
 namespace ArtPix_Dashboard.ViewModels
@@ -56,6 +57,12 @@ namespace ArtPix_Dashboard.ViewModels
 			get => _productionIssues;
 			set => SetProperty(ref _productionIssues, value);
 		}
+		private ObservableCollection<Models.IssueReasons.Datum> _productionIssuesReasons = new();
+		public ObservableCollection<Models.IssueReasons.Datum> ProductionIssuesReasons
+		{
+			get => _productionIssuesReasons;
+			set => SetProperty(ref _productionIssuesReasons, value);
+		}
 		private ShippingDashboardView _view;
 		public ShippingDashboardView View
 		{
@@ -63,18 +70,6 @@ namespace ArtPix_Dashboard.ViewModels
 			set => SetProperty(ref _view, value);
 		}
 		
-		private bool _isLoading;
-		public bool IsLoading
-		{
-			get => _isLoading;
-			set => SetProperty(ref _isLoading, value);
-		}
-		private bool _isOrderLoading;
-		public bool IsOrderLoading
-		{
-			get => _isOrderLoading;
-			set => SetProperty(ref _isOrderLoading, value);
-		}
 		private Bitmap _qrCodeBitmap;
 		public Bitmap QrCodeBitmap
 		{
@@ -88,25 +83,6 @@ namespace ArtPix_Dashboard.ViewModels
 			set => SetProperty(ref _qrCode, value);
 		}
 		
-		private Visibility _isLoaded;
-		public Visibility IsLoaded
-		{
-			get => _isLoaded;
-			set => SetProperty(ref _isLoaded, value);
-		}
-		private Visibility _noResultsTextVisibility = Visibility.Collapsed;
-		public Visibility NoResultsTextVisibility
-		{
-			get => _noResultsTextVisibility;
-			set => SetProperty(ref _noResultsTextVisibility, value);
-		}
-		
-		private Visibility _progressRingVisibility = Visibility.Collapsed;
-		public Visibility ProgressRingVisibility
-		{
-			get => _progressRingVisibility;
-			set => SetProperty(ref _progressRingVisibility, value);
-		}
 		private bool _paginationBackButtonVisibility;
 		public bool PaginationBackButtonVisibility
 		{
@@ -119,7 +95,6 @@ namespace ArtPix_Dashboard.ViewModels
 			get => _paginationForwardButtonVisibility;
 			set => SetProperty(ref _paginationForwardButtonVisibility, value);
 		}
-
 
 		private List<PageModel> _pages = new ();
 		public List<PageModel> Pages
@@ -380,12 +355,20 @@ namespace ArtPix_Dashboard.ViewModels
 
 			if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
 			{
-				//ProductionIssues = await ArtPixAPI.GetProductionIssuesAsync();
-				//foreach(var order in ProductionIssues)
-				//{
-					
-				//}
+				ProductionIssues = await ArtPixAPI.GetProductionIssuesAsync("1", "100");
+				var issuesList = ProductionIssues.Data.Select(issue => issue.ProductionIssueReason.Reason).ToList();
+				var dateGrouped = issuesList.GroupBy(x => x)
+					.Select(x => new { Issue = x.Key, Count = x.Distinct().Count() });
 
+				foreach (var result in dateGrouped)
+				{
+					//Console.WriteLine("Issue: {0}, Count: {1}", result.Issue, result.Count);
+					ProductionIssuesReasons.Add(new Models.IssueReasons.Datum()
+					{
+						Reason = result.Issue,
+						Count = result.Count
+					});
+				}
 			}
 
 			View.ShippingItemsListView.ItemsSource = Orders.Data;

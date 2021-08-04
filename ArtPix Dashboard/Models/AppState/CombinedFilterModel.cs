@@ -54,6 +54,8 @@ namespace ArtPix_Dashboard.Models.AppState
 						store_name = "";
 						IsFilterGroupEnabled = false;
 						IsShipByTodayButtonEnabled = true;
+						IssueReasonsVisibility = Visibility.Visible;
+						ShippingItemsListViewVisibility = Visibility.Collapsed;
 						return;
 					}
 
@@ -253,6 +255,25 @@ namespace ArtPix_Dashboard.Models.AppState
 			get => _isShipByTodayButtonEnabled;
 			set => SetProperty(ref _isShipByTodayButtonEnabled, value);
 		}
+
+		
+		private Visibility _issueReasonsVisibility = Visibility.Collapsed;
+
+		public Visibility IssueReasonsVisibility
+
+		{
+			get => _issueReasonsVisibility;
+			set => SetProperty(ref _issueReasonsVisibility, value);
+		}
+		private Visibility _shippingItemsListViewVisibility = Visibility.Visible;
+
+		public Visibility ShippingItemsListViewVisibility
+
+		{
+			get => _shippingItemsListViewVisibility;
+			set => SetProperty(ref _shippingItemsListViewVisibility, value);
+		}
+		
 
 		private Visibility _storeComboBoxVisibility = Visibility.Collapsed;
 

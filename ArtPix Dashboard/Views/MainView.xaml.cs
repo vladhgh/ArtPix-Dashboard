@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -140,6 +141,7 @@ namespace ArtPix_Dashboard.Views
 			}
 			//REMOVE
 			MainViewModel.AppState.EmployeeName = "Vlad";
+			MainViewModel.AppState.NavigationStack = new List<string>();
 			MainViewModel.AppState.SessionTimeOut = Int32.MaxValue;
 
 			Window.Top = Settings.Default.Top;
@@ -210,7 +212,7 @@ namespace ArtPix_Dashboard.Views
 				case "Engraving In Progress":
 					{
 
-						EngravingButton.IsChecked = true;
+						EngravingInProgressButton.IsChecked = true;
 						MainViewModel.AppState.NavigationStack.Add("Engraving In Progress");
 						return;
 					}
@@ -303,6 +305,7 @@ namespace ArtPix_Dashboard.Views
 		private void Window_Closing(object sender, CancelEventArgs e)
 		{
 			ToastNotificationManagerCompat.History.Clear();
+			MainViewModel.AppState.NavigationStack = new List<string>();
 			Settings.Default.AppState = JsonConvert.SerializeObject(MainViewModel.AppState, Formatting.Indented);
 			Settings.Default.EmployeeName = MainViewModel.AppState.EmployeeName;
 			Settings.Default.SessionTimeOut = MainViewModel.AppState.SessionTimeOut;
@@ -400,7 +403,7 @@ namespace ArtPix_Dashboard.Views
 			ShipByTodayButton.IsChecked = false;
 			ReadyToShipButton.IsChecked = false;
 			ReadyToEngraveButton.IsChecked = false;
-			EngravingButton.IsChecked = false;
+			EngravingInProgressButton.IsChecked = false;
 			EngravedTodayButton.IsChecked = false;
 			ProductionIssuesButton.IsChecked = false;
 
@@ -412,15 +415,22 @@ namespace ArtPix_Dashboard.Views
 					{
 						workstation.IsChecked = false;
 						workstation.MachinesGroupVisibility = Visibility.Collapsed;
+						MainViewModel.WorkstationStats.PanelSpacing = 47;
 					}
 				}
 				button = (ToggleButton)this.FindName(elementName.Replace(" ", "") + "Button");
-				if (button != null)
+				if (button == null)
 				{
-					button.IsChecked = true;
+					foreach (var workstation in MainViewModel.WorkstationStats.Data)
+					{
+						workstation.IsChecked = false;
+						workstation.MachinesGroupVisibility = Visibility.Collapsed;
+						MainViewModel.WorkstationStats.PanelSpacing = 47;
+					}
 					return;
 				}
-				if (button == null) return;
+				button.IsChecked = true;
+				return;
 			}
 			
 			if (button.Tag != null && Int32.TryParse(button.Tag.ToString(), out int res))
@@ -465,6 +475,7 @@ namespace ArtPix_Dashboard.Views
 				{
 					workstation.IsChecked = false;
 					workstation.MachinesGroupVisibility = Visibility.Collapsed;
+					MainViewModel.WorkstationStats.PanelSpacing = 47;
 				}
 			}
 		}
@@ -561,14 +572,15 @@ namespace ArtPix_Dashboard.Views
 
 		private void BackButtonOnClick(object sender, RoutedEventArgs e)
 		{
+			if (MainViewModel.AppState.NavigationStack.Count <= 1 ) return;
 			MainViewModel.AppState.NavigationStack.Remove(MainViewModel.AppState.NavigationStack.Last());
-			MainViewModel.AppState.CombinedFilter = new CombinedFilterModel(MainViewModel.AppState.NavigationStack.Last());
+			//MainViewModel.AppState.CombinedFilter = new CombinedFilterModel(MainViewModel.AppState.NavigationStack.Last());
 			SetActiveButton(null, MainViewModel.AppState.NavigationStack.Last());
 			MainViewModel.AppState.CurrentSession.IsBackButtonActive = MainViewModel.AppState.NavigationStack.Count > 1;
 			ShippingView.SendCombinedRequest(new CombinedFilterModel(MainViewModel.AppState.NavigationStack.Last()));
 		}
 
-		private async void LogOutButtonOnClick(object sender, RoutedEventArgs e)
+		private void LogOutButtonOnClick(object sender, RoutedEventArgs e)
 		{
 			MainViewModel.AppState.SessionTimeOut = 0;
 			MainViewModel.AppState.EmployeeName = "";

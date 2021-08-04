@@ -175,7 +175,7 @@
 				<Run Text="{Binding AppState.CombinedFilter.SelectedFilterGroup}"/>
 				<Run Text="{Binding Orders.Meta.Total, StringFormat=({0:F0}):}" />
 			</TextBlock>
-			<ui:SimpleStackPanel x:Name="ShippingActions" Width="445" Orientation="Horizontal">
+			<ui:SimpleStackPanel x:Name="ShippingActions"  Orientation="Horizontal">
 				<TextBlock
 					x:Name="ActionsText"
 					HorizontalAlignment="Left"
@@ -191,6 +191,7 @@
 					FontSize="10"
 					Margin="0 4 8 0"
 					Padding="8 2 8 4"
+					Visibility="{Binding AppState.CombinedFilter.CreateManifestButtonVisibility}"
 					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
 					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnCreateDHLManifest}"
 					CommandParameter="{Binding }"
@@ -232,7 +233,7 @@
 					Style="{StaticResource UnassignButtonStyle}"/>
 
 			</ui:SimpleStackPanel>
-			<ui:SimpleStackPanel x:Name="MachineActions" Width="445" Orientation="Horizontal">
+			<ui:SimpleStackPanel x:Name="MachineActions"  Orientation="Horizontal">
 				<TextBlock
 				HorizontalAlignment="Left"
 				VerticalAlignment="Center"
@@ -268,117 +269,162 @@
 					Opacity="0.9"
 					Style="{StaticResource UnassignButtonStyle}"/>
 			</ui:SimpleStackPanel>
+			<ui:SimpleStackPanel x:Name="IssueReasons"  Orientation="Horizontal">
+				<TextBlock
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					Margin="40 0 4 0"
+					Visibility="{Binding AppState.CombinedFilter.IssueReasonsVisibility}"
+					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800, Delay=1000}"
+					Style="{DynamicResource SubtitleTextBlockStyle}"
+					FontWeight="Black"
+					Text="Issue Reasons: "/>
+				<ToggleButton
+					Cursor="Hand"
+					Content="All"
+					FontSize="10"
+					Margin="0 4 8 0"
+					Width="auto"
+					Height="auto"
+					Visibility="{Binding AppState.CombinedFilter.IssueReasonsVisibility}"
+					Padding="8 2 8 4"
+					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800, Delay=1100}"
+					Opacity="0.9"
+					Style="{StaticResource HeaderToggleButtonStyle}"/>
+				<ItemsControl ItemsSource="{Binding ProductionIssuesReasons}" Visibility="{Binding AppState.CombinedFilter.IssueReasonsVisibility}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<ui:SimpleStackPanel Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<ToggleButton
+								Cursor="Hand"
+								Content="{Binding IssueReason}"
+								FontSize="10"
+								Margin="0 4 8 0"
+								Width="auto"
+								Height="23"
+								Padding="8 2 8 4"
+								xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800, Delay=1100}"
+								Opacity="0.9"
+								Style="{StaticResource HeaderToggleButtonStyle}"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</ui:SimpleStackPanel>
 		</ui:SimpleStackPanel>
 
 		
 		<Border Grid.Row="4" Grid.Column="1"  BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="1" CornerRadius="8">
-			<ui:ListView
-						x:Name="ShippingItemsListView"
-						ItemsSource="{Binding Orders.Data}"
-						IsSelectionEnabled="False"
-						IsTabStop="True"
-						MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
-						MinWidth="1912"
-						ScrollViewer.CanContentScroll="True"
-						VirtualizingPanel.ScrollUnit="Pixel"
-						Style="{DynamicResource CustomListViewStyle}">
+			<ui:ListView x:Name="ShippingItemsListView"
+				             ItemsSource="{Binding Orders.Data}"
+				             IsSelectionEnabled="False"
+				             IsTabStop="True"
+				             MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
+				             MinWidth="1912"
+							 Opacity="0"
+				             ScrollViewer.CanContentScroll="True"
+				             VirtualizingPanel.ScrollUnit="Pixel"
+				             Style="{DynamicResource CustomListViewStyle}">
 				<ui:ListView.ItemTemplate>
 					<DataTemplate DataType="order:Datum">
 						<Grid>
 							<Image
-								x:Name="OrderProgressRingImage"
-								Tag="{Binding NameOrder}"
-								Opacity="0"
-								gif:ImageBehavior.RepeatBehavior="0x"
-								gif:ImageBehavior.AnimatedSource="../Assets/giphy.gif" Width="65" Height="65"/>
-							<Expander
-									x:Name="expander"
-									Cursor="Hand"
-									ExpandDirection="Up"
-									Loaded="Expander_OnLoaded"
-									IsExpanded="{Binding IsExpanded}"
-									xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800}"
-									Expanded="Expander_OnExpanded"
-									IsEnabled="{Binding IsExpanderEnabled}"
-									Collapsed="Expander_OnCollapsed"
-									Margin="10 0 0 0"
+									x:Name="OrderProgressRingImage"
 									Tag="{Binding NameOrder}"
-									Style="{DynamicResource CustomExpanderStyle}"
-									VerticalAlignment="Top">
+									Opacity="0"
+									gif:ImageBehavior.RepeatBehavior="0x"
+									gif:ImageBehavior.AnimatedSource="../Assets/giphy.gif" Width="65" Height="65"/>
+							<Expander
+										x:Name="expander"
+										Cursor="Hand"
+										ExpandDirection="Up"
+										Loaded="Expander_OnLoaded"
+										IsExpanded="{Binding IsExpanded}"
+										xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800}"
+										Expanded="Expander_OnExpanded"
+										IsEnabled="{Binding IsExpanderEnabled}"
+										Collapsed="Expander_OnCollapsed"
+										Margin="10 0 0 0"
+										Tag="{Binding NameOrder}"
+										Style="{DynamicResource CustomExpanderStyle}"
+										VerticalAlignment="Top">
 								<Expander.Resources>
-										<Storyboard x:Key="sbCollapse">
-											<DoubleAnimation Storyboard.TargetName="ProductsGrid"
-															 From="1" 
-															 To="0" 
-															 Duration="0:0:0.4"
-															 DesiredFrameRate="60"
-															 BeginTime="0:0:0"
-															 Storyboard.TargetProperty="Opacity"/>
-											<DoubleAnimation Storyboard.TargetName="expander"
-															 From="1" 
-															 To="0" 
-															 Duration="0:0:1.5" 
-															 DesiredFrameRate="60"
-															 BeginTime="0:0:4"
-															 Storyboard.TargetProperty="(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleY)"/>
-										</Storyboard>
-										<Storyboard x:Key="sbExpand">
+									<Storyboard x:Key="sbCollapse">
+										<DoubleAnimation Storyboard.TargetName="ProductsGrid"
+																 From="1" 
+																 To="0" 
+																 Duration="0:0:0.4"
+																 DesiredFrameRate="60"
+																 BeginTime="0:0:0"
+																 Storyboard.TargetProperty="Opacity"/>
+										<DoubleAnimation Storyboard.TargetName="expander"
+																 From="1" 
+																 To="0" 
+																 Duration="0:0:1.5" 
+																 DesiredFrameRate="60"
+																 BeginTime="0:0:4"
+																 Storyboard.TargetProperty="(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleY)"/>
+									</Storyboard>
+									<Storyboard x:Key="sbExpand">
 
 										<DoubleAnimation Storyboard.TargetName="ProductsGrid"
-														 From="0" 
-														 To="1" 
-														 Duration="0:0:0.4"
-														 DesiredFrameRate="60"
-														 Storyboard.TargetProperty="Opacity"/>
+															 From="0" 
+															 To="1" 
+															 Duration="0:0:0.4"
+															 DesiredFrameRate="60"
+															 Storyboard.TargetProperty="Opacity"/>
 									</Storyboard>
 								</Expander.Resources>
 
 								<Expander.Header>
 									<ui:SimpleStackPanel
-										Orientation="Horizontal"
-										Margin="40 10 0 10"
-										Spacing="10"
-										HorizontalAlignment="Stretch"
-										MinWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}">
+											Orientation="Horizontal"
+											Margin="40 10 0 10"
+											Spacing="10"
+											HorizontalAlignment="Stretch"
+											MinWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}">
 										<Image 
-											x:Name="OrderImage"
-											Source="{Binding OrderImage}"
-											Width="120" Height="120" VerticalAlignment="Center" Stretch="Uniform" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=300}" />
+												x:Name="OrderImage"
+												Source="{Binding OrderImage}"
+												Width="120" Height="120" VerticalAlignment="Center" Stretch="Uniform" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=300}" />
 										<ui:SimpleStackPanel
-													Orientation="Vertical"
-													VerticalAlignment="Center"
-													Spacing="2"
-													xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=400}"
-													Margin="5 0 0 5">
+														Orientation="Vertical"
+														VerticalAlignment="Center"
+														Spacing="2"
+														xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=400}"
+														Margin="5 0 0 5">
 											<ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center">
 												<TextBlock
-														Text="{Binding NameOrder, Mode=OneTime, StringFormat=Order: {0:N}}"
-														FontWeight="Black"
-														Style="{DynamicResource SubheaderTextBlockStyle}"
-														HorizontalAlignment="Left"
-														FontSize="28"
-														VerticalAlignment="Center"
-														Margin="0 0 10 0">
+															Text="{Binding NameOrder, Mode=OneTime, StringFormat=Order: {0:N}}"
+															FontWeight="Black"
+															Style="{DynamicResource SubheaderTextBlockStyle}"
+															HorizontalAlignment="Left"
+															FontSize="28"
+															VerticalAlignment="Center"
+															Margin="0 0 10 0">
 													<TextBlock.InputBindings>
 														<MouseBinding Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.CopyToClipboard}" CommandParameter="{Binding NameOrder}"  MouseAction="LeftClick" />
 													</TextBlock.InputBindings>
-													<ToolTipService.ToolTip>
-														<ToolTip
-														Content="Click To Copy Order Name!"
-														Placement="MousePoint"
-														HorizontalOffset="20"
-														VerticalOffset="30"/>
-													</ToolTipService.ToolTip>
+														<ToolTipService.ToolTip>
+															<ToolTip
+															Content="Click To Copy Order Name!"
+															Placement="MousePoint"
+															HorizontalOffset="20"
+															VerticalOffset="30"/>
+														</ToolTipService.ToolTip>
 												</TextBlock>
-                                           
-                                   
+
+
 												<Button Background="SteelBlue" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Visibility="{Binding IssueResolved}" Margin="0 0 10 0">
 													<TextBlock
-															Text="Issue Resolved"
-															FontSize="10"
-															Style="{DynamicResource BaseTextBlockStyle}"/>
+																Text="Issue Resolved"
+																FontSize="10"
+																Style="{DynamicResource BaseTextBlockStyle}"/>
 												</Button>
-							
+
 												<ItemsControl Name="ToteItemsControl"  ItemsSource="{Binding ShippingTotes}" Margin="0 0 0 0">
 													<ItemsControl.ItemsPanel>
 														<ItemsPanelTemplate>
@@ -390,15 +436,15 @@
 															<ui:SimpleStackPanel Orientation="Horizontal">
 																<Button  Style="{DynamicResource ToteButtonStyle}" Height="auto" Opacity="0.9"  Margin="0 0 10 0">
 																	<TextBlock
-																			Text="{Binding Name}"
-																			FontSize="10"
-																			Style="{DynamicResource BaseTextBlockStyle}"/>
+																				Text="{Binding Name}"
+																				FontSize="10"
+																				Style="{DynamicResource BaseTextBlockStyle}"/>
 																</Button>
 																<Button Style="{DynamicResource SlotButtonStyle}" Visibility="{Binding SlotButtonVisibility}" Height="auto" Opacity="0.9" Margin="0 0 10 0">
 																	<TextBlock
-																			Text="{Binding ShippingSlot.Alias}"
-																			FontSize="10"
-																			Style="{DynamicResource BaseTextBlockStyle}"/>
+																				Text="{Binding ShippingSlot.Alias}"
+																				FontSize="10"
+																				Style="{DynamicResource BaseTextBlockStyle}"/>
 																</Button>
 															</ui:SimpleStackPanel>
 
@@ -407,49 +453,49 @@
 												</ItemsControl>
 												<Button Background="{Binding UpdatedAtAgeColor, Mode=OneWay}" Visibility="{Binding ProductStatusVisibility}" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Margin="0 0 10 0">
 													<TextBlock
-															Text="{Binding UpdatedAtAge, Mode=OneWay, StringFormat=Updated: {0:0}}"
-															FontSize="10"
-															Style="{DynamicResource BaseTextBlockStyle}"/>
+																Text="{Binding UpdatedAtAge, Mode=OneWay, StringFormat=Updated: {0:0}}"
+																FontSize="10"
+																Style="{DynamicResource BaseTextBlockStyle}"/>
 												</Button>
 												<Button Background="{Binding UpdatedAtAgeColor}" Visibility="{Binding EngravedAgeVisibility}" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Margin="0 5 10 0">
 													<TextBlock
-														Text="{Binding UpdatedAtAge, StringFormat=Engraved: {0:0} ago}"
-														FontSize="10"
-														Style="{DynamicResource BaseTextBlockStyle}"/>
+															Text="{Binding UpdatedAtAge, StringFormat=Engraved: {0:0} ago}"
+															FontSize="10"
+															Style="{DynamicResource BaseTextBlockStyle}"/>
 												</Button>
 												<Button Background="DarkRed" Visibility="{Binding IsLateShipment}" Style="{DynamicResource LateShipmentButtonStyle}" Height="auto" Opacity="0.9" Margin="0 0 10 0">
 													<TextBlock
-															Text="Late Shipment!"
-															FontSize="10"
-															Style="{DynamicResource BaseTextBlockStyle}"/>
+																Text="Late Shipment!"
+																FontSize="10"
+																Style="{DynamicResource BaseTextBlockStyle}"/>
 												</Button>
 											</ui:SimpleStackPanel>
 											<ui:SimpleStackPanel Orientation="Horizontal" Spacing="10" Margin="0 0 0 0">
 												<Button Background="{Binding StatusOrderColor}" Height="auto" Style="{DynamicResource InactiveButtonStyle}"  Opacity="0.9">
 													<TextBlock
-														Text="{Binding Status,  Mode=OneWay}"
-														Margin="10 0 10 0"
-														HorizontalAlignment="Left"
-														VerticalAlignment="Center"
-														FontSize="10"
-														Style="{DynamicResource BaseTextBlockStyle}"/>
+															Text="{Binding Status,  Mode=OneWay}"
+															Margin="10 0 10 0"
+															HorizontalAlignment="Left"
+															VerticalAlignment="Center"
+															FontSize="10"
+															Style="{DynamicResource BaseTextBlockStyle}"/>
 												</Button>
 											</ui:SimpleStackPanel>
 											<ui:SimpleStackPanel Orientation="Horizontal" >
 												<TextBlock
-													Text="{Binding ShippingType, Mode=OneTime}"
-													Foreground="{Binding ShippingTypeColor}"
-													HorizontalAlignment="Left"
-													Style="{DynamicResource BaseTextBlockStyle}"
-													TextTrimming="CharacterEllipsis"
-													TextWrapping="NoWrap"/>
+														Text="{Binding ShippingType, Mode=OneTime}"
+														Foreground="{Binding ShippingTypeColor}"
+														HorizontalAlignment="Left"
+														Style="{DynamicResource BaseTextBlockStyle}"
+														TextTrimming="CharacterEllipsis"
+														TextWrapping="NoWrap"/>
 											</ui:SimpleStackPanel>
 											<ui:SimpleStackPanel Orientation="Vertical"  >
 												<TextBlock
-														Text="{Binding Path=EstimateProcessingMaxDate, Mode=OneTime, StringFormat=Ship By: {0:0}}"
-														Style="{DynamicResource BaseTextBlockStyle}"
-														Foreground="White"
-														HorizontalAlignment="Left" VerticalAlignment="Center" />
+															Text="{Binding Path=EstimateProcessingMaxDate, Mode=OneTime, StringFormat=Ship By: {0:0}}"
+															Style="{DynamicResource BaseTextBlockStyle}"
+															Foreground="White"
+															HorizontalAlignment="Left" VerticalAlignment="Center" />
 											</ui:SimpleStackPanel>
 										</ui:SimpleStackPanel>
 									</ui:SimpleStackPanel>
@@ -463,37 +509,37 @@
 									<Grid.RowDefinitions>
 										<RowDefinition Height="*"/>
 									</Grid.RowDefinitions>
-										<ui:SimpleStackPanel
-											Grid.Row="0"
-											Grid.Column="0"
-											xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
-											xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=400}"
-											Orientation="Vertical"
-											Margin="50 0 50 50">
+									<ui:SimpleStackPanel
+												Grid.Row="0"
+												Grid.Column="0"
+												xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
+												xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=400}"
+												Orientation="Vertical"
+												Margin="50 0 50 50">
 										<TextBlock
-												Margin="20 0 0 10"
-												HorizontalAlignment="Left"
-												VerticalAlignment="Center"
-												Style="{DynamicResource SubtitleTextBlockStyle}"
-												xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}"
-												FontWeight="Black">
-											<Run Text="Products"/>
-											<Run Text="{Binding Path=TotalProducts, StringFormat=({0:F0}):}" />
+													Margin="20 0 0 10"
+													HorizontalAlignment="Left"
+													VerticalAlignment="Center"
+													Style="{DynamicResource SubtitleTextBlockStyle}"
+													xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=600, Delay=300}"
+													FontWeight="Black">
+												<Run Text="Products"/>
+												<Run Text="{Binding Path=TotalProducts, StringFormat=({0:F0}):}" />
 										</TextBlock>
 
 
 										<ui:ListView
-											x:Name="ProductsListView"
-											ItemsSource="{Binding Products}"
-											IsSelectionEnabled="False"
-											BorderThickness="1"
-											MaxHeight="520"
-											CornerRadius="8"
-											Focusable="True"
-											ScrollViewer.CanContentScroll="True"
-											BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
-											VirtualizingPanel.ScrollUnit="Pixel"
-											ItemTemplate="{StaticResource ProductsListViewDataTemplate}"/>
+												x:Name="ProductsListView"
+												ItemsSource="{Binding Products}"
+												IsSelectionEnabled="False"
+												BorderThickness="1"
+												MaxHeight="520"
+												CornerRadius="8"
+												Focusable="True"
+												ScrollViewer.CanContentScroll="True"
+												BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+												VirtualizingPanel.ScrollUnit="Pixel"
+												ItemTemplate="{StaticResource ProductsListViewDataTemplate}"/>
 
 
 									</ui:SimpleStackPanel>
@@ -502,23 +548,23 @@
 										<ui:SimpleStackPanel Orientation="Vertical">
 											<ui:SimpleStackPanel Orientation="Horizontal">
 												<ui:SimpleStackPanel  Orientation="Vertical"
-																	  xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
-																	  xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=400}" VerticalAlignment="Top">
+																		  xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
+																		  xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=400}" VerticalAlignment="Top">
 													<ui:SimpleStackPanel Orientation="Vertical" Visibility="{Binding ShippingAddressVisibility}">
 														<TextBlock
-															Margin="20 0 0 10"
-															HorizontalAlignment="Left"
-															VerticalAlignment="Top"
-															Text="Shipping Address:"
-															Style="{DynamicResource SubtitleTextBlockStyle}"
-															FontWeight="Black"/>
+																Margin="20 0 0 10"
+																HorizontalAlignment="Left"
+																VerticalAlignment="Top"
+																Text="Shipping Address:"
+																Style="{DynamicResource SubtitleTextBlockStyle}"
+																FontWeight="Black"/>
 														<ui:SimpleStackPanel Orientation="Horizontal">
 															<Button Background="DarkGreen" Margin="20 0 0 10" Style="{DynamicResource InactiveButtonStyle}" Height="auto"  Opacity="0.9">
 																<TextBlock
-																	Text="Address Verified"
-																	Margin="0 0 0 0"
-																	FontSize="10"
-																	Style="{DynamicResource BaseTextBlockStyle}"/>
+																		Text="Address Verified"
+																		Margin="0 0 0 0"
+																		FontSize="10"
+																		Style="{DynamicResource BaseTextBlockStyle}"/>
 															</Button>
 															<Button Margin="5 0 0 10" Click="ShowOnMapButtonOnClick" ToolTip="Show On Maps" Tag="{Binding IdOrders}"  Height="auto" Padding="8 4 8 4" Opacity="0.9" Style="{StaticResource CustomButtonStyle}">
 																<ui:FontIcon Glyph="&#xE707;" FontSize="11"/>
@@ -529,195 +575,195 @@
 														</ui:SimpleStackPanel>
 
 														<TextBlock
-															Margin="20 0 0 5"
-															HorizontalAlignment="Left"
-															VerticalAlignment="Top"
-															Foreground="LightGray"
-															Style="{DynamicResource BaseTextBlockStyle}">
-															<Run Text="{Binding customers.ShippingAddress.FirstName}" />
-															<Run Text="{Binding customers.ShippingAddress.LastName}" />
+																Margin="20 0 0 5"
+																HorizontalAlignment="Left"
+																VerticalAlignment="Top"
+																Foreground="LightGray"
+																Style="{DynamicResource BaseTextBlockStyle}">
+																<Run Text="{Binding customers.ShippingAddress.FirstName}" />
+																<Run Text="{Binding customers.ShippingAddress.LastName}" />
 														</TextBlock>
 														<TextBlock
-															Margin="20 0 0 5"
-															HorizontalAlignment="Left"
-															VerticalAlignment="Top"
-															Foreground="LightGray"
-															Text="{Binding Path=customers.ShippingAddress.address_1}"
-															Style="{DynamicResource BaseTextBlockStyle}"/>
+																Margin="20 0 0 5"
+																HorizontalAlignment="Left"
+																VerticalAlignment="Top"
+																Foreground="LightGray"
+																Text="{Binding Path=customers.ShippingAddress.address_1}"
+																Style="{DynamicResource BaseTextBlockStyle}"/>
 														<TextBlock
-															Margin="20 0 0 5"
-															HorizontalAlignment="Left"
-															VerticalAlignment="Top"
-															Foreground="LightGray"
-															Visibility="{Binding ShippingAddress2Visibility, Mode=OneWay}"
-															Text="{Binding Path=customers.ShippingAddress.address_2}"
-															Style="{DynamicResource BaseTextBlockStyle}"/>
+																Margin="20 0 0 5"
+																HorizontalAlignment="Left"
+																VerticalAlignment="Top"
+																Foreground="LightGray"
+																Visibility="{Binding ShippingAddress2Visibility, Mode=OneWay}"
+																Text="{Binding Path=customers.ShippingAddress.address_2}"
+																Style="{DynamicResource BaseTextBlockStyle}"/>
 														<TextBlock
-															Margin="20 0 0 5"
-															HorizontalAlignment="Left"
-															VerticalAlignment="Top"
-															Foreground="LightGray"
-															Style="{DynamicResource BaseTextBlockStyle}">
-															<Run Text="{Binding customers.ShippingAddress.City}" />
-															<Run Text="{Binding customers.ShippingAddress.State}" />
-															<Run Text="{Binding customers.ShippingAddress.Postcode}" />
+																Margin="20 0 0 5"
+																HorizontalAlignment="Left"
+																VerticalAlignment="Top"
+																Foreground="LightGray"
+																Style="{DynamicResource BaseTextBlockStyle}">
+																<Run Text="{Binding customers.ShippingAddress.City}" />
+																<Run Text="{Binding customers.ShippingAddress.State}" />
+																<Run Text="{Binding customers.ShippingAddress.Postcode}" />
 														</TextBlock>
 													</ui:SimpleStackPanel>
 
 												</ui:SimpleStackPanel>
 												<ui:SimpleStackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="20 0 0 0"
-																	 Visibility="{Binding ShippingPanelVisibility}"
-																	 xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
-																	 xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=500}">
+																		 Visibility="{Binding ShippingPanelVisibility}"
+																		 xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
+																		 xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=500}">
 													<TextBlock
-														Margin="20 0 0 10"
-														HorizontalAlignment="Left"
-														VerticalAlignment="Top"
-														Text="Package Information:"
-														Style="{DynamicResource SubtitleTextBlockStyle}"
-														FontWeight="Black"/>
+															Margin="20 0 0 10"
+															HorizontalAlignment="Left"
+															VerticalAlignment="Top"
+															Text="Package Information:"
+															Style="{DynamicResource SubtitleTextBlockStyle}"
+															FontWeight="Black"/>
 													<ui:SimpleStackPanel Orientation="Horizontal">
 														<Button Background="{Binding ShippingOrderInfo.ShippingPackage.VersionStatusColor}" Margin="20 0 0 10" Height="auto" Padding="8 2 8 4" Style="{DynamicResource InactiveButtonStyle}"  Opacity="0.9">
 															<TextBlock
-																Text="{Binding ShippingOrderInfo.ShippingPackage.VersionStatus}"
-																FontSize="10"
-																Style="{DynamicResource BaseTextBlockStyle}"/>
+																	Text="{Binding ShippingOrderInfo.ShippingPackage.VersionStatus}"
+																	FontSize="10"
+																	Style="{DynamicResource BaseTextBlockStyle}"/>
 														</Button>
 														<Button Margin="5 0 0 10" Height="auto" Padding="8 2 8 4" Opacity="0.9" Style="{StaticResource CustomButtonStyle}">
 															<TextBlock
-																Text="Edit"
-																FontSize="10"
-																Style="{DynamicResource BaseTextBlockStyle}"/>
+																	Text="Edit"
+																	FontSize="10"
+																	Style="{DynamicResource BaseTextBlockStyle}"/>
 														</Button>
 													</ui:SimpleStackPanel>
 
 													<ui:SimpleStackPanel Orientation="Vertical" Visibility="{Binding ShippingOrderInfo.ShippingPackage.ShippingPackageInformationVisibility}">
 														<TextBlock
-														Margin="20 0 0 5"
-														HorizontalAlignment="Left"
-														VerticalAlignment="Top"
-														MaxWidth="400"
-														Foreground="LightGray"
-														Text="{Binding ShippingOrderInfo.ShippingPackage.Box.Name, StringFormat=Box: {0:N}}"
-														Style="{DynamicResource BaseTextBlockStyle}"/>
+															Margin="20 0 0 5"
+															HorizontalAlignment="Left"
+															VerticalAlignment="Top"
+															MaxWidth="400"
+															Foreground="LightGray"
+															Text="{Binding ShippingOrderInfo.ShippingPackage.Box.Name, StringFormat=Box: {0:N}}"
+															Style="{DynamicResource BaseTextBlockStyle}"/>
 														<TextBlock
-														Margin="20 0 0 5"
-														HorizontalAlignment="Left"
-														VerticalAlignment="Top"
-														MaxWidth="400"
-														Foreground="LightGray"
-														Style="{DynamicResource BaseTextBlockStyle}">
-														<Run Text="{Binding ShippingOrderInfo.ShippingPackage.WrappingPaper.Type, StringFormat=Wrapping Paper: {0:N}}"/>
-														<Run Text="{Binding ShippingOrderInfo.ShippingPackage.WrappingPaperLength}"/>
-														<Run Text="{Binding ShippingOrderInfo.ShippingPackage.WrappingPaperCount, StringFormat=X{0:0 }}"/>
+															Margin="20 0 0 5"
+															HorizontalAlignment="Left"
+															VerticalAlignment="Top"
+															MaxWidth="400"
+															Foreground="LightGray"
+															Style="{DynamicResource BaseTextBlockStyle}">
+															<Run Text="{Binding ShippingOrderInfo.ShippingPackage.WrappingPaper.Type, StringFormat=Wrapping Paper: {0:N}}"/>
+															<Run Text="{Binding ShippingOrderInfo.ShippingPackage.WrappingPaperLength}"/>
+															<Run Text="{Binding ShippingOrderInfo.ShippingPackage.WrappingPaperCount, StringFormat=X{0:0 }}"/>
 														</TextBlock>
 														<TextBlock
-														Margin="20 0 0 5"
-														HorizontalAlignment="Left"
-														VerticalAlignment="Top"
-														MaxWidth="400"
-														Foreground="LightGray"
-														Text="{Binding ShippingOrderInfo.ShippingPackage.Box.Cost, StringFormat=Cost: ${0:N}}"
-														Style="{DynamicResource BaseTextBlockStyle}"/>
+															Margin="20 0 0 5"
+															HorizontalAlignment="Left"
+															VerticalAlignment="Top"
+															MaxWidth="400"
+															Foreground="LightGray"
+															Text="{Binding ShippingOrderInfo.ShippingPackage.Box.Cost, StringFormat=Cost: ${0:N}}"
+															Style="{DynamicResource BaseTextBlockStyle}"/>
 													</ui:SimpleStackPanel>
 												</ui:SimpleStackPanel>
 											</ui:SimpleStackPanel>
 											<ui:SimpleStackPanel Orientation="Vertical" HorizontalAlignment="Left"
-																 xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
-																 xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=500}" VerticalAlignment="Top">
+																	 xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
+																	 xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=500}" VerticalAlignment="Top">
 												<ui:SimpleStackPanel Orientation="Vertical" Visibility="{Binding CustomerNoteVisibility}">
 													<TextBlock
-															Margin="20 0 0 5"
-															HorizontalAlignment="Left"
-															VerticalAlignment="Top"
-															Text="Customer Note:"
-															Style="{DynamicResource SubtitleTextBlockStyle}"
-															FontWeight="Black"/>
+																Margin="20 0 0 5"
+																HorizontalAlignment="Left"
+																VerticalAlignment="Top"
+																Text="Customer Note:"
+																Style="{DynamicResource SubtitleTextBlockStyle}"
+																FontWeight="Black"/>
 													<TextBlock
-															Margin="20 0 0 0"
-															HorizontalAlignment="Left"
-															VerticalAlignment="Top"
-															MaxWidth="400"
-															Foreground="DarkOrange"
-															Text="{Binding CustomerNote}"
-															Style="{DynamicResource BaseTextBlockStyle}"/>
+																Margin="20 0 0 0"
+																HorizontalAlignment="Left"
+																VerticalAlignment="Top"
+																MaxWidth="400"
+																Foreground="DarkOrange"
+																Text="{Binding CustomerNote}"
+																Style="{DynamicResource BaseTextBlockStyle}"/>
 												</ui:SimpleStackPanel>
 											</ui:SimpleStackPanel>
 										</ui:SimpleStackPanel>
 
 										<ui:SimpleStackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="20 0 0 0"
-															 Visibility="{Binding ShippingPanelVisibility}"
-															 xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
-															 xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=600}">
+																 Visibility="{Binding ShippingPanelVisibility}"
+																 xamlFlair:Animations.PrimaryBinding="{Binding IsExpanded}"
+																 xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=None, Duration=600, Delay=600}">
 											<TextBlock
-												Margin="20 0 0 10"
-												HorizontalAlignment="Left"
-												VerticalAlignment="Top"
-												Text="Shipping Information:"
-												Style="{DynamicResource SubtitleTextBlockStyle}"
-												FontWeight="Black"/>
+													Margin="20 0 0 10"
+													HorizontalAlignment="Left"
+													VerticalAlignment="Top"
+													Text="Shipping Information:"
+													Style="{DynamicResource SubtitleTextBlockStyle}"
+													FontWeight="Black"/>
 											<ui:SimpleStackPanel Orientation="Horizontal">
 												<Button Background="{Binding IsShippingServiceFoundColor}" Margin="20 0 0 10" Style="{DynamicResource InactiveButtonStyle}"  Height="auto" Opacity="0.9">
 													<TextBlock
-														Text="{Binding IsShippingServiceFound}"
-														FontSize="10"
-														Style="{DynamicResource BaseTextBlockStyle}"/>
+															Text="{Binding IsShippingServiceFound}"
+															FontSize="10"
+															Style="{DynamicResource BaseTextBlockStyle}"/>
 												</Button>
 												<Button Margin="5 0 0 10" Padding="8 2 8 4" Style="{StaticResource CustomButtonStyle}" Visibility="{Binding FindBestServiceButtonVisibility}" Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnFindBestService}" CommandParameter="{Binding IdOrders}" Height="auto" Opacity="0.9">
 													<TextBlock
-														Text="Find Best Service"
-														FontSize="10"
-														Style="{DynamicResource BaseTextBlockStyle}"/>
+															Text="Find Best Service"
+															FontSize="10"
+															Style="{DynamicResource BaseTextBlockStyle}"/>
 												</Button>
 												<ui:ProgressRing Foreground="SteelBlue" IsActive="{Binding IsShippingInformationLoading}" Margin="20 0 0 10"/>
 											</ui:SimpleStackPanel>
 
 											<ui:SimpleStackPanel Orientation="Vertical" Visibility="{Binding ShippingInformationPanelVisibility}">
 												<TextBlock
-													Margin="20 0 0 10"
-													HorizontalAlignment="Left"
-													VerticalAlignment="Top"
-													MaxWidth="400"
-													Foreground="LightGray"
-													Style="{DynamicResource BaseTextBlockStyle}">
-													<Run Text="{Binding ShippingOrderInfo.PickupAt, StringFormat=Pickup At: {0:N}}"/>
+														Margin="20 0 0 10"
+														HorizontalAlignment="Left"
+														VerticalAlignment="Top"
+														MaxWidth="400"
+														Foreground="LightGray"
+														Style="{DynamicResource BaseTextBlockStyle}">
+														<Run Text="{Binding ShippingOrderInfo.PickupAt, StringFormat=Pickup At: {0:N}}"/>
 												</TextBlock>
 												<TextBlock
-													Margin="20 0 0 10"
-													HorizontalAlignment="Left"
-													VerticalAlignment="Top"
-													MaxWidth="400"
-													Foreground="LightGray"
-													Style="{DynamicResource BaseTextBlockStyle}">
-													<Run Text="{Binding ShippingOrderInfo.DeliveryAt, StringFormat=Delivery At: {0:N}}"/>
+														Margin="20 0 0 10"
+														HorizontalAlignment="Left"
+														VerticalAlignment="Top"
+														MaxWidth="400"
+														Foreground="LightGray"
+														Style="{DynamicResource BaseTextBlockStyle}">
+														<Run Text="{Binding ShippingOrderInfo.DeliveryAt, StringFormat=Delivery At: {0:N}}"/>
 												</TextBlock>
 												<TextBlock
-													Margin="20 0 0 10"
-													HorizontalAlignment="Left"
-													VerticalAlignment="Top"
-													MaxWidth="400"
-													Foreground="LightGray"
-													Style="{DynamicResource BaseTextBlockStyle}">
-													<Run Text="{Binding ShippingOrderInfo.Provider, StringFormat=Service: {0:N}}"/>
-													<Run Text="{Binding ShippingOrderInfo.Service}"/>
+														Margin="20 0 0 10"
+														HorizontalAlignment="Left"
+														VerticalAlignment="Top"
+														MaxWidth="400"
+														Foreground="LightGray"
+														Style="{DynamicResource BaseTextBlockStyle}">
+														<Run Text="{Binding ShippingOrderInfo.Provider, StringFormat=Service: {0:N}}"/>
+														<Run Text="{Binding ShippingOrderInfo.Service}"/>
 												</TextBlock>
 												<TextBlock
-													Margin="20 0 0 10"
-													HorizontalAlignment="Left"
-													VerticalAlignment="Top"
-													MaxWidth="400"
-													Foreground="LightGray"
-													Visibility="{Binding TrackingNumberTextBlockVisibility}"
-													Text="{Binding ShippingOrderInfo.TrackingNumber, StringFormat=Tracking Number: {0:N}}"
-													Style="{DynamicResource BaseTextBlockStyle}"/>
+														Margin="20 0 0 10"
+														HorizontalAlignment="Left"
+														VerticalAlignment="Top"
+														MaxWidth="400"
+														Foreground="LightGray"
+														Visibility="{Binding TrackingNumberTextBlockVisibility}"
+														Text="{Binding ShippingOrderInfo.TrackingNumber, StringFormat=Tracking Number: {0:N}}"
+														Style="{DynamicResource BaseTextBlockStyle}"/>
 												<TextBlock
-													Margin="20 0 0 10"
-													HorizontalAlignment="Left"
-													VerticalAlignment="Top"
-													MaxWidth="400"
-													Foreground="LightGray"
-													Text="{Binding ShippingOrderInfo.Cost, StringFormat=Cost: ${0:N}}"
-													Style="{DynamicResource BaseTextBlockStyle}"/>
+														Margin="20 0 0 10"
+														HorizontalAlignment="Left"
+														VerticalAlignment="Top"
+														MaxWidth="400"
+														Foreground="LightGray"
+														Text="{Binding ShippingOrderInfo.Cost, StringFormat=Cost: ${0:N}}"
+														Style="{DynamicResource BaseTextBlockStyle}"/>
 											</ui:SimpleStackPanel>
 
 
@@ -730,9 +776,26 @@
 					</DataTemplate>
 				</ui:ListView.ItemTemplate>
 			</ui:ListView>
-        </Border>
-
+		</Border>
+		<Border Grid.Row="4" Grid.Column="1" Visibility="{Binding AppState.CombinedFilter.IssueReasonsVisibility}"  BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="1" CornerRadius="8">
+			<ui:ListView x:Name="IssuesListView"
+			             ItemsSource="{Binding ProductionIssues.Data}"
+			             IsSelectionEnabled="False"
+			             IsTabStop="True"
+			             MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
+			             MinWidth="1912"
+			             BorderThickness="0"
+			             CornerRadius="8"
+			             Focusable="True"
+						 Opacity="0"
+			             ScrollViewer.CanContentScroll="True"
+			             BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+			             VirtualizingPanel.ScrollUnit="Pixel"
+			             Style="{DynamicResource CustomListViewStyle}"
+			             ItemTemplate="{StaticResource ProductionIssuesListViewDataTemplate}"/>
+		</Border>
 		
+
 		<ui:SimpleStackPanel Name="Pagination" Orientation="Horizontal" Grid.Row="5" Grid.Column="1" Margin="0 10 0 0">
 				<ui:TitleBarButton
 					x:Name="BackButton"

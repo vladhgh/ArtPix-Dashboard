@@ -15,5 +15,9 @@ namespace ArtPix_Dashboard.Models.IssueReasons
 
         [JsonProperty("reason")]
         public string Reason { get; set; }
+
+        public string IssueReason => $"{Reason}({Count})";
+
+        public int Count { get; set; }
     }
 }
