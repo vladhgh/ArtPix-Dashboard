@@ -281,30 +281,51 @@ namespace ArtPix_Dashboard.ViewModels
 
 		#endregion
 
-		#region DHL MANIFEST DIALOG - NOT DONE - ❎
+		#region DHL MANIFEST DIALOG - TESTING NEEDED
 
 		private async void OpenDhlManifestDialog(object param)
 		{
-			//var dialog = new DhlManifestDialog();
-			//var result = await dialog.ShowAsync();
-			//if (result != ContentDialogResult.Primary) return;
-			//if (string.IsNullOrEmpty(dialog.PrinterSelection.Text))
-			//{
-			//	Utils.Utils.Notifier.ShowError("Printer has to be selected!\nPlease try again!");
-			//	return;
-			//}
-			//var x = await ArtPixAPI.CreateDhlManifest(new CreateDhlManifestRequest()
-			//{
-			//	international_containers_count = Int32.Parse(dialog.Combo1.Text),
-			//	domestic_containers_count = Int32.Parse(dialog.Combo2.Text),
-			//});
-			//foreach(var manifest in x.Manifests)
-			//{
-			//	byte[] sPDFDecoded = Convert.FromBase64String(manifest.FileData);
+			var dialog = new DhlManifestDialog();
+			var result = await dialog.ShowAsync();
+			var today = DateTime.Now.Date.ToString("yyyy-MM-dd");
+			if (result != ContentDialogResult.Primary) return;
+			if (string.IsNullOrEmpty(dialog.PrinterSelection.Text))
+			{
+				Utils.Utils.Notifier.ShowError("Printer has to be selected!\nPlease try again!");
+				return;
+			}
+			var x = await ArtPixAPI.CreateDhlManifest(new CreateDhlManifestRequest()
+			{
+				international_containers_count = Int32.Parse(dialog.Combo1.Text),
+				domestic_containers_count = Int32.Parse(dialog.Combo2.Text),
+			});
+			foreach (var manifest in x.Manifests)
+			{
+				byte[] sPDFDecoded = Convert.FromBase64String(manifest.FileData);
+				var fileName = $"\\\\artpix\\wh\\Manifests\\{(manifest.IsInternational ? "International" : "Domestic")}-{today}.pdf";
 
-			//	File.WriteAllBytes("\\\\artpix\\wh\\testManifest.pdf", sPDFDecoded);
+				File.WriteAllBytes(fileName, sPDFDecoded);
 
-			//}
+				SendFileToPrinter(dialog.Combo2.Text, fileName);
+
+			}
+		}
+
+		public void SendFileToPrinter(string fileName, string printerName)
+		{
+			PrintDocument doc = new PrintDocument()
+			{
+				PrinterSettings = new PrinterSettings()
+				{
+					PrinterName = printerName,
+
+					Copies = 3,
+
+					PrintFileName = fileName,
+				}
+			};
+
+			doc.Print();
 		}
 
 		#endregion
@@ -362,7 +383,6 @@ namespace ArtPix_Dashboard.ViewModels
 
 				foreach (var result in dateGrouped)
 				{
-					//Console.WriteLine("Issue: {0}, Count: {1}", result.Issue, result.Count);
 					ProductionIssuesReasons.Add(new Models.IssueReasons.Datum()
 					{
 						Reason = result.Issue,
@@ -804,7 +824,7 @@ namespace ArtPix_Dashboard.ViewModels
 			{
 				if (element.Tag == null) continue;
 				if (String.IsNullOrEmpty(element.Tag.ToString())) continue;
-				if (element.Tag == nameOrder)
+				if (element.Tag.ToString() == nameOrder)
 				{
 					if (element.GetType().ToString() == "System.Windows.Controls.Expander")
 					{

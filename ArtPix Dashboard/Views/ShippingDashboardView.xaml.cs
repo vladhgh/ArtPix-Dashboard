@@ -108,7 +108,9 @@ namespace ArtPix_Dashboard.Views
 			{
 				if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
 				{
+					Animation.FadeOut(ProgressRingImage);
 					Animation.FadeIn(IssuesListView);
+					return;
 				}
 				Animation.FadeOut(ProgressRingImage);
 				Animation.FadeIn(ShippingItemsListView);
@@ -117,16 +119,18 @@ namespace ArtPix_Dashboard.Views
 
 			if (kind == 1) // LOADING START
 			{
-				if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
-				{
-					Animation.FadeOut(IssuesListView);
-				}
 				if (NoResultsText.Opacity == 1)
 				{
 					Animation.FadeOut(NoResultsText);
 				}
-				Animation.FadeOut(ShippingItemsListView);
+				if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
+				{
+					Animation.FadeIn(ProgressRingImage);
+					Animation.FadeOut(IssuesListView);
+					return;
+				}
 				Animation.FadeIn(ProgressRingImage);
+				Animation.FadeOut(ShippingItemsListView);
 			}
 			if (kind == 2) // LOADING END NO RESULTS
 			{
@@ -585,7 +589,6 @@ namespace ArtPix_Dashboard.Views
 
 		#endregion
 
-
 		private async void UpdateShippingAddressButtonOnClick(object sender, RoutedEventArgs e)
 		{
 			var orderId = ((Button) sender).Tag.ToString();
@@ -616,7 +619,6 @@ namespace ArtPix_Dashboard.Views
 				MessageBox.Show(other.Message);
 			}
 		}
-
 
 		private async void CreateDailyReportButtonOnClick(object sender, RoutedEventArgs e)
 		{

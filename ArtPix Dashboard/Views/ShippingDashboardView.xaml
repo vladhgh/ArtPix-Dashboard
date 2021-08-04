@@ -175,7 +175,54 @@
 				<Run Text="{Binding AppState.CombinedFilter.SelectedFilterGroup}"/>
 				<Run Text="{Binding Orders.Meta.Total, StringFormat=({0:F0}):}" />
 			</TextBlock>
-			<ui:SimpleStackPanel x:Name="ShippingActions"  Orientation="Horizontal">
+
+			<ui:SimpleStackPanel x:Name="IssueReasons"  Orientation="Horizontal">
+				<TextBlock
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					Margin="0 0 4 0"
+					Visibility="{Binding AppState.CombinedFilter.IssueReasonsVisibility}"
+					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800, Delay=1000}"
+					Style="{DynamicResource SubtitleTextBlockStyle}"
+					FontWeight="Black"
+					Text="Issue Reasons: "/>
+				<ToggleButton
+					Cursor="Hand"
+					Content="All"
+					FontSize="10"
+					Margin="0 4 8 0"
+					Width="auto"
+					Height="auto"
+					Visibility="{Binding AppState.CombinedFilter.IssueReasonsVisibility}"
+					Padding="8 2 8 4"
+					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800, Delay=1100}"
+					Opacity="0.9"
+					Style="{StaticResource HeaderToggleButtonStyle}"/>
+				<ItemsControl ItemsSource="{Binding ProductionIssuesReasons}" Visibility="{Binding AppState.CombinedFilter.IssueReasonsVisibility}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<ui:SimpleStackPanel Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<ToggleButton
+								Cursor="Hand"
+								Content="{Binding IssueReason}"
+								FontSize="10"
+								Margin="0 4 8 0"
+								Width="auto"
+								Height="23"
+								Padding="8 2 8 4"
+								xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800, Delay=1100}"
+								Opacity="0.9"
+								Style="{StaticResource HeaderToggleButtonStyle}"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</ui:SimpleStackPanel>
+
+			<ui:SimpleStackPanel x:Name="ShippingActions" Visibility="{Binding AppState.CombinedFilter.CreateManifestButtonVisibility}" Orientation="Horizontal">
 				<TextBlock
 					x:Name="ActionsText"
 					HorizontalAlignment="Left"
@@ -191,7 +238,7 @@
 					FontSize="10"
 					Margin="0 4 8 0"
 					Padding="8 2 8 4"
-					Visibility="{Binding AppState.CombinedFilter.CreateManifestButtonVisibility}"
+					
 					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
 					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnCreateDHLManifest}"
 					CommandParameter="{Binding }"
@@ -269,51 +316,7 @@
 					Opacity="0.9"
 					Style="{StaticResource UnassignButtonStyle}"/>
 			</ui:SimpleStackPanel>
-			<ui:SimpleStackPanel x:Name="IssueReasons"  Orientation="Horizontal">
-				<TextBlock
-					HorizontalAlignment="Left"
-					VerticalAlignment="Center"
-					Margin="40 0 4 0"
-					Visibility="{Binding AppState.CombinedFilter.IssueReasonsVisibility}"
-					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800, Delay=1000}"
-					Style="{DynamicResource SubtitleTextBlockStyle}"
-					FontWeight="Black"
-					Text="Issue Reasons: "/>
-				<ToggleButton
-					Cursor="Hand"
-					Content="All"
-					FontSize="10"
-					Margin="0 4 8 0"
-					Width="auto"
-					Height="auto"
-					Visibility="{Binding AppState.CombinedFilter.IssueReasonsVisibility}"
-					Padding="8 2 8 4"
-					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800, Delay=1100}"
-					Opacity="0.9"
-					Style="{StaticResource HeaderToggleButtonStyle}"/>
-				<ItemsControl ItemsSource="{Binding ProductionIssuesReasons}" Visibility="{Binding AppState.CombinedFilter.IssueReasonsVisibility}">
-					<ItemsControl.ItemsPanel>
-						<ItemsPanelTemplate>
-							<ui:SimpleStackPanel Orientation="Horizontal" />
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<ToggleButton
-								Cursor="Hand"
-								Content="{Binding IssueReason}"
-								FontSize="10"
-								Margin="0 4 8 0"
-								Width="auto"
-								Height="23"
-								Padding="8 2 8 4"
-								xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800, Delay=1100}"
-								Opacity="0.9"
-								Style="{StaticResource HeaderToggleButtonStyle}"/>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
-			</ui:SimpleStackPanel>
+			
 		</ui:SimpleStackPanel>
 
 		
@@ -325,7 +328,7 @@
 				             MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
 				             MinWidth="1912"
 							 Opacity="0"
-				             ScrollViewer.CanContentScroll="True"
+				             ScrollViewer.CanContentScroll="False"
 				             VirtualizingPanel.ScrollUnit="Pixel"
 				             Style="{DynamicResource CustomListViewStyle}">
 				<ui:ListView.ItemTemplate>

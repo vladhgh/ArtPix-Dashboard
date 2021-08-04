@@ -276,8 +276,9 @@ namespace ArtPix_Dashboard.API
 			var apiRequest = "/shipping/shipping-manifests/dhl";
 			var req = new RestRequest(apiRequest).AddJsonBody(request).AddHeader("Accept", "application/json").AddHeader("Authorization", "Bearer " + BearerToken);
 			req.AlwaysMultipartFormData = true;
-			Debug.WriteLine($"API GET: {request}");
-			return await Client.PostAsync<DhlManifestModel>(req);
+			Debug.WriteLine($"API POST: {apiRequest}");
+			var res =  await Client.PostAsync<DhlManifestModel>(req);
+			return res;
 		}
 
 		#endregion
@@ -286,7 +287,7 @@ namespace ArtPix_Dashboard.API
 
 		public static async Task<OrderModel> GetOrdersAsync(CombinedFilterModel combinedFilter)
 		{
-			var today = DateTime.Now.Date.ToString("yyyy-MM-dd");
+		var today = DateTime.Now.Date.ToString("yyyy-MM-dd");
 			var request = $"/order?page={combinedFilter.pageNumber}&per_page={combinedFilter.perPage}";
 			foreach (var propertyInfo in combinedFilter.GetType().GetProperties())
 			{
