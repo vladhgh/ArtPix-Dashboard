@@ -358,7 +358,7 @@ namespace ArtPix_Dashboard.Models.Order
 		{
 			get 
 			{
-				_estimateProcessingMaxDate = String.IsNullOrEmpty(_estimateProcessingMaxDate) ? DateTime.Parse(ShipBy, CultureInfo.CurrentUICulture).AddHours(-5).ToString(CultureInfo.CurrentUICulture).Split(' ')[0] : DateTime.Parse(_estimateProcessingMaxDate, CultureInfo.CurrentUICulture).AddHours(-5).ToString(CultureInfo.CurrentUICulture).Split(' ')[0];
+				_estimateProcessingMaxDate = String.IsNullOrEmpty(_estimateProcessingMaxDate) ? DateTime.Parse(ShipBy, CultureInfo.CurrentUICulture).AddHours(-5).ToString(CultureInfo.CurrentUICulture).Split(' ')[0] : DateTime.Parse(_estimateProcessingMaxDate, CultureInfo.CurrentUICulture).ToString(CultureInfo.CurrentUICulture).Split(' ')[0];
 				return _estimateProcessingMaxDate;
 			}
 			set => _estimateProcessingMaxDate = value;

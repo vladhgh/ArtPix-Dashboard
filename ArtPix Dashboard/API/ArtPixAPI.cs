@@ -560,7 +560,7 @@ namespace ArtPix_Dashboard.API
 				res.Data.ForEach(x =>
 				{
 					if (DateTime.Parse(x.Order.UpdatedAt, CultureInfo.CurrentUICulture).AddHours(-5) >
-					    DateTime.Parse(today + " 7:00:00", CultureInfo.CurrentUICulture))
+						DateTime.Parse(today + " 7:00:00", CultureInfo.CurrentUICulture))
 						orderList.Add(x);
 				});
 

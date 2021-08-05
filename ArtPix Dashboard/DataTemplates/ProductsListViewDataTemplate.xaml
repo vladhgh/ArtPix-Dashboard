@@ -218,7 +218,7 @@
 																					</ToolTipService.ToolTip>
 						</TextBlock>
 					</ui:SimpleStackPanel>
-					<ui:SimpleStackPanel Orientation="Horizontal" Margin="0 5 0 0" Spacing="8">
+					<ui:SimpleStackPanel Orientation="Horizontal" Visibility="{Binding ProductButtonsVisibility}" Margin="0 5 0 0" Spacing="8">
 						<Button 
 								Cursor="Hand"
 								Visibility="{Binding VitroMarkButtonVisibility, Mode=OneWay}"

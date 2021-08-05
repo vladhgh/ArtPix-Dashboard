@@ -55,7 +55,7 @@ namespace ArtPix_Dashboard.Models.ProductionIssue
 			        {
 				        originalText = Regex.Replace(ErrorText.Split('|')[1], "<.*?>", String.Empty);
 			        }
-					return originalText.Replace("&amp;", "&").Replace("&quot;", "\"");
+					return originalText.Replace("&amp;", "&").Replace("&quot;", "\"").Remove(0, 1);
 		        }
 
 		        return null;

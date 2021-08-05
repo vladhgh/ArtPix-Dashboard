@@ -203,7 +203,7 @@
 							</ToolTipService.ToolTip>
 						</TextBlock>
 					</ui:SimpleStackPanel>
-					<ui:SimpleStackPanel Orientation="Horizontal" Margin="0 5 0 0" Spacing="8">
+					<ui:SimpleStackPanel Orientation="Horizontal" Margin="0 5 0 0"  Spacing="8">
 						<Button 
 								Cursor="Hand"
 								IsEnabled="{Binding ElementName=ShippingDashboardPage, Path=DataContext.AppState.CurrentSession.IsVitroMarkRunning}"
@@ -234,13 +234,7 @@
 								CommandParameter="{Binding}"
 								Opacity="0.9"
 								Style="{DynamicResource ManualCompleteButtonStyle}"/>
-						<Button
-								Cursor="Hand"
-								Content="Print QR"
-								Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnPrintQR}"
-								CommandParameter="{Binding }"
-								Style="{DynamicResource CustomButtonStyle}"
-								Opacity="0.9"/>
+				
 						<Button
 								Cursor="Hand"
 								Content="Show Order ->"

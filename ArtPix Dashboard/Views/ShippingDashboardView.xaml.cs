@@ -108,7 +108,7 @@ namespace ArtPix_Dashboard.Views
 		{
 			if (kind == 0) // LOADING END
 			{
-				if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
+				if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup == "Production Issues" && IssuesListView.Opacity == 0)
 				{
 					Animation.FadeOut(ProgressRingImage);
 					Animation.FadeIn(IssuesListView);
@@ -125,7 +125,7 @@ namespace ArtPix_Dashboard.Views
 				{
 					Animation.FadeOut(NoResultsText);
 				}
-				if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
+				if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup == "Production Issues" && IssuesListView.Opacity == 1)
 				{
 					Animation.FadeIn(ProgressRingImage);
 					Animation.FadeOut(IssuesListView);

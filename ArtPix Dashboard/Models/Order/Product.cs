@@ -27,6 +27,8 @@ namespace ArtPix_Dashboard.Models.Order
 
 		private Visibility _productionIssueButtonsVisibility;
 
+
+
 		public Visibility ProductionIssueButtonsVisibility
 		{
 			get

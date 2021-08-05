@@ -35,50 +35,7 @@
         </ui:SimpleStackPanel>
 		<Border Padding="12 12 12 24" Margin="0 12 0 0" BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="1" CornerRadius="8">
 			<ui:SimpleStackPanel Orientation="Vertical">
-				<ui:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center"  Spacing="12">
-					<ui:SimpleStackPanel Orientation="Vertical" HorizontalAlignment="Center" >
-						<TextBlock
-					        Text="Select Reason:"
-					        FontSize="18"
-					        FontWeight="Bold"
-					        Style="{DynamicResource BaseTextBlockStyle}"
-					        Margin="0 10 0 5"/>
-						<ComboBox
-					        x:Name="Combo1"  
-					        SelectedIndex="4"
-					        ui:ControlHelper.PlaceholderText="Pick a reason"
-					        Width="205"
-					        Cursor="Hand"
-					        Style="{StaticResource AssignMachineComboBoxStyle}">
-							<system:String>Bad Crystal</system:String>
-							<system:String>Employee Error</system:String>
-							<system:String>Retoucher Error</system:String>
-							<system:String>Machine Error</system:String>
-							<system:String>Technical Error</system:String>
-						</ComboBox>
-					</ui:SimpleStackPanel>
-					<ui:SimpleStackPanel Orientation="Vertical">
-						<TextBlock
-							Text="Assign Machine:"
-							FontSize="18"
-							FontWeight="Bold"
-							Style="{DynamicResource BaseTextBlockStyle}"
-							Margin="0 10 0 5"/>
-						<ComboBox
-							x:Name="Combo2"  
-							ui:ControlHelper.PlaceholderText="Assign Machine"
-							ItemsSource="{Binding Machines}"
-							Width="205"
-							Cursor="Hand"
-							Style="{StaticResource AssignMachineComboBoxStyle}">
-							<ComboBox.ItemTemplate>
-								<DataTemplate>
-									<TextBlock Text="{Binding Name}"/>
-								</DataTemplate>
-							</ComboBox.ItemTemplate>
-						</ComboBox>
-					</ui:SimpleStackPanel>
-				</ui:SimpleStackPanel>
+
 				<TextBlock
 		            Text="Leave A Message:"
 		            FontSize="18"

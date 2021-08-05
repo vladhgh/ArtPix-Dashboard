@@ -129,7 +129,7 @@ namespace ArtPix_Dashboard.Views
 
 		private void InitializeSettings()
 		{
-			Utils.Utils.EnableBlur(this);
+			//Utils.Utils.EnableBlur(this);
 			var x = JsonConvert.DeserializeObject<AppStateModel>(Settings.Default.AppState);
 			var statusGroup = "Shipping";
 			if (x != null)

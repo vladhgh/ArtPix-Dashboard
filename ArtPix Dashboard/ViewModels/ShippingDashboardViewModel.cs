@@ -30,6 +30,8 @@ using Image = System.Drawing.Image;
 using System.IO;
 using ArtPix_Dashboard.Models.IssueReasons;
 using ArtPix_Dashboard.Models.ProductionIssue;
+using System.Text;
+using Datum = ArtPix_Dashboard.Models.Order.Datum;
 
 namespace ArtPix_Dashboard.ViewModels
 {
@@ -41,6 +43,7 @@ namespace ArtPix_Dashboard.ViewModels
 
 		private Product SelectedItem;
 		private Models.Order.Datum SelectedOrder;
+		private Models.ProductionIssue.Datum SelectedIssue;
 		private FrameworkElement progressRingImage;
 		private FrameworkElement orderExpander;
 
@@ -390,6 +393,18 @@ namespace ArtPix_Dashboard.ViewModels
 			{
 				ProductionIssuesReasons.Clear();
 				ProductionIssues = await ArtPixAPI.GetProductionIssuesAsync("1", "100");
+				foreach (var issue in ProductionIssues.Data)
+				{
+					if (issue.ProductionIssueReason == null)
+					{
+						byte[] data = Convert.FromBase64String(issue.ErrorText);
+						string decodedString = Encoding.UTF8.GetString(data);
+						issue.ProductionIssueReason = new Models.ProductionIssue.Datum.IssueReason()
+						{
+							Reason = decodedString
+						};
+					}
+				}
 				var issuesList = ProductionIssues.Data.Select(issue => issue.ProductionIssueReason.Reason).ToList();
 
 				var dateGrouped = from s in issuesList
@@ -500,13 +515,40 @@ namespace ArtPix_Dashboard.ViewModels
 
 		private async void OpenRedoDialog(object param)
 		{
-			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Models.Order.Product)param).IdOrders);
-			var product = order.Products.SingleOrDefault(p => p.MachineAssignItemId == ((Models.Order.Product)param).MachineAssignItemId);
+			Datum order;
+			Product product;
+			if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
+			{
+				var issue = ProductionIssues.Data.SingleOrDefault(p => p.Order.Id == ((Models.ProductionIssue.Datum)param).Order.Id);
+				order = new Datum()
+				{
+					NameOrder = issue.Order.Name
+				};
+				product = new Product()
+				{
+					IdProducts = issue.ProductId,
+					IdOrders = issue.Order.Id,
+					MachineAssignErrorId = issue.Id,
+					MachineAssignItemId = issue.MachineAssignItemId,
+					MachineId = issue.MachineId.ToString(),
+				};
+			} else
+			{
+				order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Models.Order.Product)param).IdOrders);
+				product = order.Products.SingleOrDefault(p => p.MachineAssignItemId == ((Models.Order.Product)param).MachineAssignItemId);
+			}
 			var machines = await ArtPixAPI.GetMachines(product.IdProducts);
 			var dialog = new RedoDialog(machines);
 			var result = await dialog.ShowAsync();
 			if (result != ContentDialogResult.Primary) return;
-			ToggleOrderLoadingAnimation(1, order.NameOrder);
+
+			if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
+			{
+				ToggleMainLoadingAnimation(1);
+			} else
+			{
+				ToggleOrderLoadingAnimation(1, order.NameOrder);
+			}
 			var requestBody = new ResolveProductionIssueRequest()
 			{
 				machine_assign_error_id = product.MachineAssignErrorId,
@@ -538,8 +580,15 @@ namespace ArtPix_Dashboard.ViewModels
 				System.IO.Directory.Delete($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.MachineAssignItemId}", true);
 				Utils.Utils.Notifier.ShowSuccess($"Local Files Removed Successfully For Product {product.MachineAssignItemId}!");
 			}
-			await UpdateOrderInfoAsync(product.IdOrders);
-			ToggleOrderLoadingAnimation(0, order.NameOrder);
+			if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
+			{
+				View.SendCombinedRequest(new CombinedFilterModel("Production Issues"));
+			}
+			else
+			{
+				await UpdateOrderInfoAsync(product.IdOrders);
+				ToggleOrderLoadingAnimation(0, order.NameOrder);
+			}
 		}
 
 		#endregion
@@ -654,6 +703,28 @@ namespace ArtPix_Dashboard.ViewModels
 			}
 		}
 
+		public void PrintQrCodeFromProductionIssues(object o, PrintPageEventArgs e)
+		{
+			var item = SelectedIssue;
+			QRCodeGenerator qrGenerator = new QRCodeGenerator();
+			QRCodeData qrCodeData = qrGenerator.CreateQrCode("\t" + $"{item.Order.Id}-{item.ProductId}-{item.MachineAssignItemId}" + "\n", QRCodeGenerator.ECCLevel.Q);
+			QRCode qrCode = new QRCode(qrCodeData);
+			var qr = qrCode.GetGraphic(20);
+			qr = Utils.Utils.ResizeImage(qr, 95, 95);
+			var img = (System.Drawing.Image)qr;
+			System.Drawing.Point loc = new System.Drawing.Point(0, 0);
+			Rectangle rect = new Rectangle(2, 2, 225, 88);
+			e.Graphics.DrawImage(img, loc);
+			if (SelectedIssue.Order.Name.Length > 6)
+			{
+				e.Graphics.DrawString($"{SelectedIssue.Order.Name}", new Font("Consolas", 9), new SolidBrush(Color.Black), 95, 45);
+			}
+			else
+			{
+				e.Graphics.DrawString($"{SelectedIssue.Order.Name}", new Font("Consolas", 12), new SolidBrush(Color.Black), 125, 45);
+			}
+		}
+
 		#endregion
 
 		#region REENGRAVE DIALOG - DONE - ✅
@@ -764,27 +835,58 @@ namespace ArtPix_Dashboard.ViewModels
 
 		#endregion
 
-		#region MANUAL COMPLETED DIALOG - NOT DONE - NEED TO ADD PRINT QR CHECKBOX - ❎
+		#region MANUAL COMPLETED DIALOG
 
 		private async void OpenManualCompleteDialog(object param)
 		{
-			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Product)param).IdOrders);
-			var item = order.Products.SingleOrDefault(p => p.MachineAssignItemId == ((Product)param).MachineAssignItemId);
 			var dialog = new ManualCompleteDialog();
 			var result = await dialog.ShowAsync();
 			if (result != ContentDialogResult.Primary) return;
-			ToggleOrderLoadingAnimation(1, order.NameOrder);
-			var newStatus = new ChangeMachineAssignItemStatusRequest()
+			if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
 			{
-				machine_assign_item_id = item.MachineAssignItemId,
-				new_status = "success_manually",
-				order_id = item.IdOrders,
-				order_name = order.NameOrder,
-				product_id = item.IdProducts
-			};
-			await ArtPixAPI.ChangeMachineAssignItemStatusAsync(newStatus);
-			await UpdateOrderInfoAsync(order.IdOrders);
-			ToggleOrderLoadingAnimation(0, order.NameOrder);
+				var order = ProductionIssues.Data.SingleOrDefault(p => p.Order.Id == ((Models.ProductionIssue.Datum)param).Order.Id);
+				var newStatus = new ChangeMachineAssignItemStatusRequest()
+				{
+					machine_assign_item_id = order.MachineAssignItemId,
+					new_status = "success_manually",
+					order_id = order.Order.Id,
+					order_name = order.Order.Name,
+					product_id = order.ProductId
+				};
+				await ArtPixAPI.ChangeMachineAssignItemStatusAsync(newStatus);
+				if ((bool)dialog.QrCodeCheckBox.IsChecked)
+				{
+					SelectedIssue = order;
+					PrintDocument pd = new PrintDocument();
+					pd.PrinterSettings.DefaultPageSettings.PaperSize = new PaperSize("QR", 62, 29);
+					pd.OriginAtMargins = false;
+					pd.PrintPage += PrintQrCodeFromProductionIssues;
+					pd.Print();
+					Utils.Utils.Notifier.ShowSuccess($" QR code for product {order.ProductId} printed successfully!");
+				}
+				View.SendCombinedRequest(new CombinedFilterModel("Production Issues"));
+
+			} else
+			{
+				var order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Product)param).IdOrders);
+				var item = order.Products.SingleOrDefault(p => p.MachineAssignItemId == ((Product)param).MachineAssignItemId);
+				ToggleOrderLoadingAnimation(1, order.NameOrder);
+				var newStatus = new ChangeMachineAssignItemStatusRequest()
+				{
+					machine_assign_item_id = item.MachineAssignItemId,
+					new_status = "success_manually",
+					order_id = item.IdOrders,
+					order_name = order.NameOrder,
+					product_id = item.IdProducts
+				};
+				if ((bool)dialog.QrCodeCheckBox.IsChecked)
+				{
+					PrintQR(order);
+				}
+				await ArtPixAPI.ChangeMachineAssignItemStatusAsync(newStatus);
+				await UpdateOrderInfoAsync(order.IdOrders);
+				ToggleOrderLoadingAnimation(0, order.NameOrder);
+			}
 		}
 
 		#endregion
@@ -827,12 +929,18 @@ namespace ArtPix_Dashboard.ViewModels
 
 		#endregion
 
-		#region ANIMATION CONTROL - DONE - ✅
+		#region ANIMATION CONTROL
 
 		private void ToggleMainLoadingAnimation(int kind)
 		{
 			if (kind == 0)
 			{
+				if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
+				{
+					Animation.FadeIn(View.IssuesListView);
+					Animation.FadeOut(View.ProgressRingImage);
+					return;
+				}
 				Animation.FadeOut(View.ProgressRingImage);
 				Animation.FadeIn(View.ShippingItemsListView);
 				return;
@@ -840,6 +948,12 @@ namespace ArtPix_Dashboard.ViewModels
 
 			if (kind == 1)
 			{
+				if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
+				{
+					Animation.FadeOut(View.IssuesListView);
+					Animation.FadeIn(View.ProgressRingImage);
+					return;
+				}
 				Animation.FadeOut(View.ShippingItemsListView);
 				Animation.FadeIn(View.ProgressRingImage);
 			}
