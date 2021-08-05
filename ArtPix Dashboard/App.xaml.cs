@@ -41,7 +41,7 @@ namespace ArtPix_Dashboard
 						{
 	                        MainView.MainViewModel.AppState.CombinedFilter = new CombinedFilterModel("Search", "", "", param);
 	                        MainView.SetActiveButton(null, "None");
-	                        MainView.ContentFrame.Navigate(MainView.ShippingView, MainView.MainViewModel.AppState);
+	                        MainView.ShippingView.SendCombinedRequest(MainView.MainViewModel.AppState.CombinedFilter);
 	                    }
 	                }
 	                catch (Exception ex)

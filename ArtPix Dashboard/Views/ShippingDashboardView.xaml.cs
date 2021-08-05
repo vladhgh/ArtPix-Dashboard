@@ -26,6 +26,8 @@ using Button = System.Windows.Controls.Button;
 using ListView = ModernWpf.Controls.ListView;
 using MessageBox = System.Windows.Forms.MessageBox;
 using System.Text.RegularExpressions;
+using System.Windows.Data;
+using ArtPix_Dashboard.Models.ProductionIssue;
 
 namespace ArtPix_Dashboard.Views
 {
@@ -630,6 +632,38 @@ namespace ArtPix_Dashboard.Views
 			{
 				Console.WriteLine("Name: {0}, Engraved: {1}", result.Name, result.Count);
 			}
+		}
+
+		private void IssueReasonButtonOnClick(object sender, RoutedEventArgs e)
+		{
+			foreach (var reason in ViewModel.ProductionIssuesReasons)
+			{
+				if (reason.Reason == ((ToggleButton) sender).Tag.ToString())
+				{
+					reason.IsChecked = true;
+					continue;
+				}
+				reason.IsChecked = false;
+			}
+			
+
+			ViewModel.AppState.CombinedFilter.SelectedIssueReason = ((ToggleButton) sender).Tag.ToString();
+			CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(IssuesListView.ItemsSource);
+			if (ViewModel.AppState.CombinedFilter.SelectedIssueReason == "All")
+			{
+				view.Filter = null;
+				return;
+			}
+			view.Filter = UserFilter;
+
+			//SendCombinedRequest(new CombinedFilterModel("Search", "", ((ToggleButton)sender).Tag.ToString()));
+		}
+
+		private bool UserFilter(object item)
+		{
+			if (String.IsNullOrEmpty(ViewModel.AppState.CombinedFilter.SelectedIssueReason))
+				return true;
+			return ((Models.ProductionIssue.Datum) item).ProductionIssueReason.Reason.IndexOf(ViewModel.AppState.CombinedFilter.SelectedIssueReason, StringComparison.OrdinalIgnoreCase) >= 0;
 		}
 	}
 }

@@ -7,13 +7,13 @@
 		<Setter Property="IsTabStop" Value="False"/>
 		<Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
 		<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
-		<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+		<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Visible"/>
 		<Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False"/>
 		<Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
 		<Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
 		<Setter Property="UseSystemFocusVisuals" Value="{DynamicResource UseSystemFocusVisuals}"/>
 		<Setter Property="FocusVisualStyle" Value="{DynamicResource {x:Static SystemParameters.FocusVisualStyleKey}}"/>
-		<Setter Property="ui:ScrollViewerHelper.AutoHideScrollBars" Value="{DynamicResource AutoHideScrollBars}"/>
+		<Setter Property="ui:ScrollViewerHelper.AutoHideScrollBars" Value="False"/>
 		<Setter Property="ItemsPanel">
 			<Setter.Value>
 				<ItemsPanelTemplate>
@@ -26,8 +26,8 @@
 				<ControlTemplate TargetType="{x:Type ui:ListView}">
 					<Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}" SnapsToDevicePixels="True">
 						<ScrollViewer
-	                        utils1:ScrollAnimationBehavior.IsEnabled="True"                         
-	                        utils1:ScrollAnimationBehavior.TimeDuration="00:00:00.20"
+	                        utils1:ScrollAnimationBehavior.IsEnabled="False"                         
+	                        utils1:ScrollAnimationBehavior.TimeDuration="00:00:00.30"
 	                        utils1:ScrollAnimationBehavior.PointsToScroll="16"
 	                        x:Name="ScrollViewer" ui:ScrollViewerHelper.AutoHideScrollBars="{TemplateBinding ui:ScrollViewerHelper.AutoHideScrollBars}" Focusable="False" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" Style="{DynamicResource {x:Type ScrollViewer}}" KeyboardNavigation.TabNavigation="{TemplateBinding KeyboardNavigation.TabNavigation}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
 							<ItemsPresenter Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>

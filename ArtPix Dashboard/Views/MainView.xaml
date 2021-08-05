@@ -17,6 +17,7 @@
 		MinWidth="1920"
 		MaxWidth="1920"
 		MinHeight="900"
+		WindowStartupLocation="CenterScreen"
 		Loaded="MainViewOnLoaded"
 		Closing="Window_Closing"
 		IsTabStop="True"

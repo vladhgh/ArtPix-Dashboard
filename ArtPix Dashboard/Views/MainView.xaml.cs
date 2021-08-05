@@ -144,8 +144,8 @@ namespace ArtPix_Dashboard.Views
 			MainViewModel.AppState.NavigationStack = new List<string>();
 			MainViewModel.AppState.SessionTimeOut = Int32.MaxValue;
 
-			Window.Top = 0;
-			Window.Left = 0;
+			Window.Top = Settings.Default.Top;
+			Window.Left = Settings.Default.Left;
 			Window.Width = Settings.Default.Width;
 			Window.Height = Settings.Default.Height;
 			SwitchStatusPaneGroupToType(statusGroup);

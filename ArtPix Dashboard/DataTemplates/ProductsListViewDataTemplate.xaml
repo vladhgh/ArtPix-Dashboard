@@ -87,25 +87,63 @@
 
 					</ui:SimpleStackPanel>
 
-					<ui:SimpleStackPanel Orientation="Horizontal" Visibility="Collapsed" >
+					<ui:SimpleStackPanel Orientation="Horizontal" Margin="0 2 0 0">
 						<TextBlock
-																			Text="{Binding IdProducts, StringFormat=Product ID: {0:F0}}"
-																			HorizontalAlignment="Left"
-																			Foreground="LightGray"
-																			Style="{DynamicResource BaseTextBlockStyle}"
-																			TextTrimming="CharacterEllipsis"
-																			TextWrapping="NoWrap"
-																			Margin="0 0 10 0"/>
+								Text="Product Id: "
+								HorizontalAlignment="Left"
+								Foreground="White"
+								Style="{DynamicResource BaseTextBlockStyle}"
+								TextTrimming="CharacterEllipsis"
+								TextWrapping="NoWrap"
+								Margin="0 0 2 0"/>
 						<TextBlock
-																			Text="{Binding MachineAssignItemId, StringFormat=Copy ID: {0:F0}}"
-																			HorizontalAlignment="Left"
-																			Foreground="LightGray"
-																			Style="{DynamicResource BaseTextBlockStyle}"
-																			TextTrimming="CharacterEllipsis"
-																			TextWrapping="NoWrap"/>
-
+								Text="{Binding IdProducts}"
+								HorizontalAlignment="Left"
+								Foreground="LightGray"
+								Style="{DynamicResource BaseTextBlockStyle}"
+								TextTrimming="CharacterEllipsis"
+								TextWrapping="NoWrap"
+								Margin="0 0 12 0">
+							<TextBlock.InputBindings>
+								<MouseBinding Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.CopyToClipboard}" CommandParameter="{Binding IdProducts}"  MouseAction="LeftClick" />
+							</TextBlock.InputBindings>
+							<ToolTipService.ToolTip>
+								<ToolTip
+									Content="Click To Copy!"
+									Placement="MousePoint"
+									HorizontalOffset="20"
+									VerticalOffset="20"/>
+							</ToolTipService.ToolTip>
+						</TextBlock>
+						<TextBlock
+							Text="Copy Id: "
+							HorizontalAlignment="Left"
+							Foreground="White"
+							Style="{DynamicResource BaseTextBlockStyle}"
+							TextTrimming="CharacterEllipsis"
+							TextWrapping="NoWrap"
+							Margin="0 0 2 0"/>
+						<TextBlock
+							Text="{Binding MachineAssignItemId}"
+							HorizontalAlignment="Left"
+							Foreground="LightGray"
+							Style="{DynamicResource BaseTextBlockStyle}"
+							TextTrimming="CharacterEllipsis"
+							TextWrapping="NoWrap"
+							Margin="0 0 12 0">
+							<TextBlock.InputBindings>
+								<MouseBinding Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.CopyToClipboard}" CommandParameter="{Binding MachineAssignItemId}"  MouseAction="LeftClick" />
+							</TextBlock.InputBindings>
+							<ToolTipService.ToolTip>
+								<ToolTip
+									Content="Click To Copy!"
+									Placement="MousePoint"
+									HorizontalOffset="20"
+									VerticalOffset="20"/>
+							</ToolTipService.ToolTip>
+						</TextBlock>
 					</ui:SimpleStackPanel>
-					<ui:SimpleStackPanel Orientation="Horizontal" Spacing="6" Margin="0 4 0 0">
+					<ui:SimpleStackPanel Orientation="Horizontal" Visibility="{Binding ProductionIssueButtonsVisibility}" Spacing="6" >
 						<TextBlock
 																				Text="Employee:"
 																				HorizontalAlignment="Left"
@@ -121,7 +159,7 @@
 																				Style="{DynamicResource BaseTextBlockStyle}"
 																				Foreground="LightGray"/>
 					</ui:SimpleStackPanel>
-					<ui:SimpleStackPanel Orientation="Horizontal" Spacing="6">
+					<ui:SimpleStackPanel Orientation="Horizontal" Visibility="{Binding CustomerEngravingVisibility}" Spacing="6">
 						<TextBlock
 																						Text="Text Engraving:"
 																						HorizontalAlignment="Left"
@@ -153,9 +191,7 @@
 																								Style="{DynamicResource BaseTextBlockStyle}"
 																								Foreground="LightGray"/>
 					</ui:SimpleStackPanel>
-
-
-					<ui:SimpleStackPanel Orientation="Horizontal" Spacing="6">
+					<ui:SimpleStackPanel Orientation="Horizontal" Spacing="6" Visibility="{Binding ProductionIssueButtonsVisibility, Mode=OneWay}">
 						<TextBlock
 																					Text="Filename:"
 																					HorizontalAlignment="Left"
@@ -186,7 +222,7 @@
 						<Button 
 								Cursor="Hand"
 								Visibility="{Binding VitroMarkButtonVisibility, Mode=OneWay}"
-								IsEnabled="{Binding ElementName=ShippingDashboardPage, Path=DataContext.AppState.IsVitroMarkRunning}"
+								IsEnabled="{Binding ElementName=ShippingDashboardPage, Path=DataContext.AppState.CurrentSession.IsVitroMarkRunning}"
 								Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnVitromark}"
 								CommandParameter="{Binding Retouch.Filename}"
 								Content="VitroMark"

@@ -186,18 +186,6 @@
 					Style="{DynamicResource SubtitleTextBlockStyle}"
 					FontWeight="Black"
 					Text="Issue Reasons: "/>
-				<ToggleButton
-					Cursor="Hand"
-					Content="All"
-					FontSize="10"
-					Margin="0 4 8 0"
-					Width="auto"
-					Height="auto"
-					Visibility="{Binding AppState.CombinedFilter.IssueReasonsVisibility}"
-					Padding="8 2 8 4"
-					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800, Delay=1100}"
-					Opacity="0.9"
-					Style="{StaticResource HeaderToggleButtonStyle}"/>
 				<ItemsControl ItemsSource="{Binding ProductionIssuesReasons}" Visibility="{Binding AppState.CombinedFilter.IssueReasonsVisibility}">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
@@ -212,9 +200,11 @@
 								FontSize="10"
 								Margin="0 4 8 0"
 								Width="auto"
+								IsChecked="{Binding IsChecked}"
 								Height="23"
 								Padding="8 2 8 4"
-								xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800, Delay=1100}"
+								Click="IssueReasonButtonOnClick"
+								Tag="{Binding Reason}"
 								Opacity="0.9"
 								Style="{StaticResource HeaderToggleButtonStyle}"/>
 						</DataTemplate>
@@ -319,7 +309,7 @@
 			
 		</ui:SimpleStackPanel>
 
-		
+
 		<Border Grid.Row="4" Grid.Column="1"  BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="1" CornerRadius="8">
 			<ui:ListView x:Name="ShippingItemsListView"
 				             ItemsSource="{Binding Orders.Data}"
@@ -328,7 +318,7 @@
 				             MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
 				             MinWidth="1912"
 							 Opacity="0"
-				             ScrollViewer.CanContentScroll="False"
+				             ScrollViewer.CanContentScroll="True"
 				             VirtualizingPanel.ScrollUnit="Pixel"
 				             Style="{DynamicResource CustomListViewStyle}">
 				<ui:ListView.ItemTemplate>
@@ -357,26 +347,19 @@
 								<Expander.Resources>
 									<Storyboard x:Key="sbCollapse">
 										<DoubleAnimation Storyboard.TargetName="ProductsGrid"
-																 From="1" 
-																 To="0" 
-																 Duration="0:0:0.4"
-																 DesiredFrameRate="60"
-																 BeginTime="0:0:0"
-																 Storyboard.TargetProperty="Opacity"/>
-										<DoubleAnimation Storyboard.TargetName="expander"
-																 From="1" 
-																 To="0" 
-																 Duration="0:0:1.5" 
-																 DesiredFrameRate="60"
-																 BeginTime="0:0:4"
-																 Storyboard.TargetProperty="(FrameworkElement.LayoutTransform).(ScaleTransform.ScaleY)"/>
+										                 From="1" 
+										                 To="0" 
+										                 Duration="0:0:0.3"
+										                 DesiredFrameRate="60"
+										                 Storyboard.TargetProperty="Opacity"/>
+										
 									</Storyboard>
 									<Storyboard x:Key="sbExpand">
 
 										<DoubleAnimation Storyboard.TargetName="ProductsGrid"
 															 From="0" 
 															 To="1" 
-															 Duration="0:0:0.4"
+															 Duration="0:0:0.3"
 															 DesiredFrameRate="60"
 															 Storyboard.TargetProperty="Opacity"/>
 									</Storyboard>
@@ -413,7 +396,7 @@
 													</TextBlock.InputBindings>
 														<ToolTipService.ToolTip>
 															<ToolTip
-															Content="Click To Copy Order Name!"
+															Content="Click To Copy!"
 															Placement="MousePoint"
 															HorizontalOffset="20"
 															VerticalOffset="30"/>
@@ -454,7 +437,7 @@
 														</DataTemplate>
 													</ItemsControl.ItemTemplate>
 												</ItemsControl>
-												<Button Background="{Binding UpdatedAtAgeColor, Mode=OneWay}" Visibility="{Binding ProductStatusVisibility}" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Margin="0 0 10 0">
+												<Button Background="{Binding UpdatedAtAgeColor, Mode=OneWay}" Visibility="{Binding UpdatedAtAgeVisibility}" Style="{DynamicResource InactiveButtonStyle}" Height="auto" Opacity="0.9" Margin="0 0 10 0">
 													<TextBlock
 																Text="{Binding UpdatedAtAge, Mode=OneWay, StringFormat=Updated: {0:0}}"
 																FontSize="10"
@@ -537,6 +520,7 @@
 												IsSelectionEnabled="False"
 												BorderThickness="1"
 												MaxHeight="520"
+												Cursor="Hand"
 												CornerRadius="8"
 												Focusable="True"
 												ScrollViewer.CanContentScroll="True"
@@ -780,7 +764,7 @@
 				</ui:ListView.ItemTemplate>
 			</ui:ListView>
 		</Border>
-		<Border Grid.Row="4" Grid.Column="1" Visibility="{Binding AppState.CombinedFilter.IssueReasonsVisibility}"  BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="1" CornerRadius="8">
+		<Border Grid.Row="4" Grid.Column="1"  BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" Visibility="{Binding AppState.CombinedFilter.IssueReasonsVisibility}" BorderThickness="0" CornerRadius="8">
 			<ui:ListView x:Name="IssuesListView"
 			             ItemsSource="{Binding ProductionIssues.Data}"
 			             IsSelectionEnabled="False"
@@ -791,6 +775,7 @@
 			             CornerRadius="8"
 			             Focusable="True"
 						 Opacity="0"
+						 Cursor="Hand"
 			             ScrollViewer.CanContentScroll="True"
 			             BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
 			             VirtualizingPanel.ScrollUnit="Pixel"

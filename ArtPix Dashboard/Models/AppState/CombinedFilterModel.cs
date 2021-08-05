@@ -331,6 +331,14 @@ namespace ArtPix_Dashboard.Models.AppState
 			set => SetProperty(ref _selectedFilterGroup, value);
 		}
 
+		private string _selectedIssueReason = "All";
+
+		public string SelectedIssueReason
+		{
+			get => _selectedIssueReason;
+			set => SetProperty(ref _selectedIssueReason, value);
+		}
+
 		private string _machine;
 
 		public string machine

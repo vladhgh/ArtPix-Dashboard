@@ -23,7 +23,7 @@ namespace ArtPix_Dashboard.Models.ProductionIssue
 				var bmp = new BitmapImage();
 				bmp.BeginInit();
 				bmp.CacheOption = BitmapCacheOption.None;
-				bmp.DecodePixelWidth = 175;
+				bmp.DecodePixelWidth = 150;
 				bmp.UriSource = new Uri(UrlRenderImg, UriKind.RelativeOrAbsolute);
 				bmp.EndInit();
 				return bmp;

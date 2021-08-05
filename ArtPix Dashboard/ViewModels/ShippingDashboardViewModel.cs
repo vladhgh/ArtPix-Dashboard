@@ -124,6 +124,13 @@ namespace ArtPix_Dashboard.ViewModels
 			get => _onManualComplete;
 			set => SetProperty(ref _onManualComplete, value);
 		}
+		private ICommand _showOrderCommand;
+		public ICommand ShowOrderCommand
+		{
+			get => _showOrderCommand;
+			set => SetProperty(ref _showOrderCommand, value);
+		}
+
 		private ICommand _onCreateDHLManifest;
 		public ICommand OnCreateDHLManifest
 		{
@@ -257,6 +264,11 @@ namespace ArtPix_Dashboard.ViewModels
 			OnImageClick = new DelegateCommand(OpenImage);
 			OnAddIssue = new DelegateCommand(OpenAddIssueDialog);
 			OnAssignJobs = new DelegateCommand(OpenAssignJobsDialog);
+			ShowOrderCommand = new DelegateCommand(o =>
+			{
+				View.SendCombinedRequest(new CombinedFilterModel("Search", "", o.ToString()));
+				AppState.NavigationStack.Add("Search");
+			});
 			OnUnassignAllJobs = new DelegateCommand(OpenUnassignAllDialog);
 			ReloadList = new DelegateCommand(async param => await GetOrdersList(AppState.CombinedFilter));
 			OnOA = new DelegateCommand(Commands.OpenOrderOnOA);
@@ -376,19 +388,36 @@ namespace ArtPix_Dashboard.ViewModels
 
 			if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
 			{
+				ProductionIssuesReasons.Clear();
 				ProductionIssues = await ArtPixAPI.GetProductionIssuesAsync("1", "100");
 				var issuesList = ProductionIssues.Data.Select(issue => issue.ProductionIssueReason.Reason).ToList();
-				var dateGrouped = issuesList.GroupBy(x => x)
-					.Select(x => new { Issue = x.Key, Count = x.Distinct().Count() });
 
+				var dateGrouped = from s in issuesList
+						  group s by s into grp
+					select new
+					{
+						num = grp.Key,
+						count = grp.Count()
+					};
+				var allCount = 0;
 				foreach (var result in dateGrouped)
 				{
+					//Debug.WriteLine($"Issue: {result.Issue}  Count: {result.Count}");
 					ProductionIssuesReasons.Add(new Models.IssueReasons.Datum()
 					{
-						Reason = result.Issue,
-						Count = result.Count
+						Reason = result.num,
+						Count = result.count,
+						IsChecked = false
 					});
+					allCount += result.count;
 				}
+
+				ProductionIssuesReasons.Insert(0, new Models.IssueReasons.Datum()
+				{
+					Reason = "All",
+					Count = allCount,
+					IsChecked = true
+				});
 			}
 
 			View.ShippingItemsListView.ItemsSource = Orders.Data;
