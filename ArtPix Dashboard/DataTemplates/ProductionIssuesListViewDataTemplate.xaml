@@ -57,7 +57,7 @@
 										Text="{Binding Order.Name}"
 										HorizontalAlignment="Left"
 										Foreground="LightGray"
-										Style="{DynamicResource BaseTextBlockStyle}"
+										Style="{DynamicResource UnderlineTextBlockStyle}"
 										TextTrimming="CharacterEllipsis"
 										TextWrapping="NoWrap"
 										Margin="0 0 12 0">
@@ -84,7 +84,7 @@
 								Text="{Binding Order.Id}"
 								HorizontalAlignment="Left"
 								Foreground="LightGray"
-								Style="{DynamicResource BaseTextBlockStyle}"
+								Style="{DynamicResource UnderlineTextBlockStyle}"
 								TextTrimming="CharacterEllipsis"
 								TextWrapping="NoWrap"
 								Margin="0 0 12 0">
@@ -111,7 +111,7 @@
 								Text="{Binding ProductId}"
 								HorizontalAlignment="Left"
 								Foreground="LightGray"
-								Style="{DynamicResource BaseTextBlockStyle}"
+								Style="{DynamicResource UnderlineTextBlockStyle}"
 								TextTrimming="CharacterEllipsis"
 								TextWrapping="NoWrap"
 								Margin="0 0 12 0"/>
@@ -189,7 +189,7 @@
 									Text="{Binding Product.FilenameLatest}"
 									HorizontalAlignment="Left"
 									VerticalAlignment="Center"
-									Style="{DynamicResource BaseTextBlockStyle}"
+									Style="{DynamicResource UnderlineTextBlockStyle}"
 									Foreground="LightGray">
 							<TextBlock.InputBindings>
 								<MouseBinding Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.CopyToClipboard}" CommandParameter="{Binding Product.FilenameLatest}"  MouseAction="LeftClick" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,14 +37,34 @@ namespace ArtPix_Dashboard.Models.Order
 		[JsonProperty("real_cost")]
 		public object RealCost { get; set; }
 
+		private string _pickUpAt;
+
 		[JsonProperty("pickup_at")]
-		public object PickupAt { get; set; }
+		public string PickupAt
+		{
+			get
+			{
+				_pickUpAt = Utils.Utils.SelectDateText(_pickUpAt, false);
+				return _pickUpAt;
+			}
+			set => _pickUpAt = value;
+		}
 
 		[JsonProperty("real_pickup_at")]
 		public object RealPickupAt { get; set; }
 
+		private string _deliveryAt;
+
 		[JsonProperty("delivery_at")]
-		public object DeliveryAt { get; set; }
+		public string DeliveryAt
+	{
+			get
+			{
+				_deliveryAt = String.IsNullOrEmpty(_deliveryAt) ? null : DateTime.Parse(_deliveryAt, CultureInfo.CurrentUICulture).ToString(CultureInfo.CurrentUICulture).Split(' ')[0];
+				return _deliveryAt;
+			}
+			set => _deliveryAt = value;
+		}
 
 		[JsonProperty("real_delivery_at")]
 		public object RealDeliveryAt { get; set; }

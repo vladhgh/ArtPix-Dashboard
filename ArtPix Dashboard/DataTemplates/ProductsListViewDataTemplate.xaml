@@ -100,13 +100,14 @@
 								Text="{Binding IdProducts}"
 								HorizontalAlignment="Left"
 								Foreground="LightGray"
-								Style="{DynamicResource BaseTextBlockStyle}"
 								TextTrimming="CharacterEllipsis"
 								TextWrapping="NoWrap"
+								Style="{DynamicResource UnderlineTextBlockStyle}"
 								Margin="0 0 12 0">
 							<TextBlock.InputBindings>
 								<MouseBinding Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.CopyToClipboard}" CommandParameter="{Binding IdProducts}"  MouseAction="LeftClick" />
 							</TextBlock.InputBindings>
+							
 							<ToolTipService.ToolTip>
 								<ToolTip
 									Content="Click To Copy!"
@@ -127,13 +128,14 @@
 							Text="{Binding MachineAssignItemId}"
 							HorizontalAlignment="Left"
 							Foreground="LightGray"
-							Style="{DynamicResource BaseTextBlockStyle}"
+							Style="{DynamicResource UnderlineTextBlockStyle}"
 							TextTrimming="CharacterEllipsis"
 							TextWrapping="NoWrap"
 							Margin="0 0 12 0">
 							<TextBlock.InputBindings>
 								<MouseBinding Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.CopyToClipboard}" CommandParameter="{Binding MachineAssignItemId}"  MouseAction="LeftClick" />
 							</TextBlock.InputBindings>
+							
 							<ToolTipService.ToolTip>
 								<ToolTip
 									Content="Click To Copy!"

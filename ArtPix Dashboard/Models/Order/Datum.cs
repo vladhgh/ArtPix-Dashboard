@@ -18,7 +18,7 @@ namespace ArtPix_Dashboard.Models.Order
 	{
 		#region VISIBILITY
 
-		public Visibility IsLateShipment => (DateTime.Parse(EstimateProcessingMaxDate, CultureInfo.CurrentUICulture).AddHours(19) < DateTime.Now) && Status != "Shipped" ? Visibility.Visible : Visibility.Collapsed;
+		public Visibility IsLateShipment => (DateTime.Parse(_estimateProcessingMaxDate, CultureInfo.CurrentUICulture).AddHours(19) < DateTime.Now) && Status != "Shipped" ? Visibility.Visible : Visibility.Collapsed;
 		public Visibility IssueResolved => HasIssueResolved && Status != "Shipped" ? Visibility.Visible : Visibility.Collapsed;
 
 		private Visibility _expanderVisibility = Visibility.Visible;
@@ -55,16 +55,38 @@ namespace ArtPix_Dashboard.Models.Order
 
 		}
 
+		public Visibility _findBestServiceButtonVisibility = Visibility.Visible;
+
 		public Visibility FindBestServiceButtonVisibility
 		{
 			get
 			{
 				if (ShippingOrderInfo != null)
 				{
-					return ShippingOrderInfo.Provider == null ? Visibility.Visible : Visibility.Collapsed;
+					_findBestServiceButtonVisibility = ShippingOrderInfo.Provider == null ? Visibility.Visible : Visibility.Collapsed;
+					return _findBestServiceButtonVisibility;
 				}
-				return Visibility.Hidden;
+				_findBestServiceButtonVisibility = Visibility.Hidden;
+				return _findBestServiceButtonVisibility;
 			}
+			set => SetProperty(ref _findBestServiceButtonVisibility, value);
+
+		}
+		private Visibility _updateBestServiceButtonVisibility = Visibility.Collapsed;
+
+		public Visibility UpdateBestServiceButtonVisibility
+		{
+			get
+			{
+				if (ShippingOrderInfo != null)
+				{
+					_updateBestServiceButtonVisibility = ShippingOrderInfo.Provider != null ? Visibility.Visible : Visibility.Collapsed;
+					return _updateBestServiceButtonVisibility;
+				}
+				_updateBestServiceButtonVisibility = Visibility.Collapsed;
+				return _updateBestServiceButtonVisibility;
+			}
+			set => SetProperty(ref _updateBestServiceButtonVisibility, value);
 
 		}
 
@@ -243,10 +265,12 @@ namespace ArtPix_Dashboard.Models.Order
 			{
 				if (HasIssueOpened)
 				{
-					return "DarkRed";
+					_statusOrderColor = "DarkRed";
+					return _statusOrderColor;
 				}
 
-				return Utils.Utils.SelectStatusColor(Status);
+				_statusOrderColor = Utils.Utils.SelectStatusColor(Status);
+				return _statusOrderColor;
 			}
 			set => SetProperty(ref _statusOrderColor, value);
 		}
@@ -358,8 +382,7 @@ namespace ArtPix_Dashboard.Models.Order
 		{
 			get 
 			{
-				_estimateProcessingMaxDate = String.IsNullOrEmpty(_estimateProcessingMaxDate) ? DateTime.Parse(ShipBy, CultureInfo.CurrentUICulture).AddHours(-5).ToString(CultureInfo.CurrentUICulture).Split(' ')[0] : DateTime.Parse(_estimateProcessingMaxDate, CultureInfo.CurrentUICulture).ToString(CultureInfo.CurrentUICulture).Split(' ')[0];
-				return _estimateProcessingMaxDate;
+				return String.IsNullOrEmpty(_estimateProcessingMaxDate) ? Utils.Utils.SelectDateText(ShipBy, true) : Utils.Utils.SelectDateText(_estimateProcessingMaxDate, false); ;
 			}
 			set => _estimateProcessingMaxDate = value;
 		}

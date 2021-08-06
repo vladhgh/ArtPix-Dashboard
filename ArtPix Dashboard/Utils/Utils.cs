@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -317,6 +318,28 @@ namespace ArtPix_Dashboard.Utils
 				case "Shipped": return "DarkGreen";
 				default: return "#494949";
 			}
+		}
+
+		#endregion
+
+		#region SELECT DATE TEXT
+
+		public static string SelectDateText(string date, bool toChicagoTime)
+		{
+			if (date == null) return null;
+			var text = "";
+			text = toChicagoTime ? DateTime.Parse(date, CultureInfo.CurrentUICulture).AddHours(-5).ToString(CultureInfo.CurrentUICulture).Split(' ')[0] : DateTime.Parse(date, CultureInfo.CurrentUICulture).ToString(CultureInfo.CurrentUICulture).Split(' ')[0];
+			if (text == DateTime.Today.AddDays(1).ToString(CultureInfo.CurrentUICulture).Split(' ')[0])
+			{
+				text = "Tomorrow";
+				return text;
+			}
+			if (text == DateTime.Today.ToString(CultureInfo.CurrentUICulture).Split(' ')[0])
+			{
+				text = "Today";
+				return text;
+			}
+			return text;
 		}
 
 		#endregion

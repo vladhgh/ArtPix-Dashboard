@@ -1007,12 +1007,14 @@ namespace ArtPix_Dashboard.ViewModels
 			{
 				order.IsShippingInformationLoading = true;
 				var res = await ArtPixAPI.FindBestServiceAsync(new FindBestServiceRequest()
-					{order_id = param.ToString()});
+				{ order_id = param.ToString() });
 				order.ShippingOrderInfo = (await ArtPixAPI.GetOrder(param.ToString())).ShippingOrderInfo;
 				order.IsShippingInformationLoading = false;
 				order.IsShippingServiceFound = "Shipping Service Found";
 				order.IsShippingServiceFoundColor = "DarkGreen";
 				order.ShippingInformationPanelVisibility = Visibility.Visible;
+				order.UpdateBestServiceButtonVisibility = Visibility.Visible;
+				order.FindBestServiceButtonVisibility = Visibility.Collapsed;
 			}
 		}
 
