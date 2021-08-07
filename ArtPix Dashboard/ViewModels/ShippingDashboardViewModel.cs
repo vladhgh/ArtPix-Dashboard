@@ -66,6 +66,21 @@ namespace ArtPix_Dashboard.ViewModels
 			get => _productionIssuesReasons;
 			set => SetProperty(ref _productionIssuesReasons, value);
 		}
+
+		private ObservableCollection<CrystalType> _crystalSizes = new();
+		public ObservableCollection<CrystalType> CrystalSizes
+		{
+			get => _crystalSizes;
+			set => SetProperty(ref _crystalSizes, value);
+		}
+
+		private ObservableCollection<EmployeeModel> _employeeList = new();
+		public ObservableCollection<EmployeeModel> EmployeeList
+		{
+			get => _employeeList;
+			set => SetProperty(ref _employeeList, value);
+		}
+
 		private ShippingDashboardView _view;
 		public ShippingDashboardView View
 		{
@@ -367,18 +382,84 @@ namespace ArtPix_Dashboard.ViewModels
 
 		#region ORDERS LIST INITIALIZATION
 
+		public async Task<ObservableCollection<CrystalType>> GetCrystalTypes(CombinedFilterModel combinedFilter)
+		{
+			var crystalTypes = new ObservableCollection<CrystalType>();
+			if (combinedFilter.SelectedFilterGroup == "Ready To Engrave" || combinedFilter.SelectedFilterGroup == "Engraving In Progress" || combinedFilter.SelectedFilterGroup == "Awaiting Model" || combinedFilter.SelectedFilterGroup.Split(' ')[0] == "Machine")
+			{
+				OrderModel readyToEngraveItems = String.IsNullOrEmpty(combinedFilter.machine) ? await ArtPixAPI.GetOrdersAsync(new CombinedFilterModel(combinedFilter.SelectedFilterGroup) { perPage = 150 }) : await ArtPixAPI.GetOrdersAsync(new CombinedFilterModel("Machine", combinedFilter.machine) { perPage = 150 });
+				var sizes = new List<string>();
+				foreach (var item in readyToEngraveItems.Data)
+				{
+					foreach (var product in item.Products)
+					{
+						if (Utils.Utils.IsCrystal(product))
+						{
+							sizes.Add(product.CrystalType.Sku);
+						}
+					}
+				}
+				var dateGrouped = from s in sizes
+								  group s by s into grp
+								  select new
+								  {
+									  Name = grp.Key,
+									  Count = grp.Count()
+								  };
+				var allCount = 0;
+				foreach (var item in dateGrouped)
+				{
+					//Debug.WriteLine($"Name: {item.Name}, Count: {item.Count}");
+					crystalTypes.Add(new CrystalType()
+					{
+						CrystalName = $"{item.Name} ({item.Count})",
+						IsChecked = false
+					});
+					allCount += item.Count;
+				}
+				crystalTypes.Insert(0, new CrystalType()
+				{
+					CrystalName = $"All ({allCount})",
+					IsChecked = true
+				});
+			}
+			return crystalTypes;
+		}
+
 		public async Task GetOrdersList(CombinedFilterModel combinedFilter)
 		{
+			CrystalSizes = await GetCrystalTypes(combinedFilter);
+			
+
 
 			if (AppState.CombinedFilter.SelectedFilterGroup == "Engraved Today")
 			{
+				EmployeeList.Clear();
+				var logs = await ArtPixAPI.GetEngravedTodayItemsEntityLogsAsync(500);
+				var dateGrouped = logs.Data.GroupBy(x => x.Data.User)
+					.Select(x => new { Name = x.Key, Count = x.Distinct().Count() });
+				var allCount = 0;
+				foreach (var result in dateGrouped)
+				{
+					EmployeeList.Add(new EmployeeModel()
+					{
+						Name = $"{result.Name} ({result.Count})",
+						EngravedCrystalCount = result.Count
+					});
+					allCount += result.Count;
+					//Console.WriteLine("Name: {0}, Engraved: {1}", result.Name, result.Count);
+				}
+				EmployeeList.Insert(0, new EmployeeModel()
+				{
+					Name = $"All ({allCount})"
+				});
 				EngravedTodayItems = await ArtPixAPI.GetEngravedTodayItemsAsync(combinedFilter.machine, combinedFilter.pageNumber.ToString(), combinedFilter.perPage.ToString());
 				Orders.Meta = EngravedTodayItems.Meta;
-				Orders.Data = new List<Models.Order.Datum>();
+				Orders.Data = new List<Datum>();
 				View.ShippingItemsListView.ItemsSource = EngravedTodayItems.Data;
 				foreach (var item in EngravedTodayItems.Data)
 				{
-					Orders.Data.Add(new Models.Order.Datum());
+					Orders.Data.Add(new Datum());
 				}
 				if (combinedFilter.withPages)
 				{
@@ -593,18 +674,46 @@ namespace ArtPix_Dashboard.ViewModels
 
 		#endregion
 
-		#region REWORK DIALOG - DONE - ✅
+		#region REWORK DIALOG
 		private async void OpenReworkDialog(object param)
 		{
-			var order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Models.Order.Product)param).IdOrders);
-			var product = order.Products.SingleOrDefault(p => p.MachineAssignItemId == ((Models.Order.Product)param).MachineAssignItemId);
+			Datum order;
+			Product product;
+			if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
+			{
+				var issue = ProductionIssues.Data.SingleOrDefault(p => p.Order.Id == ((Models.ProductionIssue.Datum)param).Order.Id);
+				order = new Datum()
+				{
+					NameOrder = issue.Order.Name
+				};
+				product = new Product()
+				{
+					IdProducts = issue.ProductId,
+					IdOrders = issue.Order.Id,
+					MachineAssignErrorId = issue.Id,
+					MachineAssignItemId = issue.MachineAssignItemId,
+					MachineId = issue.MachineId.ToString(),
+				};
+			}
+			else
+			{
+				order = Orders.Data.SingleOrDefault(p => p.IdOrders == ((Models.Order.Product)param).IdOrders);
+				product = order.Products.SingleOrDefault(p => p.MachineAssignItemId == ((Models.Order.Product)param).MachineAssignItemId);
+			}
 			var dialog = new ReworkDialog();
 			var result = await dialog.ShowAsync();
 			switch (result)
 			{
 				case ContentDialogResult.Primary:
 					{
-						ToggleOrderLoadingAnimation(1, order.NameOrder);
+						if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
+						{
+							ToggleMainLoadingAnimation(1);
+						}
+						else
+						{
+							ToggleOrderLoadingAnimation(1, order.NameOrder);
+						}
 						var requestBody = new ResolveProductionIssueRequest()
 						{
 							machine_assign_error_id = product.MachineAssignErrorId,
@@ -624,12 +733,26 @@ namespace ArtPix_Dashboard.ViewModels
 							Utils.Utils.Notifier.ShowSuccess($"Local Files Removed Successfully For Product {product.MachineAssignItemId}!");
 						}
 						await UpdateOrderInfoAsync(order.IdOrders);
-						ToggleOrderLoadingAnimation(0, order.NameOrder);
+						if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
+						{
+							ToggleMainLoadingAnimation(0);
+						}
+						else
+						{
+							ToggleOrderLoadingAnimation(0, order.NameOrder);
+						}
 						return;
 					}
 				case ContentDialogResult.Secondary:
 					{
-						ToggleOrderLoadingAnimation(1, order.NameOrder);
+						if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
+						{
+							ToggleMainLoadingAnimation(1);
+						}
+						else
+						{
+							ToggleOrderLoadingAnimation(1, order.NameOrder);
+						}
 						var requestBody = new ResolveProductionIssueRequest()
 						{
 							machine_assign_error_id = product.MachineAssignErrorId,
@@ -650,7 +773,14 @@ namespace ArtPix_Dashboard.ViewModels
 						}
 
 						await UpdateOrderInfoAsync(order.IdOrders);
-						ToggleOrderLoadingAnimation(0, order.NameOrder);
+						if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
+						{
+							ToggleMainLoadingAnimation(0);
+						}
+						else
+						{
+							ToggleOrderLoadingAnimation(0, order.NameOrder);
+						}
 						return;
 					}
 				default: return;

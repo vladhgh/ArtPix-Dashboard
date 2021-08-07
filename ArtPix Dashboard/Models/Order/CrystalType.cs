@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ArtPix_Dashboard.Utils.Helpers;
 using Newtonsoft.Json;
 
 namespace ArtPix_Dashboard.Models.Order
 {
 	[Serializable()]
-	public class CrystalType
+	public class CrystalType : PropertyChangedListener
 	{
 		[JsonProperty("id_crystals")]
 		public int IdCrystals { get; set; }
@@ -30,6 +31,21 @@ namespace ArtPix_Dashboard.Models.Order
 
 		[JsonProperty("sku")]
 		public string Sku { get; set; }
+
+		private string _crystalName;
+		public string CrystalName
+		{
+			get => _crystalName;
+			set => _crystalName = value;
+		}
+
+		private bool _isChecked;
+		public bool IsChecked
+		{
+			get => _isChecked;
+			set => SetProperty(ref _isChecked, value);
+		}
+
 
 		public int has_3d { get; set; }
 

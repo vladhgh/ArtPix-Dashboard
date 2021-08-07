@@ -16,13 +16,13 @@
 				<Image
 					VerticalAlignment="Center"
 					HorizontalAlignment="Center"
-					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeInAndGrow}, Event=Loaded, Duration=600, Delay=300}"
+					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=300}"
 					Source="{Binding Product.ProductImage}"
 					Width="150"
 					Height="150"
 					Stretch="Uniform"/>
 			</Button>
-			<ui:SimpleStackPanel VerticalAlignment="Center" Orientation="Vertical" Spacing="5" Margin="0,0,0,0" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeInAndGrow}, Event=Loaded, Duration=600, Delay=400}">
+			<ui:SimpleStackPanel VerticalAlignment="Center" Orientation="Vertical" Spacing="5" Margin="0,0,0,0" xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Loaded, Duration=600, Delay=400}">
 				<ui:SimpleStackPanel Orientation="Horizontal">
 					<TextBlock
 							Text="{Binding ProductionIssueReason.Reason, Mode=OneTime}"

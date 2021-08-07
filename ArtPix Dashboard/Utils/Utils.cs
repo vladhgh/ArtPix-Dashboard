@@ -326,7 +326,7 @@ namespace ArtPix_Dashboard.Utils
 
 		public static string SelectDateText(string date, bool toChicagoTime)
 		{
-			if (date == null) return null;
+			if (date == null || date == "Today" || date == "Tomorrow") return null;
 			var text = "";
 			text = toChicagoTime ? DateTime.Parse(date, CultureInfo.CurrentUICulture).AddHours(-5).ToString(CultureInfo.CurrentUICulture).Split(' ')[0] : DateTime.Parse(date, CultureInfo.CurrentUICulture).ToString(CultureInfo.CurrentUICulture).Split(' ')[0];
 			if (text == DateTime.Today.AddDays(1).ToString(CultureInfo.CurrentUICulture).Split(' ')[0])

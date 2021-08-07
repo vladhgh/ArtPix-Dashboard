@@ -610,5 +610,31 @@ namespace ArtPix_Dashboard.Views
 		{
 			LoginButtonText.Text = MainViewModel.AppState.EmployeeName;
 		}
+
+		private void EngravedTodayTextBlockMouseEnter(object sender, MouseEventArgs e)
+		{
+			var timeElapsed = DateTime.Now - DateTime.Parse(DateTime.Now.Date.ToString("yyyy/MM/dd" + " 7:00:00"));
+			EngravedTodayButtonText.FontSize = 15;
+			EngravedTodayButtonText.Text = "Avg. Performance: " + String.Format("{0:N}", MainViewModel.EngravingStats.EngravedTodayCount / timeElapsed.TotalHours) + " per hour";
+		}
+
+		private void EngravedTodayTextBlockMouseLeave(object sender, MouseEventArgs e)
+		{
+			EngravedTodayButtonText.FontSize = 20;
+			EngravedTodayButtonText.Text = "Engraved Today: " + MainViewModel.EngravingStats.EngravedTodayCount;
+		}
+
+		private void ShippedTodayTextBlockMouseEnter(object sender, MouseEventArgs e)
+		{
+			var timeElapsed = DateTime.Now - DateTime.Parse(DateTime.Now.Date.ToString("yyyy/MM/dd" + " 7:00:00"));
+			ShippedTodayButtonText.FontSize = 15;
+			ShippedTodayButtonText.Text = "Avg. Performance: " + String.Format("{0:N}", MainViewModel.ShippingStats.ShippedToday / timeElapsed.TotalHours) + " per hour";
+		}
+
+		private void ShippedTodayTextBlockMouseLeave(object sender, MouseEventArgs e)
+		{
+			ShippedTodayButtonText.FontSize = 20;
+			ShippedTodayButtonText.Text = "Shipped Today: " + MainViewModel.ShippingStats.ShippedToday;
+		}
 	}
 }

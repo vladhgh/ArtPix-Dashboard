@@ -152,8 +152,6 @@ namespace ArtPix_Dashboard.Models.MachineAssignedItem
 			set => _estimatedDeliveryMaxDate = value;
 		}
 
-
-
 		[JsonProperty("created_at")]
 		public string CreatedAt { get; set; }
 
@@ -164,6 +162,7 @@ namespace ArtPix_Dashboard.Models.MachineAssignedItem
 		public string IpAddress { get; set; }
 
 		private string _shippingType;
+
 		[JsonProperty("shipping_type")]
 		public string ShippingType
 		{
@@ -172,15 +171,19 @@ namespace ArtPix_Dashboard.Models.MachineAssignedItem
 				switch (_shippingType)
 				{
 					case "free_shipping": return "Free Shipping";
-					case "standard": return "Standard";
-					case "economy": return "Economy";
-					case "express": return "Express";
-					case "high_priority_express": return "High Priority Express";
-					case "local_pickup": return "Pick-Up";
-					case "amazon": return "Amazon";
-					case "amazon_standard": return "Amazon Standard";
-					case "amazon_expedited": return "Amazon Expedited";
-					default: return "Not Found";
+					case "standard": return "Standard Shipping";
+					case "economy": return "Economy Shipping";
+					case "express": return "Express Shipping";
+					case "high_priority_express": return "High Priority Express Shipping";
+					case "local_pickup": return "Fashion Outlets Pickup";
+					case "amazon": return "Amazon Free Shipping";
+					case "amazon_standard": return "Amazon Standard Shipping";
+					case "amazon_expedited": return "Amazon Expedited Shipping";
+					case "amazon_second_day": return "Amazon Second Day Shipping";
+					case "amazon_next_day": return "Amazon Next Day Shipping";
+					case "dhl_parcel_direct": return "DHL Parcel Direct Shipping";
+					case "dhl_parcel_standard": return "DHL Parcel Standard";
+					default: return _shippingType;
 				}
 			}
 			set => _shippingType = value;
@@ -191,16 +194,20 @@ namespace ArtPix_Dashboard.Models.MachineAssignedItem
 			{
 				switch (_shippingType)
 				{
-					case "free_shipping": return "Gray";
-					case "standard": return "Green";
-					case "economy": return "Green";
-					case "express": return "Red";
-					case "high_priority_express": return "Red";
-					case "local_pickup": return "Brown";
+					case "free_shipping": return "DarkGray";
+					case "standard": return "DarkGreen";
+					case "economy": return "DarkGreen";
+					case "express": return "#D50101";
+					case "high_priority_express": return "#D50101";
+					case "local_pickup": return "DarkGray";
 					case "amazon": return "Orange";
-					case "amazon_standard": return "Green";
+					case "amazon_standard": return "DarkGreen";
 					case "amazon_expedited": return "Orange";
-					default: return "White";
+					case "amazon_second_day": return "#D50101";
+					case "amazon_next_day": return "#D50101";
+					case "dhl_parcel_direct": return "DarkGreen";
+					case "dhl_parcel_standard": return "DarkGreen";
+					default: return "DarkGray";
 				}
 			}
 		}

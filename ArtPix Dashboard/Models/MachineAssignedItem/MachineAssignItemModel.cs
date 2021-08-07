@@ -34,6 +34,11 @@ namespace ArtPix_Dashboard.Models.MachineAssignedItem
 						newData.Remove(item);
 						Meta.Total--;
 					}
+					if (item.Order.StatusOrder != "processing" && item.Order.StatusEngraving == "ready_to_engrave")
+					{
+						newData.Remove(item);
+						Meta.Total--;
+					}
 				}
 				return newData;
 			}

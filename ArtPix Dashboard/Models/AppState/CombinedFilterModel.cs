@@ -78,6 +78,7 @@ namespace ArtPix_Dashboard.Models.AppState
 						IsFilterGroupEnabled = false;
 						IsShipByTodayButtonEnabled = true;
 						MachineComboBoxVisibility = Visibility.Visible;
+						CrystalSizesPanelVisibility = Visibility.Visible;
 						return;
 					}
 
@@ -100,6 +101,7 @@ namespace ArtPix_Dashboard.Models.AppState
 						IsFilterGroupEnabled = false;
 						IsShipByTodayButtonEnabled = false;
 						MachineComboBoxVisibility = Visibility.Visible;
+						EmployeePanelVisibility = Visibility.Visible;
 						return;
 					}
 
@@ -120,6 +122,7 @@ namespace ArtPix_Dashboard.Models.AppState
 						store_name = "";
 						IsFilterGroupEnabled = false;
 						IsShipByTodayButtonEnabled = true;
+						CrystalSizesPanelVisibility = Visibility.Visible;
 						return;
 					}
 
@@ -141,6 +144,7 @@ namespace ArtPix_Dashboard.Models.AppState
 						IsFilterGroupEnabled = false;
 						IsShipByTodayButtonEnabled = true;
 						MachineComboBoxVisibility = Visibility.Visible;
+						CrystalSizesPanelVisibility = Visibility.Visible;
 						return;
 					}
 
@@ -163,6 +167,7 @@ namespace ArtPix_Dashboard.Models.AppState
 						IsShipByTodayButtonEnabled = false;
 						UnAssignJobsFromMachineButtonVisibility = Visibility.Visible;
 						PcPowerButtonsVisibility = Visibility.Visible;
+						CrystalSizesPanelVisibility = Visibility.Visible;
 						return;
 					}
 
@@ -257,6 +262,24 @@ namespace ArtPix_Dashboard.Models.AppState
 		}
 
 		
+		private Visibility _employeePanelVisibility = Visibility.Collapsed;
+
+		public Visibility EmployeePanelVisibility
+
+		{
+			get => _employeePanelVisibility;
+			set => SetProperty(ref _employeePanelVisibility, value);
+		}
+
+		private Visibility _crystalSizesPanelVisibility = Visibility.Collapsed;
+
+		public Visibility CrystalSizesPanelVisibility
+
+		{
+			get => _crystalSizesPanelVisibility;
+			set => SetProperty(ref _crystalSizesPanelVisibility, value);
+		}
+
 		private Visibility _issueReasonsVisibility = Visibility.Collapsed;
 
 		public Visibility IssueReasonsVisibility

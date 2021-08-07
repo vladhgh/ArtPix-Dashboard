@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using ArtPix_Dashboard.Models.Order;
 using ArtPix_Dashboard.Utils.Helpers;
 using Newtonsoft.Json;
 
@@ -41,7 +42,9 @@ namespace ArtPix_Dashboard.Models.MachineAssignedItem
 		public Visibility IssueResolved => Visibility.Collapsed;
 
 		public Visibility EngravedAgeVisibility => Visibility.Visible;
+		public Visibility UpdatedAtAgeVisibility => Status == "Shipped" || Status == "Engraving Done" ? Visibility.Collapsed : Visibility.Visible;
 
+		public Visibility TrackingNumberTextBlockVisibility => Visibility.Collapsed;
 
 		public BitmapImage OrderImage
 		{
@@ -93,6 +96,14 @@ namespace ArtPix_Dashboard.Models.MachineAssignedItem
 		{
 			get => Utils.Utils.SelectStatusText(_status);
 			set => SetProperty(ref _status, value);
+		}
+
+		private bool _isExpanded;
+
+		public bool IsExpanded
+		{
+			get => _isExpanded;
+			set => SetProperty(ref _isExpanded, value);
 		}
 
 		public string ShippingType
@@ -202,20 +213,20 @@ namespace ArtPix_Dashboard.Models.MachineAssignedItem
 
 				if (diff.Days == 1)
 				{
-					return "DarkOrange";
+					return "#bf6900";
 				}
 
 				if (diff.Days < 1)
 				{
-					return "Gray";
+					return "#494949";
 				}
 
 				if (diff.Hours == 1)
 				{
-					return "Gray";
+					return "#494949";
 				}
 
-				return diff.Hours < 1 ? "Gray" : "nan";
+				return diff.Hours < 1 ? "#494949" : "nan";
 			}
 		}
 

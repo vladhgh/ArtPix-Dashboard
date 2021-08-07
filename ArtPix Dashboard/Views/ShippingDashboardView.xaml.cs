@@ -252,6 +252,14 @@ namespace ArtPix_Dashboard.Views
 			ShippingDashboardPage.Focus();
 		}
 
+		private void UnloadKeyPressEventListener()
+		{
+			ShippingDashboardPage.PreviewKeyDown -= KeyPressEventListener;
+			ShippingDashboardPage.KeyDown -= ShippingDashboardPage_KeyDown; ;
+			ShippingDashboardPage.PreviewKeyUp -= ShippingDashboardPage_KeyDown;
+			ShippingDashboardPage.KeyUp -= ShippingDashboardPage_KeyDown;
+		}
+
 		public void KeyPressEventListener(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Tab && !_tabPressed)
@@ -392,92 +400,125 @@ namespace ArtPix_Dashboard.Views
 
 		private async void Expander_OnExpanded(object sender, RoutedEventArgs e)
 		{
-			if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup == "Engraved Today") return;
-			var scrollViewer = Utils.Utils.GetScrollViewer(ShippingItemsListView) as ScrollViewer;
-			var thisOrder = ViewModel.Orders.Data.FirstOrDefault(i => i.NameOrder == ((Expander)sender).Tag.ToString());
-			var expandSite = ((Expander)sender).Template.FindName("ExpandSite", ((Expander)sender)) as UIElement;
-			expandSite.Visibility = Visibility.Visible;
-			var sb1 = (Storyboard)((Expander)sender).FindResource("sbExpand");
-			sb1.Begin();
-			foreach (var order in ViewModel.Orders.Data)
+			if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup == "Engraved Today")
 			{
-				order.IsExpanded = order.IdOrders == thisOrder.IdOrders;
-			}
-			if (ViewModel.Orders.Data.IndexOf(thisOrder) == ViewModel.Orders.Data.Count + 1)
-			{
-				ScrollAnimationBehavior.AnimateScroll(scrollViewer,
-					scrollViewer.VerticalOffset + 1200);
-				ScrollAnimationBehavior.intendedLocation = scrollViewer.VerticalOffset + 1200;
-			} else
-			{
-				ScrollAnimationBehavior.AnimateScroll(scrollViewer,
-					ShippingItemsListView.Items.IndexOf(thisOrder) * ((Expander)sender).ActualHeight);
-				ScrollAnimationBehavior.intendedLocation = ShippingItemsListView.Items.IndexOf(thisOrder) * ((Expander)sender).ActualHeight;
-			}
-
-			if (thisOrder.Status == "Customer Service Issue")
-			{
-				foreach (var product in thisOrder.Products.Where(product => product.Status == "Customer Service Issue"))
+				var scrollViewer = Utils.Utils.GetScrollViewer(ShippingItemsListView) as ScrollViewer;
+				var thisOrder = ViewModel.EngravedTodayItems.Data.FirstOrDefault(i => i.NameOrder == ((Expander)sender).Tag.ToString());
+				var expandSite = ((Expander)sender).Template.FindName("ExpandSite", ((Expander)sender)) as UIElement;
+				expandSite.Visibility = Visibility.Visible;
+				var sb1 = (Storyboard)((Expander)sender).FindResource("sbExpand");
+				sb1.Begin();
+				return;
+				foreach (var order in ViewModel.EngravedTodayItems.Data)
 				{
-					var x = await ArtPixAPI.GetProductHistoryAsync(product.IdProducts);
-					foreach (var comment in x.Data)
+					order.IsExpanded = order.OrderId == thisOrder.OrderId;
+				}
+				if (ViewModel.EngravedTodayItems.Data.IndexOf(thisOrder) == ViewModel.EngravedTodayItems.Data.Count - 1)
+				{
+					ScrollAnimationBehavior.AnimateScroll(scrollViewer,
+						scrollViewer.VerticalOffset + 1200);
+					ScrollAnimationBehavior.intendedLocation = scrollViewer.VerticalOffset + 1200;
+				}
+				else
+				{
+					Debug.WriteLine(ShippingItemsListView.Items.IndexOf(thisOrder));
+					ScrollAnimationBehavior.AnimateScroll(scrollViewer,
+						ShippingItemsListView.Items.IndexOf(thisOrder) * ((Expander)sender).ActualHeight);
+					ScrollAnimationBehavior.intendedLocation = ShippingItemsListView.Items.IndexOf(thisOrder) * ((Expander)sender).ActualHeight;
+				}
+				//return;
+			}
+			else
+			{
+				var scrollViewer = Utils.Utils.GetScrollViewer(ShippingItemsListView) as ScrollViewer;
+				var thisOrder = ViewModel.Orders.Data.FirstOrDefault(i => i.NameOrder == ((Expander)sender).Tag.ToString());
+				var expandSite = ((Expander)sender).Template.FindName("ExpandSite", ((Expander)sender)) as UIElement;
+				expandSite.Visibility = Visibility.Visible;
+				var sb1 = (Storyboard)((Expander)sender).FindResource("sbExpand");
+				sb1.Begin();
+				foreach (var order in ViewModel.Orders.Data)
+				{
+					order.IsExpanded = order.IdOrders == thisOrder.IdOrders;
+				}
+				if (ViewModel.Orders.Data.IndexOf(thisOrder) == ViewModel.Orders.Data.Count + 1)
+				{
+					ScrollAnimationBehavior.AnimateScroll(scrollViewer,
+						scrollViewer.VerticalOffset + 1200);
+					ScrollAnimationBehavior.intendedLocation = scrollViewer.VerticalOffset + 1200;
+				}
+				else
+				{
+					ScrollAnimationBehavior.AnimateScroll(scrollViewer,
+						ShippingItemsListView.Items.IndexOf(thisOrder) * ((Expander)sender).ActualHeight);
+					ScrollAnimationBehavior.intendedLocation = ShippingItemsListView.Items.IndexOf(thisOrder) * ((Expander)sender).ActualHeight;
+				}
+
+				if (thisOrder.Status == "Customer Service Issue")
+				{
+					foreach (var product in thisOrder.Products.Where(product => product.Status == "Customer Service Issue"))
 					{
-						if (comment.Message.Contains("Added issues:"))
+						var x = await ArtPixAPI.GetProductHistoryAsync(product.IdProducts);
+						foreach (var comment in x.Data)
 						{
-							if (comment.Message.Contains("USABLE MANUAL ISSUE"))
+							if (comment.Message.Contains("Added issues:"))
 							{
-								product.Status = comment.Message.Remove(0, 32);
-								continue;
+								if (comment.Message.Contains("USABLE MANUAL ISSUE"))
+								{
+									product.Status = comment.Message.Remove(0, 32);
+									continue;
+								}
+								if (comment.Message.Contains("USABLE AUTO ISSUE"))
+								{
+									product.Status = comment.Message.Remove(0, 30);
+								}
 							}
-							if (comment.Message.Contains("USABLE AUTO ISSUE"))
-							{
-								product.Status = comment.Message.Remove(0, 30);
-							}
+
 						}
-						
 					}
 				}
-			}
 
 
-			if (thisOrder.Status != "Engraving Issue") return;
-			foreach (var product in thisOrder.Products.Where(product => product.Status == "Engraving Issue"))
-			{
-				var productionIssue =
-					await ArtPixAPI.GetProductionIssueAsync(product.MachineAssignItemId.ToString());
-				product.MachineAssignErrorId = productionIssue.Data[0].Id;
-				if (product.MachineId == "34")
+				if (thisOrder.Status != "Engraving Issue") return;
+				foreach (var product in thisOrder.Products.Where(product => product.Status == "Engraving Issue"))
 				{
-					var data = Convert.FromBase64String(productionIssue.Data[0].ErrorText);
-					var issueText = Encoding.UTF8.GetString(data);
-					product.Status = issueText;
-					product.Employee = "Fashion Outlets Employee";
-					return;
-				}
-				product.Status = productionIssue.Data[0].ProductionIssueReason.Reason;
-				if (product.Status == "Text Validation Failed")
-				{
-					var error = productionIssue.Data[0].ErrorText;
-
-					string failedText;
-					string originalText;
-
-					if (error.Split('|').Length > 2)
+					var productionIssue =
+						await ArtPixAPI.GetProductionIssueAsync(product.MachineAssignItemId.ToString());
+					product.MachineAssignErrorId = productionIssue.Data[0].Id;
+					if (product.MachineId == "34")
 					{
-						failedText = Regex.Replace(error.Split('|')[1], "<.*?>", String.Empty);
-						originalText = Regex.Replace(error.Split('|')[2], "<.*?>", String.Empty);
-					} else
-					{
-						failedText = Regex.Replace(error.Split('|')[0], "<.*?>", String.Empty);
-						originalText = Regex.Replace(error.Split('|')[1], "<.*?>", String.Empty);
+						var data = Convert.FromBase64String(productionIssue.Data[0].ErrorText);
+						var issueText = Encoding.UTF8.GetString(data);
+						product.Status = issueText;
+						product.Employee = "Fashion Outlets Employee";
+						return;
 					}
+					product.Status = productionIssue.Data[0].ProductionIssueReason.Reason;
+					if (product.Status == "Text Validation Failed")
+					{
+						var error = productionIssue.Data[0].ErrorText;
 
-					product.FailedTextEngravingPanelVisibility = Visibility.Visible;
-					product.CustomerEngraving = String.IsNullOrWhiteSpace(originalText) ? product.CustomerEngraving : originalText;
-					product.FailedCustomerEngraving = failedText;
+						string failedText;
+						string originalText;
+
+						if (error.Split('|').Length > 2)
+						{
+							failedText = Regex.Replace(error.Split('|')[1], "<.*?>", String.Empty);
+							originalText = Regex.Replace(error.Split('|')[2], "<.*?>", String.Empty);
+						}
+						else
+						{
+							failedText = Regex.Replace(error.Split('|')[0], "<.*?>", String.Empty);
+							originalText = Regex.Replace(error.Split('|')[1], "<.*?>", String.Empty);
+						}
+
+						product.FailedTextEngravingPanelVisibility = Visibility.Visible;
+						product.CustomerEngraving = String.IsNullOrWhiteSpace(originalText) ? product.CustomerEngraving : originalText;
+						product.FailedCustomerEngraving = failedText;
+					}
+					product.Employee = productionIssue.Data[0].User;
 				}
-				product.Employee = productionIssue.Data[0].User;
 			}
+			
 
 		}
 
@@ -664,6 +705,27 @@ namespace ArtPix_Dashboard.Views
 			if (String.IsNullOrEmpty(ViewModel.AppState.CombinedFilter.SelectedIssueReason))
 				return true;
 			return ((Models.ProductionIssue.Datum) item).ProductionIssueReason.Reason.IndexOf(ViewModel.AppState.CombinedFilter.SelectedIssueReason, StringComparison.OrdinalIgnoreCase) >= 0;
+		}
+
+		private void SearchTextBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+		{
+			if (sender.Text.Length == 0)
+			{
+				SetKeyPressEventListener();
+				ViewModel.AppState.CombinedFilter.IsClearSearchButtonEnabled = false;
+				return;
+			}
+			ViewModel.AppState.CombinedFilter.IsClearSearchButtonEnabled = true;
+		}
+
+		private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
+		{
+			UnloadKeyPressEventListener();
+		}
+
+		private void SearchTextBox_LostFocus(object sender, RoutedEventArgs e)
+		{
+			SetKeyPressEventListener();
 		}
 	}
 }

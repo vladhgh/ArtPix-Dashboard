@@ -49,6 +49,9 @@
 						Height="Auto"
 						CornerRadius="4"
 						HorizontalAlignment="Left"
+						TextChanged="SearchTextBox_TextChanged"
+						GotFocus="SearchTextBox_GotFocus"
+						LostFocus="SearchTextBox_LostFocus"
 						QuerySubmitted="SearchTextBoxOnQuerySubmitted"
                         ui:ControlHelper.Header="Search Orders:"
 						ui:ControlHelper.PlaceholderText="Search by order name..."/>
@@ -211,7 +214,7 @@
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
 			</ui:SimpleStackPanel>
-			<ui:SimpleStackPanel x:Name="CrystalSizes"  Orientation="Horizontal">
+			<ui:SimpleStackPanel x:Name="CrystalSizes" Visibility="{Binding AppState.CombinedFilter.CrystalSizesPanelVisibility}" Orientation="Horizontal">
 				<TextBlock
 					HorizontalAlignment="Left"
 					VerticalAlignment="Center"
@@ -219,8 +222,8 @@
 					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800, Delay=1000}"
 					Style="{DynamicResource SubtitleTextBlockStyle}"
 					FontWeight="Black"
-					Text="Crystal Sizes: "/>
-				<ItemsControl ItemsSource="{Binding ProductionIssuesReasons}" >
+					Text="Crystals: "/>
+				<ItemsControl ItemsSource="{Binding CrystalSizes}" >
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
 							<ui:SimpleStackPanel Orientation="Horizontal" />
@@ -230,15 +233,44 @@
 						<DataTemplate>
 							<ToggleButton
 								Cursor="Hand"
-								Content="{Binding IssueReason}"
+								Content="{Binding CrystalName}"
+								FontSize="10"
+								IsChecked="False"
+								Margin="0 4 8 0"
+								Width="auto"
+								Height="23"
+								Padding="8 2 8 4"
+								Opacity="0.9"
+								Style="{StaticResource HeaderToggleButtonStyle}"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</ui:SimpleStackPanel>
+			<ui:SimpleStackPanel x:Name="EmployeePanel" Visibility="{Binding AppState.CombinedFilter.EmployeePanelVisibility}" Orientation="Horizontal">
+				<TextBlock
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					Margin="0 0 4 0"
+					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800, Delay=1000}"
+					Style="{DynamicResource SubtitleTextBlockStyle}"
+					FontWeight="Black"
+					Text="By Employee: "/>
+				<ItemsControl ItemsSource="{Binding EmployeeList}" >
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<ui:SimpleStackPanel Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<ToggleButton
+								Content="{Binding Name}"
 								FontSize="10"
 								Margin="0 4 8 0"
 								Width="auto"
-								IsChecked="{Binding IsChecked}"
+								IsChecked="False"
 								Height="23"
 								Padding="8 2 8 4"
-								Click="IssueReasonButtonOnClick"
-								Tag="{Binding Reason}"
 								Opacity="0.9"
 								Style="{StaticResource HeaderToggleButtonStyle}"/>
 						</DataTemplate>
@@ -278,30 +310,7 @@
 					Click="CreateDailyReportButtonOnClick"
 					Opacity="0.9"
 					Style="{StaticResource RedoButtonStyle}"/>
-				<Button
-					Cursor="Hand"
-					Content="Assign Jobs"
-					FontSize="10"
-					Margin="0 4 8 0"
-					Padding="8 2 8 4"
-					Visibility="{Binding AppState.CombinedFilter.UnAssignJobsFromMachineButtonVisibility}"
-					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
-					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnAssignJobs}"
-					Opacity="0.9"
-					Style="{StaticResource ManualCompleteButtonStyle}"/>
 				
-				<Button
-					Cursor="Hand"
-					Content="Unassign All Jobs"
-					FontSize="10"
-					Margin="0 4 8 0"
-					Padding="8 2 8 4"
-					Visibility="{Binding AppState.CombinedFilter.UnAssignJobsFromMachineButtonVisibility}"
-					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
-					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnUnassignAllJobs}"
-					CommandParameter="{Binding AppState.CombinedFilter.machine}"
-					Opacity="0.9"
-					Style="{StaticResource UnassignButtonStyle}"/>
 
 			</ui:SimpleStackPanel>
 			<ui:SimpleStackPanel x:Name="MachineActions"  Orientation="Horizontal">
@@ -314,6 +323,30 @@
 				Style="{DynamicResource SubtitleTextBlockStyle}"
 				FontWeight="Black"
 				Text="Machine Control: "/>
+				<Button
+					Cursor="Hand"
+					Content="Assign Jobs"
+					FontSize="10"
+					Margin="0 4 8 0"
+					Padding="8 2 8 4"
+					Visibility="{Binding AppState.CombinedFilter.UnAssignJobsFromMachineButtonVisibility}"
+					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
+					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnAssignJobs}"
+					Opacity="0.9"
+					Style="{StaticResource ManualCompleteButtonStyle}"/>
+
+				<Button
+					Cursor="Hand"
+					Content="Unassign All Jobs"
+					FontSize="10"
+					Margin="0 4 8 0"
+					Padding="8 2 8 4"
+					Visibility="{Binding AppState.CombinedFilter.UnAssignJobsFromMachineButtonVisibility}"
+					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
+					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnUnassignAllJobs}"
+					CommandParameter="{Binding AppState.CombinedFilter.machine}"
+					Opacity="0.9"
+					Style="{StaticResource UnassignButtonStyle}"/>
 
 				<Button
 					Cursor="Hand"
@@ -372,7 +405,6 @@
 										IsExpanded="{Binding IsExpanded}"
 										xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800}"
 										Expanded="Expander_OnExpanded"
-										IsEnabled="{Binding IsExpanderEnabled}"
 										Collapsed="Expander_OnCollapsed"
 										Margin="10 0 0 0"
 										Tag="{Binding NameOrder}"
@@ -562,7 +594,7 @@
 												ItemsSource="{Binding Products}"
 												IsSelectionEnabled="False"
 												BorderThickness="1"
-												MaxHeight="520"
+												MaxHeight="450"
 												Cursor="Hand"
 												CornerRadius="8"
 												Focusable="True"
@@ -876,7 +908,7 @@
 														Style="{DynamicResource BaseTextBlockStyle}"
 														Foreground="LightGray"/>
 												</ui:SimpleStackPanel>
-												<ui:SimpleStackPanel Orientation="Horizontal">
+												<ui:SimpleStackPanel Orientation="Horizontal" Visibility="Collapsed">
 													<Button
 														Cursor="Hand"
 														Content="Create Shipping Label"

@@ -404,7 +404,7 @@ namespace ArtPix_Dashboard.Models.Order
 
 		private string _updatedAtAge;
 
-		public Visibility UpdatedAtAgeVisibility => Status == "Shipped" ? Visibility.Collapsed : Visibility.Visible; 
+		public Visibility UpdatedAtAgeVisibility => Status == "Shipped" || Status == "Engraving Done" ? Visibility.Collapsed : Visibility.Visible; 
 
 		public string UpdatedAtAge
 		{

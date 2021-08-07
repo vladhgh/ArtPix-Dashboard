@@ -221,16 +221,20 @@
 							<ToggleButton
 								x:Name="EngravedTodayButton"
 	                            Grid.Column="3"
-	                            Height="auto"
+	                            Height="50"
 								Cursor="Hand"
 								Tag="Engraved Today"
 								Margin="40 0 0 0"
 	                            HorizontalAlignment="Center"
+								MouseEnter="EngravedTodayTextBlockMouseEnter"
+								MouseLeave="EngravedTodayTextBlockMouseLeave"
 								Click="EngravedTodayButtonOnClick"
 	                            Style="{StaticResource HeaderToggleButtonStyle}">
 								<TextBlock
+									x:Name="EngravedTodayButtonText"
 	                                Text="{Binding EngravingStats.EngravedTodayCount, StringFormat=Engraved Today: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
+									
 	                                Style="{DynamicResource SubtitleTextBlockStyle}" />
 								<ToggleButton.Effect>
 									<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
@@ -356,10 +360,13 @@
 	                            HorizontalAlignment="Right"
 	                            Cursor="Hand"
 								Tag="Shipped Today"
-								Height="auto"
+								Height="50"
+								MouseEnter="ShippedTodayTextBlockMouseEnter"
+								MouseLeave="ShippedTodayTextBlockMouseLeave"
 	                            ToolTip="{Binding ShippingStats.OrdersShipped}"
 	                            Style="{StaticResource HeaderToggleButtonStyle}">
 								<TextBlock
+									x:Name="ShippedTodayButtonText"
 	                                Text="{Binding ShippingStats.ShippedToday, StringFormat=Shipped Today: {0:F0}, Mode=OneWay}"
 	                                FontWeight="Black"
 	                                Style="{DynamicResource SubtitleTextBlockStyle}"/>

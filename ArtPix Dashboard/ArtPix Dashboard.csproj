@@ -123,6 +123,7 @@
     <Compile Include="Models\AppState\EngravingStatsModel.cs" />
     <Compile Include="Models\AppState\ShippingStatsModel.cs" />
     <Compile Include="Models\AppState\WindowPropertiesModel.cs" />
+    <Compile Include="Models\Common\EmployeeModel.cs" />
     <Compile Include="Models\Common\Links.cs" />
     <Compile Include="Models\Common\Meta.cs" />
     <Compile Include="Models\DhlManifest\DhlManifestModel.cs" />
