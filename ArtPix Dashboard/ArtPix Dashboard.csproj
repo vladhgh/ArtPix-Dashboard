@@ -140,6 +140,7 @@
     <Compile Include="Models\MachineAssignedItem\MachineAssignItemModel.cs" />
     <Compile Include="Models\MachineAssignedItem\Order.cs" />
     <Compile Include="Models\MachineAssignedItem\Product.cs" />
+    <Compile Include="Models\MachineLogs\MachineLogsModel.cs" />
     <Compile Include="Models\OrderAssignedLogs\Datum.cs" />
     <Compile Include="Models\OrderAssignedLogs\Order.cs" />
     <Compile Include="Models\ProductionIssue\Datum.cs" />

@@ -208,8 +208,7 @@ namespace ArtPix_Dashboard.Models.Order
 					var newStatus = "";
 					foreach (var product in Products)
 					{
-						if (product.CrystalType.Type == "Crystal" || product.CrystalType.Type == "Necklace" ||
-							product.CrystalType.Type == "Keychain" || product.CrystalType.Type == "Fingerprint" || product.CrystalType.Type == "Wine Stopper")
+						if (Utils.Utils.IsCrystal(product))
 						{
 
 							if (product.Status == "3D Model Pending" || product.Status == "3D Model In Progress")

@@ -32,6 +32,8 @@ using ArtPix_Dashboard.Models.IssueReasons;
 using ArtPix_Dashboard.Models.ProductionIssue;
 using System.Text;
 using Datum = ArtPix_Dashboard.Models.Order.Datum;
+using ArtPix_Dashboard.Models.Workstation;
+using ArtPix_Dashboard.Models.MachineLogs;
 
 namespace ArtPix_Dashboard.ViewModels
 {
@@ -435,7 +437,7 @@ namespace ArtPix_Dashboard.ViewModels
 			if (AppState.CombinedFilter.SelectedFilterGroup == "Engraved Today")
 			{
 				EmployeeList.Clear();
-				var logs = await ArtPixAPI.GetEngravedTodayItemsEntityLogsAsync(500);
+				var logs = await ArtPixAPI.GetEngravedTodayItemsEntityLogsAsync(800);
 				var dateGrouped = logs.Data.GroupBy(x => x.Data.User)
 					.Select(x => new { Name = x.Key, Count = x.Distinct().Count() });
 				var allCount = 0;
@@ -446,13 +448,88 @@ namespace ArtPix_Dashboard.ViewModels
 						Name = $"{result.Name} ({result.Count})",
 						EngravedCrystalCount = result.Count
 					});
+
+					var i = 1;
+
+					MachineLogsModel machineLogs = await ArtPixAPI.GetMachineLogsLogsAsync(i, 200, result.Name);
+
+					while (machineLogs.Meta.To - (machineLogs.Meta.CurrentPage * 200) == 0)
+					{
+						i++;
+						var moreMachineLogs = await ArtPixAPI.GetMachineLogsLogsAsync(i, 200, result.Name);
+						foreach(var log in moreMachineLogs.Data)
+						{
+							machineLogs.Data.Add(log);
+						}
+
+						machineLogs.Meta = moreMachineLogs.Meta;
+					}
+
+
+					foreach (var machineLog in machineLogs.Data)
+					{
+						if (machineLog.Raw.Action == "LogOut")
+						{
+							var employee = EmployeeList.FirstOrDefault(x => x.Name == $"{result.Name} ({result.Count})");
+							if (employee.AssignedMachines.FirstOrDefault(x => x.IdMachines == machineLog.MachineId && String.IsNullOrEmpty(x.LogOutTime)) is Machine machine)
+							{
+								machine.LogOutTime = machineLog.Date;
+							} else
+							{
+								employee.AssignedMachines.Add(new Machine()
+								{
+									LogOutTime = machineLog.Date,
+									IdMachines = machineLog.MachineId
+								});
+							}
+						}
+						if (machineLog.Raw.Action == "LogIn")
+						{
+							var employee = EmployeeList.FirstOrDefault(x => x.Name == $"{result.Name} ({result.Count})");
+							if (employee.AssignedMachines.FirstOrDefault(x => x.IdMachines == machineLog.MachineId && String.IsNullOrEmpty(x.LogInTime)) is Machine machine)
+							{
+								machine.LogInTime = machineLog.Date;
+							} else
+							{
+								employee.AssignedMachines.Add(new Machine()
+								{
+									LogInTime = machineLog.Date,
+									IdMachines = machineLog.MachineId
+								});
+							}
+						}
+					}
+					var employee2 = EmployeeList.FirstOrDefault(x => x.Name == $"{result.Name} ({result.Count})");
+					
+					foreach (var machine in employee2.AssignedMachines)
+					{
+						if (String.IsNullOrEmpty(machine.LogInTime))
+						{
+							machine.LogInTime = machineLogs.Data[machineLogs.Data.Count - 1].Date;
+						}
+						if (String.IsNullOrEmpty(machine.LogOutTime))
+						{
+							machine.LogOutTime = machineLogs.Data[0].Date;
+						}
+						if (DateTime.Parse(machine.LogInTime) > DateTime.Parse(machine.LogOutTime))
+						{
+							var login = machine.LogInTime;
+							machine.LogInTime = machine.LogOutTime;
+							machine.LogOutTime = login;
+						}
+					}
+
+					employee2.AveragePerformance = "";
+
 					allCount += result.Count;
-					//Console.WriteLine("Name: {0}, Engraved: {1}", result.Name, result.Count);
 				}
 				EmployeeList.Insert(0, new EmployeeModel()
 				{
 					Name = $"All ({allCount})"
 				});
+
+
+
 				EngravedTodayItems = await ArtPixAPI.GetEngravedTodayItemsAsync(combinedFilter.machine, combinedFilter.pageNumber.ToString(), combinedFilter.perPage.ToString());
 				Orders.Meta = EngravedTodayItems.Meta;
 				Orders.Data = new List<Datum>();

@@ -24,6 +24,7 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using DataFormat = RestSharp.DataFormat;
 using ArtPix_Dashboard.Models.DhlManifest;
 using ArtPix_Dashboard.ViewModels;
+using ArtPix_Dashboard.Models.MachineLogs;
 
 namespace ArtPix_Dashboard.API
 {
@@ -656,12 +657,12 @@ namespace ArtPix_Dashboard.API
 
 		#endregion
 
-		#region GET: ENTITY LOGS
+		#region GET: ENGRAVED TODAY ITEMS FROM ENTITY LOGS
 
 		public static async Task<EntityLogsModel> GetEngravedTodayItemsEntityLogsAsync(int jobsCount)
 		{
 			var today = DateTime.Now.Date.ToString("yyyy/MM/dd") + " 12:00:00";
-			var request = new RestRequest($"/entity-logs?page=1entity_type=machine_assign_item&type=engraving_end&per_page={jobsCount + 50}", DataFormat.Json);
+			var request = new RestRequest($"/entity-logs?page=1&entity_type=machine_assign_item&type=engraving_end&per_page={jobsCount + 50}", DataFormat.Json);
 			request.AddHeader("Accept", "application/json");
 			request.AddHeader("Content-Type", "application/json");
 			var logs = await Client.GetAsync<EntityLogsModel>(request);
@@ -674,6 +675,21 @@ namespace ArtPix_Dashboard.API
 			}
 
 			return logs;
+
+		}
+
+		#endregion
+
+		#region GET: MACHINE LOGS
+
+		public static async Task<MachineLogsModel> GetMachineLogsLogsAsync(int page, int perPage, string employee)
+		{
+			var today = DateTime.Now.Date.ToString("yyyy-MM-dd") + " 12:00:00";
+			var request = new RestRequest($"/machine-logs?type_logs=get_next_crystal_request&machine_user={employee}&date_after={today}&per_page={perPage}&page={page}", DataFormat.Json);
+			request.AddHeader("Accept", "application/json");
+			request.AddHeader("Content-Type", "application/json");
+			MachineLogsModel machineLogs = await Client.GetAsync<MachineLogsModel>(request);
+			return machineLogs;
 
 		}
 

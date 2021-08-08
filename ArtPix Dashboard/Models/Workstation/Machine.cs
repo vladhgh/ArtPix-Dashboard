@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using ArtPix_Dashboard.Utils.Helpers;
 using ArtPix_Dashboard.ViewModels;
 using Newtonsoft.Json;
@@ -29,6 +30,22 @@ namespace ArtPix_Dashboard.Models.Workstation
             get => _networkStatus;
             set => SetProperty(ref _networkStatus, value);
         }
+
+        public string LogInTime { get; set; }
+
+        public string LogOutTime { get; set; }
+
+        public double TotalEngravingTimeInHours {
+            get 
+            {
+                if (!String.IsNullOrEmpty(LogInTime) && !String.IsNullOrEmpty(LogOutTime))
+				{
+                    return (DateTime.Parse(LogOutTime) - DateTime.Parse(LogInTime)).TotalHours;
+				}
+                return 0;
+            }
+        }
+
 
         [JsonProperty("created_at")]
         public string CreatedAt { get; set; }

@@ -263,16 +263,26 @@
 					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<ToggleButton
-								Content="{Binding Name}"
-								FontSize="10"
-								Margin="0 4 8 0"
-								Width="auto"
-								IsChecked="False"
-								Height="23"
-								Padding="8 2 8 4"
-								Opacity="0.9"
-								Style="{StaticResource HeaderToggleButtonStyle}"/>
+							<ui:SimpleStackPanel Orientation="Horizontal" >
+								<ToggleButton
+									Content="{Binding Name}"
+									FontSize="10"
+									Margin="0 4 8 0"
+									Width="auto"
+									IsChecked="False"
+									Height="23"
+									Padding="8 2 8 4"
+									Opacity="0.9"
+									Style="{StaticResource HeaderToggleButtonStyle}"/>
+								<Button
+									Cursor="Hand"
+									Content="{Binding AveragePerformance, StringFormat=Avg. Performance: {0:0} per min}"
+									FontSize="10"
+									Margin="0 4 8 0"
+									Padding="8 2 8 4"
+									Opacity="0.9"
+									Style="{StaticResource ManualCompleteButtonStyle}"/>
+							</ui:SimpleStackPanel>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>

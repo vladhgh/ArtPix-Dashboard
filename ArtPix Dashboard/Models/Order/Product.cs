@@ -23,7 +23,7 @@ namespace ArtPix_Dashboard.Models.Order
 
 		public Visibility VitroMarkButtonVisibility => Retouch == null ? Visibility.Collapsed : Visibility.Visible;
 
-		public Visibility ProductStatusVisibility => CrystalType.Type == "Crystal" || CrystalType.Type == "Necklace" || CrystalType.Type == "Keychain" || CrystalType.Type == "Fingerprint" || CrystalType.Type == "Wine Stopper" ? Visibility.Visible : Visibility.Collapsed;
+		public Visibility ProductStatusVisibility => Utils.Utils.IsCrystal(this) ? Visibility.Visible : Visibility.Collapsed;
 
 		private Visibility _productionIssueButtonsVisibility;
 

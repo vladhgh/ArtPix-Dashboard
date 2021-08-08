@@ -378,7 +378,7 @@ namespace ArtPix_Dashboard.Utils
 
 		#endregion
 
-		#region CHECK IS CRYSTAL - DONE - ✅
+		#region CHECK IF PRODUCT IS CRYSTAL
 
 		public static bool IsCrystal(Product product) => product.CrystalType.Type == "Crystal" ||
 		                                                 product.CrystalType.Type == "Keychain" ||
