@@ -61,10 +61,10 @@
     <LangVersion>9</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>9EA838B6F5A48FA0A0C9688EC12401896AC854A7</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>98A44E5136A389CE7B60945BC2350FF7074D4A54</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>ArtPix Dashboard_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>ArtPix Dashboard_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -117,6 +117,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dialogs\DailyReportDialog.xaml.cs">
+      <DependentUpon>DailyReportDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\AppState\AppStateModel.cs" />
     <Compile Include="Models\AppState\CombinedFilterModel.cs" />
     <Compile Include="Models\AppState\CurrentSessionModel.cs" />
@@ -250,6 +253,10 @@
     <Page Include="DataTemplates\ProductsListViewDataTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\DailyReportDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Styles\Animations.xaml">
       <SubType>Designer</SubType>

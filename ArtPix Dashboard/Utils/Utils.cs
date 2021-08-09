@@ -471,6 +471,8 @@ namespace ArtPix_Dashboard.Utils
 			return null;
 		}
 
+		
+
 		#endregion
 
 		#region GET SCROLL VIEWER - DONE - ✅
@@ -498,7 +500,88 @@ namespace ArtPix_Dashboard.Utils
 			return null;
 		}
 
+
+
 		#endregion
+
+		internal static string GetCrystalNameBySku(string sku)
+		{
+			if (sku.ToCharArray()[1] == 'W' || sku.ToCharArray()[1] == 'N' || sku.ToCharArray()[1] == 'K' || sku.ToCharArray()[1] == 'F' || sku.ToCharArray()[1] == 'P')
+			{
+				return "Accessories";
+			}
+
+			switch (sku.ToCharArray()[2].ToString() + sku.ToCharArray()[3].ToString())
+			{
+				case "RS": return "Small Rectangle";
+				case "RM": return "Medium Rectangle";
+				case "RL": return "Large Rectangle";
+				case "RY": return "XXL Rectangle";
+				case "RZ": return "XXXL Rectangle";
+				case "RA": return "Max Rectangle";
+				case "RT": return "Titan Rectangle";
+
+				case "SS": return "Small Square";
+				case "SM": return "Medium Square";
+				case "SL": return "Large Square";
+				case "SY": return "XL Square";
+
+				case "HS": return "Small Heart";
+				case "HM": return "Medium Heart";
+				case "HL": return "Large Heart";
+				case "HX": return "XL Heart";
+
+				case "DS": return "Small Diamond";
+				case "DM": return "Medium Diamond";
+				case "DL": return "Large Diamond";
+
+				case "IS": return "Small Iceberg";
+				case "IM": return "Medium Iceberg";
+				case "IL": return "Large Iceberg";
+
+				default: return sku;
+			}
+		}
+
+		internal static double GetEngravingPointsBySku(string sku)
+		{
+			if (sku == null) return 0;
+			if (sku.ToCharArray()[1] == 'W' || sku.ToCharArray()[1] == 'N' || sku.ToCharArray()[1] == 'K' || sku.ToCharArray()[1] == 'F' || sku.ToCharArray()[1] == 'P')
+			{
+				return 1.5;
+			}
+
+			switch (sku.ToCharArray()[2].ToString() + sku.ToCharArray()[3].ToString())
+			{
+				case "RS": return 1;
+				case "RM": return 1.5;
+				case "RL": return 2;
+				case "RY": return 2.5;
+				case "RZ": return 3;
+				case "RA": return 3.5;
+				case "RT": return 4;
+
+				case "SS": return 1;
+				case "SM": return 1.5;
+				case "SL": return 2;
+				case "SY": return 3;
+
+				case "HS": return 1;
+				case "HM": return 1.5;
+				case "HL": return 2;
+				case "HX": return 3;
+
+				case "DS": return 1;
+				case "DM": return 1.5;
+				case "DL": return 2.5;
+
+				case "IS": return 1;
+				case "IM": return 2;
+				case "IL": return 3;
+
+				default: return 0;
+			}
+		}
 
 	}
 

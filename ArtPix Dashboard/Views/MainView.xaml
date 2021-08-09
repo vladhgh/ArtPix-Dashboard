@@ -13,7 +13,7 @@
 		xmlns:viewmodels="clr-namespace:ArtPix_Dashboard.ViewModels"
 		d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
 		Icon="../Assets/logo.ico"
-		Title="ArtPix Dashboard 2.0"
+		Title="ArtPix Dashboard 2.1"
 		MinWidth="1920"
 		MaxWidth="1920"
 		MinHeight="900"

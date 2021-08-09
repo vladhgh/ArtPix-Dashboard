@@ -140,9 +140,9 @@ namespace ArtPix_Dashboard.Views
 				MainViewModel.AppState = x;
 			}
 			//REMOVE
-			MainViewModel.AppState.EmployeeName = "Vlad";
+			MainViewModel.AppState.EmployeeName = Settings.Default.EmployeeName;
 			MainViewModel.AppState.NavigationStack = new List<string>();
-			MainViewModel.AppState.SessionTimeOut = Int32.MaxValue;
+			MainViewModel.AppState.SessionTimeOut = Settings.Default.SessionTimeOut;
 
 			Window.Top = Settings.Default.Top;
 			Window.Left = Settings.Default.Left;

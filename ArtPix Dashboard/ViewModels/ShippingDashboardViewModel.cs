@@ -34,6 +34,7 @@ using System.Text;
 using Datum = ArtPix_Dashboard.Models.Order.Datum;
 using ArtPix_Dashboard.Models.Workstation;
 using ArtPix_Dashboard.Models.MachineLogs;
+using System.Windows.Data;
 
 namespace ArtPix_Dashboard.ViewModels
 {
@@ -69,10 +70,15 @@ namespace ArtPix_Dashboard.ViewModels
 			set => SetProperty(ref _productionIssuesReasons, value);
 		}
 
-		private ObservableCollection<CrystalType> _crystalSizes = new();
-		public ObservableCollection<CrystalType> CrystalSizes
+		private List<CrystalType> _crystalSizes = new();
+		public List<CrystalType> CrystalSizes
 		{
-			get => _crystalSizes;
+			get 
+			{
+		
+				_crystalSizes.Sort((x, y) => y.Count.CompareTo(x.Count));
+				return _crystalSizes;
+			} 
 			set => SetProperty(ref _crystalSizes, value);
 		}
 
@@ -384,9 +390,9 @@ namespace ArtPix_Dashboard.ViewModels
 
 		#region ORDERS LIST INITIALIZATION
 
-		public async Task<ObservableCollection<CrystalType>> GetCrystalTypes(CombinedFilterModel combinedFilter)
+		public async Task<List<CrystalType>> GetCrystalTypes(CombinedFilterModel combinedFilter)
 		{
-			var crystalTypes = new ObservableCollection<CrystalType>();
+			var crystalTypes = new List<CrystalType>();
 			if (combinedFilter.SelectedFilterGroup == "Ready To Engrave" || combinedFilter.SelectedFilterGroup == "Engraving In Progress" || combinedFilter.SelectedFilterGroup == "Awaiting Model" || combinedFilter.SelectedFilterGroup.Split(' ')[0] == "Machine")
 			{
 				OrderModel readyToEngraveItems = String.IsNullOrEmpty(combinedFilter.machine) ? await ArtPixAPI.GetOrdersAsync(new CombinedFilterModel(combinedFilter.SelectedFilterGroup) { perPage = 150 }) : await ArtPixAPI.GetOrdersAsync(new CombinedFilterModel("Machine", combinedFilter.machine) { perPage = 150 });
@@ -397,7 +403,7 @@ namespace ArtPix_Dashboard.ViewModels
 					{
 						if (Utils.Utils.IsCrystal(product))
 						{
-							sizes.Add(product.CrystalType.Sku);
+							sizes.Add(Utils.Utils.GetCrystalNameBySku(product.CrystalType.Sku));
 						}
 					}
 				}
@@ -411,10 +417,10 @@ namespace ArtPix_Dashboard.ViewModels
 				var allCount = 0;
 				foreach (var item in dateGrouped)
 				{
-					//Debug.WriteLine($"Name: {item.Name}, Count: {item.Count}");
 					crystalTypes.Add(new CrystalType()
 					{
 						CrystalName = $"{item.Name} ({item.Count})",
+						Count = item.Count,
 						IsChecked = false
 					});
 					allCount += item.Count;
@@ -422,6 +428,7 @@ namespace ArtPix_Dashboard.ViewModels
 				crystalTypes.Insert(0, new CrystalType()
 				{
 					CrystalName = $"All ({allCount})",
+					Count = allCount,
 					IsChecked = true
 				});
 			}
@@ -431,8 +438,6 @@ namespace ArtPix_Dashboard.ViewModels
 		public async Task GetOrdersList(CombinedFilterModel combinedFilter)
 		{
 			CrystalSizes = await GetCrystalTypes(combinedFilter);
-			
-
 
 			if (AppState.CombinedFilter.SelectedFilterGroup == "Engraved Today")
 			{
@@ -443,12 +448,27 @@ namespace ArtPix_Dashboard.ViewModels
 				var allCount = 0;
 				foreach (var result in dateGrouped)
 				{
+
+
 					EmployeeList.Add(new EmployeeModel()
 					{
-						Name = $"{result.Name} ({result.Count})",
+						Name = $"{result.Name}",
 						EngravedCrystalCount = result.Count
 					});
 
+					//ASSIGN ENGRAVING PONTS
+					foreach (var log in logs.Data)
+					{
+						if (log.Data.User == result.Name)
+						{
+							var user = EmployeeList.FirstOrDefault(x => x.Name == $"{result.Name}");
+							user.EngravingPoints += Utils.Utils.GetEngravingPointsBySku(log.Data.Sku);
+						}
+					}
+
+
+					/*
+					// GET MACHINE LOGS FOR USER
 					var i = 1;
 
 					MachineLogsModel machineLogs = await ArtPixAPI.GetMachineLogsLogsAsync(i, 200, result.Name);
@@ -466,11 +486,13 @@ namespace ArtPix_Dashboard.ViewModels
 					}
 
 
+
+					// ASSIGN LOGIN / LOGOUT TIMES FOR EACH MACHINE FOR EACH USER
 					foreach (var machineLog in machineLogs.Data)
 					{
 						if (machineLog.Raw.Action == "LogOut")
 						{
-							var employee = EmployeeList.FirstOrDefault(x => x.Name == $"{result.Name} ({result.Count})");
+							var employee = EmployeeList.FirstOrDefault(x => x.Name == $"{result.Name}");
 							if (employee.AssignedMachines.FirstOrDefault(x => x.IdMachines == machineLog.MachineId && String.IsNullOrEmpty(x.LogOutTime)) is Machine machine)
 							{
 								machine.LogOutTime = machineLog.Date;
@@ -485,7 +507,7 @@ namespace ArtPix_Dashboard.ViewModels
 						}
 						if (machineLog.Raw.Action == "LogIn")
 						{
-							var employee = EmployeeList.FirstOrDefault(x => x.Name == $"{result.Name} ({result.Count})");
+							var employee = EmployeeList.FirstOrDefault(x => x.Name == $"{result.Name}");
 							if (employee.AssignedMachines.FirstOrDefault(x => x.IdMachines == machineLog.MachineId && String.IsNullOrEmpty(x.LogInTime)) is Machine machine)
 							{
 								machine.LogInTime = machineLog.Date;
@@ -499,7 +521,8 @@ namespace ArtPix_Dashboard.ViewModels
 							}
 						}
 					}
-					var employee2 = EmployeeList.FirstOrDefault(x => x.Name == $"{result.Name} ({result.Count})");
+
+					var employee2 = EmployeeList.FirstOrDefault(x => x.Name == $"{result.Name}");
 					
 					foreach (var machine in employee2.AssignedMachines)
 					{
@@ -519,13 +542,17 @@ namespace ArtPix_Dashboard.ViewModels
 						}
 					}
 
-					employee2.AveragePerformance = "";
-
+					employee2.AveragePerformance = ""; // NOTIFY PROPERTY UPDATED
+					*/
 					allCount += result.Count;
 				}
+
+
+
 				EmployeeList.Insert(0, new EmployeeModel()
 				{
-					Name = $"All ({allCount})"
+					Name = $"All",
+					EngravedCrystalCount = allCount
 				});
 
 
@@ -545,8 +572,6 @@ namespace ArtPix_Dashboard.ViewModels
 				return;
 			}
 			
-			Orders = await ArtPixAPI.GetOrdersAsync(combinedFilter);
-
 			if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
 			{
 				ProductionIssuesReasons.Clear();
@@ -591,7 +616,30 @@ namespace ArtPix_Dashboard.ViewModels
 					Count = allCount,
 					IsChecked = true
 				});
+				Orders.Meta = ProductionIssues.Meta;
+				foreach (var reason in ProductionIssuesReasons)
+				{
+					if (reason.Reason == AppState.CombinedFilter.SelectedIssueReason)
+					{
+						reason.IsChecked = true;
+						continue;
+					}
+					reason.IsChecked = false;
+				}
+
+
+				CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(View.IssuesListView.ItemsSource);
+				if (AppState.CombinedFilter.SelectedIssueReason == "All")
+				{
+					view.Filter = null;
+					return;
+				}
+				view.Filter = View.UserFilter;
+
+				return;
 			}
+
+			Orders = await ArtPixAPI.GetOrdersAsync(combinedFilter);
 
 			View.ShippingItemsListView.ItemsSource = Orders.Data;
 			if (combinedFilter.withPages && Orders.Meta != null)
@@ -702,7 +750,7 @@ namespace ArtPix_Dashboard.ViewModels
 
 			if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
 			{
-				ToggleMainLoadingAnimation(1);
+				//ToggleMainLoadingAnimation(1);
 			} else
 			{
 				ToggleOrderLoadingAnimation(1, order.NameOrder);
@@ -733,14 +781,14 @@ namespace ArtPix_Dashboard.ViewModels
 				await ArtPixAPI.ProductAssignProcessing(body);
 				Utils.Utils.Notifier.ShowSuccess("Assigned To Machine Successfully!");
 			}
-			if (System.IO.Directory.Exists($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.MachineAssignItemId}"))
+			if (System.IO.Directory.Exists($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.IdProducts}"))
 			{
-				System.IO.Directory.Delete($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.MachineAssignItemId}", true);
-				Utils.Utils.Notifier.ShowSuccess($"Local Files Removed Successfully For Product {product.MachineAssignItemId}!");
+				System.IO.Directory.Delete($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.IdProducts}", true);
+				Utils.Utils.Notifier.ShowSuccess($"Local Files Removed Successfully For Product {product.IdProducts}!");
 			}
 			if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
 			{
-				View.SendCombinedRequest(new CombinedFilterModel("Production Issues"));
+				View.SendCombinedRequest(new CombinedFilterModel("Production Issues") { SelectedIssueReason = AppState.CombinedFilter.SelectedIssueReason });
 			}
 			else
 			{
@@ -785,7 +833,7 @@ namespace ArtPix_Dashboard.ViewModels
 					{
 						if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
 						{
-							ToggleMainLoadingAnimation(1);
+							//ToggleMainLoadingAnimation(1);
 						}
 						else
 						{
@@ -804,18 +852,19 @@ namespace ArtPix_Dashboard.ViewModels
 						};
 						await ArtPixAPI.ResolveProductionIssueAsync(requestBody);
 						Utils.Utils.Notifier.ShowInformation("3D Model Sent To Retoucher For Rework Successfully!");
-						if (System.IO.Directory.Exists($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.MachineAssignItemId}"))
+						if (System.IO.Directory.Exists($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.IdProducts}"))
 						{
-							System.IO.Directory.Delete($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.MachineAssignItemId}", true);
-							Utils.Utils.Notifier.ShowSuccess($"Local Files Removed Successfully For Product {product.MachineAssignItemId}!");
+							System.IO.Directory.Delete($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.IdProducts}", true);
+							Utils.Utils.Notifier.ShowSuccess($"Local Files Removed Successfully For Product {product.IdProducts}!");
 						}
-						await UpdateOrderInfoAsync(order.IdOrders);
+						
 						if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
 						{
-							ToggleMainLoadingAnimation(0);
+							//ToggleMainLoadingAnimation(0);
 						}
 						else
 						{
+							await UpdateOrderInfoAsync(order.IdOrders);
 							ToggleOrderLoadingAnimation(0, order.NameOrder);
 						}
 						return;
@@ -824,7 +873,7 @@ namespace ArtPix_Dashboard.ViewModels
 					{
 						if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
 						{
-							ToggleMainLoadingAnimation(1);
+							//ToggleMainLoadingAnimation(1);
 						}
 						else
 						{
@@ -843,19 +892,19 @@ namespace ArtPix_Dashboard.ViewModels
 						};
 						await ArtPixAPI.ResolveProductionIssueAsync(requestBody);
 						Utils.Utils.Notifier.ShowInformation("3D Model Sent To Looxis For Rework Successfully!");
-						if (System.IO.Directory.Exists($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.MachineAssignItemId}"))
+						if (System.IO.Directory.Exists($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.IdProducts}"))
 						{
-							System.IO.Directory.Delete($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.MachineAssignItemId}", true);
-							Utils.Utils.Notifier.ShowSuccess($"Local Files Removed Successfully For Product {product.MachineAssignItemId}!");
+							System.IO.Directory.Delete($"\\\\artpix\\MAIN-JOBS-STORAGE\\Orders\\{product.IdProducts}", true);
+							Utils.Utils.Notifier.ShowSuccess($"Local Files Removed Successfully For Product {product.IdProducts}!");
 						}
 
-						await UpdateOrderInfoAsync(order.IdOrders);
 						if (AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
 						{
-							ToggleMainLoadingAnimation(0);
+							//ToggleMainLoadingAnimation(0);
 						}
 						else
 						{
+							await UpdateOrderInfoAsync(order.IdOrders);
 							ToggleOrderLoadingAnimation(0, order.NameOrder);
 						}
 						return;

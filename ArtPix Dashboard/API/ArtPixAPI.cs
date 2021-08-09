@@ -662,6 +662,7 @@ namespace ArtPix_Dashboard.API
 		public static async Task<EntityLogsModel> GetEngravedTodayItemsEntityLogsAsync(int jobsCount)
 		{
 			var today = DateTime.Now.Date.ToString("yyyy/MM/dd") + " 12:00:00";
+			//var today =  "2021/08/06 12:00:00";
 			var request = new RestRequest($"/entity-logs?page=1&entity_type=machine_assign_item&type=engraving_end&per_page={jobsCount + 50}", DataFormat.Json);
 			request.AddHeader("Accept", "application/json");
 			request.AddHeader("Content-Type", "application/json");
@@ -671,7 +672,13 @@ namespace ArtPix_Dashboard.API
 				if (DateTime.Parse(log.EventDate, CultureInfo.CurrentUICulture) < DateTime.Parse(today, CultureInfo.CurrentUICulture))
 				{
 					logs.Data.Remove(log);
+					continue;
 				}
+				if (log.Data.Machine == "34")
+				{
+					logs.Data.Remove(log);
+				}
+
 			}
 
 			return logs;

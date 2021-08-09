@@ -39,6 +39,14 @@ namespace ArtPix_Dashboard.Models.Order
 			set => _crystalName = value;
 		}
 
+		private int _count;
+		public int Count
+		{
+			get => _count;
+			set => _count = value;
+		}
+
+
 		private bool _isChecked;
 		public bool IsChecked
 		{

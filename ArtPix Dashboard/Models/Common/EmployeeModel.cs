@@ -5,12 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ArtPix_Dashboard.Utils.Helpers;
+using System.Windows;
 
 namespace ArtPix_Dashboard.Models.Common
 {
 	public class EmployeeModel : PropertyChangedListener
 	{
 		public string Name { get; set; }
+
+		public string DisplayedName => $"{Name} ({EngravedCrystalCount})";
+
+		public string EngravingPointsDisplayText => "Points: " + EngravingPoints.ToString();
+
+		public string PerformanceDisplayText => "Performance: " + EngravingPoints.ToString();
 
 		public int EngravedCrystalCount { get; set; }
 
@@ -30,7 +37,7 @@ namespace ArtPix_Dashboard.Models.Common
 		{
 			get
 			{
-				_averagePerformance = String.Format("{0:N}", EngravedCrystalCount / TotalEngravingTimeInHours) + " per hour";
+				_averagePerformance = "Performance: " + String.Format("{0:N}", EngravedCrystalCount / TotalEngravingTimeInHours) + " per hour";
 				return _averagePerformance;
 			}
 			set
@@ -51,6 +58,22 @@ namespace ArtPix_Dashboard.Models.Common
 
 				return total / AssignedMachines.Select(x => x.IdMachines).Distinct().Count();
 			}
+		}
+
+		private double _points = 0;
+
+		public double EngravingPoints
+		{
+			get => _points;
+			set => SetProperty(ref _points, value);
+		}
+
+		private Visibility _engravingPointsVisibility = Visibility.Visible;
+
+		public Visibility EngravingPointsVisibility
+		{
+			get => Name == "All" ? Visibility.Collapsed : Visibility.Visible;
+			set => SetProperty(ref _engravingPointsVisibility, value);
 		}
 	}
 

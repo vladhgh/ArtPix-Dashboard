@@ -24,6 +24,7 @@ namespace ArtPix_Dashboard.Models.EntityLogs
         [JsonProperty("type")]
         public string Type { get; set; }
 
+        
         [JsonProperty("event_date")]
         public string EventDate { get; set; }
 

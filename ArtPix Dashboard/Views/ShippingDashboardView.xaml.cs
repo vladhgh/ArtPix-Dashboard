@@ -108,7 +108,7 @@ namespace ArtPix_Dashboard.Views
 		{
 			if (kind == 0) // LOADING END
 			{
-				if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup == "Production Issues" && IssuesListView.Opacity == 0)
+				if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
 				{
 					Animation.FadeOut(ProgressRingImage);
 					Animation.FadeIn(IssuesListView);
@@ -125,7 +125,7 @@ namespace ArtPix_Dashboard.Views
 				{
 					Animation.FadeOut(NoResultsText);
 				}
-				if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup == "Production Issues" && IssuesListView.Opacity == 1)
+				if (ViewModel.AppState.CombinedFilter.SelectedFilterGroup == "Production Issues")
 				{
 					Animation.FadeIn(ProgressRingImage);
 					Animation.FadeOut(IssuesListView);
@@ -665,14 +665,8 @@ namespace ArtPix_Dashboard.Views
 
 		private async void CreateDailyReportButtonOnClick(object sender, RoutedEventArgs e)
 		{
-			var logs = await ArtPixAPI.GetEngravedTodayItemsEntityLogsAsync(250);
-			var dateGrouped = logs.Data.GroupBy(x => x.Data.User)
-				.Select(x => new { Name = x.Key, Count = x.Distinct().Count() });
-
-			foreach (var result in dateGrouped)
-			{
-				Console.WriteLine("Name: {0}, Engraved: {1}", result.Name, result.Count);
-			}
+			var dialog = new DailyReportDialog(ViewModel.AppState);
+			await dialog.ShowAsync();
 		}
 
 		private void IssueReasonButtonOnClick(object sender, RoutedEventArgs e)
@@ -697,10 +691,9 @@ namespace ArtPix_Dashboard.Views
 			}
 			view.Filter = UserFilter;
 
-			//SendCombinedRequest(new CombinedFilterModel("Search", "", ((ToggleButton)sender).Tag.ToString()));
 		}
 
-		private bool UserFilter(object item)
+		public bool UserFilter(object item)
 		{
 			if (String.IsNullOrEmpty(ViewModel.AppState.CombinedFilter.SelectedIssueReason))
 				return true;

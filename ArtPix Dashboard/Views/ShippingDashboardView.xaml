@@ -161,10 +161,11 @@
 			Margin="0 120 0 0"
 			Opacity="0"
 			FontSize="16"
+			FontWeight="SemiBold"
 			TextAlignment="Center"
 			HorizontalAlignment="Center"
 			VerticalAlignment="Center"
-			Style="{DynamicResource TitleTextBlockStyle}"/>
+			Style="{DynamicResource BaseTextBlockStyle}"/>
 
 
 		<ui:SimpleStackPanel x:Name="ActionsPanel" Grid.Row="3" Grid.Column="1" Margin="0 0 0 10" Orientation="Horizontal">
@@ -185,7 +186,6 @@
 					VerticalAlignment="Center"
 					Margin="0 0 4 0"
 					Visibility="{Binding AppState.CombinedFilter.IssueReasonsVisibility}"
-					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=Visibility, Duration=800, Delay=1000}"
 					Style="{DynamicResource SubtitleTextBlockStyle}"
 					FontWeight="Black"
 					Text="Issue Reasons: "/>
@@ -265,7 +265,7 @@
 						<DataTemplate>
 							<ui:SimpleStackPanel Orientation="Horizontal" >
 								<ToggleButton
-									Content="{Binding Name}"
+									Content="{Binding DisplayedName}"
 									FontSize="10"
 									Margin="0 4 8 0"
 									Width="auto"
@@ -274,21 +274,29 @@
 									Padding="8 2 8 4"
 									Opacity="0.9"
 									Style="{StaticResource HeaderToggleButtonStyle}"/>
-								<Button
-									Cursor="Hand"
-									Content="{Binding AveragePerformance, StringFormat=Avg. Performance: {0:0} per min}"
+								<!--<Button
+									Content="{Binding AveragePerformance}"
 									FontSize="10"
+									Visibility="{Binding EngravingPointsVisibility}"
 									Margin="0 4 8 0"
 									Padding="8 2 8 4"
 									Opacity="0.9"
-									Style="{StaticResource ManualCompleteButtonStyle}"/>
+									Style="{StaticResource ManualCompleteButtonStyle}"/>-->
+								<Button
+									Content="{Binding EngravingPointsDisplayText}"
+									FontSize="10"
+									Visibility="{Binding EngravingPointsVisibility}"
+									Margin="0 4 8 0"
+									Padding="8 2 8 4"
+									Opacity="0.9"
+									Style="{StaticResource SearchButtonStyle}"/>
 							</ui:SimpleStackPanel>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
 			</ui:SimpleStackPanel>
 
-			<ui:SimpleStackPanel x:Name="ShippingActions" Visibility="{Binding AppState.CombinedFilter.CreateManifestButtonVisibility}" Orientation="Horizontal">
+			<ui:SimpleStackPanel x:Name="ShippingActions" Visibility="Collapsed" Orientation="Horizontal">
 				<TextBlock
 					x:Name="ActionsText"
 					HorizontalAlignment="Left"
@@ -304,7 +312,6 @@
 					FontSize="10"
 					Margin="0 4 8 0"
 					Padding="8 2 8 4"
-					
 					xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource FadeIn}, Event=DataContextChanged, Duration=800, Delay=1100}"
 					Command="{Binding ElementName=ShippingDashboardPage, Path=DataContext.OnCreateDHLManifest}"
 					CommandParameter="{Binding }"
@@ -320,8 +327,6 @@
 					Click="CreateDailyReportButtonOnClick"
 					Opacity="0.9"
 					Style="{StaticResource RedoButtonStyle}"/>
-				
-
 			</ui:SimpleStackPanel>
 			<ui:SimpleStackPanel x:Name="MachineActions"  Orientation="Horizontal">
 				<TextBlock
@@ -383,7 +388,6 @@
 					Opacity="0.9"
 					Style="{StaticResource UnassignButtonStyle}"/>
 			</ui:SimpleStackPanel>
-			
 		</ui:SimpleStackPanel>
 
 

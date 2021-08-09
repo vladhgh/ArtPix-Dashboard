@@ -18,7 +18,14 @@ namespace ArtPix_Dashboard.Models.Order
 	{
 		#region VISIBILITY
 
-		public Visibility IsLateShipment => (DateTime.Parse(_estimateProcessingMaxDate, CultureInfo.CurrentUICulture).AddHours(19) < DateTime.Now) && Status != "Shipped" ? Visibility.Visible : Visibility.Collapsed;
+		public Visibility IsLateShipment
+		{
+			get
+			{
+				if (String.IsNullOrEmpty(_estimateProcessingMaxDate)) return Visibility.Collapsed;
+				return (DateTime.Parse(_estimateProcessingMaxDate, CultureInfo.CurrentUICulture).AddHours(19) < DateTime.Now) && Status != "Shipped" ? Visibility.Visible : Visibility.Collapsed;
+			}
+		} 
 		public Visibility IssueResolved => HasIssueResolved && Status != "Shipped" ? Visibility.Visible : Visibility.Collapsed;
 
 		private Visibility _expanderVisibility = Visibility.Visible;
